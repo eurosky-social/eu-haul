@@ -1,11 +1,38 @@
 # Eurosky Migration - Project Status
 
-**Last Updated:** 2026-01-27
-**Status:** Core Implementation Complete - Ready for Testing & Documentation
+**Last Updated:** 2026-01-27 (Evening)
+**Status:** Core Implementation Complete - Development Environment Configured - Ready for Testing
 
 ## Executive Summary
 
 The **eurosky-migration** Rails application is a standalone, open-source ATProto account migration tool that wraps the `goat` CLI. The core application is **fully functional** with all migration stages implemented, Docker deployment ready, and a complete web interface. What remains is testing, comprehensive documentation, and optional polish features.
+
+---
+
+## 🎉 Recent Updates (Evening Session)
+
+### Development Environment Setup ✓
+- **Fixed Docker Configuration**: Updated docker-compose.yml to run in development mode
+- **Rails Direct Access**: Removed Caddy proxy for development, Rails now accessible directly on port 3000
+- **Tailscale Integration**: Configured for Tailscale domain (sebastians-macbook-pro.tail8379bb.ts.net)
+- **Environment Configuration**: Switched from production to development mode (RAILS_ENV=development)
+- **Database Setup**: Created development database and ran migrations successfully
+- **.gitignore Created**: Comprehensive gitignore protecting .env and all sensitive data
+- **Application Running**: Successfully tested at http://localhost:3000
+
+### Current Access Methods
+- **Local:** http://localhost:3000
+- **Tailscale:** http://sebastians-macbook-pro.tail8379bb.ts.net:3000
+- **Health Check:** http://localhost:3000/up
+
+### Docker Services Status
+```
+✅ postgres (healthy) - PostgreSQL 15 on port 5432
+✅ redis (healthy) - Redis 7
+✅ web (healthy) - Rails app on port 3000
+✅ sidekiq (healthy) - Background job processor
+❌ caddy (stopped) - Not needed for development
+```
 
 ---
 
@@ -270,9 +297,13 @@ All 7 migration stages implemented in `app/jobs/`:
 
 ---
 
-## 🔄 What Remains (Phases 6-8)
+## 🔄 What Remains (Critical Path to Completion)
 
-### Phase 6: Testing (Not Started)
+### Phase 6: Testing (HIGH PRIORITY - Not Started)
+
+**Why This Matters:** The entire application is built but completely untested. We need to verify it actually works before documentation.
+
+**Immediate Testing Needs:**
 
 **Unit Tests Needed:**
 
@@ -408,26 +439,23 @@ All 7 migration stages implemented in `app/jobs/`:
 
 ---
 
-## 🚀 Quick Start (Resume Work)
+## 🚀 Quick Start (Current Working Setup)
 
 ### 1. Start the Stack
 
 ```bash
 cd /Users/svogelsang/Development/projects/Skeets/code/u-at-proto/eurosky-migration
 
-# First time setup
-cp .env.example .env
-# Edit .env - generate SECRET_KEY_BASE: openssl rand -hex 64
+# Stack is already configured with .env
+# Database already created
 
-# Build and start
-docker compose build
+# Start services
 docker compose up -d
 
-# Create database
-docker compose exec web rails db:create db:migrate
+# Check status
+docker compose ps
 
-# Check health
-curl http://localhost:3000/_health
+# View logs
 docker compose logs -f web
 docker compose logs -f sidekiq
 ```
@@ -435,7 +463,16 @@ docker compose logs -f sidekiq
 ### 2. Access the App
 
 - **Web UI:** http://localhost:3000
-- **Health Check:** http://localhost:3000/_health
+- **Tailscale:** http://sebastians-macbook-pro.tail8379bb.ts.net:3000
+- **Health Check:** http://localhost:3000/up
+- **Rails Console:** `docker compose exec web rails console`
+
+### 3. Stop the Stack
+
+```bash
+docker compose down  # Stop all services
+docker compose down -v  # Stop and remove volumes (full reset)
+```
 
 ### 3. Test with u-at-proto
 
@@ -449,6 +486,80 @@ docker compose up -d
 
 # Terminal 3: Monitor migration
 docker compose -f /Users/svogelsang/Development/projects/Skeets/code/u-at-proto/eurosky-migration/docker-compose.yml logs -f sidekiq
+```
+
+---
+
+## 🛠️ Development Workflow
+
+### Making Code Changes
+
+Since the application runs in Docker with volume mounts, code changes are reflected immediately:
+
+```bash
+# 1. Edit files in your IDE (VS Code, etc.)
+# Changes to Ruby files are auto-reloaded in development mode
+
+# 2. View changes in browser
+open http://localhost:3000
+
+# 3. If you change config files, restart:
+docker compose restart web
+
+# 4. If you change Gemfile, rebuild:
+docker compose build web
+docker compose up -d web
+
+# 5. If you add migrations:
+docker compose run --rm migrate bundle exec rails db:migrate
+```
+
+### Running Rails Commands
+
+```bash
+# Rails console
+docker compose exec web rails console
+
+# Run migrations
+docker compose run --rm migrate bundle exec rails db:migrate
+
+# Rollback migration
+docker compose run --rm migrate bundle exec rails db:rollback
+
+# Reset database (caution!)
+docker compose run --rm migrate bundle exec rails db:reset
+
+# Generate new files
+docker compose exec web rails generate model MyModel
+docker compose exec web rails generate migration AddFieldToModel
+```
+
+### Checking Job Status
+
+```bash
+# View Sidekiq logs
+docker compose logs -f sidekiq
+
+# Rails console - check jobs
+docker compose exec web rails console
+> Sidekiq::Queue.new('migrations').size
+> Sidekiq::Queue.new('critical').size
+> Sidekiq::Stats.new.processed  # Total jobs processed
+```
+
+### Git Workflow
+
+```bash
+# .env is gitignored - safe to commit
+git status
+git add .
+git commit -m "Your commit message"
+
+# Never commit:
+# - .env (contains secrets)
+# - docker volumes
+# - tmp/ files
+# - log/ files
 ```
 
 ---
@@ -508,10 +619,13 @@ eurosky-migration/
 
 ```
 eurosky-migration/
+├── .gitignore (complete) ✅
+├── .env (configured for development) ✅
 ├── README.md (skeleton - needs content)
-├── LICENSE (MIT - complete)
-├── CONTRIBUTING.md (complete)
-├── DOCKER.md (complete)
+├── LICENSE (MIT - complete) ✅
+├── CONTRIBUTING.md (complete) ✅
+├── DOCKER.md (complete) ✅
+├── STATUS.md (this file - up to date) ✅
 └── docs/
     ├── ARCHITECTURE.md (needs content)
     ├── API.md (needs content)
@@ -708,23 +822,117 @@ Before deploying to production:
 
 ---
 
-## 🎯 Next Session Tasks
+## 🎯 Immediate Next Steps (Prioritized)
 
-**High Priority:**
-1. Write integration test for full migration flow
-2. Complete README.md with usage examples
-3. Test Docker build end-to-end
-4. Create test account migration using u-at-proto
+### Step 1: Manual Smoke Test (30 minutes)
+**Goal:** Verify the web interface works end-to-end
 
-**Medium Priority:**
-5. Write unit tests for Migration model
-6. Write tests for GoatService (with mocked CLI)
-7. Complete docs/API.md with curl examples
+1. **Test Migration Form:**
+   ```bash
+   # Open in browser
+   open http://localhost:3000
 
-**Low Priority:**
-8. Add email notifications
-9. Create admin interface
-10. Set up CI/CD pipeline
+   # Fill out form with test data (don't submit yet)
+   # Verify form validation works
+   ```
+
+2. **Test Rails Console:**
+   ```bash
+   docker compose exec web rails console
+
+   # Create a test migration record
+   m = Migration.create!(
+     email: "test@example.com",
+     did: "did:plc:test123",
+     old_handle: "test.old.pds",
+     old_pds_host: "https://old.pds",
+     new_handle: "test.new.pds",
+     new_pds_host: "https://new.pds"
+   )
+
+   # Verify token generation
+   puts m.token  # Should be EURO-xxxxxxxx
+
+   # Test status page
+   # Open http://localhost:3000/migrate/#{m.token}
+   ```
+
+3. **Test Sidekiq:**
+   ```bash
+   # Check Sidekiq is processing jobs
+   docker compose logs sidekiq | grep -i "sidekiq"
+   ```
+
+### Step 2: Integration with u-at-proto (1-2 hours)
+**Goal:** Test actual account migration with real PDS
+
+1. **Start u-at-proto stack:**
+   ```bash
+   cd /Users/svogelsang/Development/projects/Skeets/code/u-at-proto
+   docker compose up -d
+   ```
+
+2. **Create test account on PDS1:**
+   - Use existing u-at-proto setup
+   - Create account with known credentials
+   - Post some test content
+
+3. **Attempt migration via eurosky-migration:**
+   - Fill form with real test account details
+   - Monitor logs for errors
+   - Document any issues encountered
+
+### Step 3: Write Critical Tests (2-3 hours)
+**Priority Order:**
+
+1. **GoatService test with mocked CLI** (most critical)
+   - File: `test/services/goat_service_test.rb`
+   - Mock all CLI calls
+   - Verify error handling
+
+2. **Migration model test**
+   - File: `test/models/migration_test.rb`
+   - Test validations
+   - Test state transitions
+   - Test encryption
+
+3. **Integration test skeleton**
+   - File: `test/integration/migration_flow_test.rb`
+   - End-to-end flow with mocked goat
+   - Verify all job stages
+
+### Step 4: Documentation (2-3 hours)
+
+1. **Complete README.md**
+   - Add real usage examples
+   - Add screenshots
+   - Add troubleshooting section
+
+2. **Write docs/DEVELOPMENT.md**
+   - Local setup instructions
+   - Testing guide
+   - Contributing guidelines
+
+3. **Write docs/API.md**
+   - Document all endpoints with curl examples
+   - Include error responses
+
+### Step 5: Production Preparation (If Needed)
+
+1. **Update docker-compose.yml for production**
+   - Re-enable Caddy with proper domain
+   - Set RAILS_ENV=production
+   - Configure SSL/TLS
+
+2. **Security Review**
+   - Verify no secrets in code
+   - Check .gitignore coverage
+   - Review CORS settings
+
+3. **Deployment Guide**
+   - Complete docs/DEPLOYMENT.md
+   - Server requirements
+   - SSL certificate setup
 
 ---
 
@@ -771,4 +979,92 @@ No authentication required for status viewing because:
 
 ---
 
-**Ready to Resume?** Start with the Quick Start section above, then tackle the Next Session Tasks!
+## 🐛 Troubleshooting (Issues Encountered & Resolved)
+
+### Docker Build Issues ✅ SOLVED
+**Problem:** Multiple Docker build failures during initial setup
+**Solutions Applied:**
+1. Changed goat CLI download from `wget` to `curl -fsSL`
+2. Fixed Ruby version mismatch (Gemfile 3.0.4 → 3.2.2)
+3. Added `gcompat` for Alpine Linux musl compatibility
+4. Forced Ruby platform compilation: `bundle config set --local force_ruby_platform true`
+5. Fixed Lockbox initializer (removed deprecated `configure` method)
+6. Fixed Sidekiq config (removed deprecated `job_logger` and `namespace`)
+
+### SSL/HTTPS Redirect Issues ✅ SOLVED
+**Problem:** Rails forcing HTTPS redirect even in development
+**Solutions Applied:**
+1. Changed `RAILS_ENV=production` to `RAILS_ENV=development` in .env
+2. Added `FORCE_SSL=false` to .env
+3. Updated production.rb: `config.force_ssl = ENV.fetch('FORCE_SSL', 'true') == 'true' && ENV.fetch('DOMAIN', 'localhost') != 'localhost'`
+
+### Caddy Proxy Issues ✅ SOLVED
+**Problem:** Caddy showing "NOP" status 0 errors, requests not reaching Rails
+**Solution:** Removed Caddy from development setup, exposed Rails directly on port 3000
+
+### Health Check Issues ✅ SOLVED
+**Problem:** Docker containers failing health checks
+**Solution:** Changed health check endpoint from `/health` to `/up` (Rails 7 default)
+
+### Database Issues ✅ SOLVED
+**Problem:** PostgreSQL password authentication failures
+**Solution:** Removed volumes and reinitialized database with proper credentials
+
+### Current Known Issues
+- **None** - Development environment is fully operational
+
+### Common Commands for Debugging
+
+```bash
+# View all logs
+docker compose logs -f
+
+# View specific service logs
+docker compose logs -f web
+docker compose logs -f sidekiq
+docker compose logs -f postgres
+
+# Check container status
+docker compose ps
+
+# Restart a service
+docker compose restart web
+
+# Rebuild after code changes
+docker compose build web
+docker compose up -d web
+
+# Access Rails console
+docker compose exec web rails console
+
+# Check database connection
+docker compose exec web rails db:version
+
+# Full reset (nuclear option)
+docker compose down -v
+docker compose up -d
+docker compose run --rm migrate bundle exec rails db:create db:migrate
+```
+
+### Tailscale Access
+If you need to access from other devices on your Tailscale network:
+- URL: http://sebastians-macbook-pro.tail8379bb.ts.net:3000
+- Ensure port 3000 is accessible (not blocked by firewall)
+- Verify Tailscale is running: `/Applications/Tailscale.app/Contents/MacOS/Tailscale status`
+
+---
+
+## 📊 Project Statistics
+
+- **Total Lines of Code:** ~3,500+ (excluding tests)
+- **Core Files Created:** 35+
+- **Sidekiq Jobs:** 7
+- **Migration Stages:** 7
+- **Database Tables:** 1 (migrations)
+- **API Endpoints:** 5
+- **Docker Services:** 4 (postgres, redis, web, sidekiq)
+- **Test Coverage:** 0% (tests not yet written)
+
+---
+
+**Ready to Resume?** Start with Step 1 of Immediate Next Steps above!
