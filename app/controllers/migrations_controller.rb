@@ -109,9 +109,10 @@ class MigrationsController < ApplicationController
   #   - HTML: Renders status page with progress bar
   #   - JSON: Returns migration status data (same as status action)
   def show
-    respond_to do |format|
-      format.html
-      format.json { render json: migration_status_json }
+    if request.format.json?
+      render json: migration_status_json
+    else
+      render :show
     end
   end
 
@@ -142,7 +143,7 @@ class MigrationsController < ApplicationController
     @migration.set_plc_token(plc_token)
 
     # Trigger the critical UpdatePlcJob to update the PLC directory
-    UpdatePlcJob.perform_later(@migration)
+    UpdatePlcJob.perform_later(@migration.id)
 
     redirect_to migration_by_token_path(@migration.token),
                 notice: "PLC token submitted! Your DID will be updated shortly."
@@ -189,16 +190,12 @@ class MigrationsController < ApplicationController
     @migration = Migration.find_by(token: token)
 
     unless @migration
-      respond_to do |format|
-        format.html do
-          render plain: "Migration not found with token: #{token}",
-                 status: :not_found
-        end
-        format.json do
-          render json: { error: "Migration not found" },
-                 status: :not_found
-        end
+      if request.format.json?
+        render json: { error: "Migration not found" }, status: :not_found
+      else
+        render plain: "Migration not found with token: #{token}", status: :not_found
       end
+      return  # Halt the filter chain after rendering
     end
   end
 
