@@ -83,6 +83,19 @@ class CreateAccountJob < ApplicationJob
     Rails.logger.error("[CreateAccountJob] Network error for migration #{migration&.token}: #{e.message}")
     handle_error(migration, e)
 
+  rescue GoatService::AccountExistsError => e
+    Rails.logger.error("[CreateAccountJob] Account exists error for migration #{migration&.token}: #{e.message}")
+    # This is a special case - account already exists (likely from failed previous migration)
+    # Mark as failed with specific instructions for manual cleanup
+    if migration
+      migration.mark_failed!(
+        "Account already exists on target PDS. This is likely from a previous failed migration attempt. " \
+        "To resolve: 1) Clean up orphaned account: scripts/cleanup_orphaned_account_db.sh #{migration.did} " \
+        "2) Reset migration: docker compose exec web bundle exec rake 'migration:reset_migration[#{migration.token}]'"
+      )
+    end
+    # Don't retry - this requires manual intervention
+
   rescue GoatService::GoatError => e
     Rails.logger.error("[CreateAccountJob] Goat error for migration #{migration&.token}: #{e.message}")
     handle_error(migration, e)

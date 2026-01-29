@@ -109,4 +109,8 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Allow requests from migration hostnames
+  config.hosts << /migration\..+\.theeverythingapp\.de/
+  config.hosts << "localhost"
 end

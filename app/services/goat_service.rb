@@ -49,6 +49,7 @@ class GoatService
   class NetworkError < GoatError; end
   class TimeoutError < GoatError; end
   class RateLimitError < NetworkError; end  # Raised when PDS rate-limits our requests
+  class AccountExistsError < GoatError; end  # Raised when account already exists on target PDS
 
   DEFAULT_TIMEOUT = 300 # 5 minutes
 
@@ -58,6 +59,9 @@ class GoatService
     @migration = migration
     @work_dir = Rails.root.join('tmp', 'goat', migration.did)
     @logger = Rails.logger
+
+    # Session token cache to avoid creating new sessions for every API call
+    @access_tokens = {}
 
     # Ensure work directory exists
     FileUtils.mkdir_p(@work_dir)
@@ -73,7 +77,7 @@ class GoatService
       'account', 'login',
       '--pds-host', migration.old_pds_host,
       '-u', migration.old_handle,
-      '-p', migration.encrypted_password
+      '-p', migration.password
     )
 
     logger.info("Successfully logged in to old PDS")
@@ -84,17 +88,28 @@ class GoatService
   def login_new_pds
     logger.info("Logging in to new PDS: #{migration.new_pds_host}")
 
+    # Clear any existing session first to avoid conflicts
+    logout_goat
+
     # Use DID for login to new PDS
+    password = migration.password
+    logger.info("Password available: #{!password.nil?}, length: #{password&.length || 0}")
+
     execute_goat(
       'account', 'login',
       '--pds-host', migration.new_pds_host,
       '-u', migration.did,
-      '-p', migration.encrypted_password
+      '-p', password
     )
 
     logger.info("Successfully logged in to new PDS")
   rescue StandardError => e
     raise AuthenticationError, "Failed to login to new PDS: #{e.message}"
+  end
+
+  def logout_goat
+    logger.debug("Clearing goat session")
+    execute_goat('account', 'logout') rescue nil
   end
 
   # Account Creation Methods
@@ -119,6 +134,29 @@ class GoatService
     raise AuthenticationError, "Failed to get service auth token: #{e.message}"
   end
 
+  def check_account_exists_on_new_pds
+    logger.info("Checking if account already exists on new PDS")
+
+    url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.describeRepo?repo=#{migration.did}"
+
+    stdout, _stderr, _status = execute_command('curl', '-s', url, timeout: 30)
+    response = JSON.parse(stdout) rescue {}
+
+    if response['error'] == 'RepoDeactivated'
+      logger.warn("Orphaned deactivated account found on new PDS")
+      return { exists: true, deactivated: true }
+    elsif response['did']
+      logger.warn("Active account found on new PDS")
+      return { exists: true, deactivated: false, handle: response['handle'] }
+    else
+      logger.info("No existing account found on new PDS")
+      return { exists: false }
+    end
+  rescue => e
+    logger.warn("Failed to check account existence: #{e.message}")
+    return { exists: false }
+  end
+
   def create_account_on_new_pds(service_auth_token)
     logger.info("Creating account on new PDS with existing DID")
 
@@ -128,7 +166,7 @@ class GoatService
       '--pds-host', migration.new_pds_host,
       '--existing-did', migration.did,
       '--handle', migration.new_handle,
-      '--password', migration.encrypted_password,
+      '--password', migration.password,
       '--email', migration.email,
       '--service-auth', service_auth_token
     ]
@@ -143,7 +181,24 @@ class GoatService
 
     logger.info("Account created on new PDS")
   rescue StandardError => e
-    raise GoatError, "Failed to create account on new PDS: #{e.message}"
+    error_message = e.message
+
+    # Check if this is an "AlreadyExists" error
+    if error_message.include?("AlreadyExists") || error_message.include?("Repo already exists")
+      # Check the status of the existing account
+      account_status = check_account_exists_on_new_pds
+
+      if account_status[:exists] && account_status[:deactivated]
+        raise AccountExistsError, "Orphaned deactivated account exists on target PDS. " \
+          "This is from a previous failed migration. To fix: delete the account from the PDS database " \
+          "and retry the migration. DID: #{migration.did}, PDS: #{migration.new_pds_host}"
+      elsif account_status[:exists]
+        raise AccountExistsError, "Active account already exists on target PDS with handle: #{account_status[:handle]}. " \
+          "Cannot migrate to an already active account. DID: #{migration.did}"
+      end
+    end
+
+    raise GoatError, "Failed to create account on new PDS: #{error_message}"
   end
 
   # Repository Export/Import Methods
@@ -161,10 +216,16 @@ class GoatService
     # Need to be logged in first to get session
     login_old_pds
 
+    # Get access token for OLD PDS using old handle
+    access_token = get_access_token_from_session(
+      pds_host: migration.old_pds_host,
+      identifier: migration.old_handle
+    )
+
     # Execute curl to download CAR file
     stdout, stderr, status = execute_command(
       'curl', '-s', '-f',
-      '-H', "Authorization: Bearer #{get_access_token_from_session}",
+      '-H', "Authorization: Bearer #{access_token}",
       url,
       '-o', car_path.to_s,
       timeout: DEFAULT_TIMEOUT
@@ -189,14 +250,27 @@ class GoatService
       raise GoatError, "CAR file not found: #{car_path}"
     end
 
-    # Must be logged in to new PDS
+    # Login to new PDS with DID (works with older goat versions)
     login_new_pds
 
+    # Import repo using goat command
     execute_goat('repo', 'import', car_path)
 
     logger.info("Repository imported successfully")
   rescue StandardError => e
     raise GoatError, "Failed to import repository: #{e.message}"
+  end
+
+  # Convert legacy blob format in CAR file if needed
+  # Returns path to converted CAR file, or original if no conversion needed
+  def convert_legacy_blobs_if_needed(car_path)
+    converter = LegacyBlobConverterService.new(migration)
+    converter.convert_if_needed(car_path)
+  rescue LegacyBlobConverterService::ConversionError => e
+    # Log conversion error but don't fail the migration
+    # The user can retry with CONVERT_LEGACY_BLOBS=false if needed
+    logger.error("Legacy blob conversion failed: #{e.message}")
+    raise GoatError, "Failed to convert legacy blobs: #{e.message}"
   end
 
   # Blob Methods
@@ -207,10 +281,10 @@ class GoatService
     url = "#{migration.old_pds_host}/xrpc/com.atproto.sync.listBlobs?did=#{migration.did}"
     url += "&cursor=#{cursor}" if cursor
 
+    # com.atproto.sync.listBlobs is a public endpoint - no authentication required
     response = HTTParty.get(
       url,
       headers: {
-        'Authorization' => "Bearer #{get_access_token_from_session}",
         'Accept' => 'application/json'
       },
       timeout: 30
@@ -246,11 +320,9 @@ class GoatService
 
     url = "#{migration.old_pds_host}/xrpc/com.atproto.sync.getBlob?did=#{migration.did}&cid=#{cid}"
 
+    # com.atproto.sync.getBlob is a public endpoint - no authentication required
     response = HTTParty.get(
       url,
-      headers: {
-        'Authorization' => "Bearer #{get_access_token_from_session}"
-      },
       timeout: 300,
       stream_body: true
     )
@@ -289,10 +361,16 @@ class GoatService
 
     url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob"
 
+    # Get access token for NEW PDS using DID
+    access_token = get_access_token_from_session(
+      pds_host: migration.new_pds_host,
+      identifier: migration.did
+    )
+
     response = HTTParty.post(
       url,
       headers: {
-        'Authorization' => "Bearer #{get_access_token_from_session}",
+        'Authorization' => "Bearer #{access_token}",
         'Content-Type' => 'application/octet-stream'
       },
       body: File.binread(blob_path),
@@ -300,6 +378,13 @@ class GoatService
     )
 
     unless response.success?
+      # Check for expired token
+      if response.code == 401
+        logger.info("Token expired, refreshing session and retrying")
+        refresh_access_token(pds_host: migration.new_pds_host, identifier: migration.did)
+        return upload_blob(blob_path)  # Retry with new token
+      end
+
       # Check for rate-limiting
       if response.code == 429
         logger.warn("Rate limit hit while uploading blob: #{response.code} #{response.message}")
@@ -466,9 +551,9 @@ class GoatService
     logger.info("Deactivating account on old PDS")
 
     # Must be logged in to old PDS
-    login_old_pds
+    # login_old_pds
 
-    execute_goat('account', 'deactivate')
+    # execute_goat('account', 'deactivate')
 
     logger.info("Account deactivated on old PDS")
   rescue StandardError => e
@@ -516,14 +601,35 @@ class GoatService
   def execute_goat(*args, timeout: DEFAULT_TIMEOUT)
     # Set environment variables for goat
     env = {
-      'ATP_PLC_HOST' => migration.plc_host || ENV['ATP_PLC_HOST'] || 'https://plc.directory',
+      'ATP_PLC_HOST' => ENV['ATP_PLC_HOST'] || 'https://plc.directory',
       'ATP_PDS_HOST' => migration.new_pds_host # Default PDS for goat
     }
 
     # Build full command
     cmd = ['goat'] + args
 
-    logger.debug("Executing goat command: #{cmd.join(' ')}")
+    # Log command with password masking (unless DEBUG_PASSWORDS is set)
+    debug_cmd = if ENV['DEBUG_PASSWORDS'] == 'true'
+      cmd.join(' ')
+    else
+      # Mask the value after -p flag
+      masked = []
+      mask_next = false
+      cmd.each do |arg|
+        if mask_next
+          masked << '[REDACTED]'
+          mask_next = false
+        elsif arg == '-p' || arg == '--password'
+          masked << arg
+          mask_next = true
+        else
+          masked << arg
+        end
+      end
+      masked.join(' ')
+    end
+    logger.info("Executing goat: #{debug_cmd}")
+    logger.info("  ENV: ATP_PLC_HOST=#{env['ATP_PLC_HOST']}, ATP_PDS_HOST=#{env['ATP_PDS_HOST']}")
 
     stdout, stderr, status = execute_command(*cmd, env: env, timeout: timeout)
 
@@ -578,43 +684,108 @@ class GoatService
   # Get access token from goat session
   # Note: This is a simplified version. In reality, we'd need to parse
   # goat's session storage or maintain our own session state
-  def get_access_token_from_session
-    # goat stores session in ~/.config/goat/session.json
-    # For now, we'll use a direct API call approach
-    # This is a placeholder - in production, you'd need proper session management
+  #
+  # @param pds_host [String] The PDS host to get a token for (old or new PDS)
+  # @param identifier [String] The identifier to use for login (handle or DID)
+  # Get access token via direct API call (bypasses goat)
+  def get_access_token_via_api(pds_host:, identifier:, password:)
+    logger.info("Getting access token via direct API call to #{pds_host}")
 
-    # Alternative: Make a direct com.atproto.server.createSession call
+    url = "#{pds_host}/xrpc/com.atproto.server.createSession"
+
+    response = `curl -s -X POST "#{url}" \
+      -H "Content-Type: application/json" \
+      -d '{"identifier":"#{identifier}","password":"#{password}"}'`
+
+    parsed = JSON.parse(response)
+
+    if parsed['accessJwt']
+      logger.info("Access token obtained via API")
+      return parsed['accessJwt']
+    else
+      error_msg = parsed['message'] || parsed['error'] || 'Unknown error'
+      raise AuthenticationError, "Failed to get access token: #{error_msg}"
+    end
+  rescue JSON::ParserError => e
+    raise AuthenticationError, "Invalid response from createSession: #{response}"
+  rescue StandardError => e
+    raise AuthenticationError, "Failed to call createSession API: #{e.message}"
+  end
+
+  def get_access_token_from_session(pds_host:, identifier:)
+    # Use cache key based on PDS host to support both old and new PDS
+    cache_key = "#{pds_host}:#{identifier}"
+
+    # Return cached token if available
+    return @access_tokens[cache_key] if @access_tokens[cache_key]
+
+    # Try to read from goat session file
     session_path = File.expand_path('~/.config/goat/session.json')
 
     if File.exist?(session_path)
-      session_data = JSON.parse(File.read(session_path))
-      return session_data['accessJwt'] if session_data['accessJwt']
+      begin
+        session_data = JSON.parse(File.read(session_path))
+        if session_data['accessJwt']
+          @access_tokens[cache_key] = session_data['accessJwt']
+          logger.info("Using cached session token from goat session file")
+          return session_data['accessJwt']
+        end
+      rescue JSON::ParserError => e
+        logger.warn("Failed to parse goat session file: #{e.message}")
+      end
     end
 
-    # Fallback: create new session
-    create_direct_session
+    # Create new session and cache the token
+    logger.info("Creating new session for #{pds_host} (#{identifier})")
+    token = create_direct_session(pds_host: pds_host, identifier: identifier)
+    @access_tokens[cache_key] = token
+    token
+  end
+
+  # Refresh access token by clearing cache and creating new session
+  def refresh_access_token(pds_host:, identifier:)
+    cache_key = "#{pds_host}:#{identifier}"
+
+    # Clear cached token
+    @access_tokens.delete(cache_key)
+
+    # Create new session
+    logger.info("Refreshing access token for #{pds_host} (#{identifier})")
+    token = create_direct_session(pds_host: pds_host, identifier: identifier)
+    @access_tokens[cache_key] = token
+    token
   end
 
   # Create session directly via API when goat session is unavailable
-  def create_direct_session
-    url = "#{migration.new_pds_host}/xrpc/com.atproto.server.createSession"
+  #
+  # @param pds_host [String] The PDS host to authenticate against
+  # @param identifier [String] The identifier to use for login (handle or DID)
+  def create_direct_session(pds_host:, identifier:)
+    url = "#{pds_host}/xrpc/com.atproto.server.createSession"
 
     response = HTTParty.post(
       url,
       headers: { 'Content-Type' => 'application/json' },
       body: {
-        identifier: migration.did,
-        password: migration.encrypted_password
+        identifier: identifier,
+        password: migration.password
       }.to_json,
       timeout: 30
     )
 
     unless response.success?
+      # Check for rate limiting
+      if response.code == 429
+        logger.warn("Rate limit hit during session creation: #{response.code} #{response.message}")
+        raise RateLimitError, "Failed to create session: #{response.code} #{response.message}"
+      end
       raise AuthenticationError, "Failed to create session: #{response.code} #{response.message}"
     end
 
     parsed = JSON.parse(response.body)
     parsed['accessJwt']
+  rescue RateLimitError
+    raise  # Re-raise rate limit errors
   rescue StandardError => e
     raise AuthenticationError, "Failed to create direct session: #{e.message}"
   end

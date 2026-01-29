@@ -165,6 +165,22 @@
         </div>
       </div>
 
+      <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #fef3c7; border-color: #f59e0b;">
+          <div class="metric-label" style="color: #92400e;">🔄 Converting Legacy Blob Format</div>
+          <p style="font-size: 14px; color: #92400e; margin-top: 8px;">
+            Pre-2023 blob references are being converted to current format. This may take a few minutes...
+          </p>
+        </div>
+      <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #d1fae5; border-color: #10b981;">
+          <div class="metric-label" style="color: #065f46;">✅ Legacy Blobs Converted</div>
+          <p style="font-size: 14px; color: #065f46; margin-top: 8px;">
+            Legacy blob format has been successfully converted to current format.
+          </p>
+        </div>
+      <% end %>
+
       <% if @migration.pending_blobs? %>
         <div class="metrics-grid">
           <% if @migration.progress_data['blobs'].present? %>

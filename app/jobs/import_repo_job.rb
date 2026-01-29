@@ -55,6 +55,31 @@ class ImportRepoJob < ApplicationJob
     migration.progress_data['repo_exported_at'] = Time.current.iso8601
     migration.save!
 
+    # Step 1.5: Convert legacy blobs if enabled (CONVERT_LEGACY_BLOBS=true)
+    if ENV.fetch('CONVERT_LEGACY_BLOBS', 'false').to_s.downcase == 'true'
+      Rails.logger.info("[ImportRepoJob] Legacy blob conversion enabled - scanning CAR file")
+      migration.progress_data['legacy_blob_conversion_started_at'] = Time.current.iso8601
+      migration.save!
+
+      converted_car_path = goat.convert_legacy_blobs_if_needed(car_path)
+
+      if converted_car_path != car_path
+        Rails.logger.info("[ImportRepoJob] Legacy blobs converted: #{converted_car_path}")
+        migration.progress_data['legacy_blob_conversion_completed_at'] = Time.current.iso8601
+        migration.progress_data['legacy_blobs_converted'] = true
+        migration.progress_data['converted_car_path'] = converted_car_path
+        migration.save!
+
+        # Use the converted CAR file for import
+        car_path = converted_car_path
+      else
+        Rails.logger.info("[ImportRepoJob] No legacy blobs found - using original CAR file")
+        migration.progress_data['legacy_blob_conversion_completed_at'] = Time.current.iso8601
+        migration.progress_data['legacy_blobs_converted'] = false
+        migration.save!
+      end
+    end
+
     # Step 2: Import repository to new PDS
     Rails.logger.info("[ImportRepoJob] Importing repository to new PDS: #{migration.new_pds_host}")
     goat.import_repo(car_path)

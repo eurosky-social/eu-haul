@@ -39,7 +39,8 @@ class UpdatePlcJob < ApplicationJob
   # Special handling for rate-limiting errors - retry more times for this critical job
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 3
 
-  def perform(migration)
+  def perform(migration_id)
+    migration = Migration.find(migration_id)
     Rails.logger.info("CRITICAL: Starting PLC update for migration #{migration.token} (#{migration.did})")
     Rails.logger.info("This is the point of no return - the DID will be pointed to the new PDS")
 

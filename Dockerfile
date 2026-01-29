@@ -52,10 +52,14 @@ RUN apk add --no-cache \
     wget \
     bash
 
-# Download and install goat CLI
-# Note: Using curl with -L to follow redirects, -f to fail on errors
-RUN curl -fsSL https://github.com/bluesky-social/goat/releases/latest/download/goat-linux-amd64 -o /usr/local/bin/goat && \
+# Install goat CLI
+# Using specific older version that works with deactivated accounts
+# Version v0.2.1 has a bug where it can't login to deactivated accounts
+RUN curl -fsSL https://github.com/bluesky-social/goat/releases/download/v0.1.0/goat_Linux_x86_64.tar.gz -o /tmp/goat.tar.gz && \
+    tar -xzf /tmp/goat.tar.gz -C /tmp && \
+    mv /tmp/goat /usr/local/bin/goat && \
     chmod +x /usr/local/bin/goat && \
+    rm /tmp/goat.tar.gz && \
     /usr/local/bin/goat --version || echo "goat installed successfully"
 
 # Copy built artifacts: gems, application

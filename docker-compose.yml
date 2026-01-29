@@ -1,28 +1,32 @@
 version: '3.9'
 
 services:
-  postgres:
+  eurosky-postgres:
     image: postgres:15-alpine
+    container_name: eurosky-postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - eurosky-postgres-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: eurosky_migration_production
+      POSTGRES_DB: eurosky_migration_${RAILS_ENV:-development}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Changed from 5432 to avoid conflict with u-at-proto
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - internal
+      - eurosky-internal
 
-  redis:
+  eurosky-redis:
     image: redis:7-bookworm
+    container_name: eurosky-redis
+    ports:
+      - "6380:6379"  # Already different from default 6379
     volumes:
-      - redis-data:/data
+      - eurosky-redis-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -34,51 +38,56 @@ services:
       --requirepass ${REDIS_PASSWORD}
       --bind 0.0.0.0"
     networks:
-      - internal
+      - eurosky-internal
 
-  migrate:
+  eurosky-migrate:
     build: .
+    container_name: eurosky-migrate
     command: bundle exec rails db:migrate
     volumes:
       - .:/rails
     environment:
       RAILS_ENV: ${RAILS_ENV:-development}
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/eurosky_migration_${RAILS_ENV:-development}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
     depends_on:
-      postgres:
+      eurosky-postgres:
         condition: service_healthy
-      redis:
+      eurosky-redis:
         condition: service_healthy
     env_file:
       - .env
     networks:
-      - internal
+      - eurosky-internal
+      - u-at-proto_default
 
-  web:
+  eurosky-web:
     build: .
+    container_name: eurosky-web
     command: bundle exec rails server -b 0.0.0.0 -p 3000
     volumes:
       - .:/rails
       - /rails/tmp  # Don't mount tmp directory
     environment:
       RAILS_ENV: ${RAILS_ENV:-development}
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/eurosky_migration_${RAILS_ENV:-development}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      PORT: ${PORT:-3000}
+      PORT: 3000
       MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-5}
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"
+      ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
+      PDS_DISABLE_SSRF_PROTECTION: "true"
     ports:
-      - "${PORT:-3000}:3000"
+      - "3001:3000"  # Changed from 3000 to avoid conflict with u-at-proto
     depends_on:
-      postgres:
+      eurosky-postgres:
         condition: service_healthy
-      redis:
+      eurosky-redis:
         condition: service_healthy
-      migrate:
+      eurosky-migrate:
         condition: service_completed_successfully
     env_file:
       - .env
@@ -90,26 +99,31 @@ services:
       start_period: 40s
     restart: unless-stopped
     networks:
-      - internal
+      - eurosky-internal
+      - u-at-proto_default
 
-  sidekiq:
+  eurosky-sidekiq:
     build: .
+    container_name: eurosky-sidekiq
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/rails
       - /rails/tmp  # Don't mount tmp directory
     environment:
       RAILS_ENV: ${RAILS_ENV:-development}
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/eurosky_migration_${RAILS_ENV:-development}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DEBUG_PASSWORDS: 'true'
       MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-5}
+      ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
+      PDS_DISABLE_SSRF_PROTECTION: "true"
     depends_on:
-      postgres:
+      eurosky-postgres:
         condition: service_healthy
-      redis:
+      eurosky-redis:
         condition: service_healthy
-      migrate:
+      eurosky-migrate:
         condition: service_completed_successfully
     env_file:
       - .env
@@ -120,40 +134,22 @@ services:
       retries: 3
     restart: unless-stopped
     networks:
-      - internal
+      - eurosky-internal
+      - u-at-proto_default
 
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"  # HTTP/3 support
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-    environment:
-      DOMAIN: ${DOMAIN}
-      EMAIL: ${EMAIL}
-    depends_on:
-      web:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/up"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    restart: unless-stopped
-    networks:
-      - internal
+  # Caddy removed - conflicts with Traefik on ports 80/443
+  # Access the app directly at http://localhost:3001 instead
 
 volumes:
-  postgres-data:
-  redis-data:
-  caddy-data:
-  caddy-config:
+  eurosky-postgres-data:
+    name: eurosky-postgres-data
+  eurosky-redis-data:
+    name: eurosky-redis-data
 
 networks:
-  internal:
+  eurosky-internal:
+    name: eurosky-internal
     driver: bridge
+  u-at-proto_default:
+    # Connect to u-at-proto network to access PDS instances
+    external: true

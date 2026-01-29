@@ -16,7 +16,7 @@
 # 1. Check concurrency limit (max 15 pending_blobs migrations)
 # 2. If at capacity, re-enqueue with 30s delay and return
 # 3. Mark blobs_started_at timestamp
-# 4. List all blobs with pagination (cursor-based)
+# 4. List all blobs with pagination (cursor-based, no auth required)
 # 5. Estimate memory usage via MemoryEstimatorService
 # 6. Update migration with blob_count and estimated_memory_mb
 # 7. Process blobs SEQUENTIALLY:
@@ -44,7 +44,7 @@
 # - Log warnings for individual blob failures, don't fail entire job
 #
 # Usage:
-#   ImportBlobsJob.perform_later(migration)
+#   ImportBlobsJob.perform_later(migration.id)
 #
 # ActiveJob/Sidekiq Configuration:
 #   queue: :migrations
@@ -66,7 +66,8 @@ class ImportBlobsJob < ApplicationJob
   # Special handling for rate-limiting errors with longer backoff
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
 
-  def perform(migration)
+  def perform(migration_id)
+    migration = Migration.find(migration_id)
     logger.info("Starting blob import for migration #{migration.token} (DID: #{migration.did})")
 
     # Step 1: Check concurrency limit
@@ -82,10 +83,7 @@ class ImportBlobsJob < ApplicationJob
     # Step 3: Initialize GoatService
     goat = GoatService.new(migration)
 
-    # Step 4: Login to old PDS
-    goat.login_old_pds
-
-    # Step 5: List all blobs with pagination
+    # Step 4: List all blobs with pagination (no authentication required for public sync endpoints)
     all_blobs = collect_all_blobs(goat)
 
     logger.info("Found #{all_blobs.length} total blobs to transfer")

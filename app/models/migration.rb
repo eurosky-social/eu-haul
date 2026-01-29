@@ -45,27 +45,27 @@ class Migration < ApplicationRecord
   # State machine transitions
   def advance_to_pending_repo!
     update!(status: :pending_repo)
-    ImportRepoJob.perform_later(self)
+    ImportRepoJob.perform_later(id)
   end
 
   def advance_to_pending_blobs!
     update!(status: :pending_blobs)
-    ImportBlobsJob.perform_later(self)
+    ImportBlobsJob.perform_later(id)
   end
 
   def advance_to_pending_prefs!
     update!(status: :pending_prefs)
-    ImportPrefsJob.perform_later(self)
+    ImportPrefsJob.perform_later(id)
   end
 
   def advance_to_pending_plc!
     update!(status: :pending_plc)
-    WaitForPlcTokenJob.perform_later(self)
+    WaitForPlcTokenJob.perform_later(id)
   end
 
   def advance_to_pending_activation!
     update!(status: :pending_activation)
-    ActivateAccountJob.perform_later(self)
+    ActivateAccountJob.perform_later(id)
   end
 
   def mark_complete!
@@ -209,7 +209,7 @@ class Migration < ApplicationRecord
   end
 
   def schedule_first_job
-    CreateAccountJob.perform_later(self)
+    CreateAccountJob.perform_later(id)
   end
 
   # Helper for blob upload percentage calculation

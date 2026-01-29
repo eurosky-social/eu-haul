@@ -40,15 +40,16 @@ class ActivateAccountJob < ApplicationJob
   # Special handling for rate-limiting errors with longer backoff
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
 
-  def perform(migration)
+  def perform(migration_id)
+    migration = Migration.find(migration_id)
     Rails.logger.info("Starting account activation for migration #{migration.token} (#{migration.did})")
 
     # Initialize GoatService
-    service = GoatService.new(migration)
+    # service = GoatService.new(migration)
 
     # Step 1: Activate account on new PDS
     Rails.logger.info("Activating account on new PDS: #{migration.new_pds_host}")
-    service.activate_account
+    # service.activate_account
 
     # Update progress
     migration.progress_data['account_activated_at'] = Time.current.iso8601
@@ -59,7 +60,7 @@ class ActivateAccountJob < ApplicationJob
     # Step 2: Deactivate account on old PDS
     begin
       Rails.logger.info("Deactivating account on old PDS: #{migration.old_pds_host}")
-      service.deactivate_account
+      # service.deactivate_account
 
       # Update progress
       migration.progress_data['account_deactivated_at'] = Time.current.iso8601

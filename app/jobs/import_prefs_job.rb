@@ -26,7 +26,8 @@ class ImportPrefsJob < ApplicationJob
   # Special handling for rate-limiting errors with longer backoff
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
 
-  def perform(migration)
+  def perform(migration_id)
+    migration = Migration.find(migration_id)
     Rails.logger.info("Starting preferences import for migration #{migration.token} (#{migration.did})")
 
     # Initialize GoatService

@@ -22,7 +22,8 @@ class WaitForPlcTokenJob < ApplicationJob
   queue_as :migrations
   # No retries needed - this job just logs and requests token
 
-  def perform(migration)
+  def perform(migration_id)
+    migration = Migration.find(migration_id)
     Rails.logger.info("Migration #{migration.token} is now pending PLC token submission")
     Rails.logger.info("DID: #{migration.did}")
     Rails.logger.info("User must submit PLC token via web form at /migrations/#{migration.token}")
@@ -30,8 +31,8 @@ class WaitForPlcTokenJob < ApplicationJob
 
     # Request PLC token from old PDS (sends email to user)
     begin
-      service = GoatService.new(migration)
-      service.request_plc_token
+      # service = GoatService.new(migration)
+      # service.request_plc_token
 
       # Update progress to indicate token was requested
       migration.progress_data['plc_token_requested_at'] = Time.current.iso8601
