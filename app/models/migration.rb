@@ -201,6 +201,16 @@ class Migration < ApplicationRecord
     credentials_expires_at.nil? || credentials_expires_at < Time.current
   end
 
+  # Clear all encrypted credentials (for security after migration completes)
+  def clear_credentials!
+    update!(
+      encrypted_password: nil,
+      encrypted_plc_token: nil,
+      credentials_expires_at: nil
+    )
+    Rails.logger.info("Cleared encrypted credentials for migration #{token}")
+  end
+
   # Invite code management
   def set_invite_code(code)
     self.encrypted_invite_code = code

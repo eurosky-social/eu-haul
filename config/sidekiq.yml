@@ -14,3 +14,9 @@
       class: CleanupBackupBundleJob
       queue: low
       description: "Clean up expired backup bundles (24h TTL)"
+
+    cleanup_expired_credentials:
+      cron: '0 */6 * * *'  # Every 6 hours
+      class: CleanupExpiredCredentialsJob
+      queue: low
+      description: "Purge expired credentials from database (security)"

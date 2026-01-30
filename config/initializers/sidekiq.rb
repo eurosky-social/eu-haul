@@ -6,6 +6,7 @@
 
 require 'sidekiq'
 require 'sidekiq/api'
+require 'sidekiq-scheduler'
 
 # Determine Redis URL
 redis_url = ENV['REDIS_URL'] || begin

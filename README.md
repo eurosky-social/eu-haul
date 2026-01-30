@@ -243,6 +243,24 @@ The application processes blobs sequentially to avoid memory exhaustion. Adjust 
 - **Application logs**: `docker compose logs -f web`
 - **Rails console**: `docker compose exec web rails console`
 
+### Scheduled Jobs (Security)
+
+The application automatically runs scheduled cleanup jobs via Sidekiq:
+
+- **Credential Cleanup**: Every 6 hours - purges expired passwords and PLC tokens
+- **Backup Cleanup**: Every hour - removes expired backup bundles to free disk space
+
+These jobs run automatically when Sidekiq starts. No external cron configuration is needed. You can view the schedule in [config/sidekiq.yml](config/sidekiq.yml).
+
+To manually trigger cleanup:
+```bash
+# Cleanup expired credentials
+docker compose exec web rails runner "CleanupExpiredCredentialsJob.perform_now"
+
+# Cleanup expired backups
+docker compose exec web rails runner "CleanupBackupBundleJob.perform_now"
+```
+
 ## Architecture
 
 ### Tech Stack
@@ -272,11 +290,13 @@ User Form → CreateAccountJob → ImportRepoJob → ImportBlobsJob → ImportPr
 
 ### Security
 
-- **Credential Encryption**: Passwords and tokens encrypted with Lockbox
+- **Credential Encryption**: Passwords and tokens encrypted with Lockbox (AES-256-GCM)
 - **Auto-Expiration**: Passwords expire after 48h, PLC tokens after 1h
+- **Automatic Cleanup**: Credentials are cleared immediately after successful migration
+- **Background Purging**: Expired credentials are automatically purged every 6 hours
 - **Token-Based Access**: Unguessable tokens (62^12 possibilities)
 - **No Plain-Text Storage**: All sensitive data encrypted at rest
-- **Session Management**: Credentials cleared after use
+- **Data Minimization**: Credentials are deleted as soon as they're no longer needed (GDPR compliant)
 
 ### File Structure
 

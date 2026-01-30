@@ -85,6 +85,12 @@ class ActivateAccountJob < ApplicationJob
 
     migration.mark_complete!
 
+    # Step 4: SECURITY - Clear encrypted credentials after successful migration
+    # Passwords and tokens are no longer needed after migration completes
+    Rails.logger.info("Clearing encrypted credentials for security")
+    migration.clear_credentials!
+    Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
+
     Rails.logger.info("=" * 80)
     Rails.logger.info("MIGRATION COMPLETE")
     Rails.logger.info("Token: #{migration.token}")
@@ -92,6 +98,7 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Old Handle: #{migration.old_handle} @ #{migration.old_pds_host}")
     Rails.logger.info("New Handle: #{migration.new_handle} @ #{migration.new_pds_host}")
     Rails.logger.info("Account is now live on new PDS")
+    Rails.logger.info("Credentials cleared for security")
     Rails.logger.info("=" * 80)
 
   rescue GoatService::RateLimitError => e
