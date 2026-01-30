@@ -27,7 +27,7 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
-  before_action :set_migration, only: [:show, :submit_plc_token, :status]
+  before_action :set_migration, only: [:show, :submit_plc_token, :status, :download_backup]
 
   # GET /migrations/new
   # Display the migration form where users enter their account details
@@ -177,6 +177,38 @@ class MigrationsController < ApplicationController
     render json: migration_status_json
   end
 
+  # GET /migrations/:id/download_backup
+  # GET /migrate/:token/download
+  # Download the backup bundle for this migration
+  #
+  # Security:
+  #   - Token-based access only (no authentication required)
+  #   - Backup must exist and not be expired
+  #   - File is served with appropriate headers for download
+  #
+  # Response:
+  #   - Success: Sends ZIP file with appropriate headers
+  #   - Not Found: Returns 404 if backup doesn't exist or is expired
+  def download_backup
+    unless @migration.backup_available?
+      render plain: "Backup not found or has expired", status: :not_found
+      return
+    end
+
+    # Send the file with appropriate headers
+    send_file(
+      @migration.backup_bundle_path,
+      filename: "eurosky-backup-#{@migration.token}.zip",
+      type: 'application/zip',
+      disposition: 'attachment'
+    )
+
+    Rails.logger.info("Backup downloaded for migration #{@migration.token}")
+  rescue StandardError => e
+    Rails.logger.error("Failed to download backup for migration #{@migration.token}: #{e.message}")
+    render plain: "Failed to download backup: #{e.message}", status: :internal_server_error
+  end
+
   private
 
   # Find migration by token (from URL parameter)
@@ -203,7 +235,7 @@ class MigrationsController < ApplicationController
   # The password, invite_code, old_pds_host, and did are handled separately and not mass-assigned
   # old_pds_host and did are automatically resolved from the old_handle
   def migration_params
-    allowed = [:email, :old_handle, :new_handle]
+    allowed = [:email, :old_handle, :new_handle, :create_backup_bundle]
 
     # Add new_pds_host only in standalone mode
     allowed << :new_pds_host if EuroskyConfig.standalone_mode?

@@ -6,9 +6,9 @@
 #
 # Critical Features:
 # - Concurrency limiting (max 15 migrations in pending_blobs simultaneously)
-# - Sequential blob processing (never parallel) for memory control
-# - Aggressive memory cleanup (GC.start every 50 blobs)
-# - Batched progress updates (every 10th blob to reduce DB writes)
+# - Parallel blob processing (10 blobs at a time) for performance
+# - Batch-based processing with aggressive memory cleanup (GC.start after each batch)
+# - Batched progress updates (after each parallel batch to reduce DB writes)
 # - Individual blob retry with exponential backoff
 # - Detailed progress tracking and memory estimation
 #
@@ -19,22 +19,23 @@
 # 4. List all blobs with pagination (cursor-based, no auth required)
 # 5. Estimate memory usage via MemoryEstimatorService
 # 6. Update migration with blob_count and estimated_memory_mb
-# 7. Process blobs SEQUENTIALLY:
-#    - Download blob to tmp/goat/{did}/blobs/{cid}
-#    - Upload to new PDS
-#    - Update progress every 10th blob
-#    - Delete local blob file immediately
+# 7. Process blobs IN PARALLEL BATCHES (10 blobs per batch):
+#    - Download 10 blobs concurrently from old PDS
+#    - Upload 10 blobs concurrently to new PDS
+#    - Delete local blob files immediately after upload
+#    - Update progress after each batch
 #    - Log each transfer (CID + size)
-#    - Call GC.start after every 50 blobs
+#    - Call GC.start after each batch
 # 8. Mark blobs_completed_at timestamp
 # 9. Advance to pending_prefs status
 #
 # Memory Optimization:
-# - Sequential processing only (no parallel downloads/uploads)
+# - Parallel batches of 10 blobs (configurable via PARALLEL_BLOB_TRANSFERS)
 # - Immediate cleanup after each upload
-# - Progress updates batched (every 10 blobs)
-# - Explicit GC every 50 blobs
+# - Progress updates after each batch
+# - Explicit GC after each batch (every 10 blobs)
 # - Track total bytes transferred
+# - Thread-safe counters with Mutex
 #
 # Error Handling:
 # - Rate-limit errors: longer exponential backoff (8s, 16s, 32s), max 3 attempts per blob
@@ -59,6 +60,7 @@ class ImportBlobsJob < ApplicationJob
   MAX_BLOB_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10 # Update progress every N blobs
   GC_INTERVAL = 50 # Run garbage collection every N blobs
+  PARALLEL_BLOB_TRANSFERS = 10 # Number of blobs to transfer in parallel
 
   # Retry configuration (3 attempts with exponential backoff)
   retry_on StandardError, wait: :exponentially_longer, attempts: 3
@@ -175,7 +177,7 @@ class ImportBlobsJob < ApplicationJob
     logger.info("Estimated memory: #{estimated_mb} MB for #{blobs.length} blobs")
   end
 
-  # Process all blobs sequentially with memory optimization
+  # Process all blobs in parallel batches with memory optimization
   def process_blobs_sequentially(migration, goat, blobs)
     # Login to new PDS for uploads
     goat.login_new_pds
@@ -184,45 +186,55 @@ class ImportBlobsJob < ApplicationJob
     successful_count = 0
     failed_cids = []
 
-    blobs.each_with_index do |cid, index|
-      begin
-        # Download blob from old PDS
-        blob_path = download_blob_with_retry(goat, cid)
+    # Thread-safe counters
+    mutex = Mutex.new
 
-        # Get file size for tracking
-        blob_size = File.size(blob_path)
+    # Process blobs in batches for parallel transfer
+    blobs.each_slice(PARALLEL_BLOB_TRANSFERS).with_index do |batch, batch_index|
+      threads = batch.map.with_index do |cid, batch_offset|
+        Thread.new do
+          begin
+            index = batch_index * PARALLEL_BLOB_TRANSFERS + batch_offset
 
-        # Upload blob to new PDS
-        upload_blob_with_retry(goat, blob_path)
+            # Download blob from old PDS
+            blob_path = download_blob_with_retry(goat, cid)
 
-        # Update metrics
-        total_bytes_transferred += blob_size
-        successful_count += 1
+            # Get file size for tracking
+            blob_size = File.size(blob_path)
 
-        # Log transfer
-        logger.info("Transferred blob #{index + 1}/#{blobs.length}: #{cid} (#{format_bytes(blob_size)})")
+            # Upload blob to new PDS
+            upload_blob_with_retry(goat, blob_path)
 
-        # Delete local file immediately
-        FileUtils.rm_f(blob_path)
+            # Update metrics (thread-safe)
+            mutex.synchronize do
+              total_bytes_transferred += blob_size
+              successful_count += 1
+            end
 
-        # Update progress every PROGRESS_UPDATE_INTERVAL blobs
-        if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
-          update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
+            # Log transfer
+            logger.info("Transferred blob #{index + 1}/#{blobs.length}: #{cid} (#{format_bytes(blob_size)})")
+
+            # Delete local file immediately
+            FileUtils.rm_f(blob_path)
+
+          rescue StandardError => e
+            logger.error("Failed to transfer blob #{cid}: #{e.message}")
+            mutex.synchronize do
+              failed_cids << cid
+            end
+          end
         end
-
-        # Run garbage collection every GC_INTERVAL blobs
-        if (index + 1) % GC_INTERVAL == 0
-          logger.debug("Running garbage collection after #{index + 1} blobs")
-          GC.start
-        end
-
-      rescue StandardError => e
-        logger.error("Failed to transfer blob #{cid}: #{e.message}")
-        failed_cids << cid
-
-        # Continue with next blob - don't fail entire job for individual blob
-        next
       end
+
+      # Wait for all threads in this batch to complete
+      threads.each(&:join)
+
+      # Update progress after each batch
+      update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
+
+      # Run garbage collection after each batch
+      logger.debug("Running garbage collection after batch #{batch_index + 1}")
+      GC.start
     end
 
     # Final progress update

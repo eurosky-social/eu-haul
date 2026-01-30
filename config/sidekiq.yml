@@ -5,3 +5,12 @@
   - [critical, 3]
   - [migrations, 2]
   - [default, 1]
+  - [low, 1]
+
+:scheduler:
+  :schedule:
+    cleanup_expired_backups:
+      cron: '0 * * * *'  # Every hour at minute 0
+      class: CleanupBackupBundleJob
+      queue: low
+      description: "Clean up expired backup bundles (24h TTL)"

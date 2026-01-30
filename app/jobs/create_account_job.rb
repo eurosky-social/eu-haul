@@ -54,9 +54,21 @@ class CreateAccountJob < ApplicationJob
     Rails.logger.info("[CreateAccountJob] Creating deactivated account on new PDS: #{migration.new_pds_host}")
     goat.create_account_on_new_pds(service_auth_token)
 
+    # Step 3.5: Generate and store rotation key for account recovery
+    Rails.logger.info("[CreateAccountJob] Generating rotation key for account recovery")
+    rotation_key = goat.generate_rotation_key
+    migration.set_rotation_key(rotation_key[:private_key])
+    Rails.logger.info("[CreateAccountJob] Rotation key generated and stored (public key: #{rotation_key[:public_key]})")
+
+    # Step 3.6: Add rotation key to new PDS account (highest priority)
+    Rails.logger.info("[CreateAccountJob] Adding rotation key to new PDS account")
+    goat.add_rotation_key_to_pds(rotation_key[:public_key])
+    Rails.logger.info("[CreateAccountJob] Rotation key added to PDS")
+
     # Step 4: Update progress data
     migration.progress_data['account_created_at'] = Time.current.iso8601
     migration.progress_data['new_pds_did'] = new_pds_did
+    migration.progress_data['rotation_key_public'] = rotation_key[:public_key]
     migration.save!
 
     # Step 5: Advance to next stage

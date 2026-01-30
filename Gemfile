@@ -13,9 +13,13 @@ gem "puma", "~> 6.4"
 
 # Background jobs
 gem "sidekiq", "~> 7.2"
+gem "sidekiq-scheduler", "~> 5.0"
 
 # Redis for caching and Sidekiq
 gem "redis", "~> 5.0"
+
+# ZIP file creation for backups
+gem "rubyzip", "~> 2.3"
 
 # HTTP client
 gem "httparty", "~> 0.21"

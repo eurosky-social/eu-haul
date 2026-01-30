@@ -201,6 +201,64 @@ class GoatService
     raise GoatError, "Failed to create account on new PDS: #{error_message}"
   end
 
+  # Rotation Key Methods
+
+  def generate_rotation_key
+    logger.info("Generating rotation key for account recovery")
+
+    # Use goat to generate a P-256 rotation key
+    stdout, stderr, status = execute_goat('key', 'generate', '--type', 'P-256')
+
+    # Parse output to extract keys
+    # Expected format:
+    # Private Key (Multibase): z...
+    # Public Key (DID Key Syntax): did:key:z...
+    private_key = nil
+    public_key = nil
+
+    stdout.each_line do |line|
+      if line.include?("Private Key") && line.include?("Multibase")
+        # Extract private key
+        private_key = line.split(":").last.strip
+      elsif line.include?("Public Key") && line.include?("DID Key")
+        # Extract public key
+        public_key = line.split("Syntax):").last.strip
+      end
+    end
+
+    unless private_key && public_key
+      raise GoatError, "Failed to parse rotation key from goat output: #{stdout}"
+    end
+
+    logger.info("Rotation key generated successfully")
+
+    {
+      private_key: private_key,
+      public_key: public_key
+    }
+  rescue StandardError => e
+    raise GoatError, "Failed to generate rotation key: #{e.message}"
+  end
+
+  def add_rotation_key_to_pds(public_key)
+    logger.info("Adding rotation key to PDS account (highest priority)")
+
+    # Add rotation key to account via PDS
+    # Using --first flag to add it at highest priority
+    execute_goat(
+      'account', 'plc', 'add-rotation-key',
+      '--pds-host', migration.new_pds_host,
+      '--handle', migration.new_handle,
+      '--password', migration.password,
+      public_key,
+      '--first'
+    )
+
+    logger.info("Rotation key added to PDS account")
+  rescue StandardError => e
+    raise GoatError, "Failed to add rotation key to PDS: #{e.message}"
+  end
+
   # Repository Export/Import Methods
 
   def export_repo
@@ -356,12 +414,9 @@ class GoatService
       raise GoatError, "Blob file not found: #{blob_path}"
     end
 
-    # Must be logged in to new PDS
-    login_new_pds
-
     url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob"
 
-    # Get access token for NEW PDS using DID
+    # Get access token for NEW PDS using DID (uses cached token from login_new_pds)
     access_token = get_access_token_from_session(
       pds_host: migration.new_pds_host,
       identifier: migration.did

@@ -217,6 +217,90 @@
         </div>
       <% end %>
 
+      <%# Backup Download Section %>
+      <% if @migration.pending_download? || @migration.pending_backup? %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #dbeafe; border-color: #3b82f6;">
+          <div class="metric-label" style="color: #1e40af;">
+            <%= @migration.pending_download? ? '📥 Downloading Account Data' : '📦 Creating Backup Bundle' %>
+          </div>
+          <p style="font-size: 14px; color: #1e40af; margin-top: 8px;">
+            <%= @migration.pending_download? ? 'Downloading your account data (repository + blobs) for backup and migration...' : 'Creating a downloadable backup bundle of your account data...' %>
+          </p>
+          <% if @migration.progress_data&.dig('download_progress') %>
+            <% progress = @migration.progress_data['download_progress'] %>
+            <p style="font-size: 14px; color: #1e40af; margin-top: 8px;">
+              Downloaded: <%= progress['downloaded'] %> / <%= progress['total'] %> blobs
+              <% if progress['bytes'] %>
+                (<%= number_to_human_size(progress['bytes']) %>)
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if @migration.backup_available? %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #d1fae5; border-color: #10b981;">
+          <div class="metric-label" style="color: #065f46;">✅ Backup Ready for Download</div>
+          <p style="font-size: 14px; color: #065f46; margin-top: 8px;">
+            Your account backup is ready! Download it now before it expires.
+          </p>
+          <div style="margin-top: 16px;">
+            <p style="font-size: 14px; color: #065f46; margin-bottom: 8px;">
+              <strong>Size:</strong> <%= number_to_human_size(@migration.backup_size) %><br>
+              <strong>Expires:</strong> <%= @migration.backup_expires_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
+            </p>
+            <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>"
+               class="submit-button"
+               style="display: inline-block; margin-top: 8px; text-decoration: none;">
+              ⬇️ Download Backup Bundle
+            </a>
+          </div>
+        </div>
+      <% elsif @migration.backup_bundle_path.present? && @migration.backup_expired? %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #fee2e2; border-color: #dc2626;">
+          <div class="metric-label" style="color: #991b1b;">⚠️ Backup Expired</div>
+          <p style="font-size: 14px; color: #991b1b; margin-top: 8px;">
+            Your backup bundle has expired and has been deleted from our servers.
+          </p>
+        </div>
+      <% end %>
+
+      <%# Rotation Key Section %>
+      <% if @migration.rotation_key.present? && !@migration.pending_download? && !@migration.pending_backup? %>
+        <div class="metric-card" style="margin-bottom: 24px; background: #fef3c7; border-color: #f59e0b;">
+          <div class="metric-label" style="color: #92400e;">🔑 Account Recovery Key</div>
+          <p style="font-size: 14px; color: #92400e; margin-top: 8px; margin-bottom: 12px;">
+            <strong>IMPORTANT:</strong> Save this rotation key in a secure location. It allows you to revert PLC changes or recover your account.
+          </p>
+          <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 12px; font-family: monospace; font-size: 12px; overflow-wrap: break-word; word-break: break-all;">
+            <%= @migration.rotation_key %>
+          </div>
+          <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy to Clipboard', 2000)"
+                  style="padding: 8px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
+            📋 Copy to Clipboard
+          </button>
+          <details style="margin-top: 16px;">
+            <summary style="cursor: pointer; color: #92400e; font-weight: 600; font-size: 14px;">
+              How to Use This Key to Revert Changes
+            </summary>
+            <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 6px; font-size: 13px; color: #1f2937;">
+              <p style="margin-bottom: 8px;">If you need to revert the PLC directory changes, you can use this rotation key:</p>
+              <ol style="padding-left: 20px; margin: 8px 0;">
+                <li style="margin-bottom: 6px;">Install the <code>goat</code> CLI tool</li>
+                <li style="margin-bottom: 6px;">Get your PLC history: <code>goat plc history &lt;your-did&gt;</code></li>
+                <li style="margin-bottom: 6px;">Identify the desired historical state (CID)</li>
+                <li style="margin-bottom: 6px;">Create reversion operation: <code>goat plc update --prev &lt;cid&gt;</code></li>
+                <li style="margin-bottom: 6px;">Sign with your rotation key: <code>goat plc sign</code></li>
+                <li>Submit the signed operation: <code>goat plc submit --did &lt;your-did&gt;</code></li>
+              </ol>
+              <p style="margin-top: 8px; color: #dc2626;">
+                <strong>Note:</strong> This is an advanced operation. Only use this if you understand the PLC directory system.
+              </p>
+            </div>
+          </details>
+        </div>
+      <% end %>
+
       <% if @migration.pending_plc? %>
         <div class="plc-token-section" role="alert">
           <h3>Action Required: PLC Token</h3>

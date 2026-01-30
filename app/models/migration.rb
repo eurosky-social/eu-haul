@@ -1,6 +1,9 @@
 class Migration < ApplicationRecord
   # Enums
   enum :status, {
+    pending_download: 'pending_download',
+    pending_backup: 'pending_backup',
+    backup_ready: 'backup_ready',
     pending_account: 'pending_account',
     account_created: 'account_created',
     pending_repo: 'pending_repo',
@@ -16,6 +19,7 @@ class Migration < ApplicationRecord
   encrypts :encrypted_password
   encrypts :encrypted_plc_token
   encrypts :encrypted_invite_code
+  encrypts :rotation_private_key_ciphertext
 
   # Validations
   validates :did, presence: true, uniqueness: true, format: { with: /\Adid:[a-z0-9:]+\z/i }
@@ -38,19 +42,43 @@ class Migration < ApplicationRecord
   # Scopes
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }
-  scope :in_progress, -> { where(status: [:pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
+  scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
   scope :by_memory, -> { order(estimated_memory_mb: :desc) }
   scope :recent, -> { order(created_at: :desc) }
+  scope :with_expired_backups, -> { where('backup_expires_at IS NOT NULL AND backup_expires_at < ?', Time.current) }
 
   # State machine transitions
+  def advance_to_pending_backup!
+    update!(status: :pending_backup)
+    CreateBackupBundleJob.perform_later(id)
+  end
+
+  def advance_to_backup_ready!
+    update!(status: :backup_ready)
+    # Automatically proceed to account creation after backup is ready
+    CreateAccountJob.perform_later(id)
+  end
+
   def advance_to_pending_repo!
     update!(status: :pending_repo)
-    ImportRepoJob.perform_later(id)
+    if create_backup_bundle && downloaded_data_path.present?
+      # Upload from local files if backup was enabled
+      UploadRepoJob.perform_later(id)
+    else
+      # Stream download-upload if backup was disabled
+      ImportRepoJob.perform_later(id)
+    end
   end
 
   def advance_to_pending_blobs!
     update!(status: :pending_blobs)
-    ImportBlobsJob.perform_later(id)
+    if create_backup_bundle && downloaded_data_path.present?
+      # Upload from local files if backup was enabled
+      UploadBlobsJob.perform_later(id)
+    else
+      # Stream download-upload if backup was disabled
+      ImportBlobsJob.perform_later(id)
+    end
   end
 
   def advance_to_pending_prefs!
@@ -93,12 +121,18 @@ class Migration < ApplicationRecord
 
   def progress_percentage
     case status
-    when 'pending_account'
-      0
-    when 'account_created'
-      10
-    when 'pending_repo'
+    when 'pending_download'
+      download_percentage
+    when 'pending_backup'
+      15
+    when 'backup_ready'
       20
+    when 'pending_account'
+      create_backup_bundle ? 25 : 0
+    when 'account_created'
+      create_backup_bundle ? 30 : 10
+    when 'pending_repo'
+      create_backup_bundle ? 35 : 20
     when 'pending_blobs'
       blob_upload_percentage
     when 'pending_prefs'
@@ -183,6 +217,59 @@ class Migration < ApplicationRecord
     invite_code_expires_at.nil? || invite_code_expires_at < Time.current
   end
 
+  # Rotation key management
+  def set_rotation_key(private_key)
+    self.rotation_private_key_ciphertext = private_key
+    save!
+  end
+
+  def rotation_key
+    rotation_private_key_ciphertext
+  end
+
+  # Backup bundle management
+  def set_backup_bundle_path(path)
+    self.backup_bundle_path = path
+    self.backup_created_at = Time.current
+    self.backup_expires_at = 24.hours.from_now
+    save!
+  end
+
+  def backup_expired?
+    backup_expires_at.nil? || backup_expires_at < Time.current
+  end
+
+  def backup_available?
+    backup_bundle_path.present? &&
+      File.exist?(backup_bundle_path) &&
+      !backup_expired?
+  end
+
+  def backup_size
+    return nil unless backup_available?
+    File.size(backup_bundle_path)
+  end
+
+  def cleanup_backup!
+    return unless backup_bundle_path.present?
+
+    # Delete the bundle file
+    FileUtils.rm_f(backup_bundle_path) if File.exist?(backup_bundle_path)
+
+    # Clear the path
+    update!(backup_bundle_path: nil, backup_expires_at: nil)
+  end
+
+  def cleanup_downloaded_data!
+    return unless downloaded_data_path.present?
+
+    # Delete the downloaded data directory
+    FileUtils.rm_rf(downloaded_data_path) if Dir.exist?(downloaded_data_path)
+
+    # Clear the path
+    update!(downloaded_data_path: nil)
+  end
+
   private
 
   # Token generation - EURO-XXXXXXXX format
@@ -209,22 +296,45 @@ class Migration < ApplicationRecord
   end
 
   def schedule_first_job
-    CreateAccountJob.perform_later(id)
+    if create_backup_bundle
+      # Start with download if backup is enabled
+      update!(status: :pending_download)
+      DownloadAllDataJob.perform_later(id)
+    else
+      # Skip download and backup if disabled
+      update!(status: :pending_account)
+      CreateAccountJob.perform_later(id)
+    end
+  end
+
+  # Helper for download percentage calculation
+  def download_percentage
+    return 0 unless progress_data['download_progress'].present?
+
+    progress = progress_data['download_progress']
+    downloaded = progress['downloaded'].to_i
+    total = progress['total'].to_i
+
+    return 0 if total.zero?
+
+    # Download stage is 0-10% of total progress
+    ((downloaded.to_f / total) * 10).round
   end
 
   # Helper for blob upload percentage calculation
   def blob_upload_percentage
-    return 20 unless progress_data['blobs'].present?
+    base = create_backup_bundle ? 40 : 20
+    range = 30
+
+    return base unless progress_data['blobs'].present?
 
     blobs = progress_data['blobs'].values
     total_size = blobs.sum { |b| b['size'].to_i }
     uploaded_size = blobs.sum { |b| b['uploaded'].to_i }
 
-    return 20 if total_size.zero?
+    return base if total_size.zero?
 
-    # Blobs stage is 20-70% of total progress
-    base = 20
-    range = 50
+    # Blobs stage is 40-70% (with backup) or 20-50% (without backup)
     percentage = (uploaded_size.to_f / total_size * range).round
     base + percentage
   end

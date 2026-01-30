@@ -1,0 +1,34 @@
+Eurosky Migration Backup Ready
+===============================
+
+Hello,
+
+Your account backup for migration <%= @migration.token %> is now ready for download!
+
+Account Details:
+- DID: <%= @migration.did %>
+- Old Handle: @<%= @migration.old_handle %>
+- New Handle: @<%= @migration.new_handle %>
+- Backup Size: <%= number_to_human_size(@backup_size) if @backup_size %>
+
+Download Your Backup:
+<%= @download_url %>
+
+IMPORTANT INFORMATION:
+- This backup contains your complete ATProto account data (repository + all blobs)
+- The backup will be available for 24 hours
+- Expires at: <%= @expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at %>
+- After expiration, the backup will be automatically deleted from our servers
+
+Your migration will continue automatically. You can track the progress at:
+<%= migration_url(@migration, token: @migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001')) %>
+
+What's Next:
+1. Download your backup (recommended for safekeeping)
+2. Your migration will proceed automatically in the background
+3. You'll be notified when your migration is ready for final activation
+
+Questions or issues? Keep your migration token handy: <%= @migration.token %>
+
+---
+Eurosky Migration Service

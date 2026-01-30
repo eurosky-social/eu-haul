@@ -262,6 +262,17 @@
           <div id="new-handle-error" class="error-message"></div>
         </div>
 
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true %>
+            <span>Create backup bundle before migration</span>
+          </label>
+          <div class="helper-text">
+            Recommended: Download a complete backup of your account data (posts + media) before migration.
+            The backup will be available for 24 hours. If disabled, migration will start immediately.
+          </div>
+        </div>
+
         <div class="security-note" role="note">
           <h3>Security & Privacy</h3>
           <p>
