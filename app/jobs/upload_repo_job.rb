@@ -63,11 +63,13 @@ class UploadRepoJob < ApplicationJob
     migration.advance_to_pending_blobs!
 
   rescue StandardError => e
-    logger.error("Repo upload failed for migration #{migration.id}: #{e.message}")
+    logger.error("Repo upload failed for migration #{migration&.id || migration_id}: #{e.message}")
     logger.error(e.backtrace.join("\n"))
 
-    migration.reload
-    migration.mark_failed!("Repo upload failed: #{e.message}")
+    if migration
+      migration.reload
+      migration.mark_failed!("Repo upload failed: #{e.message}")
+    end
 
     raise
   end

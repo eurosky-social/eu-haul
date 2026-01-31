@@ -75,11 +75,13 @@ class UploadBlobsJob < ApplicationJob
     migration.advance_to_pending_prefs!
 
   rescue StandardError => e
-    logger.error("Blob upload failed for migration #{migration.id}: #{e.message}")
+    logger.error("Blob upload failed for migration #{migration&.id || migration_id}: #{e.message}")
     logger.error(e.backtrace.join("\n"))
 
-    migration.reload
-    migration.mark_failed!("Blob upload failed: #{e.message}")
+    if migration
+      migration.reload
+      migration.mark_failed!("Blob upload failed: #{e.message}")
+    end
 
     raise
   end

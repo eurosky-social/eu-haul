@@ -133,3 +133,4 @@ docker-compose.override.yml
 # Personal development tracking files
 docs/STATUS.md
 docs/IMPLEMENTATION_SUMMARY.md
+docs/TEST_FIXES.md

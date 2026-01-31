@@ -120,11 +120,13 @@ class UpdatePlcJob < ApplicationJob
     alert_admin_of_critical_failure(migration, e)
     raise
   rescue StandardError => e
-    Rails.logger.error("CRITICAL FAILURE: Unexpected error for migration #{migration.token}: #{e.message}")
+    Rails.logger.error("CRITICAL FAILURE: Unexpected error for migration #{migration&.token || migration_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
     Rails.logger.error("This is a critical failure - manual intervention required")
-    migration.mark_failed!("CRITICAL: PLC update failed - #{e.message}")
-    alert_admin_of_critical_failure(migration, e)
+    if migration
+      migration.mark_failed!("CRITICAL: PLC update failed - #{e.message}")
+      alert_admin_of_critical_failure(migration, e)
+    end
     raise
   end
 

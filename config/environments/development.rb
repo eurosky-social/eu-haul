@@ -34,11 +34,13 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # ActionMailer configuration for development
-  # Output emails to console instead of sending them
-  config.action_mailer.delivery_method = :logger
-  config.action_mailer.logger = Logger.new(STDOUT)
+  # Use test delivery method (stores emails in memory, doesn't send)
+  config.action_mailer.delivery_method = :test
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false
+
+  # Log email delivery to console
+  config.action_mailer.logger = Logger.new(STDOUT)
 
   # Default URL options for mailer (required for generating links in emails)
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }

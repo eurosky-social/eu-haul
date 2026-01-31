@@ -83,11 +83,13 @@ class CreateBackupBundleJob < ApplicationJob
     migration.advance_to_backup_ready!
 
   rescue StandardError => e
-    logger.error("Backup bundle creation failed for migration #{migration.id}: #{e.message}")
+    logger.error("Backup bundle creation failed for migration #{migration&.id || migration_id}: #{e.message}")
     logger.error(e.backtrace.join("\n"))
 
-    migration.reload
-    migration.mark_failed!("Backup bundle creation failed: #{e.message}")
+    if migration
+      migration.reload
+      migration.mark_failed!("Backup bundle creation failed: #{e.message}")
+    end
 
     raise
   end

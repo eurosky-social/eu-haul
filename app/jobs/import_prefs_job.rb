@@ -74,9 +74,9 @@ class ImportPrefsJob < ApplicationJob
     migration.mark_failed!("Preferences import failed: #{e.message}")
     raise
   rescue StandardError => e
-    Rails.logger.error("Unexpected error for migration #{migration.token}: #{e.message}")
+    Rails.logger.error("Unexpected error for migration #{migration&.token || migration_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    migration.mark_failed!("Preferences import failed: #{e.message}")
+    migration&.mark_failed!("Preferences import failed: #{e.message}")
     raise
   end
 end

@@ -105,11 +105,13 @@ class ImportBlobsJob < ApplicationJob
     migration.advance_to_pending_prefs!
 
   rescue StandardError => e
-    logger.error("Blob import failed for migration #{migration.id}: #{e.message}")
+    logger.error("Blob import failed for migration #{migration&.id || migration_id}: #{e.message}")
     logger.error(e.backtrace.join("\n"))
 
-    migration.reload
-    migration.mark_failed!("Blob import failed: #{e.message}")
+    if migration
+      migration.reload
+      migration.mark_failed!("Blob import failed: #{e.message}")
+    end
 
     raise
   end

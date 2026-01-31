@@ -68,15 +68,15 @@ class MigrationsController < ApplicationController
         Rails.logger.info("Resolved handle #{@migration.old_handle}: DID=#{@migration.did}, PDS=#{@migration.old_pds_host}")
       end
 
-      # Set the encrypted password and expiration (not mass-assigned)
+      # Set the password and expiration (Lockbox encrypts automatically)
       if params[:migration][:password].present?
-        @migration.encrypted_password = params[:migration][:password]
+        @migration.password = params[:migration][:password]
         @migration.credentials_expires_at = 48.hours.from_now
       end
 
-      # Set the invite code if provided and enabled (not mass-assigned)
+      # Set the invite code if provided and enabled (Lockbox encrypts automatically)
       if EuroskyConfig.invite_code_enabled? && params[:migration][:invite_code].present?
-        @migration.encrypted_invite_code = params[:migration][:invite_code]
+        @migration.invite_code = params[:migration][:invite_code]
         @migration.invite_code_expires_at = 48.hours.from_now
       end
 

@@ -88,11 +88,14 @@ class DownloadAllDataJob < ApplicationJob
     migration.advance_to_pending_backup!
 
   rescue StandardError => e
-    logger.error("Download failed for migration #{migration.id}: #{e.message}")
+    logger.error("Download failed for migration #{migration_id}: #{e.message}")
     logger.error(e.backtrace.join("\n"))
 
-    migration.reload
-    migration.mark_failed!("Download failed: #{e.message}")
+    # Only update migration if it still exists
+    if migration && Migration.exists?(migration_id)
+      migration.reload
+      migration.mark_failed!("Download failed: #{e.message}")
+    end
 
     raise
   end
@@ -117,12 +120,11 @@ class DownloadAllDataJob < ApplicationJob
 
   # Download repository CAR file
   def download_repository(goat, storage_dir)
-    repo_path = storage_dir.join('repo.car')
+    # Export repo from old PDS (returns the path to the created CAR file)
+    car_path = goat.export_repo
 
-    # Export repo from old PDS
-    goat.export_repo(repo_path.to_s)
-
-    repo_path
+    # Return the path as a Pathname for consistency
+    Pathname.new(car_path)
   end
 
   # Collect all blobs using cursor-based pagination

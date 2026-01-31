@@ -68,7 +68,7 @@ services:
     command: bundle exec rails server -b 0.0.0.0 -p 3000
     volumes:
       - .:/rails
-      - /rails/tmp  # Don't mount tmp directory
+      - eurosky-tmp-data:/rails/tmp  # Persist tmp data (backups, downloads)
     environment:
       RAILS_ENV: ${RAILS_ENV:-development}
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
@@ -108,7 +108,7 @@ services:
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/rails
-      - /rails/tmp  # Don't mount tmp directory
+      - eurosky-tmp-data:/rails/tmp  # Persist tmp data (backups, downloads)
     environment:
       RAILS_ENV: ${RAILS_ENV:-development}
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
@@ -145,6 +145,8 @@ volumes:
     name: eurosky-postgres-data
   eurosky-redis-data:
     name: eurosky-redis-data
+  eurosky-tmp-data:
+    name: eurosky-tmp-data
 
 networks:
   eurosky-internal:

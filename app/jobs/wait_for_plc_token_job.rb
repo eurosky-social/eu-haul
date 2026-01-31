@@ -48,7 +48,7 @@ class WaitForPlcTokenJob < ApplicationJob
     # This job completes here. The next step (UpdatePlcJob) is triggered
     # manually when the user submits the PLC token via the web form.
   rescue ActiveRecord::RecordNotFound => e
-    Rails.logger.error("Migration not found: #{migration.id}")
+    Rails.logger.error("Migration not found: #{migration_id}")
     raise
   end
 end

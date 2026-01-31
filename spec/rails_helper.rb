@@ -38,6 +38,9 @@ RSpec.configure do |config|
   # Include ActiveJob test helpers for have_enqueued_job matcher
   config.include ActiveJob::TestHelper
 
+  # Include ActiveSupport time helpers for freeze_time, travel_to, etc.
+  config.include ActiveSupport::Testing::TimeHelpers
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')

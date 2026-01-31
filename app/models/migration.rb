@@ -1,4 +1,22 @@
 class Migration < ApplicationRecord
+  # Module to override Lockbox getters with expiration checks
+  # This must be prepended AFTER Lockbox defines its methods
+  module ExpirationChecks
+    def password
+      return nil if credentials_expired?
+      super
+    end
+
+    def plc_token
+      return nil if credentials_expired?
+      super
+    end
+
+    def invite_code
+      return nil if invite_code_expired?
+      super
+    end
+  end
   # Enums
   enum :status, {
     pending_download: 'pending_download',
@@ -15,14 +33,24 @@ class Migration < ApplicationRecord
     failed: 'failed'
   }, validate: true
 
-  # Encryption for sensitive fields
-  encrypts :encrypted_password
-  encrypts :encrypted_plc_token
-  encrypts :encrypted_invite_code
-  encrypts :rotation_private_key_ciphertext
+  # Encryption for sensitive fields using Lockbox
+  # Provide the master key as a 64-character hex string, decoded to 32 bytes
+  # Lockbox requires a 32-byte binary key
+  lockbox_key = lambda do
+    key_hex = ENV.fetch('LOCKBOX_MASTER_KEY') { Digest::SHA256.hexdigest('fallback_key_for_dev') }
+    [key_hex].pack('H*')  # Decode hex string to 32 bytes of binary data
+  end
+
+  has_encrypted :password, key: lockbox_key, encrypted_attribute: :encrypted_password
+  has_encrypted :plc_token, key: lockbox_key, encrypted_attribute: :encrypted_plc_token
+  has_encrypted :invite_code, key: lockbox_key, encrypted_attribute: :encrypted_invite_code
+  has_encrypted :rotation_key, key: lockbox_key, encrypted_attribute: :rotation_private_key_ciphertext
+
+  # Prepend the expiration check module AFTER Lockbox has defined its methods
+  prepend ExpirationChecks
 
   # Validations
-  validates :did, presence: true, uniqueness: true, format: { with: /\Adid:[a-z0-9:]+\z/i }
+  validates :did, presence: true, uniqueness: true, format: { with: /\Adid:[a-z0-9]+:[a-z0-9._:\-]+\z/i }
   validates :token, presence: true, uniqueness: true, format: { with: /\AEURO-[A-Z0-9]{8}\z/ }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :status, presence: true, inclusion: { in: statuses.keys }
@@ -175,26 +203,16 @@ class Migration < ApplicationRecord
   end
 
   # Credential management
-  def set_password(password)
-    self.encrypted_password = password
-    self.credentials_expires_at = 48.hours.from_now
+  def set_password(pwd, expires_in: 48.hours)
+    self.password = pwd  # Lockbox handles encryption automatically
+    self.credentials_expires_at = expires_in.from_now
     save!
   end
 
-  def set_plc_token(token)
-    self.encrypted_plc_token = token
-    self.credentials_expires_at = 1.hour.from_now
+  def set_plc_token(token, expires_in: 1.hour)
+    self.plc_token = token  # Lockbox handles encryption automatically
+    self.credentials_expires_at = expires_in.from_now
     save!
-  end
-
-  def password
-    return nil if credentials_expired?
-    encrypted_password
-  end
-
-  def plc_token
-    return nil if credentials_expired?
-    encrypted_plc_token
   end
 
   def credentials_expired?
@@ -213,14 +231,9 @@ class Migration < ApplicationRecord
 
   # Invite code management
   def set_invite_code(code)
-    self.encrypted_invite_code = code
+    self.invite_code = code  # Lockbox handles encryption automatically
     self.invite_code_expires_at = 48.hours.from_now
     save!
-  end
-
-  def invite_code
-    return nil if invite_code_expired?
-    encrypted_invite_code
   end
 
   def invite_code_expired?
@@ -229,7 +242,7 @@ class Migration < ApplicationRecord
 
   # Rotation key management
   def set_rotation_key(private_key)
-    self.rotation_private_key_ciphertext = private_key
+    self.rotation_key = private_key  # Lockbox handles encryption automatically
     save!
   end
 

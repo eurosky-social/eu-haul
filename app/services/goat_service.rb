@@ -118,7 +118,7 @@ class GoatService
     logger.info("Getting service auth token for PDS: #{new_pds_did}")
 
     # Must be logged in to old PDS first
-    stdout, stderr, status = execute_goat(
+    stdout, _stderr, _status = execute_goat(
       'account', 'service-auth',
       '--lxm', 'com.atproto.server.createAccount',
       '--aud', new_pds_did,
@@ -207,22 +207,36 @@ class GoatService
     logger.info("Generating rotation key for account recovery")
 
     # Use goat to generate a P-256 rotation key
-    stdout, stderr, status = execute_goat('key', 'generate', '--type', 'P-256')
+    stdout, _stderr, _status = execute_goat('key', 'generate', '--type', 'P-256')
 
     # Parse output to extract keys
     # Expected format:
-    # Private Key (Multibase): z...
-    # Public Key (DID Key Syntax): did:key:z...
+    # Secret Key (Multibase Syntax): save this securely (eg, add to password manager)
+    #   z42tk...
+    # Public Key (DID Key Syntax): share or publish this (eg, in DID document)
+    #   did:key:zDnae...
     private_key = nil
     public_key = nil
+    next_line_is_private_key = false
+    next_line_is_public_key = false
 
     stdout.each_line do |line|
-      if line.include?("Private Key") && line.include?("Multibase")
-        # Extract private key
-        private_key = line.split(":").last.strip
+      line_stripped = line.strip
+
+      if next_line_is_private_key
+        # This line contains the private key value
+        private_key = line_stripped if line_stripped.start_with?('z')
+        next_line_is_private_key = false
+      elsif next_line_is_public_key
+        # This line contains the public key value
+        public_key = line_stripped if line_stripped.start_with?('did:key:')
+        next_line_is_public_key = false
+      elsif line.include?("Secret Key") && line.include?("Multibase")
+        # Next line will have the private key
+        next_line_is_private_key = true
       elsif line.include?("Public Key") && line.include?("DID Key")
-        # Extract public key
-        public_key = line.split("Syntax):").last.strip
+        # Next line will have the public key
+        next_line_is_public_key = true
       end
     end
 
@@ -281,7 +295,7 @@ class GoatService
     )
 
     # Execute curl to download CAR file
-    stdout, stderr, status = execute_command(
+    _stdout, _stderr, _status = execute_command(
       'curl', '-s', '-f',
       '-H', "Authorization: Bearer #{access_token}",
       url,
@@ -471,7 +485,7 @@ class GoatService
 
     prefs_path = work_dir.join("prefs.json")
 
-    stdout, stderr, status = execute_goat('bsky', 'prefs', 'export')
+    stdout, _stderr, _status = execute_goat('bsky', 'prefs', 'export')
 
     File.write(prefs_path, stdout)
 
@@ -525,7 +539,7 @@ class GoatService
 
     plc_recommended_path = work_dir.join("plc_recommended.json")
 
-    stdout, stderr, status = execute_goat('account', 'plc', 'recommended')
+    stdout, _stderr, _status = execute_goat('account', 'plc', 'recommended')
 
     File.write(plc_recommended_path, stdout)
 
@@ -556,7 +570,7 @@ class GoatService
 
     plc_signed_path = work_dir.join("plc_signed.json")
 
-    stdout, stderr, status = execute_goat(
+    stdout, _stderr, _status = execute_goat(
       'account', 'plc', 'sign',
       '--token', token,
       unsigned_op_path
@@ -618,7 +632,7 @@ class GoatService
   def get_account_status
     logger.info("Getting account status")
 
-    stdout, stderr, status = execute_goat('account', 'status')
+    stdout, _stderr, _status = execute_goat('account', 'status')
 
     logger.info("Account status retrieved")
     stdout
@@ -629,7 +643,7 @@ class GoatService
   def check_missing_blobs
     logger.info("Checking for missing blobs")
 
-    stdout, stderr, status = execute_goat('account', 'missing-blobs')
+    stdout, _stderr, _status = execute_goat('account', 'missing-blobs')
 
     logger.info("Missing blobs check completed")
     stdout

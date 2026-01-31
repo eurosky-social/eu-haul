@@ -3,7 +3,7 @@ class MigrationMailer < ApplicationMailer
 
   def backup_ready(migration)
     @migration = migration
-    @download_url = migration_download_backup_url(migration, token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @download_url = migration_download_backup_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
     @expires_at = migration.backup_expires_at
     @backup_size = migration.backup_size
 

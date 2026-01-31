@@ -3,7 +3,8 @@
 # This job completes the migration by:
 #   1. Activating the account on the new PDS
 #   2. Deactivating the account on the old PDS
-#   3. Marking the migration as complete
+#   3. Generating and adding rotation key for account recovery
+#   4. Marking the migration as complete
 #
 # Status Flow:
 #   pending_activation -> completed
@@ -11,8 +12,9 @@
 # What This Job Does:
 #   1. Activates account on new PDS (makes it live)
 #   2. Deactivates account on old PDS (prevents further use)
-#   3. Updates progress timestamps
-#   4. Marks migration as complete
+#   3. Generates rotation key and adds it to PLC (highest priority)
+#   4. Updates progress timestamps
+#   5. Marks migration as complete
 #
 # Retries: 3 times (activation is idempotent)
 # Queue: :critical (highest priority - finish the migration)
@@ -27,6 +29,8 @@
 #   Updates progress_data with:
 #   - account_activated_at: timestamp (new PDS)
 #   - account_deactivated_at: timestamp (old PDS)
+#   - rotation_key_public: public key (did:key format)
+#   - rotation_key_generated_at: timestamp
 #   - completed_at: timestamp (migration complete)
 #
 # Note: After this job completes, the user's account is fully migrated
@@ -45,11 +49,11 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Starting account activation for migration #{migration.token} (#{migration.did})")
 
     # Initialize GoatService
-    # service = GoatService.new(migration)
+    service = GoatService.new(migration)
 
     # Step 1: Activate account on new PDS
     Rails.logger.info("Activating account on new PDS: #{migration.new_pds_host}")
-    # service.activate_account
+    service.activate_account
 
     # Update progress
     migration.progress_data['account_activated_at'] = Time.current.iso8601
@@ -60,7 +64,7 @@ class ActivateAccountJob < ApplicationJob
     # Step 2: Deactivate account on old PDS
     begin
       Rails.logger.info("Deactivating account on old PDS: #{migration.old_pds_host}")
-      # service.deactivate_account
+      service.deactivate_account
 
       # Update progress
       migration.progress_data['account_deactivated_at'] = Time.current.iso8601
@@ -75,6 +79,33 @@ class ActivateAccountJob < ApplicationJob
 
       # Update progress with error note
       migration.progress_data['old_pds_deactivation_error'] = e.message
+      migration.save!
+    end
+
+    # Step 2.5: Generate and add rotation key for account recovery
+    # This happens AFTER activation and PLC update, so the new PDS has authority to sign the PLC operation
+    begin
+      Rails.logger.info("Generating rotation key for account recovery")
+      rotation_key = service.generate_rotation_key
+      migration.set_rotation_key(rotation_key[:private_key])
+      Rails.logger.info("Rotation key generated and stored (public key: #{rotation_key[:public_key]})")
+
+      Rails.logger.info("Adding rotation key to PDS account (highest priority)")
+      service.add_rotation_key_to_pds(rotation_key[:public_key])
+      Rails.logger.info("Rotation key added successfully")
+
+      # Update progress
+      migration.progress_data['rotation_key_public'] = rotation_key[:public_key]
+      migration.progress_data['rotation_key_generated_at'] = Time.current.iso8601
+      migration.save!
+    rescue StandardError => e
+      # Log the error but don't fail the migration
+      # The account is already migrated successfully
+      Rails.logger.warn("Failed to generate/add rotation key for migration #{migration.token}: #{e.message}")
+      Rails.logger.warn("Migration will proceed as complete - user can add rotation key manually later")
+
+      # Update progress with error note
+      migration.progress_data['rotation_key_error'] = e.message
       migration.save!
     end
 
@@ -98,6 +129,12 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Old Handle: #{migration.old_handle} @ #{migration.old_pds_host}")
     Rails.logger.info("New Handle: #{migration.new_handle} @ #{migration.new_pds_host}")
     Rails.logger.info("Account is now live on new PDS")
+    if migration.progress_data['rotation_key_public']
+      Rails.logger.info("Rotation key added: #{migration.progress_data['rotation_key_public']}")
+      Rails.logger.info("Rotation key private key available via: /migrations/#{migration.token}")
+    elsif migration.progress_data['rotation_key_error']
+      Rails.logger.warn("Rotation key generation failed (migration still successful)")
+    end
     Rails.logger.info("Credentials cleared for security")
     Rails.logger.info("=" * 80)
 
@@ -120,9 +157,9 @@ class ActivateAccountJob < ApplicationJob
     migration.mark_failed!("Account activation failed: #{e.message}")
     raise
   rescue StandardError => e
-    Rails.logger.error("Unexpected error for migration #{migration.token}: #{e.message}")
+    Rails.logger.error("Unexpected error for migration #{migration&.token || migration_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    migration.mark_failed!("Account activation failed: #{e.message}")
+    migration&.mark_failed!("Account activation failed: #{e.message}")
     raise
   end
 end
