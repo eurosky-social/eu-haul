@@ -27,7 +27,7 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
-  before_action :set_migration, only: [:show, :submit_plc_token, :status, :download_backup]
+  before_action :set_migration, only: [:show, :submit_plc_token, :status, :download_backup, :retry, :cancel]
 
   # GET /migrations/new
   # Display the migration form where users enter their account details
@@ -213,6 +213,70 @@ class MigrationsController < ApplicationController
     render plain: "Failed to download backup: #{e.message}", status: :internal_server_error
   end
 
+  # POST /migrate/:token/retry
+  # Retry a failed migration from the current step
+  #
+  # Requirements:
+  #   - Migration must be in failed status
+  #   - Uses existing migration token
+  #
+  # Response:
+  #   - Success: Redirects to status page with notice
+  #   - Failure: Redirects to status page with alert
+  def retry
+    unless @migration.failed?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Migration is not in failed status and cannot be retried"
+      return
+    end
+
+    # Reset error state and retry from the current status
+    @migration.update!(
+      status: determine_retry_status(@migration.status),
+      last_error: nil,
+      current_job_attempt: 0
+    )
+
+    # Enqueue the appropriate job based on the status
+    enqueue_job_for_status(@migration)
+
+    Rails.logger.info("Migration #{@migration.token} retry requested by user")
+    redirect_to migration_by_token_path(@migration.token),
+                notice: "Migration retry started!"
+  rescue StandardError => e
+    Rails.logger.error("Failed to retry migration #{@migration.token}: #{e.message}")
+    redirect_to migration_by_token_path(@migration.token),
+                alert: "Failed to retry migration: #{e.message}"
+  end
+
+  # POST /migrate/:token/cancel
+  # Cancel a migration in progress
+  #
+  # Requirements:
+  #   - Migration must not be in PLC or activation stage
+  #   - Migration must not be already completed or failed
+  #
+  # Response:
+  #   - Success: Redirects to status page with notice
+  #   - Failure: Redirects to status page with alert
+  def cancel
+    unless @migration.can_cancel?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Migration cannot be cancelled at this stage"
+      return
+    end
+
+    @migration.cancel!
+
+    Rails.logger.info("Migration #{@migration.token} cancelled by user")
+    redirect_to migration_by_token_path(@migration.token),
+                notice: "Migration cancelled successfully"
+  rescue StandardError => e
+    Rails.logger.error("Failed to cancel migration #{@migration.token}: #{e.message}")
+    redirect_to migration_by_token_path(@migration.token),
+                alert: "Failed to cancel migration: #{e.message}"
+  end
+
   private
 
   # Find migration by token (from URL parameter)
@@ -295,5 +359,72 @@ class MigrationsController < ApplicationController
     # - U+202A-U+202E: Various directional formatting characters
     # - U+FEFF: Zero-width no-break space (BOM)
     handle.gsub(/[\u200B-\u200F\u202A-\u202E\uFEFF]/, '').strip
+  end
+
+  # Determine which status to retry from based on current failed status
+  # Returns the status to set when retrying
+  def determine_retry_status(current_status)
+    # If migration failed during a specific step, retry from that step
+    # Otherwise, start from the beginning
+    case current_status
+    when 'failed'
+      # Check progress_data to see where we failed
+      if @migration.current_job_step.present?
+        status_from_job_step(@migration.current_job_step)
+      else
+        # Default to account creation if we don't know where we failed
+        'pending_account'
+      end
+    else
+      # Already have a valid status, keep it
+      current_status
+    end
+  end
+
+  # Convert job step name to status
+  def status_from_job_step(job_step)
+    case job_step
+    when /DownloadAllDataJob/i then 'pending_download'
+    when /CreateBackupBundleJob/i then 'pending_backup'
+    when /CreateAccountJob/i then 'pending_account'
+    when /UploadRepoJob|ImportRepoJob/i then 'pending_repo'
+    when /UploadBlobsJob|ImportBlobsJob/i then 'pending_blobs'
+    when /ImportPrefsJob/i then 'pending_prefs'
+    when /WaitForPlcTokenJob|UpdatePlcJob/i then 'pending_plc'
+    when /ActivateAccountJob/i then 'pending_activation'
+    else 'pending_account' # Default fallback
+    end
+  end
+
+  # Enqueue the appropriate job for the migration status
+  def enqueue_job_for_status(migration)
+    case migration.status
+    when 'pending_download'
+      DownloadAllDataJob.perform_later(migration.id)
+    when 'pending_backup'
+      CreateBackupBundleJob.perform_later(migration.id)
+    when 'backup_ready', 'pending_account'
+      CreateAccountJob.perform_later(migration.id)
+    when 'pending_repo'
+      if migration.create_backup_bundle && migration.downloaded_data_path.present?
+        UploadRepoJob.perform_later(migration.id)
+      else
+        ImportRepoJob.perform_later(migration.id)
+      end
+    when 'pending_blobs'
+      if migration.create_backup_bundle && migration.downloaded_data_path.present?
+        UploadBlobsJob.perform_later(migration.id)
+      else
+        ImportBlobsJob.perform_later(migration.id)
+      end
+    when 'pending_prefs'
+      ImportPrefsJob.perform_later(migration.id)
+    when 'pending_plc'
+      WaitForPlcTokenJob.perform_later(migration.id)
+    when 'pending_activation'
+      ActivateAccountJob.perform_later(migration.id)
+    else
+      raise "Cannot enqueue job for status: #{migration.status}"
+    end
   end
 end

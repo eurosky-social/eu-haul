@@ -42,6 +42,9 @@ class CreateAccountJob < ApplicationJob
       return
     end
 
+    # Track job attempt
+    migration.start_job_attempt!('CreateAccountJob', 3, executions)
+
     # Update timestamp
     migration.progress_data ||= {}
     migration.progress_data['account_creation_started_at'] = Time.current.iso8601
@@ -126,13 +129,22 @@ class CreateAccountJob < ApplicationJob
     current_retry = executions - 1 # executions is 1-based, we need 0-based
 
     if current_retry >= 2 # 0, 1, 2 = 3 attempts total
-      # All retries exhausted, mark as failed
+      # All retries exhausted, mark as failed and send notification
       Rails.logger.error("[CreateAccountJob] All retries exhausted for migration #{migration.token}, marking as failed")
       migration.mark_failed!(error.message)
+
+      # Send failure notification email
+      begin
+        MigrationMailer.migration_failed(migration).deliver_later
+        Rails.logger.info("[CreateAccountJob] Sent failure notification email to #{migration.email}")
+      rescue => email_error
+        Rails.logger.error("[CreateAccountJob] Failed to send failure notification: #{email_error.message}")
+      end
     else
-      # Will retry, just log the error
+      # Will retry, just log the error and increment attempt counter
       Rails.logger.info("[CreateAccountJob] Will retry (attempt #{current_retry + 1}/3) for migration #{migration.token}")
       migration.update(last_error: error.message)
+      migration.increment_job_attempt!
       raise error # Re-raise to trigger ActiveJob retry
     end
   end

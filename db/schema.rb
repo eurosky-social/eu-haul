@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_30_113716) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_01_213738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_113716) do
     t.datetime "backup_created_at"
     t.datetime "backup_expires_at"
     t.text "rotation_private_key_ciphertext"
+    t.string "current_job_step"
+    t.integer "current_job_attempt", default: 0
+    t.integer "current_job_max_attempts", default: 3
     t.index ["backup_expires_at"], name: "index_migrations_on_backup_expires_at"
     t.index ["created_at"], name: "index_migrations_on_created_at"
     t.index ["did"], name: "index_migrations_on_did", unique: true

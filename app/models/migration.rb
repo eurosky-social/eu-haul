@@ -136,6 +136,51 @@ class Migration < ApplicationRecord
     )
   end
 
+  # Job retry tracking
+  def start_job_attempt!(job_name, max_attempts, attempt_number = 1)
+    update!(
+      current_job_step: job_name,
+      current_job_attempt: attempt_number,
+      current_job_max_attempts: max_attempts
+    )
+  end
+
+  def increment_job_attempt!
+    update!(current_job_attempt: current_job_attempt + 1)
+  end
+
+  def clear_job_tracking!
+    update!(
+      current_job_step: nil,
+      current_job_attempt: 0,
+      current_job_max_attempts: 3
+    )
+  end
+
+  def job_attempts_remaining
+    return nil unless current_job_max_attempts && current_job_attempt
+    current_job_max_attempts - current_job_attempt
+  end
+
+  def job_retrying?
+    current_job_attempt.to_i > 1
+  end
+
+  # Check if migration can be safely cancelled
+  def can_cancel?
+    # Cannot cancel during PLC update or after activation
+    !['pending_plc', 'pending_activation', 'completed'].include?(status)
+  end
+
+  def cancel!
+    return false unless can_cancel?
+
+    update!(
+      status: :failed,
+      last_error: "Migration cancelled by user at #{Time.current.iso8601}"
+    )
+  end
+
   # Progress tracking
   def update_blob_progress!(cid:, size:, uploaded:)
     progress_data['blobs'] ||= {}

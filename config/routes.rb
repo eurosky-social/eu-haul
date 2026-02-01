@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       post :submit_plc_token
       get :status
       get :download_backup
+      post :retry
+      post :cancel
     end
   end
 
@@ -19,4 +21,6 @@ Rails.application.routes.draw do
   get "/migrate/:token", to: "migrations#show", as: :migration_by_token
   post "/migrate/:token/plc_token", to: "migrations#submit_plc_token", as: :submit_plc_token_by_token
   get "/migrate/:token/download", to: "migrations#download_backup", as: :migration_download_backup
+  post "/migrate/:token/retry", to: "migrations#retry", as: :retry_migration_by_token
+  post "/migrate/:token/cancel", to: "migrations#cancel", as: :cancel_migration_by_token
 end

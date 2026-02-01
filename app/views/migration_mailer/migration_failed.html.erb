@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #dc2626; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+    .details { background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .error { background-color: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; }
+    .button { display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+    .button:hover { background-color: #1d4ed8; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; color: #6b7280; }
+    .info-list { list-style: none; padding: 0; }
+    .info-list li { padding: 5px 0; }
+    .info-list strong { display: inline-block; width: 180px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin: 0;">Migration Failed - Action Required</h1>
+  </div>
+
+  <p>Hello,</p>
+
+  <p>Your account migration <strong><%= @migration.token %></strong> has encountered an error and needs your attention.</p>
+
+  <div class="details">
+    <h3 style="margin-top: 0;">Account Details</h3>
+    <ul class="info-list">
+      <li><strong>DID:</strong> <%= @migration.did %></li>
+      <li><strong>Old Handle:</strong> @<%= @migration.old_handle %></li>
+      <li><strong>New Handle:</strong> @<%= @migration.new_handle %></li>
+    </ul>
+  </div>
+
+  <div class="error">
+    <h3 style="margin-top: 0;">Failure Information</h3>
+    <ul class="info-list">
+      <li><strong>Failed Step:</strong> <%= @failed_step.to_s.humanize %></li>
+      <li><strong>Error:</strong> <%= @error_message %></li>
+      <li><strong>Previous Retries:</strong> <%= @retry_count %></li>
+    </ul>
+  </div>
+
+  <h3>What You Can Do:</h3>
+  <ol>
+    <li>Review the migration status and click the "Retry Migration" button:</li>
+  </ol>
+
+  <a href="<%= @migration_url %>" class="button">View Migration & Retry</a>
+
+  <p><strong>Common Issues and Solutions:</strong></p>
+  <ul>
+    <li><strong>Network timeouts:</strong> Usually resolve on retry</li>
+    <li><strong>Rate limiting:</strong> Wait a few minutes before retrying</li>
+    <li><strong>Missing data:</strong> Check if all data is accessible on the old PDS</li>
+  </ul>
+
+  <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0;">
+    <p style="margin: 0;"><strong>Important:</strong></p>
+    <ul style="margin: 10px 0 0 0;">
+      <li>Your data on the old PDS remains intact</li>
+      <li>You can safely retry the migration</li>
+      <li>If the problem persists, please contact support with your migration token: <strong><%= @migration.token %></strong></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p>Eurosky Migration Service</p>
+  </div>
+</body>
+</html>

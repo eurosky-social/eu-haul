@@ -1,0 +1,38 @@
+Eurosky Migration Failed - Action Required
+==========================================
+
+Hello,
+
+Your account migration <%= @migration.token %> has encountered an error and needs your attention.
+
+Account Details:
+- DID: <%= @migration.did %>
+- Old Handle: @<%= @migration.old_handle %>
+- New Handle: @<%= @migration.new_handle %>
+
+Failure Information:
+- Failed Step: <%= @failed_step.to_s.humanize %>
+- Error: <%= @error_message %>
+- Previous Retry Attempts: <%= @retry_count %>
+
+What You Can Do:
+
+1. Review the Migration Status:
+   <%= @migration_url %>
+
+2. Click the "Retry Migration" button to attempt the migration again
+
+3. If the problem persists after multiple retries, please contact support with your migration token: <%= @migration.token %>
+
+Common Issues and Solutions:
+- Network timeouts: Usually resolve on retry
+- Rate limiting: Wait a few minutes before retrying
+- Missing data: Check if all data is accessible on the old PDS
+
+IMPORTANT:
+- Your data on the old PDS remains intact
+- You can safely retry the migration
+- If you need help, reference your migration token: <%= @migration.token %>
+
+---
+Eurosky Migration Service

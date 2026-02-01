@@ -162,6 +162,11 @@
         <div class="status-label">Current Status</div>
         <div class="status-value status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>">
           <%= @migration.status.humanize %>
+          <% if @migration.job_retrying? && @migration.current_job_step %>
+            <div style="font-size: 14px; color: #f59e0b; margin-top: 8px;">
+              Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
+            </div>
+          <% end %>
         </div>
       </div>
 
@@ -353,9 +358,30 @@
           <% else %>
             <p style="color: #991b1b; font-size: 14px;">An unknown error occurred during migration.</p>
           <% end %>
+
+          <div style="margin-top: 20px;">
+            <%= button_to "Retry Migration", retry_migration_by_token_path(@migration.token),
+                method: :post,
+                style: "background-color: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-size: 16px; font-weight: 500; cursor: pointer; margin-right: 12px;",
+                data: { confirm: "This will retry the migration from where it failed. Continue?" } %>
+          </div>
+
           <p style="margin-top: 12px; color: #991b1b; font-size: 14px;">
-            Please contact support with your migration token: <strong><%= @migration.token %></strong>
+            If the problem persists after retrying, please contact support with your migration token: <strong><%= @migration.token %></strong>
           </p>
+        </div>
+      <% end %>
+
+      <% if @migration.can_cancel? %>
+        <div style="margin-top: 24px; padding: 16px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
+          <h4 style="margin: 0 0 12px 0; color: #991b1b;">Cancel Migration</h4>
+          <p style="font-size: 14px; color: #7f1d1d; margin: 0 0 12px 0;">
+            You can cancel this migration if you need to stop the process. This action cannot be undone.
+          </p>
+          <%= button_to "Cancel Migration", cancel_migration_by_token_path(@migration.token),
+              method: :post,
+              style: "background-color: #dc2626; color: white; padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer;",
+              data: { confirm: "Are you sure you want to cancel this migration? This action cannot be undone." } %>
         </div>
       <% end %>
 

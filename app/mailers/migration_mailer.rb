@@ -12,4 +12,17 @@ class MigrationMailer < ApplicationMailer
       subject: "Your Eurosky Migration Backup is Ready (#{migration.token})"
     )
   end
+
+  def migration_failed(migration)
+    @migration = migration
+    @migration_url = migration_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @error_message = migration.last_error
+    @failed_step = migration.current_job_step || migration.status
+    @retry_count = migration.retry_count
+
+    mail(
+      to: migration.email,
+      subject: "Migration Failed - Action Required (#{migration.token})"
+    )
+  end
 end
