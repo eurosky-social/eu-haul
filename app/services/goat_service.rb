@@ -681,6 +681,11 @@ class GoatService
 
   # Cleanup Methods
 
+  def cleanup
+    # Remove all migration files including goat state directory
+    self.class.cleanup_migration_files(migration.did)
+  end
+
   def self.cleanup_migration_files(did)
     work_dir = Rails.root.join('tmp', 'goat', did)
 
@@ -697,7 +702,14 @@ class GoatService
   # Execute goat CLI command with proper error handling
   def execute_goat(*args, timeout: DEFAULT_TIMEOUT)
     # Set environment variables for goat
+    # CRITICAL: Use XDG_STATE_HOME to isolate session files per migration
+    # This prevents concurrent migrations from overwriting each other's auth sessions
+    # See: https://github.com/adrg/xdg (used by goat for session storage)
+    state_dir = work_dir.join('.goat-state')
+    FileUtils.mkdir_p(state_dir)
+
     env = {
+      'XDG_STATE_HOME' => state_dir.to_s,  # Isolate goat session per migration
       'ATP_PLC_HOST' => ENV['ATP_PLC_HOST'] || 'https://plc.directory',
       'ATP_PDS_HOST' => migration.new_pds_host # Default PDS for goat
     }
