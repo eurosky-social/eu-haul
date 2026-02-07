@@ -65,21 +65,9 @@ jobs:
           --tag ${{ env.registry }}/${{ env.image }}:latest \
           .
 
-    - name: Build Cron Image
-      run: |
-        echo "SHA=${{ github.sha }}"
-        docker build \
-          --file Dockerfile-cron \
-          --build-arg "SHA=${{ github.sha }}" \
-          --label "SHA=${{ github.sha }}" \
-          --tag ${{ env.registry }}/${{ env.image }}-cron:commit-${{ github.sha }} \
-          --tag ${{ env.registry }}/${{ env.image }}-cron:latest \
-          .
-
     - name: Inspect Images
       run: |
         docker inspect ${{ env.registry }}/${{ env.image }}:latest
-        docker inspect ${{ env.registry }}/${{ env.image }}-cron:latest
 
     - name: Login to Container Registry
       uses: docker/login-action@v3
