@@ -80,5 +80,3 @@ jobs:
       run: |
         docker push ${{ env.registry }}/${{ env.image }}:commit-${{ github.sha }}
         docker push ${{ env.registry }}/${{ env.image }}:latest
-        docker push ${{ env.registry }}/${{ env.image }}-cron:commit-${{ github.sha }}
-        docker push ${{ env.registry }}/${{ env.image }}-cron:latest
