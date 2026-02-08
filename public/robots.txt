@@ -1,1 +1,43 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+# robots.txt for Eurosky Migration Tool
+#
+# This service handles sensitive account migrations containing personal data.
+# All migration pages contain private user information and should NOT be indexed.
+#
+# See https://www.robotstxt.org/robotstxt.html for documentation
+
+# Block all crawlers from all paths
+User-agent: *
+Disallow: /
+
+# Specifically block migration status pages (contain PII)
+Disallow: /migrate/
+Disallow: /migrations/
+
+# Block Sidekiq admin interface
+Disallow: /sidekiq/
+
+# Only allow crawling of root page (migration form)
+# Even though we disallow above, make it explicit
+Allow: /$
+
+# Block common AI/LLM scrapers specifically
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+# Crawl delay for any permitted paths
+Crawl-delay: 10

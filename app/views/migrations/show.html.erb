@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <title>Migration <%= @migration.token %> - <%= EuroskyConfig::SITE_NAME %></title>
   <% if EuroskyConfig::FAVICON_URL.present? %>
     <link rel="icon" type="image/png" href="<%= EuroskyConfig::FAVICON_URL %>">
@@ -339,8 +341,8 @@
 
       <% if @migration.completed? %>
         <div class="success-message" role="alert">
-          <h3>Migration Completed Successfully!</h3>
-          <p>
+          <h3 style="font-size: 24px; margin-bottom: 16px;">✅ Migration Completed Successfully!</h3>
+          <p style="font-size: 16px;">
             <% if @migration.returning_to_existing_pds? %>
               Your account has been successfully migrated back to <strong><%= @migration.new_pds_host %></strong>.
               You can now log in with your handle: <strong><%= @migration.new_handle %></strong>
@@ -349,7 +351,53 @@
               You can now log in with your new handle: <strong><%= @migration.new_handle %></strong>
             <% end %>
           </p>
-          <p style="margin-top: 12px;">
+
+          <%# CRITICAL: Rotation Key Warning %>
+          <% if @migration.rotation_key.present? %>
+            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 24px 0; border-radius: 6px;">
+              <h4 style="color: #92400e; margin: 0 0 12px 0; font-size: 18px;">⚠️ SAVE YOUR ROTATION KEY NOW!</h4>
+              <p style="color: #92400e; margin: 0 0 12px 0; font-size: 14px;">
+                <strong>This page will be deleted in 10 minutes for your privacy.</strong><br>
+                Your rotation key is needed for account recovery. Copy it now and store it securely!
+              </p>
+              <div style="background: white; padding: 12px; border-radius: 6px; margin: 12px 0; font-family: monospace; font-size: 12px; overflow-wrap: break-word; word-break: break-all;">
+                <%= @migration.rotation_key %>
+              </div>
+              <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
+                      style="padding: 12px 24px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+                📋 Copy Rotation Key
+              </button>
+              <p style="font-size: 12px; color: #92400e; margin: 12px 0 0 0;">
+                ✉️ We've also emailed this key to <strong><%= @migration.email %></strong>
+              </p>
+            </div>
+          <% end %>
+
+          <%# Backup Download if available %>
+          <% if @migration.backup_available? %>
+            <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; margin: 16px 0; border-radius: 6px;">
+              <h4 style="color: #1e40af; margin: 0 0 8px 0;">📦 Download Your Backup</h4>
+              <p style="color: #1e40af; margin: 0 0 12px 0; font-size: 14px;">
+                Your backup bundle will be deleted in 10 minutes. Download it now!
+              </p>
+              <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>"
+                 class="submit-button"
+                 style="display: inline-block; text-decoration: none; font-size: 16px;">
+                ⬇️ Download Backup Bundle (<%= number_to_human_size(@migration.backup_size) %>)
+              </a>
+            </div>
+          <% end %>
+
+          <%# Auto-deletion warning %>
+          <div style="background-color: #e0e7ff; border-left: 4px solid #6366f1; padding: 16px; margin: 16px 0; border-radius: 6px;">
+            <h4 style="color: #3730a3; margin: 0 0 8px 0;">🔒 Privacy Notice</h4>
+            <p style="color: #3730a3; margin: 0; font-size: 14px;">
+              For your privacy and GDPR compliance, this migration record will be automatically deleted in <strong>10 minutes</strong>.
+              Make sure you've saved your rotation key and downloaded your backup before this page disappears!
+            </p>
+          </div>
+
+          <p style="margin-top: 20px; font-size: 14px; color: #059669;">
             Your old account credentials have been securely deleted. Welcome <%= @migration.returning_to_existing_pds? ? 'back' : 'to your new home' %>!
           </p>
         </div>

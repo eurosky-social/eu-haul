@@ -15,7 +15,7 @@ class MigrationMailer < ApplicationMailer
 
   def migration_failed(migration)
     @migration = migration
-    @migration_url = migration_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
     @error_message = migration.last_error
     @failed_step = migration.current_job_step || migration.status
     @retry_count = migration.retry_count
@@ -23,6 +23,21 @@ class MigrationMailer < ApplicationMailer
     mail(
       to: migration.email,
       subject: "Migration Failed - Action Required (#{migration.token})"
+    )
+  end
+
+  def migration_completed(migration)
+    @migration = migration
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @rotation_key_private = migration.rotation_key
+    @rotation_key_public = migration.progress_data['rotation_key_public']
+    @backup_available = migration.backup_available?
+    @download_url = migration_download_backup_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001')) if @backup_available
+    @completed_at = migration.progress_data['completed_at']
+
+    mail(
+      to: migration.email,
+      subject: "✅ Migration Complete - Save Your Rotation Key! (#{migration.token})"
     )
   end
 end

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #10b981;
+      margin-top: 0;
+      font-size: 24px;
+    }
+    .success-icon {
+      font-size: 48px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .alert {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .alert h2 {
+      color: #92400e;
+      margin-top: 0;
+      font-size: 18px;
+    }
+    .rotation-key-box {
+      background-color: #f3f4f6;
+      border: 2px solid #d1d5db;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      font-size: 12px;
+    }
+    .info-box {
+      background-color: #dbeafe;
+      border-left: 4px solid: #3b82f6;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #3b82f6;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      margin: 10px 10px 10px 0;
+      font-weight: 600;
+    }
+    .button-success {
+      background-color: #10b981;
+    }
+    .migration-details {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+    .migration-details dt {
+      font-weight: 600;
+      color: #6b7280;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+    .migration-details dd {
+      margin: 4px 0 0 0;
+      color: #111827;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .warning-text {
+      color: #dc2626;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon">✅</div>
+    <h1>Migration Complete!</h1>
+
+    <p>Your Bluesky/ATProto account has been successfully migrated to the new PDS.</p>
+
+    <!-- CRITICAL: Rotation Key -->
+    <div class="alert">
+      <h2>⚠️ SAVE YOUR ROTATION KEY NOW</h2>
+      <p><strong class="warning-text">This is the ONLY time you'll receive this key.</strong></p>
+      <p>Your rotation key is needed for account recovery if you lose access to your PDS. Store it securely (password manager, encrypted file, etc.).</p>
+
+      <% if @rotation_key_private.present? %>
+        <p><strong>Rotation Key (Private):</strong></p>
+        <div class="rotation-key-box"><%= @rotation_key_private %></div>
+      <% else %>
+        <p class="warning-text">⚠️ Rotation key generation failed during migration. You should generate one manually.</p>
+      <% end %>
+
+      <% if @rotation_key_public.present? %>
+        <p style="margin-top: 16px;"><strong>Public Key (for reference):</strong></p>
+        <div class="rotation-key-box"><%= @rotation_key_public %></div>
+      <% end %>
+    </div>
+
+    <!-- Backup Download -->
+    <% if @backup_available %>
+      <div class="info-box">
+        <h2 style="margin-top: 0; color: #1e40af;">📦 Backup Bundle Available</h2>
+        <p>Your account data backup is available for download for the next 10 minutes:</p>
+        <a href="<%= @download_url %>" class="button button-success">Download Backup Bundle</a>
+        <p style="font-size: 13px; color: #6b7280; margin-top: 12px;">
+          After 10 minutes, this link will expire and the backup will be permanently deleted.
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Migration Details -->
+    <div class="migration-details">
+      <h3 style="margin-top: 0;">Migration Summary</h3>
+      <dl>
+        <dt>Migration Token</dt>
+        <dd><code><%= @migration.token %></code></dd>
+
+        <dt>DID (Decentralized Identifier)</dt>
+        <dd><code><%= @migration.did %></code></dd>
+
+        <dt>Old Account</dt>
+        <dd><%= @migration.old_handle %> @ <%= @migration.old_pds_host %></dd>
+
+        <dt>New Account</dt>
+        <dd><strong><%= @migration.new_handle %> @ <%= @migration.new_pds_host %></strong></dd>
+
+        <dt>Completed At</dt>
+        <dd><%= Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at %></dd>
+      </dl>
+    </div>
+
+    <!-- View Status Page -->
+    <p>
+      <a href="<%= @migration_url %>" class="button">View Migration Status Page</a>
+    </p>
+    <p style="font-size: 13px; color: #6b7280;">
+      ⏱️ The status page will be available for 10 minutes, then permanently deleted for your privacy.
+    </p>
+
+    <!-- Important Notes -->
+    <div class="info-box">
+      <h3 style="margin-top: 0; color: #1e40af;">What Happens Next?</h3>
+      <ul style="margin: 0; padding-left: 20px;">
+        <li>Your account is now live on <strong><%= @migration.new_pds_host %></strong></li>
+        <li>Your old account on <%= @migration.old_pds_host %> has been deactivated</li>
+        <li>All your posts, follows, and data have been transferred</li>
+        <li>You can log in to Bluesky apps with your new handle: <strong><%= @migration.new_handle %></strong></li>
+        <li>Your followers should automatically see your new location (DID-based)</li>
+      </ul>
+    </div>
+
+    <!-- Security Notice -->
+    <div class="footer">
+      <p><strong>Privacy & Security:</strong></p>
+      <ul style="margin: 8px 0; padding-left: 20px; font-size: 13px;">
+        <li>This migration record will be automatically deleted in 10 minutes for GDPR compliance</li>
+        <li>All encrypted credentials have been securely erased from our servers</li>
+        <li>Save your rotation key and backup now - they won't be available later</li>
+      </ul>
+
+      <p style="margin-top: 20px;">
+        If you have questions or issues, please contact support with your migration token: <code><%= @migration.token %></code>
+      </p>
+
+      <p style="margin-top: 20px; font-size: 12px; color: #9ca3af;">
+        This email was sent to <%= @migration.email %> because you initiated an account migration.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

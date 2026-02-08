@@ -310,7 +310,11 @@ User Form → CreateAccountJob → ImportRepoJob → ImportBlobsJob → ImportPr
 - **Auto-Expiration**: Passwords expire after 48h, PLC tokens after 1h
 - **Automatic Cleanup**: Credentials are cleared immediately after successful migration
 - **Background Purging**: Expired credentials are automatically purged every 6 hours
-- **Token-Based Access**: Unguessable tokens (62^12 possibilities)
+- **Token-Based Access**: Unguessable tokens (62^16 = ~47 bits entropy)
+- **Rate Limiting**: Production deployments enforce strict rate limits via Caddy (see [RATE_LIMITING.md](RATE_LIMITING.md))
+  - Migration creation: 5 per IP per hour
+  - PLC token submission: 10 per IP per hour
+  - Status page views: 100 per IP per hour
 - **No Plain-Text Storage**: All sensitive data encrypted at rest
 - **Data Minimization**: Credentials are deleted as soon as they're no longer needed (GDPR compliant)
 

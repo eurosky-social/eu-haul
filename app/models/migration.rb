@@ -55,8 +55,12 @@ class Migration < ApplicationRecord
   prepend ExpirationChecks
 
   # Validations
-  validates :did, presence: true, uniqueness: true, format: { with: /\Adid:[a-z0-9]+:[a-z0-9._:\-]+\z/i }
-  validates :token, presence: true, uniqueness: true, format: { with: /\AEURO-[A-Z0-9]{8}\z/ }
+  validates :did, presence: true, format: { with: /\Adid:[a-z0-9]+:[a-z0-9._:\-]+\z/i }
+  validates :token, presence: true, uniqueness: true, format: { with: /\AEURO-[A-Z0-9]{16}\z/ }
+
+  # Custom validation: Only allow one active migration per DID
+  # Allows historical records and future migrations after completion/failure
+  validate :no_concurrent_active_migration, on: :create
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :status, presence: true, inclusion: { in: statuses.keys }
   validates :old_pds_host, :new_pds_host, presence: true
@@ -355,12 +359,14 @@ class Migration < ApplicationRecord
 
   private
 
-  # Token generation - EURO-XXXXXXXX format
+  # Token generation - EURO-XXXXXXXXXXXXXXXX format (16 chars = ~47 bits entropy)
+  # Uses SecureRandom for cryptographically secure token generation
+  # 16 alphanumeric characters = 62^16 = ~47 bits of entropy (sufficient for these tokens)
   def generate_token
     return if token.present?
 
     loop do
-      candidate = "EURO-#{SecureRandom.alphanumeric(8).upcase}"
+      candidate = "EURO-#{SecureRandom.alphanumeric(16).upcase}"
       self.token = candidate
       break unless Migration.exists?(token: candidate)
     end
@@ -440,5 +446,20 @@ class Migration < ApplicationRecord
     update(status: 'pending', error_message: nil)
     job_class.perform_async(id)
     true
+  end
+
+  # Prevent creating multiple active migrations for the same DID
+  # Completed/failed migrations don't block new migrations
+  def no_concurrent_active_migration
+    return unless did.present?
+
+    active_statuses = statuses.keys - ['completed', 'failed']
+
+    if Migration.where(did: did)
+               .where(status: active_statuses)
+               .where.not(id: id)
+               .exists?
+      errors.add(:did, "already has an active migration in progress. Please wait for it to complete or fail before starting a new migration.")
+    end
   end
 end

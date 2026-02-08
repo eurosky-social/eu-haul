@@ -122,11 +122,28 @@ class ActivateAccountJob < ApplicationJob
 
     migration.mark_complete!
 
-    # Step 4: SECURITY - Clear encrypted credentials after successful migration
+    # Step 4: Send completion email with rotation key and backup info
+    # This email is the user's permanent record since we'll delete the migration soon
+    Rails.logger.info("Sending migration completion email to #{migration.email}")
+    begin
+      MigrationMailer.migration_completed(migration).deliver_later
+      Rails.logger.info("Completion email queued successfully")
+    rescue StandardError => e
+      Rails.logger.error("Failed to send completion email: #{e.message}")
+      # Don't fail migration if email fails
+    end
+
+    # Step 5: SECURITY - Clear encrypted credentials after successful migration
     # Passwords and tokens are no longer needed after migration completes
     Rails.logger.info("Clearing encrypted credentials for security")
     migration.clear_credentials!
     Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
+
+    # Step 6: Schedule migration record deletion for GDPR compliance
+    # Give user 10 minutes to view status page and save rotation key
+    # After that, no reason to keep their personal data
+    Rails.logger.info("Scheduling migration record deletion in 10 minutes (GDPR compliance)")
+    DeleteMigrationJob.set(wait: 10.minutes).perform_later(migration.id)
 
     Rails.logger.info("=" * 80)
     Rails.logger.info("MIGRATION COMPLETE")
@@ -137,11 +154,12 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Account is now live on new PDS")
     if migration.progress_data['rotation_key_public']
       Rails.logger.info("Rotation key added: #{migration.progress_data['rotation_key_public']}")
-      Rails.logger.info("Rotation key private key available via: /migrations/#{migration.token}")
+      Rails.logger.info("Rotation key private key available for next 10 minutes")
     elsif migration.progress_data['rotation_key_error']
       Rails.logger.warn("Rotation key generation failed (migration still successful)")
     end
-    Rails.logger.info("Credentials cleared for security")
+    Rails.logger.info("Completion email sent to: #{migration.email}")
+    Rails.logger.info("Migration record will be deleted in 10 minutes")
     Rails.logger.info("=" * 80)
 
   rescue GoatService::RateLimitError => e

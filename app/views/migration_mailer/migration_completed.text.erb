@@ -1,0 +1,89 @@
+================================================================================
+✅ MIGRATION COMPLETE!
+================================================================================
+
+Your Bluesky/ATProto account has been successfully migrated to the new PDS.
+
+
+⚠️⚠️⚠️ SAVE YOUR ROTATION KEY NOW ⚠️⚠️⚠️
+
+This is the ONLY time you'll receive this key!
+
+Your rotation key is needed for account recovery if you lose access to your PDS.
+Store it securely (password manager, encrypted file, etc.).
+
+<% if @rotation_key_private.present? %>
+ROTATION KEY (PRIVATE):
+----------------------------------------
+<%= @rotation_key_private %>
+----------------------------------------
+
+<% else %>
+⚠️ Rotation key generation failed during migration.
+You should generate one manually using your PDS tools.
+<% end %>
+
+<% if @rotation_key_public.present? %>
+PUBLIC KEY (for reference):
+<%= @rotation_key_public %>
+<% end %>
+
+
+<% if @backup_available %>
+================================================================================
+📦 BACKUP BUNDLE AVAILABLE
+================================================================================
+
+Your account data backup is available for download for the next 10 minutes:
+
+<%= @download_url %>
+
+After 10 minutes, this link will expire and the backup will be permanently deleted.
+
+
+<% end %>
+================================================================================
+MIGRATION SUMMARY
+================================================================================
+
+Migration Token:    <%= @migration.token %>
+DID:                <%= @migration.did %>
+
+Old Account:        <%= @migration.old_handle %> @ <%= @migration.old_pds_host %>
+New Account:        <%= @migration.new_handle %> @ <%= @migration.new_pds_host %>
+
+Completed At:       <%= Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at %>
+
+
+View Status Page (available for 10 minutes):
+<%= @migration_url %>
+
+
+================================================================================
+WHAT HAPPENS NEXT?
+================================================================================
+
+✅ Your account is now live on <%= @migration.new_pds_host %>
+✅ Your old account on <%= @migration.old_pds_host %> has been deactivated
+✅ All your posts, follows, and data have been transferred
+✅ You can log in to Bluesky apps with your new handle: <%= @migration.new_handle %>
+✅ Your followers should automatically see your new location (DID-based)
+
+
+================================================================================
+PRIVACY & SECURITY
+================================================================================
+
+• This migration record will be automatically deleted in 10 minutes for GDPR compliance
+• All encrypted credentials have been securely erased from our servers
+• Save your rotation key and backup now - they won't be available later
+
+
+================================================================================
+
+If you have questions or issues, please contact support with your migration token:
+<%= @migration.token %>
+
+This email was sent to <%= @migration.email %> because you initiated an account migration.
+
+================================================================================
