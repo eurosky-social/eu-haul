@@ -6,12 +6,78 @@
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="googlebot" content="noindex, nofollow, noarchive">
   <%= csrf_meta_tags %>
-  <title><%= EuroskyConfig::SITE_NAME %> - Start Account Migration</title>
+  <title>U-HAUL - Start Account Migration</title>
   <% if EuroskyConfig::FAVICON_URL.present? %>
     <link rel="icon" type="image/png" href="<%= EuroskyConfig::FAVICON_URL %>">
   <% end %>
   <%= render 'shared/styles' %>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: url('/GMC_U-Haul_truck_front_1.JPG') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      width: 90%;
+      margin: 40px auto;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-radius: 24px;
+      padding: 48px;
+      padding-top: 0;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 24px 48px;
+      background: #ffffff;
+      border-radius: 12px;
+    }
+
+    .header h1 {
+      font-size: 72px;
+      font-weight: 900;
+      color: #000000;
+      margin: 0 0 8px 0;
+      letter-spacing: -2px;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial Black", sans-serif;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #000000;
+      margin: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
     .wizard-step {
       display: none;
     }
@@ -50,38 +116,41 @@
 
     .wizard-progress-step.active::before,
     .wizard-progress-step.completed::before {
-      background-color: #007bff;
+      background-color: #F57F29;
     }
 
     .wizard-progress-circle {
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background-color: #ddd;
+      background: #e0e0e0;
       color: white;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       margin-bottom: 8px;
+      transition: all 0.3s ease;
     }
 
     .wizard-progress-step.active .wizard-progress-circle {
-      background-color: #007bff;
+      background: #F57F29;
+      transform: scale(1.1);
     }
 
     .wizard-progress-step.completed .wizard-progress-circle {
-      background-color: #28a745;
+      background: #28a745;
     }
 
     .wizard-progress-label {
-      font-size: 14px;
+      font-size: 13px;
       color: #666;
+      font-weight: 500;
     }
 
     .wizard-progress-step.active .wizard-progress-label {
-      color: #007bff;
-      font-weight: 500;
+      color: #F57F29;
+      font-weight: 600;
     }
 
     .wizard-navigation {
@@ -169,6 +238,10 @@
     .form-control:focus {
       outline: none;
       border-color: #007bff;
+    }
+
+    .warning-box {
+      margin-top: 32px;
     }
   </style>
   <script>
@@ -598,11 +671,8 @@
 <body>
   <div class="container">
     <div class="header">
-      <% if EuroskyConfig::LOGO_URL.present? %>
-        <img src="<%= EuroskyConfig::LOGO_URL %>" alt="<%= EuroskyConfig::SITE_NAME %>" class="header-logo">
-      <% end %>
-      <h1><%= EuroskyConfig::SITE_NAME %></h1>
-      <p><%= EuroskyConfig::SITE_SUBTITLE %></p>
+      <h1>U-HAUL</h1>
+      <p>ATProto Account Migration Service</p>
     </div>
 
     <div class="content">
@@ -616,17 +686,6 @@
           </ul>
         </div>
       <% end %>
-
-      <div class="warning-box" role="alert">
-        <h3>Important Information</h3>
-        <ul>
-          <li>This migration will take approximately 20-30 minutes</li>
-          <li>Your account will be temporarily unavailable during migration</li>
-          <li>You must have access to your old account's password</li>
-          <li>You will need a PLC operation token from <a href="https://plc.directory" target="_blank" rel="noopener">plc.directory</a></li>
-          <li>Make sure your new PDS is ready to accept your account</li>
-        </ul>
-      </div>
 
       <%= form_with model: @migration, url: migrations_path, local: true, html: { novalidate: true } do |f| %>
 
@@ -813,6 +872,17 @@
         </div>
 
       <% end %>
+
+      <div class="warning-box" role="alert">
+        <h3>Important Information</h3>
+        <ul>
+          <li>This migration will take approximately 20-30 minutes</li>
+          <li>Your account will be temporarily unavailable during migration</li>
+          <li>You must have access to your old account's password</li>
+          <li>You will need a PLC operation token from <a href="https://plc.directory" target="_blank" rel="noopener">plc.directory</a></li>
+          <li>Make sure your new PDS is ready to accept your account</li>
+        </ul>
+      </div>
     </div>
   </div>
 </body>
