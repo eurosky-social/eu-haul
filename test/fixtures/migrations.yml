@@ -2,7 +2,7 @@
 # Based on MIGRATION_ERROR_ANALYSIS.md error scenarios
 
 pending_migration:
-  token: EURO-TESTTOKEN12345
+  token: EURO-TESTTOK123456789
   did: did:plc:test123abc
   old_handle: user.oldpds.com
   new_handle: user.newpds.com
@@ -18,9 +18,10 @@ pending_migration:
   credentials_expires_at: <%= 24.hours.from_now %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
+  encrypted_password: "test_encrypted_password"
 
 completed_migration:
-  token: EURO-COMPLETED98765
+  token: EURO-COMPLETED9876540
   did: did:plc:completed456
   old_handle: completed.oldpds.com
   new_handle: completed.newpds.com
@@ -37,7 +38,7 @@ completed_migration:
   updated_at: <%= 1.day.ago %>
 
 failed_migration:
-  token: EURO-FAILED7654321
+  token: EURO-FAILED76543210090
   did: did:plc:failed789
   old_handle: failed.oldpds.com
   new_handle: failed.newpds.com
@@ -55,7 +56,7 @@ failed_migration:
   updated_at: <%= 1.hour.ago %>
 
 migration_in:
-  token: EURO-MIGRATIONIN111
+  token: EURO-MIGRATIONIN11110
   did: did:plc:returning123
   old_handle: user.oldpds.com
   new_handle: user.bsky.social
@@ -73,7 +74,7 @@ migration_in:
   updated_at: <%= Time.current %>
 
 pending_blobs:
-  token: EURO-BLOBS9999999
+  token: EURO-BLOBS999999999990
   did: did:plc:blobs111
   old_handle: blobuser.oldpds.com
   new_handle: blobuser.newpds.com
@@ -97,7 +98,7 @@ pending_blobs:
   updated_at: <%= Time.current %>
 
 pending_plc:
-  token: EURO-PLC888888888
+  token: EURO-PLC8888888888880
   did: did:plc:plc222
   old_handle: plcuser.oldpds.com
   new_handle: plcuser.newpds.com
@@ -117,7 +118,7 @@ pending_plc:
   updated_at: <%= Time.current %>
 
 expired_credentials:
-  token: EURO-EXPIRED777777
+  token: EURO-EXPIRED77777777790
   did: did:plc:expired333
   old_handle: expired.oldpds.com
   new_handle: expired.newpds.com
@@ -135,7 +136,7 @@ expired_credentials:
   updated_at: <%= 1.hour.ago %>
 
 with_backup_bundle:
-  token: EURO-BACKUP666666
+  token: EURO-BACKUP66666666690
   did: did:plc:backup444
   old_handle: backup.oldpds.com
   new_handle: backup.newpds.com
@@ -156,7 +157,7 @@ with_backup_bundle:
   updated_at: <%= 30.minutes.ago %>
 
 rate_limited:
-  token: EURO-RATELIMIT5555
+  token: EURO-RATELIMIT5555590
   did: did:plc:ratelimit555
   old_handle: ratelimit.oldpds.com
   new_handle: ratelimit.newpds.com

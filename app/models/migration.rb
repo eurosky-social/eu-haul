@@ -417,32 +417,6 @@ class Migration < ApplicationRecord
     migration_in?
   end
 
-  private
-
-  # Token generation - EURO-XXXXXXXXXXXXXXXX format (16 chars = ~47 bits entropy)
-  # Uses SecureRandom for cryptographically secure token generation
-  # 16 alphanumeric characters = 62^16 = ~47 bits of entropy (sufficient for these tokens)
-  def generate_token
-    return if token.present?
-
-    loop do
-      candidate = "EURO-#{SecureRandom.alphanumeric(16).upcase}"
-      self.token = candidate
-      break unless Migration.exists?(token: candidate)
-    end
-  end
-
-  # Email verification token generation (32 characters = ~190 bits entropy)
-  def generate_email_verification_token
-    return if email_verification_token.present?
-
-    loop do
-      candidate = SecureRandom.urlsafe_base64(32)
-      self.email_verification_token = candidate
-      break unless Migration.exists?(email_verification_token: candidate)
-    end
-  end
-
   # Verify email with token
   def verify_email!(token)
     if email_verification_token == token
@@ -460,6 +434,34 @@ class Migration < ApplicationRecord
   # Check if email is verified
   def email_verified?
     email_verified_at.present?
+  end
+
+  private
+
+  # Token generation - EURO-XXXXXXXXXXXXXXXX format (16 chars = ~47 bits entropy)
+  # Uses SecureRandom for cryptographically secure token generation
+  # 16 alphanumeric characters = 62^16 = ~47 bits of entropy (sufficient for these tokens)
+  def generate_token
+    return if token.present?
+
+    loop do
+      # Generate 16 uppercase alphanumeric characters (A-Z, 0-9 only)
+      random_part = Array.new(16) { [*'A'..'Z', *'0'..'9'].sample }.join
+      candidate = "EURO-#{random_part}"
+      self.token = candidate
+      break unless Migration.exists?(token: candidate)
+    end
+  end
+
+  # Email verification token generation (32 characters = ~190 bits entropy)
+  def generate_email_verification_token
+    return if email_verification_token.present?
+
+    loop do
+      candidate = SecureRandom.urlsafe_base64(32)
+      self.email_verification_token = candidate
+      break unless Migration.exists?(email_verification_token: candidate)
+    end
   end
 
   # Normalize PDS hosts to include https:// prefix

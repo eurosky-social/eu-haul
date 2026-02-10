@@ -19,6 +19,8 @@ class GoatServiceConcurrencyTest < ActiveSupport::TestCase
       new_handle: 'user1.new-pds.example',
       old_pds_host: 'https://old-pds.example',
       new_pds_host: 'https://new-pds.example',
+      email: 'user1@example.com',
+      email_verified_at: Time.current,
       password: 'password1'
     )
 
@@ -28,6 +30,8 @@ class GoatServiceConcurrencyTest < ActiveSupport::TestCase
       new_handle: 'user2.new-pds.example',
       old_pds_host: 'https://old-pds.example',
       new_pds_host: 'https://new-pds.example',
+      email: 'user2@example.com',
+      email_verified_at: Time.current,
       password: 'password2'
     )
 

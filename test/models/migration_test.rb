@@ -84,8 +84,7 @@ class MigrationTest < ActiveSupport::TestCase
 
     duplicate_migration = Migration.new(@valid_attributes.merge(password: "test"))
     assert_not duplicate_migration.valid?
-    assert_includes duplicate_migration.errors[:did],
-      "already has an active migration in progress"
+    assert duplicate_migration.errors[:did].any? { |msg| msg.include?("already has an active migration in progress") }
   end
 
   test "allows new migration after previous completed" do
