@@ -39,7 +39,7 @@
 
 class ActivateAccountJob < ApplicationJob
   queue_as :critical
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   # Special handling for rate-limiting errors with longer backoff
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5

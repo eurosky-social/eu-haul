@@ -49,7 +49,7 @@ class DownloadAllDataJob < ApplicationJob
   PROGRESS_UPDATE_INTERVAL = 10
 
   # Retry configuration
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
 
   def perform(migration_id)

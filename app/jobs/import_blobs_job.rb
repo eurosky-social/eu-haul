@@ -63,7 +63,7 @@ class ImportBlobsJob < ApplicationJob
   PARALLEL_BLOB_TRANSFERS = 10 # Number of blobs to transfer in parallel
 
   # Retry configuration (3 attempts with exponential backoff)
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   # Special handling for rate-limiting errors with longer backoff
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5

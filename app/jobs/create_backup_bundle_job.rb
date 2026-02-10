@@ -49,7 +49,7 @@ class CreateBackupBundleJob < ApplicationJob
   queue_as :migrations
 
   # Retry configuration
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   def perform(migration_id)
     migration = Migration.find(migration_id)
