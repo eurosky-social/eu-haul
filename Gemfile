@@ -45,5 +45,8 @@ group :test do
   # HTTP mocking and recording
   gem "webmock", "~> 3.19"
   gem "vcr", "~> 6.2"
+
+  # Mocking and stubbing
+  gem "mocha", "~> 2.1"
 end
 

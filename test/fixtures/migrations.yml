@@ -1,0 +1,178 @@
+# Migration Test Fixtures
+# Based on MIGRATION_ERROR_ANALYSIS.md error scenarios
+
+pending_migration:
+  token: EURO-TESTTOKEN12345
+  did: did:plc:test123abc
+  old_handle: user.oldpds.com
+  new_handle: user.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: test@example.com
+  email_verified_at: <%= Time.current %>
+  status: pending_account
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 100
+  create_backup_bundle: false
+  credentials_expires_at: <%= 24.hours.from_now %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+completed_migration:
+  token: EURO-COMPLETED98765
+  did: did:plc:completed456
+  old_handle: completed.oldpds.com
+  new_handle: completed.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: completed@example.com
+  email_verified_at: <%= 1.day.ago %>
+  status: completed
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 50
+  create_backup_bundle: false
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.day.ago %>
+
+failed_migration:
+  token: EURO-FAILED7654321
+  did: did:plc:failed789
+  old_handle: failed.oldpds.com
+  new_handle: failed.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: failed@example.com
+  email_verified_at: <%= 1.day.ago %>
+  status: failed
+  migration_type: migration_out
+  last_error: "Authentication failed: Invalid password"
+  retry_count: 3
+  estimated_memory_mb: 75
+  create_backup_bundle: false
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.hour.ago %>
+
+migration_in:
+  token: EURO-MIGRATIONIN111
+  did: did:plc:returning123
+  old_handle: user.oldpds.com
+  new_handle: user.bsky.social
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://bsky.social
+  email: returning@example.com
+  email_verified_at: <%= Time.current %>
+  status: pending_account
+  migration_type: migration_in
+  retry_count: 0
+  estimated_memory_mb: 120
+  create_backup_bundle: false
+  credentials_expires_at: <%= 24.hours.from_now %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+pending_blobs:
+  token: EURO-BLOBS9999999
+  did: did:plc:blobs111
+  old_handle: blobuser.oldpds.com
+  new_handle: blobuser.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: blobs@example.com
+  email_verified_at: <%= 1.hour.ago %>
+  status: pending_blobs
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 500
+  create_backup_bundle: false
+  progress_data:
+    blobs:
+      bafybeiabc123:
+        size: 1024000
+        uploaded: 512000
+        updated_at: <%= Time.current.iso8601 %>
+  credentials_expires_at: <%= 24.hours.from_now %>
+  created_at: <%= 2.hours.ago %>
+  updated_at: <%= Time.current %>
+
+pending_plc:
+  token: EURO-PLC888888888
+  did: did:plc:plc222
+  old_handle: plcuser.oldpds.com
+  new_handle: plcuser.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: plc@example.com
+  email_verified_at: <%= 2.hours.ago %>
+  status: pending_plc
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 150
+  create_backup_bundle: false
+  credentials_expires_at: <%= 1.hour.from_now %>
+  plc_otp_expires_at: <%= 15.minutes.from_now %>
+  plc_otp_attempts: 0
+  created_at: <%= 3.hours.ago %>
+  updated_at: <%= Time.current %>
+
+expired_credentials:
+  token: EURO-EXPIRED777777
+  did: did:plc:expired333
+  old_handle: expired.oldpds.com
+  new_handle: expired.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: expired@example.com
+  email_verified_at: <%= 2.days.ago %>
+  status: pending_account
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 80
+  create_backup_bundle: false
+  credentials_expires_at: <%= 1.hour.ago %>
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.hour.ago %>
+
+with_backup_bundle:
+  token: EURO-BACKUP666666
+  did: did:plc:backup444
+  old_handle: backup.oldpds.com
+  new_handle: backup.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: backup@example.com
+  email_verified_at: <%= 1.hour.ago %>
+  status: backup_ready
+  migration_type: migration_out
+  retry_count: 0
+  estimated_memory_mb: 200
+  create_backup_bundle: true
+  backup_bundle_path: /tmp/backup_bundle.tar.gz
+  backup_created_at: <%= 30.minutes.ago %>
+  backup_expires_at: <%= 23.hours.from_now %>
+  credentials_expires_at: <%= 24.hours.from_now %>
+  created_at: <%= 1.hour.ago %>
+  updated_at: <%= 30.minutes.ago %>
+
+rate_limited:
+  token: EURO-RATELIMIT5555
+  did: did:plc:ratelimit555
+  old_handle: ratelimit.oldpds.com
+  new_handle: ratelimit.newpds.com
+  old_pds_host: https://oldpds.example.com
+  new_pds_host: https://newpds.example.com
+  email: ratelimit@example.com
+  email_verified_at: <%= 1.hour.ago %>
+  status: pending_account
+  migration_type: migration_out
+  last_error: "HTTP 429: Too Many Requests"
+  retry_count: 2
+  estimated_memory_mb: 90
+  create_backup_bundle: false
+  current_job_step: CreateAccountJob
+  current_job_attempt: 2
+  current_job_max_attempts: 5
+  credentials_expires_at: <%= 24.hours.from_now %>
+  created_at: <%= 2.hours.ago %>
+  updated_at: <%= Time.current %>

@@ -63,7 +63,7 @@ class Migration < ApplicationRecord
   # Allows historical records and future migrations after completion/failure
   validate :no_concurrent_active_migration, on: :create
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :status, presence: true, inclusion: { in: statuses.keys }
+  validates :status, presence: true, inclusion: { in: Migration.statuses.keys }
   validates :old_pds_host, :new_pds_host, presence: true
 
   # ATProto handle validation (official spec from https://atproto.com/specs/handle)
@@ -543,7 +543,7 @@ class Migration < ApplicationRecord
   def no_concurrent_active_migration
     return unless did.present?
 
-    active_statuses = statuses.keys - ['completed', 'failed']
+    active_statuses = Migration.statuses.keys - ['completed', 'failed']
 
     if Migration.where(did: did)
                .where(status: active_statuses)

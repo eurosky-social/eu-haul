@@ -7,11 +7,11 @@ FROM ruby:${RUBY_VERSION}-alpine as base
 # Rails app lives here
 WORKDIR /rails
 
-# Set production environment
+# Set production environment (can be overridden at runtime)
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development test"
+    BUNDLE_WITHOUT="development"
 
 
 # Throw-away build stage to reduce size of final image
