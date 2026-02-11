@@ -10,8 +10,13 @@ require "webmock/minitest"
 class GoatServiceErrorTest < ActiveSupport::TestCase
   def setup
     @migration = migrations(:pending_migration)
-    # Set a test password that Lockbox can encrypt/decrypt
+    # Set a test password for the NEW account (system-generated)
     @migration.set_password("test_password_123")
+    # Set old PDS tokens (as captured from initial authentication)
+    @migration.old_access_token = mock_jwt
+    @migration.old_refresh_token = mock_jwt(exp: 90.days.from_now.to_i)
+    @migration.save!
+
     @service = GoatService.new(@migration)
 
     # Disable all external HTTP connections
@@ -27,10 +32,9 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   # Stage 2: Authentication Errors
   # ============================================================================
 
-  test "login_old_pds raises AuthenticationError on wrong password" do
-    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.createSession")
-      .with(body: hash_including(identifier: @migration.old_handle))
-      .to_return(status: 401, body: { error: 'AuthenticationRequired', message: 'Invalid identifier or password' }.to_json)
+  test "login_old_pds raises AuthenticationError when refresh token is rejected" do
+    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
+      .to_return(status: 401, body: { error: 'ExpiredToken', message: 'Token has been revoked' }.to_json)
 
     error = assert_raises(GoatService::AuthenticationError) do
       @service.login_old_pds
@@ -40,8 +44,36 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   end
 
   test "login_old_pds raises AuthenticationError when PDS unreachable" do
-    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.createSession")
+    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_timeout
+
+    error = assert_raises(GoatService::AuthenticationError) do
+      @service.login_old_pds
+    end
+
+    assert_match /Failed to login to old PDS/, error.message
+  end
+
+  test "login_old_pds raises AuthenticationError when no refresh token stored" do
+    @migration.update!(
+      encrypted_old_access_token: nil,
+      encrypted_old_refresh_token: nil
+    )
+    @service = GoatService.new(@migration.reload)
+
+    error = assert_raises(GoatService::AuthenticationError) do
+      @service.login_old_pds
+    end
+
+    assert_match /Failed to login to old PDS/, error.message
+  end
+
+  test "login_old_pds raises AuthenticationError when credentials expired" do
+    @migration.update!(credentials_expires_at: 1.hour.ago)
+
+    # Tokens should return nil due to expiration
+    assert_nil @migration.old_refresh_token
+    @service = GoatService.new(@migration.reload)
 
     error = assert_raises(GoatService::AuthenticationError) do
       @service.login_old_pds
@@ -186,7 +218,7 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   # ============================================================================
 
   test "login_old_pds raises AuthenticationError with rate limit info on HTTP 429" do
-    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.createSession")
+    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_return(status: 429, body: { error: 'RateLimitExceeded', message: 'Too Many Requests' }.to_json)
 
     error = assert_raises(GoatService::AuthenticationError) do
@@ -610,13 +642,14 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
     "#{header}.#{payload}.#{signature}"
   end
 
+  # Stub old PDS token refresh (used instead of createSession since we store tokens)
   def stub_old_pds_login
-    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.createSession")
+    stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_return(status: 200, body: {
         did: @migration.did,
         handle: @migration.old_handle,
         accessJwt: mock_jwt,
-        refreshJwt: mock_jwt
+        refreshJwt: mock_jwt(exp: 90.days.from_now.to_i)
       }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 

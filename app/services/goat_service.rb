@@ -44,6 +44,7 @@ require 'base58'
 require 'minisky'
 
 # PdsClient: A programmatic minisky client that doesn't require a config file
+# Used for password-based authentication (new PDS only)
 class PdsClient
   include Minisky::Requests
 
@@ -60,6 +61,30 @@ class PdsClient
 
   def save_config
     # No-op: we don't persist config to disk
+  end
+end
+
+# TokenPdsClient: A minisky client pre-authenticated with access/refresh tokens
+# Used for old PDS where we store tokens instead of the user's password
+class TokenPdsClient
+  include Minisky::Requests
+
+  attr_reader :host
+  attr_accessor :config
+
+  def initialize(host, identifier, access_token:, refresh_token:, on_token_refresh: nil)
+    @host = host
+    @on_token_refresh = on_token_refresh
+    @config = {
+      'id' => identifier,
+      'access_token' => access_token,
+      'refresh_token' => refresh_token
+    }
+  end
+
+  def save_config
+    # Persist refreshed tokens back to the migration record
+    @on_token_refresh&.call(config['access_token'], config['refresh_token'])
   end
 end
 
@@ -812,36 +837,126 @@ class GoatService
   end
 
   # Create session directly via API
+  # For old PDS: uses stored refresh token
+  # For new PDS: uses system-generated password
   # @param pds_host [String] The PDS host to authenticate against
   # @param identifier [String] The identifier to use for login (handle or DID)
   def create_direct_session(pds_host:, identifier:)
-    url = "#{pds_host}/xrpc/com.atproto.server.createSession"
+    if old_pds_host?(pds_host)
+      # Old PDS: refresh session using stored refresh token
+      tokens = refresh_session_with_token(
+        host: pds_host,
+        refresh_token: migration.old_refresh_token
+      )
+      # Persist rotated tokens back to migration record
+      migration.update_old_pds_tokens!(
+        access_token: tokens[:access_token],
+        refresh_token: tokens[:refresh_token]
+      )
+      tokens[:access_token]
+    else
+      # New PDS: create session using system-generated password
+      url = "#{pds_host}/xrpc/com.atproto.server.createSession"
 
-    response = HTTParty.post(
-      url,
-      headers: { 'Content-Type' => 'application/json' },
-      body: {
-        identifier: identifier,
-        password: migration.password
-      }.to_json,
-      timeout: 30
-    )
+      response = HTTParty.post(
+        url,
+        headers: { 'Content-Type' => 'application/json' },
+        body: {
+          identifier: identifier,
+          password: migration.password
+        }.to_json,
+        timeout: 30
+      )
 
-    unless response.success?
-      # Check for rate limiting
-      if response.code == 429
-        logger.warn("Rate limit hit during session creation: #{response.code} #{response.message}")
-        raise RateLimitError, "Failed to create session: #{response.code} #{response.message}"
+      unless response.success?
+        if response.code == 429
+          logger.warn("Rate limit hit during session creation: #{response.code} #{response.message}")
+          raise RateLimitError, "Failed to create session: #{response.code} #{response.message}"
+        end
+        raise AuthenticationError, "Failed to create session: #{response.code} #{response.message}"
       end
-      raise AuthenticationError, "Failed to create session: #{response.code} #{response.message}"
-    end
 
-    parsed = JSON.parse(response.body)
-    parsed['accessJwt']
+      parsed = JSON.parse(response.body)
+      parsed['accessJwt']
+    end
   rescue RateLimitError
     raise  # Re-raise rate limit errors
   rescue StandardError => e
     raise AuthenticationError, "Failed to create direct session: #{e.message}"
+  end
+
+  # Check if a host is the old (source) PDS
+  def old_pds_host?(host)
+    host == migration.old_pds_host
+  end
+
+  # Refresh an ATProto session using a refresh token
+  # Returns { access_token:, refresh_token: } with fresh tokens
+  def refresh_session_with_token(host:, refresh_token:)
+    raise AuthenticationError, "No refresh token available for #{host}" if refresh_token.blank?
+
+    url = "#{host}/xrpc/com.atproto.server.refreshSession"
+
+    response = HTTParty.post(
+      url,
+      headers: {
+        'Authorization' => "Bearer #{refresh_token}"
+      },
+      timeout: 30
+    )
+
+    unless response.success?
+      if response.code == 429
+        raise RateLimitError, "Rate limit during session refresh: #{response.code} #{response.message}"
+      end
+      raise AuthenticationError, "Failed to refresh session on #{host}: #{response.code} #{response.message}"
+    end
+
+    parsed = JSON.parse(response.body)
+    {
+      access_token: parsed['accessJwt'],
+      refresh_token: parsed['refreshJwt']
+    }
+  rescue RateLimitError
+    raise
+  rescue AuthenticationError
+    raise
+  rescue StandardError => e
+    raise AuthenticationError, "Failed to refresh session: #{e.message}"
+  end
+
+  # Create a TokenPdsClient for old PDS using stored tokens
+  # Refreshes the access token first to ensure it's valid
+  def create_token_authenticated_client(host:, identifier:)
+    logger.info("Creating token-authenticated PDS client for #{host} (#{identifier})")
+
+    refresh_token = migration.old_refresh_token
+    raise AuthenticationError, "No old PDS refresh token available" if refresh_token.blank?
+
+    # Refresh to get fresh tokens (access token may have expired between jobs)
+    tokens = refresh_session_with_token(host: host, refresh_token: refresh_token)
+
+    # Persist rotated tokens back to migration record
+    migration.update_old_pds_tokens!(
+      access_token: tokens[:access_token],
+      refresh_token: tokens[:refresh_token]
+    )
+
+    # Create client with fresh tokens and a callback to persist future refreshes
+    client = TokenPdsClient.new(
+      host,
+      identifier,
+      access_token: tokens[:access_token],
+      refresh_token: tokens[:refresh_token],
+      on_token_refresh: ->(access, refresh) {
+        migration.update_old_pds_tokens!(access_token: access, refresh_token: refresh)
+      }
+    )
+
+    logger.info("Token-authenticated PDS client created for #{host}")
+    client
+  rescue StandardError => e
+    raise AuthenticationError, "Failed to create token-authenticated client for #{host}: #{e.message}"
   end
 
   # Get new PDS service DID
@@ -861,13 +976,13 @@ class GoatService
   end
 
   # PDS client management using minisky
-  # Returns a cached PdsClient for the old (source) PDS
+  # Returns a cached TokenPdsClient for the old (source) PDS
+  # Uses stored refresh token to obtain fresh access tokens
   def old_pds_client
     @pds_clients ||= {}
-    @pds_clients[:old_pds] ||= create_pds_client(
+    @pds_clients[:old_pds] ||= create_token_authenticated_client(
       host: migration.old_pds_host,
-      identifier: migration.old_handle,
-      password: migration.password
+      identifier: migration.old_handle
     )
   end
 

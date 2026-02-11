@@ -14,6 +14,9 @@ RSpec.describe "Migration Flow", type: :request do
   let(:resolved_pds_host) { "https://bsky.social" }
 
   describe "Complete migration flow" do
+    let(:old_access_jwt) { "eyJhbGciOiJIUzI1NiJ9.#{Base64.strict_encode64({ sub: 'test', exp: 1.hour.from_now.to_i }.to_json)}.sig" }
+    let(:old_refresh_jwt) { "eyJhbGciOiJIUzI1NiJ9.#{Base64.strict_encode64({ sub: 'test', exp: 90.days.from_now.to_i }.to_json)}.sig" }
+
     it "completes full migration cycle from creation to completion" do
       # Step 1: User visits migration form
       get "/migrations/new"
@@ -25,6 +28,17 @@ RSpec.describe "Migration Flow", type: :request do
       allow(GoatService).to receive(:resolve_handle).with(old_handle).and_return(
         { did: resolved_did, pds_host: resolved_pds_host }
       )
+
+      # Mock old PDS authentication (controller authenticates to capture tokens)
+      stub_request(:post, "#{resolved_pds_host}/xrpc/com.atproto.server.createSession")
+        .with(body: hash_including("identifier" => old_handle, "password" => password))
+        .to_return(status: 200, body: {
+          did: resolved_did,
+          handle: old_handle,
+          email: user_email,
+          accessJwt: old_access_jwt,
+          refreshJwt: old_refresh_jwt
+        }.to_json, headers: { 'Content-Type' => 'application/json' })
 
       post "/migrations", params: {
         migration: {
@@ -44,6 +58,12 @@ RSpec.describe "Migration Flow", type: :request do
       expect(migration.email).to eq(user_email)
       expect(migration.did).to eq(resolved_did)
       expect(migration.token).to match(/\AEURO-[A-Z0-9]{8}\z/)
+
+      # Verify old PDS tokens were stored (not the user's password)
+      expect(migration.old_access_token).to eq(old_access_jwt)
+      expect(migration.old_refresh_token).to eq(old_refresh_jwt)
+      # The stored password should be a system-generated one, NOT the user's input
+      expect(migration.password).not_to eq(password)
 
       # Follow redirect to status page
       follow_redirect!
@@ -298,12 +318,22 @@ RSpec.describe "Migration Flow", type: :request do
     it "does not expose encrypted credentials in JSON" do
       migration.set_password(password)
       migration.set_plc_token(plc_token)
+      migration.update!(
+        old_access_token: "secret_access_token",
+        old_refresh_token: "secret_refresh_token"
+      )
 
       get "/migrations/#{migration.id}/status"
       json = JSON.parse(response.body)
 
       expect(json['encrypted_password']).to be_nil
       expect(json['encrypted_plc_token']).to be_nil
+      expect(json['encrypted_old_access_token']).to be_nil
+      expect(json['encrypted_old_refresh_token']).to be_nil
+      expect(json['old_access_token']).to be_nil
+      expect(json['old_refresh_token']).to be_nil
+      expect(json.to_s).not_to include("secret_access_token")
+      expect(json.to_s).not_to include("secret_refresh_token")
     end
 
     it "uses HTTPS in production (enforced by Rails config)" do

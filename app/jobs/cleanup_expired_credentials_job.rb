@@ -57,11 +57,9 @@ class CleanupExpiredCredentialsJob < ApplicationJob
     # Find migrations with expired credentials that still have encrypted data
     expired_migrations = Migration
       .where("credentials_expires_at < ?", Time.current)
-      .where.not(encrypted_password: nil)
-      .or(
-        Migration
-          .where("credentials_expires_at < ?", Time.current)
-          .where.not(encrypted_plc_token: nil)
+      .where(
+        "encrypted_password IS NOT NULL OR encrypted_plc_token IS NOT NULL OR " \
+        "encrypted_old_access_token IS NOT NULL OR encrypted_old_refresh_token IS NOT NULL"
       )
 
     if expired_migrations.empty?
@@ -82,7 +80,9 @@ class CleanupExpiredCredentialsJob < ApplicationJob
         # Clear credentials
         migration.update!(
           encrypted_password: nil,
-          encrypted_plc_token: nil
+          encrypted_plc_token: nil,
+          encrypted_old_access_token: nil,
+          encrypted_old_refresh_token: nil
         )
 
         logger.info(

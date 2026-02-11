@@ -659,6 +659,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
   test "ActivateAccountJob handles old account deactivation failure gracefully" do
     @migration.update!(status: :pending_activation)
+    @migration.set_password("test_password")
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
@@ -675,8 +676,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     service.stubs(:add_rotation_key_to_pds).returns(true)
     GoatService.stubs(:new).returns(service)
 
-    # Stub mailer so it doesn't try to send
-    MigrationMailer.stubs(:migration_completed).returns(mock(deliver_later: true))
+    # Stub mailer so it doesn't try to send (now takes migration + password)
+    mail_mock = mock(deliver_later: true)
+    MigrationMailer.stubs(:migration_completed).with(anything, anything).returns(mail_mock)
 
     # Should complete migration despite deactivation failure
     job.perform(@migration.id)
@@ -702,8 +704,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     service.stubs(:add_rotation_key_to_pds).returns(true)
     GoatService.stubs(:new).returns(service)
 
-    # Stub mailer so it doesn't try to send
-    MigrationMailer.stubs(:migration_completed).returns(mock(deliver_later: true))
+    # Stub mailer so it doesn't try to send (now takes migration + password)
+    mail_mock = mock(deliver_later: true)
+    MigrationMailer.stubs(:migration_completed).with(anything, anything).returns(mail_mock)
 
     job.perform(@migration.id)
 
@@ -714,8 +717,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     assert_nil @migration.plc_token
   end
 
-  test "ActivateAccountJob sends completion email" do
+  test "ActivateAccountJob sends completion email with password" do
     @migration.update!(status: :pending_activation)
+    @migration.set_password("test_password_for_email")
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
@@ -732,10 +736,10 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     @migration.stubs(:clear_credentials!)
     @migration.stubs(:mark_complete!)
 
-    # Should send completion email
-    MigrationMailer.expects(:migration_completed).with(@migration).returns(
-      mock(deliver_later: true)
-    )
+    # Should send completion email with migration AND the new account password
+    mail_mock = mock('mail')
+    mail_mock.expects(:deliver_later)
+    MigrationMailer.expects(:migration_completed).with(@migration, "test_password_for_email").returns(mail_mock)
 
     job.perform(@migration.id)
   end
@@ -746,6 +750,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
   test "Jobs clean up work directory on completion" do
     @migration.update!(status: :pending_activation)
+    @migration.set_password("test_password")
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
@@ -762,7 +767,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     @migration.stubs(:clear_credentials!)
     @migration.stubs(:mark_complete!)
-    MigrationMailer.stubs(:migration_completed).returns(mock(deliver_later: true))
+    mail_mock = mock(deliver_later: true)
+    MigrationMailer.stubs(:migration_completed).with(anything, anything).returns(mail_mock)
 
     job.perform(@migration.id)
   end

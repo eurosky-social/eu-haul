@@ -109,6 +109,16 @@
 
     <p>Your Bluesky/ATProto account has been successfully migrated to the new PDS.</p>
 
+    <!-- New Account Password -->
+    <% if @password.present? %>
+    <div style="background-color: #f0f4ff; border: 2px solid #3b82f6; border-radius: 6px; padding: 20px; margin: 20px 0;">
+      <h2 style="margin-top: 0; color: #1e40af; font-size: 18px;">🔐 Your New Account Password</h2>
+      <p>Use this password to log in to your new account:</p>
+      <div style="background-color: #f3f4f6; border: 2px solid #d1d5db; border-radius: 6px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; text-align: center; word-break: break-all; color: #3b82f6; user-select: all; -webkit-user-select: all;"><%= @password %></div>
+      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;"><strong>Save this password now</strong> — store it in a password manager. You can change it after logging in.</p>
+    </div>
+    <% end %>
+
     <!-- CRITICAL: Rotation Key -->
     <div class="alert">
       <h2>⚠️ SAVE YOUR ROTATION KEY NOW</h2>

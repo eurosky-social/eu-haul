@@ -37,8 +37,9 @@ class MigrationMailer < ApplicationMailer
     )
   end
 
-  def migration_completed(migration)
+  def migration_completed(migration, new_account_password = nil)
     @migration = migration
+    @password = new_account_password
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
     @rotation_key_private = migration.rotation_key
     @rotation_key_public = migration.progress_data['rotation_key_public']
@@ -48,7 +49,7 @@ class MigrationMailer < ApplicationMailer
 
     mail(
       to: migration.email,
-      subject: "✅ Migration Complete - Save Your Rotation Key! (#{migration.token})"
+      subject: "✅ Migration Complete - Save Your Password & Rotation Key! (#{migration.token})"
     )
   end
 

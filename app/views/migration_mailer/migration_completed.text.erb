@@ -4,7 +4,22 @@
 
 Your Bluesky/ATProto account has been successfully migrated to the new PDS.
 
+<% if @password.present? %>
+================================================================================
+🔐 YOUR NEW ACCOUNT PASSWORD
+================================================================================
 
+Use this password to log in to your new account:
+
+----------------------------------------
+<%= @password %>
+----------------------------------------
+
+Save this password now — store it in a password manager.
+You can change it after logging in for the first time.
+
+
+<% end %>
 ⚠️⚠️⚠️ SAVE YOUR ROTATION KEY NOW ⚠️⚠️⚠️
 
 This is the ONLY time you'll receive this key!

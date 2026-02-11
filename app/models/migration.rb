@@ -16,6 +16,16 @@ class Migration < ApplicationRecord
       return nil if invite_code_expired?
       super
     end
+
+    def old_access_token
+      return nil if credentials_expired?
+      super
+    end
+
+    def old_refresh_token
+      return nil if credentials_expired?
+      super
+    end
   end
   # Enums
   enum :status, {
@@ -51,6 +61,8 @@ class Migration < ApplicationRecord
   has_encrypted :invite_code, key: lockbox_key, encrypted_attribute: :encrypted_invite_code
   has_encrypted :rotation_key, key: lockbox_key, encrypted_attribute: :rotation_private_key_ciphertext
   has_encrypted :plc_otp, key: lockbox_key, encrypted_attribute: :encrypted_plc_otp
+  has_encrypted :old_access_token, key: lockbox_key, encrypted_attribute: :encrypted_old_access_token
+  has_encrypted :old_refresh_token, key: lockbox_key, encrypted_attribute: :encrypted_old_refresh_token
 
   # Prepend the expiration check module AFTER Lockbox has defined its methods
   prepend ExpirationChecks
@@ -332,9 +344,33 @@ class Migration < ApplicationRecord
     update!(
       encrypted_password: nil,
       encrypted_plc_token: nil,
+      encrypted_old_access_token: nil,
+      encrypted_old_refresh_token: nil,
       credentials_expires_at: nil
     )
     Rails.logger.info("Cleared encrypted credentials for migration #{token}")
+  end
+
+  # Old PDS token management
+  def set_old_pds_tokens!(access_token:, refresh_token:, expires_in: 48.hours)
+    self.old_access_token = access_token
+    self.old_refresh_token = refresh_token
+    self.credentials_expires_at = expires_in.from_now
+    save!
+  end
+
+  def update_old_pds_tokens!(access_token:, refresh_token:)
+    self.old_access_token = access_token
+    self.old_refresh_token = refresh_token
+    save!
+  end
+
+  def clear_old_pds_tokens!
+    update!(
+      encrypted_old_access_token: nil,
+      encrypted_old_refresh_token: nil
+    )
+    Rails.logger.info("Cleared old PDS tokens for migration #{token}")
   end
 
   # Invite code management

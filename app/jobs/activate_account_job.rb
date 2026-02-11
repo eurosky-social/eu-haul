@@ -88,6 +88,10 @@ class ActivateAccountJob < ApplicationJob
       migration.save!
     end
 
+    # Step 2.1: Clear old PDS tokens (no longer needed after deactivation)
+    Rails.logger.info("Clearing old PDS tokens for migration #{migration.token}")
+    migration.clear_old_pds_tokens!
+
     # Step 2.5: Generate and add rotation key for account recovery
     # This happens AFTER activation and PLC update, so the new PDS has authority to sign the PLC operation
     begin
@@ -122,12 +126,14 @@ class ActivateAccountJob < ApplicationJob
 
     migration.mark_complete!
 
-    # Step 4: Send completion email with rotation key and backup info
+    # Step 4: Send completion email with new account password, rotation key, and backup info
     # This email is the user's permanent record since we'll delete the migration soon
+    # The password is included now (not earlier) so the user only gets it when the account is ready
     Rails.logger.info("Sending migration completion email to #{migration.email}")
     begin
-      MigrationMailer.migration_completed(migration).deliver_later
-      Rails.logger.info("Completion email queued successfully")
+      new_account_password = migration.password  # Decrypt from DB before clearing
+      MigrationMailer.migration_completed(migration, new_account_password).deliver_later
+      Rails.logger.info("Completion email queued successfully (includes new account password)")
     rescue StandardError => e
       Rails.logger.error("Failed to send completion email: #{e.message}")
       # Don't fail migration if email fails

@@ -271,11 +271,26 @@ class MigrationsController < ApplicationController
         end
       end
 
+      # Authenticate against old PDS to capture session tokens
+      # The user's password is used once here and never stored
+      user_password = params[:migration][:password]
+      if user_password.blank?
+        @migration.errors.add(:base, "Password is required. Please go back and enter your password.")
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      old_pds_session = authenticate_and_fetch_profile(@migration.old_pds_host, @migration.old_handle, user_password)
+
       # Generate a secure random password for the new account
-      # This will be emailed to the user (encrypted via Lockbox, NOT stored in progress_data)
+      # This will be emailed to the user after migration completes (NOT immediately)
       new_account_password = SecureRandom.urlsafe_base64(16) # ~128 bits of entropy
       @migration.password = new_account_password  # Lockbox encrypts this
       @migration.credentials_expires_at = 48.hours.from_now
+
+      # Store old PDS tokens (encrypted via Lockbox) instead of the user's password
+      @migration.old_access_token = old_pds_session[:access_token]
+      @migration.old_refresh_token = old_pds_session[:refresh_token]
 
       # Track password generation time (for auditing), but NOT the password itself
       @migration.progress_data ||= {}
@@ -288,22 +303,18 @@ class MigrationsController < ApplicationController
       end
 
       if @migration.save
-        # Migration saved successfully, token generated, CreateAccountJob scheduled
-
-        # Send email with new account password
-        begin
-          MigrationMailer.account_password(@migration, new_account_password).deliver_later
-          Rails.logger.info("[MigrationsController] Sent account password email to #{@migration.email}")
-        rescue => email_error
-          Rails.logger.error("[MigrationsController] Failed to send password email: #{email_error.message}")
-          # Don't fail the migration if email fails, just log it
-        end
+        # Migration saved successfully, token generated
+        # Password email is deferred until migration completes (sent from ActivateAccountJob)
 
         redirect_to migration_by_token_path(@migration.token),
-                    notice: "Migration started! Check your email for your new account password. Track your progress with token: #{@migration.token}"
+                    notice: "Migration started! You'll receive your new account password by email once migration completes. Track your progress with token: #{@migration.token}"
       else
         render :new, status: :unprocessable_entity
       end
+    rescue AuthenticationError => e
+      Rails.logger.error("Authentication failed during migration creation for #{@migration.old_handle}: #{e.message}")
+      @migration.errors.add(:base, "Authentication failed. Please check your password and try again.")
+      render :new, status: :unprocessable_entity
     rescue GoatService::NetworkError => e
       Rails.logger.error("Failed to resolve handle #{@migration.old_handle}: #{e.message}")
       @migration.errors.add(:old_handle, "could not be resolved. Please check that the handle is correct and try again.")
@@ -973,11 +984,7 @@ class MigrationsController < ApplicationController
     end
 
     session_data = JSON.parse(response.body)
-    access_token = session_data['accessJwt']
 
-    # Now fetch the account details using authenticated session
-    # Use com.atproto.server.getAccountInviteCodes or com.atproto.server.describeServer
-    # Actually, the email should be in the session response
     email = session_data['email']
     handle = session_data['handle']
 
@@ -985,7 +992,9 @@ class MigrationsController < ApplicationController
 
     {
       handle: handle,
-      email: email
+      email: email,
+      access_token: session_data['accessJwt'],
+      refresh_token: session_data['refreshJwt']
     }
   rescue JSON::ParserError => e
     Rails.logger.error("Failed to parse authentication response: #{e.message}")
