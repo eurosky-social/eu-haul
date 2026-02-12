@@ -981,6 +981,7 @@
         document.getElementById('summary-email').textContent = emailField.value;
         document.getElementById('summary-pds').textContent = wizardData.pdsHost;
         document.getElementById('summary-new-handle').textContent = document.getElementById('migration_new_handle').value;
+        document.getElementById('summary-email-reminder').textContent = emailField.value;
 
         if (inviteCodeField.value.trim()) {
           document.getElementById('summary-invite-row').style.display = 'table-row';
@@ -1014,7 +1015,7 @@
           return;
         }
 
-        const confirmed = confirm('Are you ready to start the migration?\n\nREMEMBER: Do NOT use your account until you receive the completion email (approximately 20-30 minutes).\n\nThis process will begin immediately and cannot be stopped once started.');
+        const confirmed = confirm('We will send a confirmation email to ' + emailField.value + '.\n\nThe migration will only start after you click the link in that email.\n\nOnce confirmed, do NOT use your account until you receive the completion email (~20-30 minutes).');
         if (confirmed) {
           // Populate hidden token fields with stored values
           document.getElementById('migration_old_access_token').value = wizardData.accessToken || '';
@@ -1282,15 +1283,25 @@
             </div>
           </div>
 
+          <!-- How it works -->
+          <div style="margin-top: 32px; padding: 24px; background: #f0f7ff; border: 2px solid #007bff; border-radius: 8px;">
+            <h3 style="margin-top: 0; color: #007bff; font-size: 18px;">How it works</h3>
+            <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #333;">
+              When you click <strong>Continue</strong>, we'll send a confirmation email to <strong id="summary-email-reminder"></strong>.
+              The migration will <strong>only start</strong> once you click the confirmation link in that email.
+              This gives you a chance to review everything before committing.
+            </p>
+          </div>
+
           <!-- Critical Warning: Do Not Use Account During Migration -->
-          <div style="margin-top: 32px; padding: 24px; background: #fef2f2; border: 3px solid #dc2626; border-radius: 8px;">
+          <div style="margin-top: 24px; padding: 24px; background: #fef2f2; border: 3px solid #dc2626; border-radius: 8px;">
             <h3 style="margin-top: 0; color: #dc2626; font-size: 20px; display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 24px;">⚠️</span>
               CRITICAL: Do Not Use Your Account During Migration
             </h3>
             <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #dc2626;">
               <p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #991b1b;">
-                Once you start the migration, you MUST NOT use your account until it completes.
+                Once you confirm the migration via the email link, you MUST NOT use your account until it completes.
               </p>
               <p style="margin: 0 0 12px 0; font-size: 15px; line-height: 1.6; color: #333;">
                 <strong>Any activity during migration will NOT be transferred:</strong>
@@ -1313,11 +1324,9 @@
             </div>
           </div>
 
-         
-
           <div class="wizard-navigation">
             <button type="button" id="step5-back" class="wizard-back-btn">Back</button>
-            <%= f.submit "Start Migration", class: "submit-button", id: "start-migration-btn" %>
+            <%= f.submit "Continue", class: "submit-button", id: "start-migration-btn" %>
           </div>
         </div>
 

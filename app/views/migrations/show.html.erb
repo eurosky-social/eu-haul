@@ -9,7 +9,7 @@
   <% if EuroskyConfig::FAVICON_URL.present? %>
     <link rel="icon" type="image/png" href="<%= EuroskyConfig::FAVICON_URL %>">
   <% end %>
-  <% unless @migration.completed? || @migration.failed? %>
+  <% unless @migration.completed? || @migration.failed? || !@migration.email_verified? %>
     <meta http-equiv="refresh" content="10">
   <% end %>
   <%= render 'shared/styles' %>
@@ -263,7 +263,7 @@
       <% if EuroskyConfig::LOGO_URL.present? %>
         <img src="<%= EuroskyConfig::LOGO_URL %>" alt="<%= EuroskyConfig::SITE_NAME %>" class="header-logo">
       <% end %>
-      <h1>Migration Status</h1>
+      <h1><%= @migration.email_verified? ? 'Migration Status' : 'Confirm Your Migration' %></h1>
       <div class="token"><%= @migration.token %></div>
     </div>
 
@@ -279,31 +279,59 @@
         </div>
       <% end %>
 
-      <div class="bookmark-notice" role="note">
-        <h3>Bookmark This Page</h3>
-        <p>Save this URL to track your migration progress:</p>
-        <code><%= migration_by_token_url(@migration.token) %></code>
-      </div>
+      <% if !@migration.email_verified? %>
+        <%# Awaiting email confirmation — show static page %>
+        <div style="text-align: center; padding: 32px 0;">
+          <div style="font-size: 64px; margin-bottom: 16px;">📧</div>
+          <h2 style="margin: 0 0 12px 0; font-size: 24px; color: #1a1a1a;">Check Your Email</h2>
+          <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 480px; margin: 0 auto 24px;">
+            We've sent a confirmation email to <strong><%= @migration.email %></strong>.
+            Click the link in that email to start the migration.
+          </p>
+        </div>
 
-      <div class="progress-section">
-        <div class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar" style="width: <%= @migration.progress_percentage %>%">
-            <%= @migration.progress_percentage %>%
+        <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">Didn't receive the email?</h3>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #78350f; line-height: 1.8;">
+            <li>Check your spam or junk folder</li>
+            <li>Make sure <strong><%= @migration.email %></strong> is correct</li>
+            <li>The email may take a few minutes to arrive</li>
+          </ul>
+        </div>
+
+        <div class="bookmark-notice" role="note">
+          <h3>Bookmark This Page</h3>
+          <p>Once you confirm via email, you can track your migration progress here:</p>
+          <code><%= migration_by_token_url(@migration.token) %></code>
+        </div>
+
+      <% else %>
+        <%# Email verified — show normal progress tracking %>
+        <div class="bookmark-notice" role="note">
+          <h3>Bookmark This Page</h3>
+          <p>Save this URL to track your migration progress:</p>
+          <code><%= migration_by_token_url(@migration.token) %></code>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" style="width: <%= @migration.progress_percentage %>%">
+              <%= @migration.progress_percentage %>%
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="status-info">
-        <div class="status-label">Current Status</div>
-        <div class="status-value status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>">
-          <%= @migration.status.humanize %>
-          <% if @migration.job_retrying? && @migration.current_job_step %>
-            <div style="font-size: 14px; color: #f59e0b; margin-top: 8px;">
-              Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
-            </div>
-          <% end %>
+        <div class="status-info">
+          <div class="status-label">Current Status</div>
+          <div class="status-value status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>">
+            <%= @migration.status.humanize %>
+            <% if @migration.job_retrying? && @migration.current_job_step %>
+              <div style="font-size: 14px; color: #f59e0b; margin-top: 8px;">
+                Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
+              </div>
+            <% end %>
+          </div>
         </div>
-      </div>
 
       <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
         <div class="metric-card" style="margin-bottom: 24px; background: #fef3c7; border-color: #f59e0b;">
@@ -544,6 +572,8 @@
           This page will automatically refresh every 10 seconds to show the latest status.
         </div>
       <% end %>
+
+      <% end %><%# end of email_verified? if/else %>
     </div>
   </div>
 
