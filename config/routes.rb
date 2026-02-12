@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       post :check_pds
       post :check_handle
       post :check_did_on_pds
+      post :verify_target_credentials
     end
     member do
       post :submit_plc_token
