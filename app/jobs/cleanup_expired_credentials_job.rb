@@ -10,8 +10,10 @@
 #   3. Logs cleanup statistics
 #
 # Security Rationale:
-#   - Passwords are only needed during active migration (max 48 hours)
-#   - PLC tokens are only needed for PLC update step (max 1 hour)
+#   - PLC tokens are single-use and short-lived (max 1 hour) - always safe to clear
+#   - Passwords (for new PDS) and old PDS tokens are needed until PLC update completes
+#   - For pre-PLC migrations, only the PLC token is cleared (password + old tokens kept)
+#   - For post-PLC or abandoned (failed > 7 days) migrations, all credentials cleared
 #   - Keeping expired credentials increases attack surface
 #   - GDPR compliance: data minimization principle
 #
@@ -77,16 +79,31 @@ class CleanupExpiredCredentialsJob < ApplicationJob
         # Calculate how long ago credentials expired (for logging)
         expired_ago = ((Time.current - migration.credentials_expires_at) / 1.hour).round(1)
 
-        # Clear credentials
-        migration.update!(
-          encrypted_password: nil,
-          encrypted_plc_token: nil,
-          encrypted_old_access_token: nil,
-          encrypted_old_refresh_token: nil
-        )
+        # The password (for new PDS login) and old PDS tokens are needed until
+        # the PLC update is complete. Only clear them for migrations that are
+        # past the PLC step (pending_activation/completed), or that have been
+        # abandoned (failed for over 7 days). For active/recent failures, keep
+        # these credentials so the user can still retry/re-request a PLC token.
+        plc_step_done = %w[pending_activation completed].include?(migration.status)
+        abandoned = migration.failed? && migration.updated_at < 7.days.ago
 
+        # Always safe to clear the PLC token itself (it's single-use / short-lived)
+        attrs_to_clear = {
+          encrypted_plc_token: nil
+        }
+
+        if plc_step_done || abandoned
+          # PLC step is done or migration is abandoned - clear everything
+          attrs_to_clear[:encrypted_password] = nil
+          attrs_to_clear[:encrypted_old_access_token] = nil
+          attrs_to_clear[:encrypted_old_refresh_token] = nil
+        end
+
+        migration.update!(attrs_to_clear)
+
+        cleared_what = plc_step_done || abandoned ? "all credentials" : "PLC token only (kept password + old PDS tokens)"
         logger.info(
-          "[CleanupExpiredCredentialsJob] Cleared credentials for #{migration.token} " \
+          "[CleanupExpiredCredentialsJob] Cleared #{cleared_what} for #{migration.token} " \
           "(status: #{migration.status}, expired #{expired_ago}h ago)"
         )
 

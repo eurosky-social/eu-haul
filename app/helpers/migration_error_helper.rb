@@ -42,13 +42,15 @@ module MigrationErrorHelper
   end
 
   # Detect error type from error message
+  # NOTE: Order matters - more specific patterns must come before broader ones.
+  # PLC token expiration must be checked before generic CRITICAL/PLC patterns.
   def self.detect_error_type(error_message)
     case error_message
     when /rate limit|429|RateLimitExceeded/i
       :rate_limit
     when /network|timeout|connection|unreachable/i
       :network
-    when /PLC token.*expired|PLC token has expired/i
+    when /PLC token.*(?:expired|missing)|PLC token has expired|token is missing/i
       :plc_token_expired
     when /authentication|unauthorized|401|invalid password/i
       :authentication
@@ -103,11 +105,15 @@ module MigrationErrorHelper
     # Add technical details
     base_context[:technical_details] = error_message
     base_context[:job_step] = job_step
-    base_context[:retry_info] = {
-      attempt: retry_attempt,
-      max_attempts: max_attempts,
-      remaining: [max_attempts - retry_attempt, 0].max
-    }
+
+    # Only include retry info when the error type supports automatic retries
+    unless base_context[:show_retry_info] == false
+      base_context[:retry_info] = {
+        attempt: retry_attempt,
+        max_attempts: max_attempts,
+        remaining: [max_attempts - retry_attempt, 0].max
+      }
+    end
 
     base_context
   end
@@ -175,6 +181,7 @@ module MigrationErrorHelper
         "If you're sure the password is correct, contact your PDS administrator"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#authentication-errors",
       credentials_expire_at: migration.credentials_expires_at
@@ -200,6 +207,7 @@ module MigrationErrorHelper
         "⚠️ This requires action from the PDS provider - you cannot fix this yourself."
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_contact_support: true,
       support_email: target_pds_support_email,
       migration_token: migration.token,
@@ -222,6 +230,7 @@ module MigrationErrorHelper
         "The rest of your migration data is safe and ready - you just need a fresh token"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_request_new_plc_token: true,
       help_link: "/docs/troubleshooting#plc-token-expiration",
       expired_at: migration.credentials_expires_at,
@@ -244,6 +253,7 @@ module MigrationErrorHelper
         "Consider using faster network connection if migrations timeout frequently"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#credential-expiration",
       expired_at: migration.credentials_expires_at
@@ -300,6 +310,7 @@ module MigrationErrorHelper
         "Once disk space is freed, you can retry the migration"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_contact_admin: true,
       help_link: "/docs/troubleshooting#disk-space"
     }
@@ -319,13 +330,18 @@ module MigrationErrorHelper
         "Some PDS instances don't require invite codes - check with the administrator"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#invite-codes"
     }
   end
 
   def self.critical_plc_context(migration)
-    {
+    # Check if PLC update was attempted - if rotation_key exists, PLC was updated
+    # If no rotation_key, the failure happened before PLC update, so we can request new token
+    plc_not_yet_updated = migration.rotation_key.blank?
+
+    base_context = {
       severity: :critical,
       icon: "🚨",
       title: "CRITICAL: PLC Directory Update Failed",
@@ -341,12 +357,21 @@ module MigrationErrorHelper
         "Your account data is safe - this requires manual verification"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_contact_support: true,
       show_rotation_key: true,
+      show_request_new_plc_token: true,  # Always show for PLC failures - user may need new token
       help_link: "/docs/troubleshooting#critical-plc-failure",
       migration_token: migration.token,
       support_email: "support@example.com"
     }
+
+    # If PLC was not yet updated, emphasize token request
+    if plc_not_yet_updated
+      base_context[:what_to_do].unshift("Try requesting a new PLC token - the update hasn't happened yet")
+    end
+
+    base_context
   end
 
   def self.generic_context(migration, retry_attempt, max_attempts)

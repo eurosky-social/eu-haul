@@ -8,7 +8,7 @@ class Migration < ApplicationRecord
     end
 
     def plc_token
-      return nil if credentials_expired?
+      return nil if plc_token_expired?
       super
     end
 
@@ -276,12 +276,23 @@ class Migration < ApplicationRecord
 
   def set_plc_token(token, expires_in: 1.hour)
     self.plc_token = token  # Lockbox handles encryption automatically
-    self.credentials_expires_at = expires_in.from_now
+    # Store PLC token expiry separately in progress_data so it doesn't
+    # overwrite credentials_expires_at (which governs old PDS token access)
+    self.progress_data ||= {}
+    self.progress_data['plc_token_expires_at'] = expires_in.from_now.iso8601
     save!
   end
 
   def credentials_expired?
     credentials_expires_at.nil? || credentials_expires_at < Time.current
+  end
+
+  # PLC token has its own expiry (1 hour) separate from old PDS credentials (48 hours)
+  def plc_token_expired?
+    plc_expires = progress_data&.dig('plc_token_expires_at')
+    return true if plc_expires.nil?
+
+    Time.parse(plc_expires) < Time.current
   end
 
   # Clear all encrypted credentials (for security after migration completes)
@@ -308,6 +319,10 @@ class Migration < ApplicationRecord
     self.old_access_token = access_token
     self.old_refresh_token = refresh_token
     save!
+  end
+
+  def has_old_pds_tokens?
+    encrypted_old_refresh_token.present?
   end
 
   def clear_old_pds_tokens!

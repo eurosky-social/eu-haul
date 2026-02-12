@@ -146,6 +146,17 @@
     </div>
 
     <div class="content">
+      <% if flash[:notice] %>
+        <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 16px; margin-bottom: 24px; border-radius: 4px; color: #065f46; font-size: 14px;">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+      <% if flash[:alert] %>
+        <div style="background: #fee2e2; border-left: 4px solid #dc2626; padding: 16px; margin-bottom: 24px; border-radius: 4px; color: #991b1b; font-size: 14px;">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
       <div class="bookmark-notice" role="note">
         <h3>Bookmark This Page</h3>
         <p>Save this URL to track your migration progress:</p>
@@ -320,14 +331,43 @@
             Your account data has been successfully migrated. Now you need to update your DID document to point to your new PDS.
           </p>
 
+          <% unless @migration.has_old_pds_tokens? %>
+            <%# Old PDS session expired — offer re-authentication to request a new PLC token %>
+            <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+              <h4 style="color: #1e40af; font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+                Need a PLC token? Re-authenticate to request one.
+              </h4>
+              <p style="color: #1e40af; font-size: 14px; margin-bottom: 12px;">
+                Enter your password for <strong><%= @migration.old_handle %></strong> and we'll send you a new PLC token via email.
+              </p>
+              <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                <div style="margin-bottom: 12px;">
+                  <input type="password" name="password" required
+                         autocomplete="current-password"
+                         placeholder="Password for <%= @migration.old_handle %>"
+                         style="width: 100%; padding: 10px 12px; border: 2px solid #93c5fd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                <button type="submit"
+                        style="padding: 10px 20px; background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">
+                  Re-authenticate & Request PLC Token
+                </button>
+              </form>
+            </div>
+          <% end %>
+
           <p style="margin-bottom: 16px; color: #856404; font-size: 14px;">
-            A PLC operation token has been requested from your old PDS provider (<strong><%= @migration.old_pds_host %></strong>).
-            Check your email for the token, then enter it below.
+            <% if @migration.has_old_pds_tokens? %>
+              A PLC operation token has been requested from your old PDS provider (<strong><%= @migration.old_pds_host %></strong>).
+              Check your email for the token, then enter it below.
+            <% else %>
+              Enter the PLC token you received via email below, or use the re-authentication form above to request a new one.
+            <% end %>
           </p>
 
           <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
             <p style="margin: 0; color: #92400e; font-size: 13px;">
-              ⏰ <strong>Important:</strong> PLC tokens expire after 1 hour. If your token has expired, you can request a new one from your migration status page.
+              ⏰ <strong>Important:</strong> PLC tokens expire after 1 hour. If your token has expired, you can request a new one.
             </p>
           </div>
 

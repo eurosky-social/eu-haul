@@ -1,9 +1,4 @@
-<%# Error Details Partial - Enhanced user-friendly error display
-  Renders detailed error information with actionable guidance
 
-  Usage:
-    <%= render 'migrations/error_details', migration: @migration %>
-%>
 
 <% if @migration.last_error.present? %>
   <% error_context = MigrationErrorHelper.explain_error(@migration) %>
@@ -26,7 +21,7 @@
             <%= error_context[:current_status] %>
           </div>
 
-          <%# Retry Information %>
+          <%# Retry Information (only shown for errors with automatic retries) %>
           <% if error_context[:retry_info] && error_context[:retry_info][:remaining] > 0 %>
             <div style="margin-top: 8px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 4px;">
               <div style="font-size: 13px; color: #1e40af;">
@@ -41,6 +36,52 @@
           <% end %>
         </div>
       </div>
+
+      <%# Prominent PLC Token Action - shown outside collapsed section for visibility %>
+      <% if error_context[:show_request_new_plc_token] %>
+        <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+          <h4 style="color: #1e40af; font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+            Your migration data is safe — you just need a fresh PLC token.
+          </h4>
+
+          <% if @migration.has_old_pds_tokens? %>
+            <%# Old PDS session is still valid — can request token automatically %>
+            <p style="color: #1e40af; font-size: 14px; margin-bottom: 16px;">
+              Click the button below to request a new PLC token. You'll receive it via email from <strong><%= @migration.old_pds_host %></strong>.
+            </p>
+            <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post" style="display: inline;">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit"
+                      onclick="return confirm('Request a new PLC token from your old PDS?');"
+                      style="padding: 12px 24px; background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 16px; cursor: pointer;">
+                Request New PLC Token
+              </button>
+            </form>
+          <% else %>
+            <%# Old PDS session expired — need password to re-authenticate %>
+            <p style="color: #1e40af; font-size: 14px; margin-bottom: 16px;">
+              Your session with <strong><%= @migration.old_pds_host %></strong> has expired.
+              Enter your password for <strong><%= @migration.old_handle %></strong> to re-connect and request a new PLC token.
+            </p>
+            <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <div style="margin-bottom: 12px;">
+                <label for="reauth_password" style="display: block; font-size: 13px; color: #1e40af; font-weight: 600; margin-bottom: 4px;">
+                  Password for <%= @migration.old_handle %>
+                </label>
+                <input type="password" name="password" id="reauth_password" required
+                       autocomplete="current-password"
+                       placeholder="Enter your account password"
+                       style="width: 100%; padding: 10px 12px; border: 2px solid #93c5fd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+              </div>
+              <button type="submit"
+                      style="padding: 12px 24px; background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 16px; cursor: pointer;">
+                Re-authenticate & Request PLC Token
+              </button>
+            </form>
+          <% end %>
+        </div>
+      <% end %>
 
       <%# Expandable Details %>
       <details class="error-expandable" style="margin-bottom: 16px;">
@@ -74,17 +115,17 @@
           <%# Action Buttons %>
           <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
             <% if error_context[:show_request_new_plc_token] %>
-              <%= link_to "📧 Request New PLC Token", request_new_plc_token_by_token_path(@migration.token),
+              <%= button_to "📧 Request New PLC Token", request_new_plc_token_by_token_path(@migration.token),
                   method: :post,
                   data: { confirm: "Request a new PLC token from your old PDS provider?" },
-                  style: "padding: 10px 20px; background: linear-gradient(135deg, #{EuroskyConfig::PRIMARY_COLOR} 0%, #{EuroskyConfig::SECONDARY_COLOR} 100%); color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  style: "padding: 10px 20px; background: linear-gradient(135deg, #{EuroskyConfig::PRIMARY_COLOR} 0%, #{EuroskyConfig::SECONDARY_COLOR} 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" %>
             <% end %>
 
             <% if error_context[:show_retry_button] %>
-              <%= link_to "🔄 Retry Migration", retry_migration_by_token_path(@migration.token),
+              <%= button_to "🔄 Retry Migration", retry_migration_by_token_path(@migration.token),
                   method: :post,
                   data: { confirm: "Retry this migration from the current stage?" },
-                  style: "padding: 10px 20px; background: linear-gradient(135deg, #{EuroskyConfig::PRIMARY_COLOR} 0%, #{EuroskyConfig::SECONDARY_COLOR} 100%); color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  style: "padding: 10px 20px; background: linear-gradient(135deg, #{EuroskyConfig::PRIMARY_COLOR} 0%, #{EuroskyConfig::SECONDARY_COLOR} 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" %>
             <% end %>
 
             <% if error_context[:show_new_migration_button] %>
@@ -137,7 +178,7 @@
               <div style="background: white; padding: 12px; border-radius: 4px; margin: 8px 0; font-family: monospace; font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
                 <%= @migration.rotation_key %>
               </div>
-              <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
+              <button onclick="navigator.clipboard.writeText('<%= j @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
                       style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
                 📋 Copy Rotation Key
               </button>
@@ -171,9 +212,7 @@
           <div style="margin-bottom: 8px;">
             <strong style="color: #9ca3af;">Error Message:</strong>
           </div>
-          <div style="padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; white-space: pre-wrap; word-break: break-word;">
-<%= error_context[:technical_details] %>
-          </div>
+          <div style="padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; white-space: pre-wrap; word-break: break-word;"><%= error_context[:technical_details] %></div>
 
           <% if error_context[:job_step] %>
             <div style="margin-top: 12px;">
@@ -196,12 +235,13 @@
       </details>
     </div>
 
-    <%# Auto-refresh countdown script %>
+    <%# Auto-refresh countdown script (only when retry info is present) %>
+    <% if error_context[:retry_info] %>
     <script>
       (function() {
         // Estimated retry countdown (approximation based on exponential backoff)
-        const attempt = <%= error_context[:retry_info]&.dig(:attempt) || 0 %>;
-        const maxAttempts = <%= error_context[:retry_info]&.dig(:max_attempts) || 3 %>;
+        const attempt = <%= error_context[:retry_info][:attempt] || 0 %>;
+        const maxAttempts = <%= error_context[:retry_info][:max_attempts] || 3 %>;
 
         if (attempt > 0 && attempt < maxAttempts) {
           // Exponential backoff estimate: 2^attempt seconds
@@ -232,5 +272,6 @@
         }
       })();
     </script>
+    <% end %>
   <% end %>
 <% end %>

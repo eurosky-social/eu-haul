@@ -27,7 +27,7 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
-  before_action :set_migration, only: [:show, :verify_email, :submit_plc_token, :request_new_plc_token, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs]
+  before_action :set_migration, only: [:show, :verify_email, :submit_plc_token, :request_new_plc_token, :reauthenticate, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs]
   before_action :set_security_headers
 
   # GET /migrations/new
@@ -489,37 +489,131 @@ class MigrationsController < ApplicationController
   # POST /migrate/:token/request_new_plc_token
   # Request a new PLC token from the old PDS provider
   def request_new_plc_token
-    unless @migration.status == 'pending_plc' || (@migration.failed? && @migration.last_error&.include?('PLC token'))
-      Rails.logger.warn("PLC token request failed for migration #{@migration.token}: Not in correct status")
+    # Allow requesting new token if:
+    # 1. Migration is in pending_plc status, OR
+    # 2. Migration failed with a PLC-related error (and rotation_key is blank, meaning PLC wasn't updated yet)
+    plc_related_failure = @migration.failed? && @migration.last_error&.match?(/PLC|token/i) && @migration.rotation_key.blank?
+
+    unless @migration.status == 'pending_plc' || plc_related_failure
+      Rails.logger.warn("PLC token request failed for migration #{@migration.token}: Not in correct status (status: #{@migration.status}, has rotation_key: #{@migration.rotation_key.present?})")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Cannot request a new PLC token at this stage"
+                  alert: "Cannot request a new PLC token at this stage. The PLC update may have already been attempted."
+      return
+    end
+
+    # Check if we still have old PDS tokens to make the API call
+    has_old_tokens = @migration.encrypted_old_refresh_token.present?
+
+    if has_old_tokens
+      begin
+        # Request a new PLC token from the old PDS
+        service = GoatService.new(@migration)
+        service.request_plc_token
+
+        # Update progress to indicate token was requested
+        @migration.progress_data ||= {}
+        @migration.progress_data['plc_token_requested_at'] = Time.current.iso8601
+        @migration.progress_data['plc_token_resent'] = true
+        @migration.save!
+
+        notice_msg = "A new PLC token has been requested. Check your email from #{@migration.old_pds_host}."
+      rescue StandardError => e
+        Rails.logger.error("Failed to request new PLC token for migration #{@migration.token}: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+
+        # Even if the API call failed, reset to pending_plc so the user can
+        # manually enter a token they request through other means
+        notice_msg = "Could not automatically request a new PLC token (#{e.message}). " \
+                     "Please request one manually through your old PDS provider's settings (e.g., Bluesky app → Settings → Account → Request PLC Token), " \
+                     "then enter it below."
+      end
+    else
+      # Old PDS tokens are no longer available (expired or cleared).
+      # Reset to pending_plc and instruct the user to request the token manually.
+      Rails.logger.info("Old PDS tokens unavailable for migration #{@migration.token}, resetting to pending_plc for manual token entry")
+      notice_msg = "Your session with #{@migration.old_pds_host} has expired. " \
+                   "Please request a new PLC token manually: log in to your old account and go to Settings → Account → Request PLC Token, " \
+                   "then enter the token below."
+    end
+
+    # Reset to pending_plc status so user can submit the new token
+    if @migration.failed?
+      @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
+      Rails.logger.info("Reset migration #{@migration.token} from failed to pending_plc after PLC token request")
+    end
+
+    redirect_to migration_by_token_path(@migration.token), notice: notice_msg
+  end
+
+  # POST /migrate/:token/reauthenticate
+  # Re-authenticate with the old PDS to get fresh tokens for PLC token request.
+  # Used when old PDS session tokens have expired or been cleaned up.
+  def reauthenticate
+    password = params[:password]&.strip
+
+    if password.blank?
+      redirect_to migration_by_token_path(@migration.token), alert: "Password is required."
+      return
+    end
+
+    # Only allow re-auth for migrations that need PLC tokens
+    plc_related = @migration.pending_plc? || (@migration.failed? && @migration.rotation_key.blank?)
+    unless plc_related
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Re-authentication is not available at this stage."
       return
     end
 
     begin
-      # Request a new PLC token from the old PDS
-      service = GoatService.new(@migration)
-      service.request_plc_token
+      # Authenticate with the old PDS
+      session_url = "#{@migration.old_pds_host}/xrpc/com.atproto.server.createSession"
+      response = HTTParty.post(
+        session_url,
+        headers: { 'Content-Type' => 'application/json' },
+        body: { identifier: @migration.old_handle, password: password }.to_json,
+        timeout: 30
+      )
 
-      # Update progress to indicate token was requested
-      @migration.progress_data ||= {}
-      @migration.progress_data['plc_token_requested_at'] = Time.current.iso8601
-      @migration.progress_data['plc_token_resent'] = true
-      @migration.save!
-
-      # If migration was failed due to expired token, reset to pending_plc
-      if @migration.failed? && @migration.last_error&.include?('expired')
-        @migration.update!(status: 'pending_plc', last_error: nil)
-        Rails.logger.info("Reset migration #{@migration.token} to pending_plc after PLC token resend")
+      unless response.success?
+        error_body = JSON.parse(response.body) rescue {}
+        error_msg = error_body['message'] || 'Authentication failed'
+        redirect_to migration_by_token_path(@migration.token),
+                    alert: "Authentication failed: #{error_msg}. Please check your password."
+        return
       end
 
-      Rails.logger.info("PLC token resend requested for migration #{@migration.token}")
-      redirect_to migration_by_token_path(@migration.token),
-                  notice: "A new PLC token has been requested. Check your email from #{@migration.old_pds_host}."
+      session_data = JSON.parse(response.body)
+
+      # Store fresh tokens (with 48h expiry)
+      @migration.set_old_pds_tokens!(
+        access_token: session_data['accessJwt'],
+        refresh_token: session_data['refreshJwt']
+      )
+
+      Rails.logger.info("Re-authenticated with old PDS for migration #{@migration.token}")
+
+      # Try to request a PLC token automatically
+      begin
+        service = GoatService.new(@migration)
+        service.request_plc_token
+        notice_msg = "Re-authenticated successfully! A new PLC token has been requested — check your email from #{@migration.old_pds_host}."
+      rescue StandardError => e
+        Rails.logger.error("Failed to request PLC token after re-auth for #{@migration.token}: #{e.message}")
+        notice_msg = "Re-authenticated successfully, but could not request PLC token automatically (#{e.message}). " \
+                     "You can request one manually through your old PDS provider's settings, then enter it below."
+      end
+
+      # Reset to pending_plc so the PLC token form appears
+      if @migration.failed?
+        @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
+      end
+
+      redirect_to migration_by_token_path(@migration.token), notice: notice_msg
+
     rescue StandardError => e
-      Rails.logger.error("Failed to request new PLC token for migration #{@migration.token}: #{e.message}")
+      Rails.logger.error("Re-authentication failed for migration #{@migration.token}: #{e.message}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Failed to request a new PLC token. Please try again."
+                  alert: "Failed to re-authenticate: #{e.message}"
     end
   end
 
@@ -846,12 +940,19 @@ class MigrationsController < ApplicationController
     {
       token: @migration.token,
       status: @migration.status,
+      status_humanized: @migration.status.humanize,
       progress_percentage: @migration.progress_percentage,
       estimated_time_remaining: @migration.estimated_time_remaining,
       blob_count: blob_data[:count],
       blobs_uploaded: blob_data[:uploaded],
       total_bytes_transferred: blob_data[:bytes_transferred],
       last_error: @migration.last_error,
+      completed: @migration.completed?,
+      failed: @migration.failed?,
+      job_retrying: @migration.job_retrying?,
+      current_job_step: @migration.current_job_step,
+      current_job_attempt: @migration.current_job_attempt,
+      current_job_max_attempts: @migration.current_job_max_attempts,
       created_at: @migration.created_at.iso8601,
       updated_at: @migration.updated_at.iso8601
     }

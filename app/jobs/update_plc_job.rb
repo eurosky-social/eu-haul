@@ -53,20 +53,23 @@ class UpdatePlcJob < ApplicationJob
     end
 
     # Step 1: Validate PLC token is present and not expired
+    # NOTE: Missing/expired tokens are NOT critical failures - the PLC directory
+    # hasn't been modified yet. We return early (without raising) so the rescue
+    # block doesn't overwrite the error with a "CRITICAL:" prefix.
     plc_token = migration.plc_token
     if plc_token.nil?
-      error_msg = "PLC token is missing"
+      error_msg = "PLC token is missing. Please request a new token."
       Rails.logger.error(error_msg)
       migration.mark_failed!(error_msg)
-      raise GoatService::AuthenticationError, error_msg
+      return
     end
 
-    # Check if credentials (including PLC token) have expired
-    if migration.credentials_expired?
-      error_msg = "PLC token has expired (expired at: #{migration.credentials_expires_at}). Please request a new token."
+    # Check if the PLC token has expired (separate from old PDS credential expiry)
+    if migration.plc_token_expired?
+      error_msg = "PLC token has expired (expired at: #{migration.progress_data&.dig('plc_token_expires_at')}). Please request a new token."
       Rails.logger.error(error_msg)
       migration.mark_failed!(error_msg)
-      raise GoatService::AuthenticationError, error_msg
+      return
     end
 
     Rails.logger.info("PLC token retrieved and validated for migration #{migration.token}")
