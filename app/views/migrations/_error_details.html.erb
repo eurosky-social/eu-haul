@@ -37,7 +37,35 @@
         </div>
       </div>
 
-      <%# Prominent PLC Token Action - shown outside collapsed section for visibility %>
+      <%# Re-authentication form - shown when credentials have expired but migration data is intact %>
+      <% if error_context[:show_reauth_form] %>
+        <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
+          <h4 style="color: #1e40af; font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+            Your migration data is safe — just re-enter your password to continue.
+          </h4>
+          <p style="color: #1e40af; font-size: 14px; margin-bottom: 16px;">
+            Enter your password for <strong><%= @migration.old_handle %></strong> to restore your session and continue the migration.
+          </p>
+          <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <div style="margin-bottom: 12px;">
+              <label for="reauth_password" style="display: block; font-size: 13px; color: #1e40af; font-weight: 600; margin-bottom: 4px;">
+                Password for <%= @migration.old_handle %>
+              </label>
+              <input type="password" name="password" id="reauth_password" required
+                     autocomplete="current-password"
+                     placeholder="Enter your account password"
+                     style="width: 100%; padding: 10px 12px; border: 2px solid #93c5fd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+            </div>
+            <button type="submit"
+                    style="padding: 12px 24px; background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 16px; cursor: pointer;">
+              Re-authenticate & Continue Migration
+            </button>
+          </form>
+        </div>
+      <% end %>
+
+      <%# PLC Token Action - shown when a new PLC token is needed %>
       <% if error_context[:show_request_new_plc_token] %>
         <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
           <h4 style="color: #1e40af; font-size: 16px; font-weight: 700; margin-bottom: 8px;">
@@ -66,10 +94,10 @@
             <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <div style="margin-bottom: 12px;">
-                <label for="reauth_password" style="display: block; font-size: 13px; color: #1e40af; font-weight: 600; margin-bottom: 4px;">
+                <label for="reauth_plc_password" style="display: block; font-size: 13px; color: #1e40af; font-weight: 600; margin-bottom: 4px;">
                   Password for <%= @migration.old_handle %>
                 </label>
-                <input type="password" name="password" id="reauth_password" required
+                <input type="password" name="password" id="reauth_plc_password" required
                        autocomplete="current-password"
                        placeholder="Enter your account password"
                        style="width: 100%; padding: 10px 12px; border: 2px solid #93c5fd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">

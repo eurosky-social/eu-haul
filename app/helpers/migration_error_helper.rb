@@ -52,6 +52,8 @@ module MigrationErrorHelper
       :network
     when /PLC token.*(?:expired|missing)|PLC token has expired|token is missing/i
       :plc_token_expired
+    when /Credentials expired:.*no longer available.*re-authenticate|New PDS password.*no longer available/i
+      :credentials_need_reauth
     when /authentication|unauthorized|401|invalid password/i
       :authentication
     when /already exists|AlreadyExists|orphaned/i
@@ -82,6 +84,8 @@ module MigrationErrorHelper
       network_context(migration, retry_attempt, max_attempts)
     when :plc_token_expired
       plc_token_expired_context(migration)
+    when :credentials_need_reauth
+      credentials_need_reauth_context(migration)
     when :authentication
       authentication_context(migration)
     when :account_exists
@@ -234,6 +238,27 @@ module MigrationErrorHelper
       show_request_new_plc_token: true,
       help_link: "/docs/troubleshooting#plc-token-expiration",
       expired_at: migration.credentials_expires_at,
+      old_pds_host: migration.old_pds_host
+    }
+  end
+
+  def self.credentials_need_reauth_context(migration)
+    {
+      severity: :warning,
+      icon: "🔑",
+      title: "Session Expired — Re-authentication Required",
+      what_happened: "Your stored credentials have expired. For security, credentials are automatically cleared after 48 hours. " \
+                     "To continue the migration, you need to re-authenticate.",
+      current_status: "Migration paused — re-authentication required to continue",
+      what_to_do: [
+        "Enter your password below to re-authenticate",
+        "Your migration data is safe — you just need fresh credentials",
+        "After re-authenticating, the migration will continue where it left off"
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_reauth_form: true,
+      help_link: "/docs/troubleshooting#credential-expiration",
       old_pds_host: migration.old_pds_host
     }
   end

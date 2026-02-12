@@ -74,6 +74,21 @@ class UpdatePlcJob < ApplicationJob
 
     Rails.logger.info("PLC token retrieved and validated for migration #{migration.token}")
 
+    # Step 1b: Validate all credentials needed for PLC update are available.
+    # Both the new PDS password (for get_recommended_plc_operation) and old PDS
+    # refresh token (for sign_plc_operation) are required. If either is missing,
+    # this is NOT a critical failure (PLC directory hasn't been modified yet).
+    missing = []
+    missing << "new PDS password" if migration.password.nil?
+    missing << "old PDS session" unless migration.has_old_pds_tokens?
+
+    if missing.any?
+      error_msg = "Credentials expired: #{missing.join(' and ')} no longer available. Please re-authenticate to continue."
+      Rails.logger.error(error_msg)
+      migration.mark_failed!(error_msg)
+      return
+    end
+
     # Initialize GoatService
     service = GoatService.new(migration)
 

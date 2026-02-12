@@ -350,10 +350,6 @@ class Migration < ApplicationRecord
     save!
   end
 
-  def rotation_key
-    rotation_private_key_ciphertext
-  end
-
   # Backup bundle management
   def set_backup_bundle_path(path)
     self.backup_bundle_path = path

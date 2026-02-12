@@ -480,6 +480,13 @@
           return;
         }
 
+        const confirmCheckbox = document.getElementById('confirm-email-access');
+        if (!confirmCheckbox.checked) {
+          alert('Please confirm that you have access to this email address.');
+          confirmCheckbox.focus();
+          return;
+        }
+
         wizardData.email = email;
         emailField.readOnly = true;
         showStep(3);
@@ -971,6 +978,15 @@
             <%= f.label :email, "Email Address" %>
             <%= f.email_field :email, id: "migration_email", placeholder: "you@example.com", autocomplete: "email" %>
             <div class="helper-text">We'll send migration status updates to this email</div>
+          </div>
+
+          <div class="form-group" style="margin-top: 16px; padding: 16px; background: #fff8e1; border: 2px solid #ffc107; border-radius: 8px;">
+            <label style="display: flex; align-items: flex-start; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="confirm-email-access" style="margin-right: 12px; margin-top: 3px; width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
+              <span style="font-size: 15px; line-height: 1.5; color: #333;">
+                I confirm that I have access to this email address. I understand that a <strong>PLC token</strong> will be sent to this email during migration, and I must be able to retrieve it to complete the process.
+              </span>
+            </label>
           </div>
 
           <div class="wizard-navigation">

@@ -722,8 +722,8 @@ class GoatService
     # Must be logged in to new PDS
     login_new_pds
 
-    # Activate account via PDS client
-    new_pds_client.post_request('com.atproto.server.activateAccount', {})
+    # Activate account via PDS client (no request body expected)
+    new_pds_client.post_request('com.atproto.server.activateAccount')
 
     logger.info("Account activated on new PDS")
   rescue StandardError => e
@@ -736,8 +736,8 @@ class GoatService
     # Must be logged in to old PDS
     login_old_pds
 
-    # Deactivate account via PDS client
-    old_pds_client.post_request('com.atproto.server.deactivateAccount', {})
+    # Deactivate account via PDS client (no request body expected)
+    old_pds_client.post_request('com.atproto.server.deactivateAccount')
 
     logger.info("Account deactivated on old PDS")
   rescue StandardError => e

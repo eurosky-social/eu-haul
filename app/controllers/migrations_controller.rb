@@ -590,22 +590,37 @@ class MigrationsController < ApplicationController
         refresh_token: session_data['refreshJwt']
       )
 
+      # Also re-store the password — it's needed for logging in to the new PDS
+      # during the PLC update step (the new PDS account uses the same password).
+      @migration.password = password
+      @migration.save!
+
       Rails.logger.info("Re-authenticated with old PDS for migration #{@migration.token}")
 
-      # Try to request a PLC token automatically
-      begin
-        service = GoatService.new(@migration)
-        service.request_plc_token
-        notice_msg = "Re-authenticated successfully! A new PLC token has been requested — check your email from #{@migration.old_pds_host}."
-      rescue StandardError => e
-        Rails.logger.error("Failed to request PLC token after re-auth for #{@migration.token}: #{e.message}")
-        notice_msg = "Re-authenticated successfully, but could not request PLC token automatically (#{e.message}). " \
-                     "You can request one manually through your old PDS provider's settings, then enter it below."
-      end
+      # Check if we already have a valid (non-expired) PLC token.
+      # If so, skip requesting a new one and directly retry the PLC update.
+      if !@migration.plc_token_expired? && @migration.encrypted_plc_token.present?
+        Rails.logger.info("Valid PLC token still present for #{@migration.token} — retrying PLC update directly")
 
-      # Reset to pending_plc so the PLC token form appears
-      if @migration.failed?
-        @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
+        @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0) if @migration.failed?
+        UpdatePlcJob.perform_later(@migration.id)
+        notice_msg = "Re-authenticated successfully! Your PLC token is still valid — retrying the PLC update now."
+      else
+        # No valid PLC token — request a new one
+        begin
+          service = GoatService.new(@migration)
+          service.request_plc_token
+          notice_msg = "Re-authenticated successfully! A new PLC token has been requested — check your email from #{@migration.old_pds_host}."
+        rescue StandardError => e
+          Rails.logger.error("Failed to request PLC token after re-auth for #{@migration.token}: #{e.message}")
+          notice_msg = "Re-authenticated successfully, but could not request PLC token automatically (#{e.message}). " \
+                       "You can request one manually through your old PDS provider's settings, then enter it below."
+        end
+
+        # Reset to pending_plc so the PLC token form appears
+        if @migration.failed?
+          @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
+        end
       end
 
       redirect_to migration_by_token_path(@migration.token), notice: notice_msg
