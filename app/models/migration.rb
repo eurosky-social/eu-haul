@@ -86,6 +86,7 @@ class Migration < ApplicationRecord
   # Custom validation: Only allow one active migration per DID
   # Allows historical records and future migrations after completion/failure
   validate :no_concurrent_active_migration, on: :create
+  validate :global_migration_capacity_available, on: :create
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :status, presence: true, inclusion: { in: Migration.statuses.keys }
   validates :old_pds_host, :new_pds_host, presence: true
@@ -115,6 +116,9 @@ class Migration < ApplicationRecord
   after_create :send_email_verification
 
   # Scopes
+  # Global migration capacity limit (configurable via env var)
+  MAX_CONCURRENT_MIGRATIONS = ENV.fetch('MAX_CONCURRENT_MIGRATIONS', 20).to_i
+
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }
   scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
@@ -576,6 +580,16 @@ class Migration < ApplicationRecord
                .where.not(id: id)
                .exists?
       errors.add(:did, "already has an active migration in progress. Please wait for it to complete or fail before starting a new migration.")
+    end
+  end
+
+  # Prevent accepting new migrations when the system is at capacity.
+  # This protects against resource exhaustion when many users submit
+  # migrations simultaneously.
+  def global_migration_capacity_available
+    if Migration.active.count >= MAX_CONCURRENT_MIGRATIONS
+      errors.add(:base, "The migration service is currently at capacity (#{MAX_CONCURRENT_MIGRATIONS} active migrations). " \
+        "Please try again in a few minutes.")
     end
   end
 

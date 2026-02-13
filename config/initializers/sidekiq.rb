@@ -39,14 +39,15 @@ Sidekiq.configure_server do |config|
   # Set concurrency based on environment
   config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 25)
 
-  # Configure queues with priority
-  # Queue priorities (weight determines relative processing priority):
-  # - critical: 10 (UpdatePlcJob, ActivateAccountJob)
-  # - migrations: 5 (ImportPreferencesJob, WaitForPlcTokenJob, and other migration steps)
-  # - default: 3 (general application jobs)
-  # - low: 1 (cleanup, maintenance, etc.)
+  # Queue configuration
+  #
+  # NOTE: The critical queue is handled by a SEPARATE Sidekiq process
+  # (config/sidekiq_critical.yml) to ensure UpdatePlcJob and ActivateAccountJob
+  # are never starved by long-running blob transfer jobs.
+  #
+  # This main process handles migrations, default, and low queues.
+  # Queue weights determine relative processing priority.
   config.queues = [
-    ['critical', 10],
     ['migrations', 5],
     ['default', 3],
     ['low', 1]

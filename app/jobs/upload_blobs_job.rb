@@ -38,6 +38,11 @@ class UploadBlobsJob < ApplicationJob
   PARALLEL_UPLOADS = 10
   MAX_RETRIES = 3
 
+  # Concurrency limit: max number of heavy I/O migrations (downloading or blob-transferring)
+  # running simultaneously. Shared with ImportBlobsJob and DownloadAllDataJob.
+  MAX_CONCURRENT_HEAVY_IO = ENV.fetch('MAX_CONCURRENT_BLOB_MIGRATIONS', 8).to_i
+  REQUEUE_DELAY = 30.seconds
+
   # Retry configuration
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
@@ -49,6 +54,13 @@ class UploadBlobsJob < ApplicationJob
     # Idempotency check: Skip if already past this stage
     if migration.status != 'pending_blobs'
       logger.info("Migration #{migration.token} is already at status '#{migration.status}', skipping blob upload")
+      return
+    end
+
+    # Concurrency check: limit heavy I/O jobs (downloads + blob transfers)
+    if at_heavy_io_limit?(exclude_id: migration.id)
+      logger.info("Heavy I/O concurrency limit reached (#{MAX_CONCURRENT_HEAVY_IO}), re-enqueuing in #{REQUEUE_DELAY}s")
+      self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
       return
     end
 
@@ -93,6 +105,16 @@ class UploadBlobsJob < ApplicationJob
   end
 
   private
+
+  # Check if we're at the concurrency limit for heavy I/O jobs.
+  # Counts migrations in download or blob-transfer stages to prevent
+  # resource exhaustion from too many concurrent network/disk operations.
+  def at_heavy_io_limit?(exclude_id: nil)
+    heavy_statuses = [:pending_download, :pending_blobs]
+    scope = Migration.where(status: heavy_statuses)
+    scope = scope.where.not(id: exclude_id) if exclude_id
+    scope.count >= MAX_CONCURRENT_HEAVY_IO
+  end
 
   # Upload all blobs using thread pool pattern for maximum throughput
   def upload_all_blobs(migration, goat, blob_files)

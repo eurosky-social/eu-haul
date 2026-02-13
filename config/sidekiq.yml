@@ -1,8 +1,13 @@
+## Main Sidekiq process for migration and general jobs
+#
+# The critical queue is handled by a SEPARATE dedicated process
+# (config/sidekiq_critical.yml) to ensure UpdatePlcJob and
+# ActivateAccountJob are never blocked by long-running blob transfers.
+
 :concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 15) %>
 :timeout: 30
 
 :queues:
-  - [critical, 3]
   - [migrations, 2]
   - [default, 1]
   - [low, 1]

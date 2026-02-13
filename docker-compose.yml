@@ -140,6 +140,44 @@ services:
       - eurosky-internal
       - u-at-proto_default
 
+  # Dedicated Sidekiq process for critical queue (UpdatePlcJob, ActivateAccountJob)
+  # Runs separately to ensure time-sensitive jobs (PLC tokens expire in 1h)
+  # are never blocked by long-running blob transfer jobs.
+  eurosky-sidekiq-critical:
+    build: .
+    container_name: eurosky-sidekiq-critical
+    command: bundle exec sidekiq -C config/sidekiq_critical.yml
+    volumes:
+      - .:/rails
+      - eurosky-tmp-data:/rails/tmp
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
+      PDS_DISABLE_SSRF_PROTECTION: "true"
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@example.com}
+      TARGET_PDS_SUPPORT_EMAIL: ${TARGET_PDS_SUPPORT_EMAIL:-support@example.com}
+    depends_on:
+      eurosky-postgres:
+        condition: service_healthy
+      eurosky-redis:
+        condition: service_healthy
+      eurosky-migrate:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sidekiq || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - eurosky-internal
+      - u-at-proto_default
+
   # Caddy removed - conflicts with Traefik on ports 80/443
   # Access the app directly at http://localhost:3001 instead
 

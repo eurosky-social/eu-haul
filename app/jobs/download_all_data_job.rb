@@ -48,6 +48,11 @@ class DownloadAllDataJob < ApplicationJob
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
 
+  # Concurrency limit: max number of heavy I/O migrations (downloading or blob-transferring)
+  # running simultaneously. Shared with ImportBlobsJob and UploadBlobsJob.
+  MAX_CONCURRENT_HEAVY_IO = ENV.fetch('MAX_CONCURRENT_BLOB_MIGRATIONS', 8).to_i
+  REQUEUE_DELAY = 30.seconds
+
   # Retry configuration
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
   retry_on GoatService::RateLimitError, wait: :polynomially_longer, attempts: 5
@@ -59,6 +64,13 @@ class DownloadAllDataJob < ApplicationJob
     # Idempotency check: Skip if already past this stage
     if migration.status != 'pending_download'
       logger.info("Migration #{migration.token} is already at status '#{migration.status}', skipping download")
+      return
+    end
+
+    # Concurrency check: limit heavy I/O jobs (downloads + blob transfers)
+    if at_heavy_io_limit?(exclude_id: migration.id)
+      logger.info("Heavy I/O concurrency limit reached (#{MAX_CONCURRENT_HEAVY_IO}), re-enqueuing in #{REQUEUE_DELAY}s")
+      self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
       return
     end
 
@@ -117,6 +129,16 @@ class DownloadAllDataJob < ApplicationJob
   end
 
   private
+
+  # Check if we're at the concurrency limit for heavy I/O jobs.
+  # Counts migrations in download or blob-transfer stages to prevent
+  # resource exhaustion from too many concurrent network/disk operations.
+  def at_heavy_io_limit?(exclude_id: nil)
+    heavy_statuses = [:pending_download, :pending_blobs]
+    scope = Migration.where(status: heavy_statuses)
+    scope = scope.where.not(id: exclude_id) if exclude_id
+    scope.count >= MAX_CONCURRENT_HEAVY_IO
+  end
 
   # Create local storage directory for this migration
   def create_storage_directory(migration)
