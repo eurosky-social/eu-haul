@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1e40af;
+      margin-top: 0;
+      font-size: 24px;
+    }
+    .key-box {
+      background-color: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .key-box h2 {
+      color: #92400e;
+      margin-top: 0;
+      font-size: 18px;
+    }
+    .key-value {
+      background-color: #fffbeb;
+      border: 2px solid #d97706;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 12px 0;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      font-size: 13px;
+      user-select: all;
+      -webkit-user-select: all;
+    }
+    .info-box {
+      background-color: #dbeafe;
+      border-left: 4px solid #3b82f6;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .next-steps {
+      background-color: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Your Account Recovery Key</h1>
+
+    <p>Your migration is almost done! Before we make the final changes to move your account to the new server, we want to make sure you have a <strong>recovery key</strong> for your account.</p>
+
+    <div class="key-box">
+      <h2>Save This Key Now</h2>
+      <p>Think of this as a <strong>master password for your account</strong>. If you ever lose access to your account or your server goes down, this key lets you recover it.</p>
+
+      <% if @rotation_key_private.present? %>
+        <p><strong>Your Recovery Key:</strong></p>
+        <div class="key-value"><%= @rotation_key_private %></div>
+        <p style="font-size: 14px; margin-bottom: 0;">Copy this key and store it somewhere safe &mdash; a password manager, a printed note in a safe place, or an encrypted file. <strong>Don't share it with anyone.</strong></p>
+      <% end %>
+    </div>
+
+    <div class="info-box">
+      <h3 style="margin-top: 0; color: #1e40af;">What can I do with this key?</h3>
+      <p style="margin-bottom: 0;">If you ever need to recover your account, go to <strong><a href="https://pdsmoover.com/restore">pdsmoover.com/restore</a></strong> and use this key to restore access. It works even if your server is completely offline.</p>
+    </div>
+
+    <div class="next-steps">
+      <h3 style="margin-top: 0; color: #15803d;">What happens next?</h3>
+      <p>We're now going to update your account to point to the new server (<strong><%= @migration.new_pds_host %></strong>). This is the final step of your migration.</p>
+      <p style="margin-bottom: 0;"><strong>We'll send you one more email</strong> once everything is complete, with your new password and a summary of the migration.</p>
+    </div>
+
+    <div class="footer">
+      <p>Migration Token: <code><%= @migration.token %></code></p>
+      <p>This email was sent to <%= @migration.email %> because you initiated an account migration.</p>
+    </div>
+  </div>
+</body>
+</html>

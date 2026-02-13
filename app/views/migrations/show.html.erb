@@ -9,9 +9,6 @@
   <% if EuroskyConfig::FAVICON_URL.present? %>
     <link rel="icon" type="image/png" href="<%= EuroskyConfig::FAVICON_URL %>">
   <% end %>
-  <% unless @migration.completed? || @migration.failed? || !@migration.email_verified? %>
-    <meta http-equiv="refresh" content="10">
-  <% end %>
   <%= render 'shared/styles' %>
   <style>
     /* Page-specific styles for show.html.erb */
@@ -305,31 +302,26 @@
           <code><%= migration_by_token_url(@migration.token) %></code>
         </div>
 
-      <% else %>
-        <%# Email verified — show normal progress tracking %>
-        <div class="bookmark-notice" role="note">
-          <h3>Bookmark This Page</h3>
-          <p>Save this URL to track your migration progress:</p>
-          <code><%= migration_by_token_url(@migration.token) %></code>
-        </div>
+      <% else %>        
+        
 
-        <div class="progress-section">
-          <div class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar" style="width: <%= @migration.progress_percentage %>%">
-              <%= @migration.progress_percentage %>%
+        <div class="status-info">
+          <div class="status-label">Current Status</div>
+          <div id="status-value" class="status-value status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>" data-status="<%= @migration.status %>">
+            <span id="status-text"><%= @migration.status.humanize %></span>
+            <div id="retry-info" style="font-size: 14px; color: #f59e0b; margin-top: 8px; <%= 'display:none;' unless @migration.job_retrying? && @migration.current_job_step %>">
+              <% if @migration.job_retrying? && @migration.current_job_step %>
+                Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
+              <% end %>
             </div>
           </div>
         </div>
 
-        <div class="status-info">
-          <div class="status-label">Current Status</div>
-          <div class="status-value status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>">
-            <%= @migration.status.humanize %>
-            <% if @migration.job_retrying? && @migration.current_job_step %>
-              <div style="font-size: 14px; color: #f59e0b; margin-top: 8px;">
-                Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
-              </div>
-            <% end %>
+        <div class="progress-section">
+          <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
+            <div id="progress-bar" class="progress-bar" style="width: <%= @migration.progress_percentage %>%">
+              <%= @migration.progress_percentage %>%
+            </div>
           </div>
         </div>
 
@@ -452,65 +444,84 @@
       <% end %>
 
       <% if @migration.pending_plc? %>
-        <div class="plc-token-section" role="alert">
-          <h3>Action Required: PLC Token</h3>
-
-          <div class="warning">
-            ⚠️ POINT OF NO RETURN - Once you submit the PLC token, your DID will be updated and this cannot be undone.
+        <div style="margin-bottom: 24px;">
+          <div style="text-align: center; padding: 24px 0 16px;">
+            <div style="font-size: 48px; margin-bottom: 12px;">📧</div>
+            <h3 style="margin: 0 0 8px 0; font-size: 22px; color: #1a1a1a;">Almost done! Check your email</h3>
+            <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 500px; margin: 0 auto;">
+              Your account data has been copied to your new server. To finalize the move,
+              we need you to enter a <strong>confirmation code</strong> that Bluesky sent to your email.
+            </p>
           </div>
 
-          <p style="margin-bottom: 16px; color: #856404; font-size: 14px;">
-            Your account data has been successfully migrated. Now you need to update your DID document to point to your new PDS.
-          </p>
-
-          <% unless @migration.has_old_pds_tokens? %>
-            <%# Old PDS session expired — offer re-authentication to request a new PLC token %>
-            <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 16px;">
-              <h4 style="color: #1e40af; font-size: 15px; font-weight: 700; margin-bottom: 8px;">
-                Need a PLC token? Re-authenticate to request one.
-              </h4>
-              <p style="color: #1e40af; font-size: 14px; margin-bottom: 12px;">
-                Enter your password for <strong><%= @migration.old_handle %></strong> and we'll send you a new PLC token via email.
-              </p>
-              <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
-                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                <div style="margin-bottom: 12px;">
-                  <input type="password" name="password" required
-                         autocomplete="current-password"
-                         placeholder="Password for <%= @migration.old_handle %>"
-                         style="width: 100%; padding: 10px 12px; border: 2px solid #93c5fd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
-                </div>
-                <button type="submit"
-                        style="padding: 10px 20px; background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">
-                  Re-authenticate & Request PLC Token
-                </button>
-              </form>
+          <div style="background: #f0f7ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <h4 style="margin: 0 0 12px 0; font-size: 16px; color: #0056b3;">What to look for</h4>
+            <p style="margin: 0 0 8px 0; font-size: 15px; color: #333; line-height: 1.6;">
+              You should have received an email with the subject <strong>"PLC update requested"</strong>.
+              It contains a <strong>confirmation code</strong> that looks like this:
+            </p>
+            <div style="background: white; padding: 12px 16px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 20px; letter-spacing: 3px; color: #333; margin: 12px 0;">
+              XXXXX-XXXXX
             </div>
-          <% end %>
-
-          <p style="margin-bottom: 16px; color: #856404; font-size: 14px;">
-            <% if @migration.has_old_pds_tokens? %>
-              A PLC operation token has been requested from your old PDS provider (<strong><%= @migration.old_pds_host %></strong>).
-              Check your email for the token, then enter it below.
-            <% else %>
-              Enter the PLC token you received via email below, or use the re-authentication form above to request a new one.
-            <% end %>
-          </p>
-
-          <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-            <p style="margin: 0; color: #92400e; font-size: 13px;">
-              ⏰ <strong>Important:</strong> PLC tokens expire after 1 hour. If your token has expired, you can request a new one.
+            <p style="margin: 8px 0 0 0; font-size: 14px; color: #555;">
+              Copy that code and paste it below.
             </p>
           </div>
 
           <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true do |f| %>
             <div class="form-group">
-              <%= label_tag :plc_token, "PLC Operation Token" %>
-              <%= text_field_tag :plc_token, nil, required: true, placeholder: "Enter token from email", autocomplete: "off" %>
+              <%= label_tag :plc_token, "Confirmation Code" %>
+              <%= text_field_tag :plc_token, nil, required: true, placeholder: "XXXXX-XXXXX", autocomplete: "off", style: "font-family: monospace; font-size: 18px; letter-spacing: 2px; text-align: center;" %>
             </div>
 
-            <%= submit_tag "Submit Token & Complete Migration", class: "submit-button", onclick: "return confirm('WARNING: This will permanently update your DID to point to the new PDS. This action CANNOT be undone. Are you absolutely sure you want to proceed?');" %>
+            <%= submit_tag "Complete Migration", class: "submit-button", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
           <% end %>
+
+          <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 20px;">
+            <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">Didn't receive the email?</h4>
+            <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #78350f; line-height: 1.8;">
+              <li>Check your spam or junk folder</li>
+              <li>The email comes from Bluesky, not from us</li>
+              <li>The code expires after 1 hour</li>
+            </ul>
+            <% unless @migration.has_old_pds_tokens? %>
+              <p style="margin: 0 0 12px 0; font-size: 14px; color: #78350f;">
+                If you need a new code, enter your password below and we'll request one:
+              </p>
+              <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                <div style="display: flex; gap: 8px;">
+                  <input type="password" name="password" required
+                         autocomplete="current-password"
+                         placeholder="Password for <%= @migration.old_handle %>"
+                         style="flex: 1; padding: 10px 12px; border: 2px solid #f59e0b; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                  <button type="submit"
+                          style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;">
+                    Request New Code
+                  </button>
+                </div>
+              </form>
+            <% end %>
+          </div>
+
+          <details style="margin-top: 20px;">
+            <summary style="cursor: pointer; color: #6b7280; font-size: 14px; font-weight: 500;">
+              Technical details
+            </summary>
+            <div style="margin-top: 12px; padding: 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; color: #4b5563; line-height: 1.7;">
+              <p style="margin: 0 0 8px 0;">
+                The confirmation code is a <strong>PLC operation token</strong> — it authorizes updating your
+                DID document in the PLC directory to point to your new Personal Data Server.
+              </p>
+              <p style="margin: 0 0 8px 0;">
+                <strong>This is irreversible.</strong> Once submitted, your account identity (DID) will permanently
+                point to <strong><%= @migration.new_pds_host %></strong> instead of <strong><%= @migration.old_pds_host %></strong>.
+              </p>
+              <p style="margin: 0;">
+                PLC tokens expire after 1 hour. If yours has expired, you can request a new one.
+              </p>
+            </div>
+          </details>
         </div>
       <% end %>
 
@@ -567,12 +578,6 @@
         <%= render 'migrations/error_details', migration: @migration %>
       <% end %>
 
-      <% unless @migration.completed? || @migration.failed? %>
-        <div class="auto-refresh-notice" role="status" aria-live="polite">
-          This page will automatically refresh every 10 seconds to show the latest status.
-        </div>
-      <% end %>
-
       <% end %><%# end of email_verified? if/else %>
     </div>
   </div>
@@ -598,9 +603,89 @@
           </a>
         </div>
       </div>
+
+      <%# Email verified — show normal progress tracking %>
+        <div class="backup-sidebar-card">
+          <div class="backup-sidebar-header">
+          Bookmark This Page
+          </div>
+          <div class="backup-sidebar-body">
+          <p>Save this URL to track your migration progress:</p>
+          <code><%= migration_by_token_url(@migration.token) %></code>
+          </div>
+        </div>
+
     </div>
   <% end %>
 
   </div>
+
+  <% unless @migration.completed? || @migration.failed? %>
+  <script>
+    (function() {
+      var pollUrl = '<%= migration_by_token_path(@migration.token, format: :json) %>';
+      var currentStatus = '<%= @migration.status %>';
+      var emailVerified = <%= @migration.email_verified? %>;
+
+      function poll() {
+        fetch(pollUrl, { headers: { 'Accept': 'application/json' } })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            // Major state transitions that change the page layout — full reload
+            if (!emailVerified && data.email_verified) {
+              window.location.reload();
+              return;
+            }
+            if (data.completed || data.failed) {
+              window.location.reload();
+              return;
+            }
+            // Status changed to pending_plc (needs form interaction) — full reload
+            if (data.status === 'pending_plc' && currentStatus !== 'pending_plc') {
+              window.location.reload();
+              return;
+            }
+
+            // In-place updates for progress
+            var bar = document.getElementById('progress-bar');
+            var barContainer = document.getElementById('progress-bar-container');
+            if (bar && barContainer) {
+              bar.style.width = data.progress_percentage + '%';
+              bar.textContent = data.progress_percentage + '%';
+              barContainer.setAttribute('aria-valuenow', data.progress_percentage);
+            }
+
+            var statusText = document.getElementById('status-text');
+            if (statusText) {
+              statusText.textContent = data.status_humanized;
+            }
+
+            var statusValue = document.getElementById('status-value');
+            if (statusValue && data.status !== currentStatus) {
+              statusValue.className = 'status-value status-in-progress';
+              statusValue.setAttribute('data-status', data.status);
+              currentStatus = data.status;
+            }
+
+            var retryInfo = document.getElementById('retry-info');
+            if (retryInfo) {
+              if (data.job_retrying && data.current_job_step) {
+                var stepName = data.current_job_step.replace('Job', '').replace(/([A-Z])/g, ' $1').trim();
+                retryInfo.textContent = 'Retry ' + data.current_job_attempt + '/' + data.current_job_max_attempts + ' - ' + stepName;
+                retryInfo.style.display = '';
+              } else {
+                retryInfo.style.display = 'none';
+              }
+            }
+          })
+          .catch(function() {
+            // Silently ignore fetch errors, will retry on next poll
+          });
+      }
+
+      setInterval(poll, 10000);
+    })();
+  </script>
+  <% end %>
 </body>
 </html>

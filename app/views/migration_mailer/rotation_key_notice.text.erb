@@ -1,0 +1,52 @@
+YOUR ACCOUNT RECOVERY KEY
+================================================================================
+
+Your migration is almost done! Before we make the final changes to move
+your account to the new server, we want to make sure you have a recovery
+key for your account.
+
+
+SAVE THIS KEY NOW
+================================================================================
+
+Think of this as a master password for your account. If you ever lose
+access to your account or your server goes down, this key lets you
+recover it.
+
+<% if @rotation_key_private.present? %>
+Your Recovery Key:
+----------------------------------------
+<%= @rotation_key_private %>
+----------------------------------------
+
+Copy this key and store it somewhere safe — a password manager, a printed
+note in a safe place, or an encrypted file. Don't share it with anyone.
+<% end %>
+
+
+WHAT CAN I DO WITH THIS KEY?
+================================================================================
+
+If you ever need to recover your account, go to:
+
+    https://pdsmoover.com/restore
+
+and use this key to restore access. It works even if your server is
+completely offline.
+
+
+WHAT HAPPENS NEXT?
+================================================================================
+
+We're now going to update your account to point to the new server
+(<%= @migration.new_pds_host %>). This is the final step of your migration.
+
+We'll send you one more email once everything is complete, with your
+new password and a summary of the migration.
+
+
+---
+Migration Token: <%= @migration.token %>
+
+This email was sent to <%= @migration.email %> because you initiated
+an account migration.

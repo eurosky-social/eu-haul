@@ -3,8 +3,7 @@
 # This job completes the migration by:
 #   1. Activating the account on the new PDS
 #   2. Deactivating the account on the old PDS
-#   3. Generating and adding rotation key for account recovery
-#   4. Marking the migration as complete
+#   3. Marking the migration as complete
 #
 # Status Flow:
 #   pending_activation -> completed
@@ -12,9 +11,11 @@
 # What This Job Does:
 #   1. Activates account on new PDS (makes it live)
 #   2. Deactivates account on old PDS (prevents further use)
-#   3. Generates rotation key and adds it to PLC (highest priority)
-#   4. Updates progress timestamps
-#   5. Marks migration as complete
+#   3. Updates progress timestamps
+#   4. Marks migration as complete
+#
+# Note: The rotation key was already generated and included in the PLC
+# operation by UpdatePlcJob, so no separate PLC operation is needed here.
 #
 # Retries: 3 times (activation is idempotent)
 # Queue: :critical (highest priority - finish the migration)
@@ -29,8 +30,6 @@
 #   Updates progress_data with:
 #   - account_activated_at: timestamp (new PDS)
 #   - account_deactivated_at: timestamp (old PDS)
-#   - rotation_key_public: public key (did:key format)
-#   - rotation_key_generated_at: timestamp
 #   - completed_at: timestamp (migration complete)
 #
 # Note: After this job completes, the user's account is fully migrated
@@ -92,31 +91,13 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Clearing old PDS tokens for migration #{migration.token}")
     migration.clear_old_pds_tokens!
 
-    # Step 2.5: Generate and add rotation key for account recovery
-    # This happens AFTER activation and PLC update, so the new PDS has authority to sign the PLC operation
-    begin
-      Rails.logger.info("Generating rotation key for account recovery")
-      rotation_key = service.generate_rotation_key
-      migration.set_rotation_key(rotation_key[:private_key])
-      Rails.logger.info("Rotation key generated and stored (public key: #{rotation_key[:public_key]})")
-
-      Rails.logger.info("Adding rotation key to PDS account (highest priority)")
-      service.add_rotation_key_to_pds(rotation_key[:public_key])
-      Rails.logger.info("Rotation key added successfully")
-
-      # Update progress
-      migration.progress_data['rotation_key_public'] = rotation_key[:public_key]
-      migration.progress_data['rotation_key_generated_at'] = Time.current.iso8601
-      migration.save!
-    rescue StandardError => e
-      # Log the error but don't fail the migration
-      # The account is already migrated successfully
-      Rails.logger.warn("Failed to generate/add rotation key for migration #{migration.token}: #{e.message}")
-      Rails.logger.warn("Migration will proceed as complete - user can add rotation key manually later")
-
-      # Update progress with error note
-      migration.progress_data['rotation_key_error'] = e.message
-      migration.save!
+    # Note: Rotation key was generated and included in the PLC operation by UpdatePlcJob.
+    # The user's rotation key is already in the DID document with highest priority,
+    # so no additional PLC operation is needed here.
+    if migration.progress_data['rotation_key_public'].present?
+      Rails.logger.info("Rotation key already in PLC from UpdatePlcJob (#{migration.progress_data['rotation_key_public']})")
+    else
+      Rails.logger.warn("No rotation key found in progress data — key was not included in PLC operation")
     end
 
     # Step 3: Mark migration as complete
@@ -126,7 +107,7 @@ class ActivateAccountJob < ApplicationJob
 
     migration.mark_complete!
 
-    # Step 4: Send completion email with new account password, rotation key, and backup info
+    # Step 4: Send completion email with new account password and backup info
     # This email is the user's permanent record since we'll delete the migration soon
     # The password is included now (not earlier) so the user only gets it when the account is ready
     Rails.logger.info("Sending migration completion email to #{migration.email}")
@@ -146,7 +127,7 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
 
     # Step 6: Schedule migration record deletion for GDPR compliance
-    # Give user 10 minutes to view status page and save rotation key
+    # Give user 10 minutes to view status page
     # After that, no reason to keep their personal data
     Rails.logger.info("Scheduling migration record deletion in 10 minutes (GDPR compliance)")
     DeleteMigrationJob.set(wait: 10.minutes).perform_later(migration.id)
@@ -159,10 +140,7 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.info("New Handle: #{migration.new_handle} @ #{migration.new_pds_host}")
     Rails.logger.info("Account is now live on new PDS")
     if migration.progress_data['rotation_key_public']
-      Rails.logger.info("Rotation key added: #{migration.progress_data['rotation_key_public']}")
-      Rails.logger.info("Rotation key private key available for next 10 minutes")
-    elsif migration.progress_data['rotation_key_error']
-      Rails.logger.warn("Rotation key generation failed (migration still successful)")
+      Rails.logger.info("Rotation key in PLC: #{migration.progress_data['rotation_key_public']}")
     end
     Rails.logger.info("Completion email sent to: #{migration.email}")
     Rails.logger.info("Migration record will be deleted in 10 minutes")

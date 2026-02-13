@@ -1089,6 +1089,7 @@ class MigrationsController < ApplicationController
       last_error: @migration.last_error,
       completed: @migration.completed?,
       failed: @migration.failed?,
+      email_verified: @migration.email_verified?,
       job_retrying: @migration.job_retrying?,
       current_job_step: @migration.current_job_step,
       current_job_attempt: @migration.current_job_attempt,

@@ -29,28 +29,6 @@
       text-align: center;
       margin: 20px 0;
     }
-    .alert {
-      background-color: #fef3c7;
-      border-left: 4px solid #f59e0b;
-      padding: 16px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .alert h2 {
-      color: #92400e;
-      margin-top: 0;
-      font-size: 18px;
-    }
-    .rotation-key-box {
-      background-color: #f3f4f6;
-      border: 2px solid #d1d5db;
-      border-radius: 6px;
-      padding: 16px;
-      margin: 16px 0;
-      font-family: 'Courier New', monospace;
-      word-break: break-all;
-      font-size: 12px;
-    }
     .info-box {
       background-color: #dbeafe;
       border-left: 4px solid: #3b82f6;
@@ -96,10 +74,6 @@
       font-size: 13px;
       color: #6b7280;
     }
-    .warning-text {
-      color: #dc2626;
-      font-weight: 600;
-    }
   </style>
 </head>
 <body>
@@ -118,25 +92,6 @@
       <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;"><strong>Save this password now</strong> — store it in a password manager. You can change it after logging in.</p>
     </div>
     <% end %>
-
-    <!-- CRITICAL: Rotation Key -->
-    <div class="alert">
-      <h2>⚠️ SAVE YOUR ROTATION KEY NOW</h2>
-      <p><strong class="warning-text">This is the ONLY time you'll receive this key.</strong></p>
-      <p>Your rotation key is needed for account recovery if you lose access to your PDS. Store it securely (password manager, encrypted file, etc.).</p>
-
-      <% if @rotation_key_private.present? %>
-        <p><strong>Rotation Key (Private):</strong></p>
-        <div class="rotation-key-box"><%= @rotation_key_private %></div>
-      <% else %>
-        <p class="warning-text">⚠️ Rotation key generation failed during migration. You should generate one manually.</p>
-      <% end %>
-
-      <% if @rotation_key_public.present? %>
-        <p style="margin-top: 16px;"><strong>Public Key (for reference):</strong></p>
-        <div class="rotation-key-box"><%= @rotation_key_public %></div>
-      <% end %>
-    </div>
 
     <!-- Backup Download -->
     <% if @backup_available %>
@@ -197,7 +152,6 @@
       <ul style="margin: 8px 0; padding-left: 20px; font-size: 13px;">
         <li>This migration record will be automatically deleted in 10 minutes for GDPR compliance</li>
         <li>All encrypted credentials have been securely erased from our servers</li>
-        <li>Save your rotation key and backup now - they won't be available later</li>
       </ul>
 
       <p style="margin-top: 20px;">

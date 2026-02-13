@@ -41,15 +41,13 @@ class MigrationMailer < ApplicationMailer
     @migration = migration
     @password = new_account_password
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
-    @rotation_key_private = migration.rotation_key
-    @rotation_key_public = migration.progress_data['rotation_key_public']
     @backup_available = migration.backup_available?
     @download_url = migration_download_backup_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001')) if @backup_available
     @completed_at = migration.progress_data['completed_at']
 
     mail(
       to: migration.email,
-      subject: "✅ Migration Complete - Save Your Password & Rotation Key! (#{migration.token})"
+      subject: "Migration Complete! (#{migration.token})"
     )
   end
 
@@ -60,6 +58,18 @@ class MigrationMailer < ApplicationMailer
     mail(
       to: migration.email,
       subject: "Verify your email to start migration (#{migration.token})"
+    )
+  end
+
+  def rotation_key_notice(migration)
+    @migration = migration
+    @rotation_key_private = migration.rotation_key
+    @rotation_key_public = migration.progress_data['rotation_key_public']
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+
+    mail(
+      to: migration.email,
+      subject: "Important: Your Account Recovery Key (#{migration.token})"
     )
   end
 
