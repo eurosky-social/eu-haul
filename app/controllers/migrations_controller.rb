@@ -152,18 +152,30 @@ class MigrationsController < ApplicationController
     end
 
     pds_host = normalize_pds_host(pds_host)
+    two_factor_code = params[:two_factor_code]&.strip
 
     # Authenticate against the target PDS
     session_url = "#{pds_host}/xrpc/com.atproto.server.createSession"
+
+    body = { identifier: did, password: password }
+    body[:authFactorToken] = two_factor_code if two_factor_code.present?
+
     response = HTTParty.post(
       session_url,
       headers: { 'Content-Type' => 'application/json' },
-      body: { identifier: did, password: password }.to_json,
+      body: body.to_json,
       timeout: 30
     )
 
     unless response.success?
       error_body = JSON.parse(response.body) rescue {}
+
+      # Check for 2FA requirement
+      if error_body['error'] == 'AuthFactorTokenRequired'
+        render json: { two_factor_required: true, error: "Two-factor authentication required. Check your email for a sign-in code." }, status: :unauthorized
+        return
+      end
+
       error_msg = error_body['message'] || error_body['error'] || 'Authentication failed'
 
       if error_msg.include?('Invalid identifier or password')
@@ -200,7 +212,7 @@ class MigrationsController < ApplicationController
   #   - Success: { available: true/false }
   #   - Failure: { error: 'message' }
   def check_handle
-    handle = params[:handle]&.strip
+    handle = GoatService.clean_handle(params[:handle])
     pds_host = params[:pds_host]&.strip
     user_did = params[:did]&.strip  # The authenticated user's DID (for migration_in)
 
@@ -350,8 +362,8 @@ class MigrationsController < ApplicationController
       return
     end
 
-    # Sanitize handle
-    handle = sanitize_handle(handle)
+    # Sanitize handle (strip whitespace, remove @, remove bidi chars, downcase)
+    handle = GoatService.clean_handle(handle)
 
     # Detect handle type (DNS-verified custom domain vs PDS-hosted)
     handle_info = GoatService.detect_handle_type(handle)
@@ -362,7 +374,8 @@ class MigrationsController < ApplicationController
     did = resolution[:did]
 
     # Authenticate and get session to fetch email
-    account_details = authenticate_and_fetch_profile(pds_host, handle, password)
+    two_factor_code = params[:two_factor_code]&.strip
+    account_details = authenticate_and_fetch_profile(pds_host, handle, password, auth_factor_token: two_factor_code)
 
     render json: {
       did: did,
@@ -376,6 +389,9 @@ class MigrationsController < ApplicationController
       can_preserve_handle: handle_info[:can_preserve],
       handle_preservation_note: handle_info[:reason]
     }
+  rescue GoatService::TwoFactorRequiredError => e
+    Rails.logger.info("2FA required for handle #{handle}: #{e.message}")
+    render json: { two_factor_required: true, error: e.message }, status: :unauthorized
   rescue GoatService::NetworkError => e
     Rails.logger.error("Failed to resolve handle #{handle}: #{e.message}")
     render json: { error: "Could not resolve handle. Please check that the handle is correct." }, status: :not_found
@@ -409,8 +425,9 @@ class MigrationsController < ApplicationController
 
     begin
       # Sanitize ALL user inputs by removing invisible Unicode characters and trimming whitespace
-      @migration.old_handle = sanitize_user_input(@migration.old_handle) if @migration.old_handle.present?
-      @migration.new_handle = sanitize_user_input(@migration.new_handle) if @migration.new_handle.present?
+      # Handles get additional sanitization (@ prefix removal, bidi char stripping, downcasing)
+      @migration.old_handle = GoatService.clean_handle(@migration.old_handle) if @migration.old_handle.present?
+      @migration.new_handle = GoatService.clean_handle(@migration.new_handle) if @migration.new_handle.present?
       @migration.email = sanitize_user_input(@migration.email) if @migration.email.present?
       @migration.new_pds_host = sanitize_user_input(@migration.new_pds_host) if @migration.new_pds_host.present?
 
@@ -1252,22 +1269,31 @@ class MigrationsController < ApplicationController
 
   # Authenticate and fetch profile with email
   # Requires valid credentials to access private account information
-  def authenticate_and_fetch_profile(pds_host, identifier, password)
+  def authenticate_and_fetch_profile(pds_host, identifier, password, auth_factor_token: nil)
     # Create session to authenticate
     session_url = "#{pds_host}/xrpc/com.atproto.server.createSession"
+
+    body = {
+      identifier: identifier,
+      password: password
+    }
+    body[:authFactorToken] = auth_factor_token if auth_factor_token.present?
 
     response = HTTParty.post(
       session_url,
       headers: { 'Content-Type' => 'application/json' },
-      body: {
-        identifier: identifier,
-        password: password
-      }.to_json,
+      body: body.to_json,
       timeout: 30
     )
 
     unless response.success?
       error_body = JSON.parse(response.body) rescue {}
+
+      # Check for 2FA requirement
+      if error_body['error'] == 'AuthFactorTokenRequired'
+        raise GoatService::TwoFactorRequiredError, "Two-factor authentication is required. Check your email for a sign-in code."
+      end
+
       error_message = error_body['message'] || error_body['error'] || 'Authentication failed'
       raise AuthenticationError, error_message
     end

@@ -94,8 +94,16 @@ class GoatService
   class AuthenticationError < GoatError; end
   class NetworkError < GoatError; end
   class TimeoutError < GoatError; end
-  class RateLimitError < NetworkError; end  # Raised when PDS rate-limits our requests
+  class RateLimitError < NetworkError  # Raised when PDS rate-limits our requests
+    attr_reader :retry_after
+
+    def initialize(message = nil, retry_after: nil)
+      @retry_after = retry_after
+      super(message)
+    end
+  end
   class AccountExistsError < GoatError; end  # Raised when account already exists on target PDS
+  class TwoFactorRequiredError < GoatError; end  # Raised when PDS requires email-based 2FA token
 
   DEFAULT_TIMEOUT = 300 # 5 minutes
 
@@ -265,7 +273,15 @@ class GoatService
       raise GoatError, "Failed to create account on new PDS: #{error_message}"
     end
 
-    logger.info("Account created on new PDS")
+    # Validate that the created account has the correct DID
+    parsed = JSON.parse(response.body) rescue {}
+    if parsed['did'].present? && parsed['did'] != migration.did
+      raise GoatError, "DID mismatch after account creation: expected #{migration.did}, " \
+        "but PDS returned #{parsed['did']}. This is a critical error - the wrong account " \
+        "may have been created. Contact the target PDS administrator."
+    end
+
+    logger.info("Account created on new PDS (DID verified: #{parsed['did']})")
   rescue AccountExistsError
     raise
   rescue StandardError => e
@@ -439,6 +455,12 @@ class GoatService
   # Blob Methods
 
   def list_blobs(cursor = nil)
+    with_rate_limit_retry('list_blobs') do
+      list_blobs_request(cursor)
+    end
+  end
+
+  def list_blobs_request(cursor = nil)
     logger.info("Listing blobs for DID: #{migration.did}")
 
     url = "#{migration.old_pds_host}/xrpc/com.atproto.sync.listBlobs?did=#{migration.did}"
@@ -456,8 +478,9 @@ class GoatService
     unless response.success?
       # Check for rate-limiting
       if response.code == 429
+        retry_after = response.headers['Retry-After']&.to_i
         logger.warn("Rate limit hit while listing blobs: #{response.code} #{response.message}")
-        raise RateLimitError, "PDS rate limit exceeded while listing blobs: #{response.code} #{response.message}"
+        raise RateLimitError.new("PDS rate limit exceeded while listing blobs: #{response.code} #{response.message}", retry_after: retry_after)
       end
 
       raise NetworkError, "Failed to list blobs: #{response.code} #{response.message}"
@@ -476,6 +499,12 @@ class GoatService
   end
 
   def download_blob(cid)
+    with_rate_limit_retry("download_blob(#{cid})") do
+      download_blob_request(cid)
+    end
+  end
+
+  def download_blob_request(cid)
     logger.info("Downloading blob: #{cid}")
 
     blob_path = work_dir.join("blobs", cid)
@@ -493,8 +522,9 @@ class GoatService
     unless response.success?
       # Check for rate-limiting
       if response.code == 429
+        retry_after = response.headers['Retry-After']&.to_i
         logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
-        raise RateLimitError, "PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}"
+        raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}", retry_after: retry_after)
       end
 
       raise NetworkError, "Failed to download blob: #{response.code} #{response.message}"
@@ -513,6 +543,12 @@ class GoatService
   end
 
   def upload_blob(blob_path)
+    with_rate_limit_retry("upload_blob(#{blob_path})") do
+      upload_blob_request(blob_path)
+    end
+  end
+
+  def upload_blob_request(blob_path)
     logger.info("Uploading blob: #{blob_path}")
 
     unless File.exist?(blob_path)
@@ -547,8 +583,9 @@ class GoatService
 
       # Check for rate-limiting
       if response.code == 429
+        retry_after = response.headers['Retry-After']&.to_i
         logger.warn("Rate limit hit while uploading blob: #{response.code} #{response.message}")
-        raise RateLimitError, "PDS rate limit exceeded while uploading blob: #{response.code} #{response.message}"
+        raise RateLimitError.new("PDS rate limit exceeded while uploading blob: #{response.code} #{response.message}", retry_after: retry_after)
       end
 
       raise NetworkError, "Failed to upload blob: #{response.code} #{response.message}"
@@ -751,21 +788,43 @@ class GoatService
     response = new_pds_client.get_request('com.atproto.server.checkAccountStatus', {})
 
     logger.info("Account status retrieved")
-    response.to_json
+    response
   rescue StandardError => e
     raise GoatError, "Failed to get account status: #{e.message}"
   end
 
-  def check_missing_blobs
-    logger.info("Checking for missing blobs")
+  # List missing blobs on the new PDS, with optional pagination.
+  # Returns a hash with 'blobs' (array of {cid:...} hashes) and optional 'cursor'.
+  def check_missing_blobs(cursor: nil, limit: 100)
+    logger.info("Checking for missing blobs (cursor: #{cursor}, limit: #{limit})")
 
-    # Check missing blobs via PDS client
-    response = new_pds_client.get_request('com.atproto.repo.listMissingBlobs', {})
+    params = { limit: limit }
+    params[:cursor] = cursor if cursor
+
+    response = new_pds_client.get_request('com.atproto.repo.listMissingBlobs', params)
 
     logger.info("Missing blobs check completed")
-    response.to_json
+    response
   rescue StandardError => e
     raise GoatError, "Failed to check missing blobs: #{e.message}"
+  end
+
+  # Collect all missing blob CIDs from the new PDS using pagination.
+  # Returns an array of CID strings.
+  def collect_all_missing_blobs
+    all_missing = []
+    cursor = nil
+
+    loop do
+      response = check_missing_blobs(cursor: cursor, limit: 100)
+      blobs = response['blobs'] || []
+      all_missing.concat(blobs.map { |b| b['cid'] || b.to_s })
+
+      cursor = response['cursor']
+      break if cursor.nil? || cursor.empty? || blobs.empty?
+    end
+
+    all_missing
   end
 
   # Cleanup Methods
@@ -787,6 +846,41 @@ class GoatService
   end
 
   private
+
+  MAX_RATE_LIMIT_RETRIES = 4
+  MAX_RATE_LIMIT_WAIT = 60 # seconds
+
+  # Retry a block with exponential backoff when rate-limited (HTTP 429).
+  # Respects the Retry-After header when present; otherwise uses 2^attempt
+  # seconds with random jitter. Retries up to MAX_RATE_LIMIT_RETRIES times
+  # before re-raising. Short sleeps (up to 60s) are safe in Sidekiq workers.
+  def with_rate_limit_retry(label = 'operation')
+    attempt = 0
+    begin
+      yield
+    rescue RateLimitError => e
+      attempt += 1
+      if attempt > MAX_RATE_LIMIT_RETRIES
+        logger.error("Rate limit retries exhausted for #{label} after #{MAX_RATE_LIMIT_RETRIES} attempts")
+        raise
+      end
+
+      # Use Retry-After header if available, otherwise exponential backoff
+      wait = if e.retry_after && e.retry_after > 0
+               [e.retry_after, MAX_RATE_LIMIT_WAIT].min
+             else
+               [2**attempt, MAX_RATE_LIMIT_WAIT].min
+             end
+
+      # Add jitter (0-25% of wait time) to avoid thundering herd
+      jitter = rand * wait * 0.25
+      total_wait = wait + jitter
+
+      logger.warn("Rate limited on #{label} (attempt #{attempt}/#{MAX_RATE_LIMIT_RETRIES}), retrying in #{total_wait.round(1)}s")
+      sleep(total_wait)
+      retry
+    end
+  end
 
   # Execute shell command with timeout (used for curl in export_repo)
   def execute_command(*cmd, env: {}, timeout: DEFAULT_TIMEOUT)
@@ -842,7 +936,7 @@ class GoatService
   # For new PDS: uses system-generated password
   # @param pds_host [String] The PDS host to authenticate against
   # @param identifier [String] The identifier to use for login (handle or DID)
-  def create_direct_session(pds_host:, identifier:)
+  def create_direct_session(pds_host:, identifier:, auth_factor_token: nil)
     if old_pds_host?(pds_host)
       # Old PDS: refresh session using stored refresh token
       tokens = refresh_session_with_token(
@@ -859,21 +953,33 @@ class GoatService
       # New PDS: create session using system-generated password
       url = "#{pds_host}/xrpc/com.atproto.server.createSession"
 
+      body = {
+        identifier: identifier,
+        password: migration.password
+      }
+      body[:authFactorToken] = auth_factor_token if auth_factor_token.present?
+
       response = HTTParty.post(
         url,
         headers: { 'Content-Type' => 'application/json' },
-        body: {
-          identifier: identifier,
-          password: migration.password
-        }.to_json,
+        body: body.to_json,
         timeout: 30
       )
 
       unless response.success?
         if response.code == 429
+          retry_after = response.headers['Retry-After']&.to_i
           logger.warn("Rate limit hit during session creation: #{response.code} #{response.message}")
-          raise RateLimitError, "Failed to create session: #{response.code} #{response.message}"
+          raise RateLimitError.new("Failed to create session: #{response.code} #{response.message}", retry_after: retry_after)
         end
+
+        # Check for 2FA requirement
+        error_body = JSON.parse(response.body) rescue {}
+        if error_body['error'] == 'AuthFactorTokenRequired'
+          logger.info("Two-factor authentication required for #{pds_host} (#{identifier})")
+          raise TwoFactorRequiredError, "Two-factor authentication is required. Please check your email for a sign-in code."
+        end
+
         raise AuthenticationError, "Failed to create session: #{response.code} #{response.message}"
       end
 
@@ -882,6 +988,8 @@ class GoatService
     end
   rescue RateLimitError
     raise  # Re-raise rate limit errors
+  rescue TwoFactorRequiredError
+    raise  # Re-raise 2FA errors
   rescue StandardError => e
     raise AuthenticationError, "Failed to create direct session: #{e.message}"
   end
@@ -908,7 +1016,8 @@ class GoatService
 
     unless response.success?
       if response.code == 429
-        raise RateLimitError, "Rate limit during session refresh: #{response.code} #{response.message}"
+        retry_after = response.headers['Retry-After']&.to_i
+        raise RateLimitError.new("Rate limit during session refresh: #{response.code} #{response.message}", retry_after: retry_after)
       end
       raise AuthenticationError, "Failed to refresh session on #{host}: #{response.code} #{response.message}"
     end
@@ -1057,12 +1166,28 @@ class GoatService
 
   # Class methods for handle resolution
 
+  # Sanitize a handle by stripping whitespace, removing @ prefix,
+  # removing Unicode bidi control characters, and downcasing.
+  # This prevents homograph/spoofing attacks using invisible characters.
+  BIDI_CONTROL_CHARS = /[\u200E\u200F\u202A-\u202E\u2066-\u2069]/.freeze
+
+  def self.clean_handle(handle)
+    return nil if handle.nil?
+
+    handle
+      .strip
+      .sub(/\A@/, '')
+      .gsub(BIDI_CONTROL_CHARS, '')
+      .downcase
+  end
+
   # Resolve a handle to a DID
   # Tries multiple resolution methods in order:
   # 1. DNS TXT record (_atproto.handle)
   # 2. HTTPS well-known endpoint (/.well-known/atproto-did)
   # 3. PDS resolution endpoint
   def self.resolve_handle_to_did(handle)
+    handle = clean_handle(handle)
     Rails.logger.info("Resolving handle to DID: #{handle}")
 
     # Strategy 1: Try DNS-based resolution (most reliable for custom domains)
@@ -1179,10 +1304,11 @@ class GoatService
   # A handle is DNS-verified (custom domain) only if the user owns the domain
   # independently of any PDS.
   def self.detect_handle_type(handle)
+    handle = clean_handle(handle)
     Rails.logger.info("Detecting handle type for: #{handle}")
 
     # Normalize handle
-    domain = handle.strip.downcase
+    domain = handle
 
     # Check for common PDS-hosted domain patterns
     pds_hosted_suffixes = [

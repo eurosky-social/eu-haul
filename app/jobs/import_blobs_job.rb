@@ -102,12 +102,15 @@ class ImportBlobsJob < ApplicationJob
     # Step 7: Process blobs sequentially
     process_blobs_sequentially(migration, goat, all_blobs)
 
-    # Step 8: Mark blobs_completed_at
+    # Step 8: Reconcile - verify all blobs were imported and fill gaps
+    reconcile_blobs(migration, goat)
+
+    # Step 9: Mark blobs_completed_at
     mark_blobs_completed(migration)
 
     logger.info("Blob import completed for migration #{migration.token}")
 
-    # Step 9: Advance to next stage
+    # Step 10: Advance to next stage
     migration.advance_to_pending_prefs!
 
   rescue StandardError => e
@@ -372,6 +375,124 @@ class ImportBlobsJob < ApplicationJob
     migration.save!
 
     logger.debug("Progress: #{completed}/#{total} blobs (#{format_bytes(bytes_transferred)})")
+  end
+
+  # Post-import blob reconciliation.
+  # Checks account status to compare expected vs imported blobs,
+  # then fetches and uploads any missing blobs. Best-effort: failures
+  # are logged but do not fail the migration.
+  def reconcile_blobs(migration, goat)
+    logger.info("Starting post-import blob reconciliation")
+
+    migration.progress_data ||= {}
+    migration.progress_data['reconciliation_started_at'] = Time.current.iso8601
+    migration.save!
+
+    # Step 1: Check account status to see if there's a mismatch
+    begin
+      status = goat.get_account_status
+      expected = status['expectedBlobs'] || 0
+      imported = status['importedBlobs'] || 0
+
+      logger.info("Blob reconciliation: expected=#{expected}, imported=#{imported}")
+
+      migration.progress_data['reconciliation_expected_blobs'] = expected
+      migration.progress_data['reconciliation_imported_blobs'] = imported
+      migration.save!
+
+      if expected == imported
+        logger.info("All blobs accounted for, no reconciliation needed")
+        migration.progress_data['reconciliation_status'] = 'complete'
+        migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+        migration.save!
+        return
+      end
+
+      logger.warn("Blob mismatch detected: #{expected - imported} blobs missing")
+    rescue StandardError => e
+      logger.error("Failed to check account status during reconciliation: #{e.message}")
+      migration.progress_data['reconciliation_status'] = 'skipped'
+      migration.progress_data['reconciliation_error'] = "Account status check failed: #{e.message}"
+      migration.save!
+      return
+    end
+
+    # Step 2: Get the list of missing blob CIDs
+    begin
+      missing_cids = goat.collect_all_missing_blobs
+      logger.info("Found #{missing_cids.length} missing blobs to reconcile")
+
+      migration.progress_data['reconciliation_missing_count'] = missing_cids.length
+      migration.save!
+    rescue StandardError => e
+      logger.error("Failed to list missing blobs during reconciliation: #{e.message}")
+      migration.progress_data['reconciliation_status'] = 'partial'
+      migration.progress_data['reconciliation_error'] = "List missing blobs failed: #{e.message}"
+      migration.save!
+      return
+    end
+
+    if missing_cids.empty?
+      logger.info("No missing blobs returned despite count mismatch (may be eventual consistency)")
+      migration.progress_data['reconciliation_status'] = 'complete'
+      migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+      migration.save!
+      return
+    end
+
+    # Step 3: Attempt to fetch and upload each missing blob
+    reconciled_count = 0
+    still_missing = []
+
+    missing_cids.each_with_index do |cid, index|
+      begin
+        logger.info("Reconciling missing blob #{index + 1}/#{missing_cids.length}: #{cid}")
+
+        # Download from old PDS
+        blob_path = goat.download_blob(cid)
+        blob_size = File.size(blob_path)
+
+        # Upload to new PDS
+        goat.upload_blob(blob_path)
+
+        # Cleanup
+        FileUtils.rm_f(blob_path)
+
+        reconciled_count += 1
+        logger.info("Reconciled blob #{cid} (#{blob_size} bytes)")
+      rescue StandardError => e
+        logger.warn("Failed to reconcile blob #{cid}: #{e.message}")
+        still_missing << cid
+      end
+    end
+
+    # Step 4: Record reconciliation results
+    migration.progress_data['reconciliation_status'] = still_missing.empty? ? 'complete' : 'partial'
+    migration.progress_data['reconciliation_recovered'] = reconciled_count
+    migration.progress_data['reconciliation_still_missing'] = still_missing if still_missing.any?
+    migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+    migration.save!
+
+    logger.info("Blob reconciliation finished: #{reconciled_count}/#{missing_cids.length} recovered, #{still_missing.length} still missing")
+
+    if still_missing.any?
+      # Merge still-missing blobs into the failed_blobs list
+      existing_failed = migration.progress_data['failed_blobs'] || []
+      all_failed = (existing_failed + still_missing).uniq
+      migration.progress_data['failed_blobs'] = all_failed
+      migration.save!
+
+      logger.warn("#{still_missing.length} blobs could not be reconciled: #{still_missing.join(', ')}")
+    end
+  rescue StandardError => e
+    # Best-effort: log the error but don't fail the migration
+    logger.error("Blob reconciliation failed unexpectedly: #{e.message}")
+    logger.error(e.backtrace&.first(5)&.join("\n"))
+
+    migration.progress_data ||= {}
+    migration.progress_data['reconciliation_status'] = 'error'
+    migration.progress_data['reconciliation_error'] = e.message
+    migration.save!
   end
 
   # Format bytes for human-readable output

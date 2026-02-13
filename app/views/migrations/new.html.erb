@@ -389,10 +389,23 @@
             'Content-Type': 'application/json',
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
           },
-          body: JSON.stringify({ handle: handle, password: password })
+          body: JSON.stringify({
+            handle: handle,
+            password: password,
+            two_factor_code: document.getElementById('two_factor_code').value.trim() || undefined
+          })
         })
         .then(response => response.json())
         .then(data => {
+          if (data.two_factor_required) {
+            document.getElementById('two-factor-group').style.display = 'block';
+            document.getElementById('two_factor_code').focus();
+            showStatus(status, 'A sign-in code has been sent to your email. Enter it above and click Continue again.', 'info');
+            btn.disabled = false;
+            btn.textContent = 'Continue';
+            return;
+          }
+
           if (data.error) {
             showStatus(status, data.error, 'error');
             btn.disabled = false;
@@ -591,13 +604,21 @@
             body: JSON.stringify({
               pds_host: selectedPds,
               did: wizardData.did,
-              password: targetPassword
+              password: targetPassword,
+              two_factor_code: document.getElementById('target-2fa-code').value.trim() || undefined
             })
           })
           .then(response => response.json())
           .then(data => {
             btn.disabled = false;
             btn.textContent = 'Continue';
+
+            if (data.two_factor_required) {
+              document.getElementById('target-2fa-group').style.display = 'block';
+              document.getElementById('target-2fa-code').focus();
+              showStatus(targetStatus, 'A sign-in code has been sent to your email. Enter it above and click Continue again.', 'info');
+              return;
+            }
 
             if (data.error) {
               showStatus(targetStatus, data.error, 'error');
@@ -1102,6 +1123,15 @@
 
           <div id="step1-status" class="lookup-status"></div>
 
+          <!-- Two-Factor Authentication (shown dynamically when required) -->
+          <div id="two-factor-group" class="form-group" style="display: none; margin-top: 16px; padding: 16px; background: #fff8e1; border: 2px solid #ffc107; border-radius: 8px;">
+            <label for="two_factor_code" style="font-weight: 600; color: #f57f17;">Two-Factor Authentication</label>
+            <p style="margin: 4px 0 12px 0; font-size: 14px; color: #555;">
+              Your account has email-based two-factor authentication enabled. A sign-in code has been sent to your email. Please enter it below.
+            </p>
+            <input type="text" id="two_factor_code" class="form-control" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric" style="font-size: 18px; letter-spacing: 2px; text-align: center;">
+          </div>
+
           <div class="wizard-navigation">
             <button type="button" id="step1-next" class="submit-button">Continue</button>
           </div>
@@ -1175,6 +1205,13 @@
               <input type="password" id="target-pds-password" class="form-control" placeholder="Enter your old bsky.social password" autocomplete="current-password">
               <div class="helper-text">The password for your original Bluesky account</div>
             </div>
+            <!-- 2FA field for target PDS (shown dynamically) -->
+            <div id="target-2fa-group" style="display: none; margin-top: 12px;">
+              <label for="target-2fa-code">Sign-in Code (2FA)</label>
+              <input type="text" id="target-2fa-code" class="form-control" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric" style="font-size: 18px; letter-spacing: 2px; text-align: center;">
+              <div class="helper-text">Check your email for the two-factor authentication code</div>
+            </div>
+
             <div id="target-password-status" class="lookup-status"></div>
           </div>
 
