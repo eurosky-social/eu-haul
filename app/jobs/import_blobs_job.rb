@@ -80,9 +80,26 @@ class ImportBlobsJob < ApplicationJob
 
     # Step 1: Check concurrency limit (exclude this migration from the count)
     if at_concurrency_limit?(exclude_id: migration.id)
-      logger.info("Concurrency limit reached (#{MAX_CONCURRENT_BLOB_MIGRATIONS}), re-enqueuing in #{REQUEUE_DELAY}s")
+      queue_position = Migration.where(status: [:pending_download, :pending_blobs])
+                                .where.not(id: migration.id)
+                                .count - MAX_CONCURRENT_BLOB_MIGRATIONS + 1
+      logger.info("Concurrency limit reached (#{MAX_CONCURRENT_BLOB_MIGRATIONS}), re-enqueuing in #{REQUEUE_DELAY}s (queue position ~#{queue_position})")
+      migration.update_columns(
+        progress_data: migration.progress_data.merge(
+          'queued' => true,
+          'queued_reason' => 'Waiting for other migrations to finish transferring data',
+          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
+        )
+      )
       self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
       return
+    end
+
+    # Clear queued state now that we're starting
+    if migration.progress_data&.dig('queued')
+      migration.update_columns(
+        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
+      )
     end
 
     # Step 2: Mark blobs_started_at

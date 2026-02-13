@@ -1111,6 +1111,8 @@ class MigrationsController < ApplicationController
       current_job_step: @migration.current_job_step,
       current_job_attempt: @migration.current_job_attempt,
       current_job_max_attempts: @migration.current_job_max_attempts,
+      queued: @migration.progress_data&.dig('queued') || false,
+      queued_reason: @migration.progress_data&.dig('queued_reason'),
       created_at: @migration.created_at.iso8601,
       updated_at: @migration.updated_at.iso8601
     }

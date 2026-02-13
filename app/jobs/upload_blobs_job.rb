@@ -60,8 +60,23 @@ class UploadBlobsJob < ApplicationJob
     # Concurrency check: limit heavy I/O jobs (downloads + blob transfers)
     if at_heavy_io_limit?(exclude_id: migration.id)
       logger.info("Heavy I/O concurrency limit reached (#{MAX_CONCURRENT_HEAVY_IO}), re-enqueuing in #{REQUEUE_DELAY}s")
+      migration.progress_data ||= {}
+      migration.update_columns(
+        progress_data: migration.progress_data.merge(
+          'queued' => true,
+          'queued_reason' => 'Waiting for other migrations to finish transferring data',
+          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
+        )
+      )
       self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
       return
+    end
+
+    # Clear queued state now that we're starting
+    if migration.progress_data&.dig('queued')
+      migration.update_columns(
+        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
+      )
     end
 
     # Step 1: Verify local blobs directory exists

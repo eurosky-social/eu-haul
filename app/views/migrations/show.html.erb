@@ -317,6 +317,14 @@
           </div>
         </div>
 
+        <div id="queued-notice" style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 24px; border-radius: 4px; <%= 'display:none;' unless @migration.progress_data&.dig('queued') %>">
+          <div style="font-weight: 600; color: #1e40af; margin-bottom: 4px;">In Queue</div>
+          <p id="queued-reason" style="color: #1e40af; font-size: 14px; margin: 0;">
+            <%= @migration.progress_data&.dig('queued_reason') || 'Waiting for other migrations to finish transferring data' %>
+          </p>
+          <p style="color: #3b82f6; font-size: 13px; margin: 8px 0 0 0;">Your migration will start automatically when a slot opens up. This page updates every 10 seconds.</p>
+        </div>
+
         <div class="progress-section">
           <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
             <div id="progress-bar" class="progress-bar" style="width: <%= @migration.progress_percentage %>%">
@@ -675,6 +683,19 @@
                 retryInfo.style.display = '';
               } else {
                 retryInfo.style.display = 'none';
+              }
+            }
+
+            var queuedNotice = document.getElementById('queued-notice');
+            if (queuedNotice) {
+              if (data.queued) {
+                queuedNotice.style.display = '';
+                var queuedReason = document.getElementById('queued-reason');
+                if (queuedReason && data.queued_reason) {
+                  queuedReason.textContent = data.queued_reason;
+                }
+              } else {
+                queuedNotice.style.display = 'none';
               }
             }
           })
