@@ -48,9 +48,6 @@ class DownloadAllDataJob < ApplicationJob
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
 
-  # Concurrency limit: max number of heavy I/O migrations (downloading or blob-transferring)
-  # running simultaneously. Shared with ImportBlobsJob and UploadBlobsJob.
-  MAX_CONCURRENT_HEAVY_IO = ENV.fetch('MAX_CONCURRENT_BLOB_MIGRATIONS', 8).to_i
   REQUEUE_DELAY = 30.seconds
 
   # Retry configuration
@@ -67,9 +64,10 @@ class DownloadAllDataJob < ApplicationJob
       return
     end
 
-    # Concurrency check: limit heavy I/O jobs (downloads + blob transfers)
-    if at_heavy_io_limit?(exclude_id: migration.id)
-      logger.info("Heavy I/O concurrency limit reached (#{MAX_CONCURRENT_HEAVY_IO}), re-enqueuing in #{REQUEUE_DELAY}s")
+    # Concurrency check: dynamically sized based on available memory
+    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
+    if at_heavy_io_limit?(max_concurrent, exclude_id: migration.id)
+      logger.info("Heavy I/O concurrency limit reached (#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
       migration.progress_data ||= {}
       migration.update_columns(
         progress_data: migration.progress_data.merge(
@@ -146,13 +144,13 @@ class DownloadAllDataJob < ApplicationJob
   private
 
   # Check if we're at the concurrency limit for heavy I/O jobs.
-  # Counts migrations in download or blob-transfer stages to prevent
-  # resource exhaustion from too many concurrent network/disk operations.
-  def at_heavy_io_limit?(exclude_id: nil)
+  # The limit is dynamically calculated by DynamicConcurrencyService based
+  # on available system memory.
+  def at_heavy_io_limit?(max_concurrent, exclude_id: nil)
     heavy_statuses = [:pending_download, :pending_blobs]
     scope = Migration.where(status: heavy_statuses)
     scope = scope.where.not(id: exclude_id) if exclude_id
-    scope.count >= MAX_CONCURRENT_HEAVY_IO
+    scope.count >= max_concurrent
   end
 
   # Create local storage directory for this migration

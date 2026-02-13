@@ -55,7 +55,6 @@ class ImportBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  MAX_CONCURRENT_BLOB_MIGRATIONS = ENV.fetch('MAX_CONCURRENT_BLOB_MIGRATIONS', 8).to_i
   REQUEUE_DELAY = 30.seconds
   MAX_BLOB_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10 # Update progress every N blobs
@@ -78,12 +77,11 @@ class ImportBlobsJob < ApplicationJob
       return
     end
 
-    # Step 1: Check concurrency limit (exclude this migration from the count)
-    if at_concurrency_limit?(exclude_id: migration.id)
-      queue_position = Migration.where(status: [:pending_download, :pending_blobs])
-                                .where.not(id: migration.id)
-                                .count - MAX_CONCURRENT_BLOB_MIGRATIONS + 1
-      logger.info("Concurrency limit reached (#{MAX_CONCURRENT_BLOB_MIGRATIONS}), re-enqueuing in #{REQUEUE_DELAY}s (queue position ~#{queue_position})")
+    # Step 1: Check concurrency limit (dynamically sized based on available memory)
+    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
+    if at_concurrency_limit?(max_concurrent, exclude_id: migration.id)
+      current_count = Migration.where(status: [:pending_download, :pending_blobs]).where.not(id: migration.id).count
+      logger.info("Concurrency limit reached (#{current_count}/#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
       migration.update_columns(
         progress_data: migration.progress_data.merge(
           'queued' => true,
@@ -145,16 +143,14 @@ class ImportBlobsJob < ApplicationJob
   private
 
   # Check if we're at the concurrency limit for heavy I/O migrations.
-  # Counts migrations in download or blob-transfer stages to prevent
-  # resource exhaustion from too many concurrent network/disk operations.
-  # Excludes the given migration ID from the count so the job
-  # doesn't block itself (the migration is already in pending_blobs
-  # status when this check runs).
-  def at_concurrency_limit?(exclude_id: nil)
+  # The limit is dynamically calculated by DynamicConcurrencyService based
+  # on available system memory. Excludes the given migration ID from the
+  # count so the job doesn't block itself.
+  def at_concurrency_limit?(max_concurrent, exclude_id: nil)
     heavy_statuses = [:pending_download, :pending_blobs]
     scope = Migration.where(status: heavy_statuses)
     scope = scope.where.not(id: exclude_id) if exclude_id
-    scope.count >= MAX_CONCURRENT_BLOB_MIGRATIONS
+    scope.count >= max_concurrent
   end
 
   # Mark the start time for blob transfer

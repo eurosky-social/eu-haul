@@ -116,8 +116,13 @@ class Migration < ApplicationRecord
   after_create :send_email_verification
 
   # Scopes
-  # Global migration capacity limit (configurable via env var)
-  MAX_CONCURRENT_MIGRATIONS = ENV.fetch('MAX_CONCURRENT_MIGRATIONS', 20).to_i
+  # Global migration capacity limit (configurable via env var).
+  # This is intentionally high — the real throttling happens at the
+  # blob-transfer stage (MAX_CONCURRENT_BLOB_MIGRATIONS, default 8).
+  # Fast stages (account creation, repo import, prefs, PLC, activation)
+  # are lightweight API calls that can run for many migrations in parallel.
+  # This limit only exists to prevent abuse (e.g. scripted mass submissions).
+  MAX_CONCURRENT_MIGRATIONS = ENV.fetch('MAX_CONCURRENT_MIGRATIONS', 100).to_i
 
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }

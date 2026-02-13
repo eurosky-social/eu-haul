@@ -36,8 +36,10 @@ end
 Sidekiq.configure_server do |config|
   config.redis = sidekiq_config
 
-  # Set concurrency based on environment
-  config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 25)
+  # Set concurrency based on environment.
+  # Default 35 threads to support up to 30 concurrent blob jobs + headroom
+  # for non-blob jobs (account creation, repo import, prefs, etc.).
+  config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 35)
 
   # Queue configuration
   #
