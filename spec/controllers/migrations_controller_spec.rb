@@ -96,7 +96,7 @@ RSpec.describe MigrationsController, type: :controller do
       it "sets a success notice" do
         post :create, params: { migration: valid_attributes }
 
-        expect(flash[:notice]).to include("Migration started")
+        expect(flash[:notice]).to include("verification code")
       end
 
       it "enqueues first job" do

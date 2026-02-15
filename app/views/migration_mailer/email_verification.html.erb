@@ -23,18 +23,38 @@
       padding: 30px;
       border-radius: 0 0 8px 8px;
     }
-    .verification-button {
+    .code-box {
+      background: white;
+      border: 2px solid #F57F29;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 24px 0;
+    }
+    .code-value {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      color: #1a1a1a;
+    }
+    .code-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .status-link {
       display: inline-block;
       background: #F57F29;
       color: white;
-      padding: 15px 40px;
+      padding: 12px 32px;
       text-decoration: none;
       border-radius: 6px;
       font-weight: 600;
-      font-size: 16px;
-      margin: 20px 0;
+      font-size: 15px;
+      margin: 16px 0;
     }
-    .verification-button:hover {
+    .status-link:hover {
       background: #d66a1f;
     }
     .info-box {
@@ -69,7 +89,7 @@
 </head>
 <body>
   <div class="header">
-    <h1>📧 Verify Your Email</h1>
+    <h1>Verify Your Email</h1>
     <p>Start Your Account Migration</p>
     <p>Migration <%= @migration.token %></p>
   </div>
@@ -79,16 +99,21 @@
 
     <p>You've initiated a migration for <strong><%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong>.</p>
 
-    <p>Before we begin the migration process, please verify your email address by clicking the button below:</p>
+    <p>Enter the following verification code on the migration page to start the process:</p>
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="<%= @verification_url %>" class="verification-button">Verify Email & Start Migration</a>
+    <div class="code-box">
+      <div class="code-label">Your verification code</div>
+      <div class="code-value"><%= @migration.email_verification_token %></div>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="<%= @status_url %>" class="status-link">Go to Migration Page</a>
     </div>
 
     <div class="info-box">
-      <h3 style="margin-top: 0;">📋 What Happens Next?</h3>
+      <h3 style="margin-top: 0;">What Happens Next?</h3>
       <ul style="margin: 10px 0;">
-        <li>Click the verification button above to confirm your email</li>
+        <li>Enter the verification code above on the migration page</li>
         <li>Your migration will start automatically</li>
         <li>You'll receive status updates via email</li>
         <li>The entire process takes approximately 20-30 minutes</li>
@@ -96,7 +121,7 @@
     </div>
 
     <div class="warning-box">
-      <h3 style="margin-top: 0;">⚠️ Important Reminders</h3>
+      <h3 style="margin-top: 0;">Important Reminders</h3>
       <ul style="margin: 10px 0; margin-bottom: 0;">
         <li><strong>Do not use your account</strong> during the migration</li>
         <li>Any activity during migration will not be transferred</li>
@@ -104,11 +129,6 @@
         <li>Wait for the completion email before logging in again</li>
       </ul>
     </div>
-
-    <p style="margin-top: 30px; font-size: 14px; color: #666;">
-      <strong>Can't click the button?</strong> Copy and paste this link into your browser:<br>
-      <a href="<%= @verification_url %>" style="word-break: break-all; color: #F57F29;"><%= @verification_url %></a>
-    </p>
 
     <div class="footer">
       <p>Migration Token: <code><%= @migration.token %></code></p>

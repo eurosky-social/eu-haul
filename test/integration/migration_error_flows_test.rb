@@ -20,22 +20,22 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
   # Stage 1: Email Verification Errors
   # ============================================================================
 
-  test "email verification with invalid token fails" do
+  test "email verification with invalid code fails" do
     migration = create_migration(@valid_migration_params)
 
-    get verify_email_url(token: migration.token, verification_token: "invalid-token")
+    post verify_email_url(token: migration.token), params: { verification_code: "XXX-YYY" }
 
     assert_response :redirect
     follow_redirect!
-    assert_match /Invalid or expired verification link/, flash[:alert]
+    assert_match /Invalid verification code/, flash[:alert]
   end
 
-  test "email verification with valid token starts migration" do
+  test "email verification with valid code starts migration" do
     migration = create_migration(@valid_migration_params)
-    verification_token = migration.email_verification_token
+    verification_code = migration.email_verification_token
 
     # Verify email and check that job is enqueued
-    get verify_email_url(token: migration.token, verification_token: verification_token)
+    post verify_email_url(token: migration.token), params: { verification_code: verification_code }
 
     assert_response :redirect
     follow_redirect!
@@ -46,19 +46,19 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     assert migration.email_verified?
   end
 
-  test "email verification token is single-use" do
+  test "email verification code is single-use" do
     migration = create_migration(@valid_migration_params)
-    verification_token = migration.email_verification_token
+    verification_code = migration.email_verification_token
 
     # First use: succeeds
-    get verify_email_url(token: migration.token, verification_token: verification_token)
+    post verify_email_url(token: migration.token), params: { verification_code: verification_code }
     assert_response :redirect
 
-    # Second use: fails (token cleared after first use)
-    get verify_email_url(token: migration.token, verification_token: verification_token)
+    # Second use: fails (code cleared after first use)
+    post verify_email_url(token: migration.token), params: { verification_code: verification_code }
     assert_response :redirect
     follow_redirect!
-    assert_match /Invalid or expired/, flash[:alert]
+    assert_match /Invalid verification code/, flash[:alert]
   end
 
   # ============================================================================
@@ -563,8 +563,10 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
   private
 
   def create_migration(params)
+    chars = [*'A'..'Z', *'0'..'9']
+    code = "#{Array.new(3) { chars.sample }.join}-#{Array.new(3) { chars.sample }.join}"
     Migration.create!(params.except(:password).merge(
-      email_verification_token: SecureRandom.urlsafe_base64(32),
+      email_verification_token: code,
       status: :pending_account
     )).tap do |migration|
       migration.set_password(params[:password]) if params[:password]

@@ -532,7 +532,7 @@ class MigrationsController < ApplicationController
         # Password email is deferred until migration completes (sent from ActivateAccountJob)
 
         redirect_to migration_by_token_path(@migration.token),
-                    notice: "Migration started! You'll receive your new account password by email once migration completes. Track your progress with token: #{@migration.token}"
+                    notice: "We've sent a verification code to #{@migration.email}. Enter it on the next page to start your migration."
       else
         render :new, status: :unprocessable_entity
       end
@@ -547,23 +547,32 @@ class MigrationsController < ApplicationController
     end
   end
 
-  # GET /migrate/:token/verify/:verification_token
-  # Verify email address and start the migration
+  # POST /migrate/:token/verify
+  # Verify email address via code submission and start the migration
+  #
+  # Params:
+  #   - verification_code: The XXX-XXX code sent to the user's email
   #
   # Response:
   #   - Success: Redirects to status page with notice, starts migration
   #   - Failure: Redirects to status page with error
   def verify_email
-    verification_token = params[:verification_token]
+    verification_code = params[:verification_code]
 
-    if @migration.verify_email!(verification_token)
+    if verification_code.blank?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Please enter the verification code from your email."
+      return
+    end
+
+    if @migration.verify_email!(verification_code)
       Rails.logger.info("Email verified for migration #{@migration.token}, starting migration")
       redirect_to migration_by_token_path(@migration.token),
                   notice: "Email verified! Your migration has started."
     else
-      Rails.logger.warn("Invalid email verification token for migration #{@migration.token}")
+      Rails.logger.warn("Invalid email verification code for migration #{@migration.token}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Invalid or expired verification link."
+                  alert: "Invalid verification code. Please check the code in your email and try again."
     end
   end
 

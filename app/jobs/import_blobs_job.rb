@@ -1,8 +1,9 @@
-# ImportBlobsJob - Memory-intensive blob transfer job for Eurosky migration
+# ImportBlobsJob - Blob transfer job for Eurosky migration
 #
-# This is the most critical and resource-intensive job in the migration pipeline.
+# This is the most critical job in the migration pipeline.
 # It handles downloading blobs from the old PDS and uploading them to the new PDS
-# with strict memory management and concurrency control.
+# with concurrency control. Blobs are streamed to/from disk, so memory usage per
+# blob is limited to the HTTP chunk size (~16KB) regardless of blob size.
 #
 # Critical Features:
 # - Concurrency limiting (max 15 migrations in pending_blobs simultaneously)

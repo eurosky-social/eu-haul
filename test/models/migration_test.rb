@@ -112,10 +112,10 @@ class MigrationTest < ActiveSupport::TestCase
   # Error: Email delivery failure, expired verification link, invalid token
   # ============================================================================
 
-  test "generates email verification token on creation" do
+  test "generates email verification code on creation" do
     migration = Migration.create!(@valid_attributes.merge(password: "test"))
     assert migration.email_verification_token.present?
-    assert migration.email_verification_token.length >= 32
+    assert_match /\A[A-Z0-9]{3}-[A-Z0-9]{3}\z/, migration.email_verification_token
   end
 
   test "email verification token is unique" do

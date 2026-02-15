@@ -7,14 +7,16 @@ Hello,
 
 You've initiated a migration for <%= @migration.old_handle %> to <%= @migration.new_pds_host %>.
 
-Before we begin the migration process, please verify your email address by clicking the link below:
+Enter the following verification code on the migration page to start the process:
 
-<%= @verification_url %>
+    <%= @migration.email_verification_token %>
+
+Go to the migration page: <%= @status_url %>
 
 
 WHAT HAPPENS NEXT?
 -------------------
-- Click the verification link above to confirm your email
+- Enter the verification code above on the migration page
 - Your migration will start automatically
 - You'll receive status updates via email
 - The entire process takes approximately 20-30 minutes
@@ -22,10 +24,10 @@ WHAT HAPPENS NEXT?
 
 IMPORTANT REMINDERS
 -------------------
-⚠️ Do not use your account during the migration
-⚠️ Any activity during migration will not be transferred
-⚠️ Close all apps and browser tabs with your account
-⚠️ Wait for the completion email before logging in again
+- Do not use your account during the migration
+- Any activity during migration will not be transferred
+- Close all apps and browser tabs with your account
+- Wait for the completion email before logging in again
 
 
 ---

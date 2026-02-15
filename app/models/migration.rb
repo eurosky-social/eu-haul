@@ -444,16 +444,16 @@ class Migration < ApplicationRecord
     migration_in?
   end
 
-  # Verify email with token
-  def verify_email!(token)
-    if email_verification_token == token
+  # Verify email with code (XXX-XXX format, case-insensitive)
+  def verify_email!(code)
+    if email_verification_token.present? && email_verification_token.upcase == code.to_s.strip.upcase
       update!(email_verified_at: Time.current, email_verification_token: nil)
       Rails.logger.info("Email verified for migration #{self.token}")
       # Now actually start the migration
       schedule_first_job
       true
     else
-      Rails.logger.warn("Invalid email verification token for migration #{self.token}")
+      Rails.logger.warn("Invalid email verification code for migration #{self.token}")
       false
     end
   end
@@ -480,12 +480,15 @@ class Migration < ApplicationRecord
     end
   end
 
-  # Email verification token generation (32 characters = ~190 bits entropy)
+  # Email verification code generation (XXX-XXX format, ~30 bits entropy)
+  # Short human-readable code that the user enters manually on the status page.
+  # This avoids issues with email link scanners auto-loading verification URLs.
   def generate_email_verification_token
     return if email_verification_token.present?
 
+    chars = [*'A'..'Z', *'0'..'9']
     loop do
-      candidate = SecureRandom.urlsafe_base64(32)
+      candidate = "#{Array.new(3) { chars.sample }.join}-#{Array.new(3) { chars.sample }.join}"
       self.email_verification_token = candidate
       break unless Migration.exists?(email_verification_token: candidate)
     end

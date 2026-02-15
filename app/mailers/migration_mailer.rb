@@ -53,11 +53,11 @@ class MigrationMailer < ApplicationMailer
 
   def email_verification(migration)
     @migration = migration
-    @verification_url = verify_email_url(token: migration.token, verification_token: migration.email_verification_token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @status_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
 
     mail(
       to: migration.email,
-      subject: "Verify your email to start migration (#{migration.token})"
+      subject: "Your verification code: #{migration.email_verification_token} (#{migration.token})"
     )
   end
 

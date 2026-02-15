@@ -260,7 +260,7 @@
       <% if EuroskyConfig::LOGO_URL.present? %>
         <img src="<%= EuroskyConfig::LOGO_URL %>" alt="<%= EuroskyConfig::SITE_NAME %>" class="header-logo">
       <% end %>
-      <h1><%= @migration.email_verified? ? 'Migration Status' : 'Confirm Your Migration' %></h1>
+      <h1><%= @migration.email_verified? ? 'Migration Status' : 'Verify Your Email' %></h1>
       <div class="token"><%= @migration.token %></div>
     </div>
 
@@ -277,17 +277,25 @@
       <% end %>
 
       <% if !@migration.email_verified? %>
-        <%# Awaiting email confirmation — show static page %>
-        <div style="text-align: center; padding: 32px 0;">
-          <div style="font-size: 64px; margin-bottom: 16px;">📧</div>
-          <h2 style="margin: 0 0 12px 0; font-size: 24px; color: #1a1a1a;">Check Your Email</h2>
-          <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 480px; margin: 0 auto 24px;">
-            We've sent a confirmation email to <strong><%= @migration.email %></strong>.
-            Click the link in that email to start the migration.
+        <%# Awaiting email confirmation — show code entry form %>
+        <div style="text-align: center; padding: 32px 0 16px;">
+          <div style="font-size: 48px; margin-bottom: 12px;">📧</div>
+          <h2 style="margin: 0 0 12px 0; font-size: 24px; color: #1a1a1a;">Enter Your Verification Code</h2>
+          <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 480px; margin: 0 auto 8px;">
+            We've sent a verification code to <strong><%= @migration.email %></strong>.
+            Enter it below to start the migration.
           </p>
         </div>
 
-        <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+        <%= form_with url: verify_email_path(token: @migration.token), method: :post, local: true do |f| %>
+          <div class="form-group">
+            <%= label_tag :verification_code, "Verification Code" %>
+            <%= text_field_tag :verification_code, nil, required: true, placeholder: "XXX-XXX", autocomplete: "off", maxlength: 7, style: "font-family: 'SF Mono', Monaco, 'Courier New', monospace; font-size: 28px; letter-spacing: 4px; text-align: center; text-transform: uppercase;" %>
+          </div>
+          <%= submit_tag "Verify & Start Migration", class: "submit-button" %>
+        <% end %>
+
+        <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 24px; margin-bottom: 24px;">
           <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">Didn't receive the email?</h3>
           <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #78350f; line-height: 1.8;">
             <li>Check your spam or junk folder</li>
@@ -298,7 +306,7 @@
 
         <div class="bookmark-notice" role="note">
           <h3>Bookmark This Page</h3>
-          <p>Once you confirm via email, you can track your migration progress here:</p>
+          <p>Save this URL to return and enter your code later:</p>
           <code><%= migration_by_token_url(@migration.token) %></code>
         </div>
 

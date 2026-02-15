@@ -40,6 +40,7 @@
 #   - PLC directory access for DID updates
 
 require 'open3'
+require 'net/http'
 require 'base58'
 require 'minisky'
 
@@ -511,26 +512,33 @@ class GoatService
     FileUtils.mkdir_p(blob_path.dirname)
 
     url = "#{migration.old_pds_host}/xrpc/com.atproto.sync.getBlob?did=#{migration.did}&cid=#{cid}"
+    uri = URI(url)
+
+    # Stream directly to disk to avoid loading entire blob into memory.
+    # Net::HTTP's block form lets us check the status before reading the body.
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.read_timeout = 300
+    http.open_timeout = 30
+
+    request = Net::HTTP::Get.new(uri)
 
     # com.atproto.sync.getBlob is a public endpoint - no authentication required
-    response = HTTParty.get(
-      url,
-      timeout: 300,
-      stream_body: true
-    )
+    http.request(request) do |response|
+      unless response.is_a?(Net::HTTPSuccess)
+        if response.code.to_i == 429
+          retry_after = response['Retry-After']&.to_i
+          logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
+          raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}", retry_after: retry_after)
+        end
 
-    unless response.success?
-      # Check for rate-limiting
-      if response.code == 429
-        retry_after = response.headers['Retry-After']&.to_i
-        logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
-        raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}", retry_after: retry_after)
+        raise NetworkError, "Failed to download blob: #{response.code} #{response.message}"
       end
 
-      raise NetworkError, "Failed to download blob: #{response.code} #{response.message}"
+      File.open(blob_path, 'wb') do |file|
+        response.read_body { |chunk| file.write(chunk) }
+      end
     end
-
-    File.binwrite(blob_path, response.body)
 
     file_size_kb = File.size(blob_path).to_f / 1024
     logger.info("Blob downloaded: #{blob_path} (#{file_size_kb.round(2)} KB)")
@@ -556,6 +564,7 @@ class GoatService
     end
 
     url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob"
+    uri = URI(url)
 
     # Get access token for NEW PDS using DID (uses cached token from login_new_pds)
     access_token = get_access_token_from_session(
@@ -563,27 +572,33 @@ class GoatService
       identifier: migration.did
     )
 
-    response = HTTParty.post(
-      url,
-      headers: {
-        'Authorization' => "Bearer #{access_token}",
-        'Content-Type' => 'application/octet-stream'
-      },
-      body: File.binread(blob_path),
-      timeout: 300
-    )
+    # Stream from disk to avoid loading entire blob into memory.
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.read_timeout = 300
+    http.open_timeout = 30
 
-    unless response.success?
+    request = Net::HTTP::Post.new(uri)
+    request['Authorization'] = "Bearer #{access_token}"
+    request['Content-Type'] = 'application/octet-stream'
+    request['Content-Length'] = File.size(blob_path).to_s
+
+    response = File.open(blob_path, 'rb') do |file|
+      request.body_stream = file
+      http.request(request)
+    end
+
+    unless response.is_a?(Net::HTTPSuccess)
       # Check for expired token
-      if response.code == 401
+      if response.code.to_i == 401
         logger.info("Token expired, refreshing session and retrying")
         refresh_access_token(pds_host: migration.new_pds_host, identifier: migration.did)
         return upload_blob(blob_path)  # Retry with new token
       end
 
       # Check for rate-limiting
-      if response.code == 429
-        retry_after = response.headers['Retry-After']&.to_i
+      if response.code.to_i == 429
+        retry_after = response['Retry-After']&.to_i
         logger.warn("Rate limit hit while uploading blob: #{response.code} #{response.message}")
         raise RateLimitError.new("PDS rate limit exceeded while uploading blob: #{response.code} #{response.message}", retry_after: retry_after)
       end
