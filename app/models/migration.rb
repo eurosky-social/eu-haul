@@ -112,7 +112,7 @@ class Migration < ApplicationRecord
   before_validation :generate_token, on: :create
   before_validation :generate_email_verification_token, on: :create
   before_validation :normalize_hosts
-  after_create :send_email_verification
+  after_create_commit :send_email_verification
 
   # Scopes
   # Global migration capacity limit (configurable via env var).

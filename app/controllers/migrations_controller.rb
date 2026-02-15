@@ -640,11 +640,13 @@ class MigrationsController < ApplicationController
   def request_new_plc_token
     # Allow requesting new token if:
     # 1. Migration is in pending_plc status, OR
-    # 2. Migration failed with a PLC-related error (and rotation_key is blank, meaning PLC wasn't updated yet)
-    plc_related_failure = @migration.failed? && @migration.last_error&.match?(/PLC|token/i) && @migration.rotation_key.blank?
+    # 2. Migration failed with a PLC-related error AND the PLC operation was never actually submitted
+    #    (rotation_key may exist — it's generated before submission as a safety net)
+    plc_actually_submitted = @migration.progress_data&.dig('plc_operation_submitted_at').present?
+    plc_related_failure = @migration.failed? && @migration.last_error&.match?(/PLC|token/i) && !plc_actually_submitted
 
     unless @migration.status == 'pending_plc' || plc_related_failure
-      Rails.logger.warn("PLC token request failed for migration #{@migration.token}: Not in correct status (status: #{@migration.status}, has rotation_key: #{@migration.rotation_key.present?})")
+      Rails.logger.warn("PLC token request failed for migration #{@migration.token}: Not in correct status (status: #{@migration.status}, plc_submitted: #{plc_actually_submitted})")
       redirect_to migration_by_token_path(@migration.token),
                   alert: "Cannot request a new PLC token at this stage. The PLC update may have already been attempted."
       return
@@ -685,10 +687,12 @@ class MigrationsController < ApplicationController
                    "then enter the token below."
     end
 
-    # Reset to pending_plc status so user can submit the new token
+    # Reset to pending_plc status so user can submit the new token.
+    # Clear the old (invalid) PLC token so the show page renders the token entry form
+    # instead of the "Updating your identity" processing state.
     if @migration.failed?
-      @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
-      Rails.logger.info("Reset migration #{@migration.token} from failed to pending_plc after PLC token request")
+      @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0, encrypted_plc_token: nil)
+      Rails.logger.info("Reset migration #{@migration.token} from failed to pending_plc after PLC token request (cleared stale PLC token)")
     end
 
     redirect_to migration_by_token_path(@migration.token), notice: notice_msg
@@ -706,7 +710,10 @@ class MigrationsController < ApplicationController
     end
 
     # Only allow re-auth for migrations that need PLC tokens
-    plc_related = @migration.pending_plc? || (@migration.failed? && @migration.rotation_key.blank?)
+    # A rotation key may already exist (generated before PLC submission as a safety net),
+    # so check whether the PLC operation was actually submitted to the directory
+    plc_actually_submitted = @migration.progress_data&.dig('plc_operation_submitted_at').present?
+    plc_related = @migration.pending_plc? || (@migration.failed? && !plc_actually_submitted)
     unless plc_related
       redirect_to migration_by_token_path(@migration.token),
                   alert: "Re-authentication is not available at this stage."
