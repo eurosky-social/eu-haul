@@ -6,37 +6,26 @@
 # blob is limited to the HTTP chunk size (~16KB) regardless of blob size.
 #
 # Critical Features:
-# - Concurrency limiting (max 15 migrations in pending_blobs simultaneously)
-# - Parallel blob processing (10 blobs at a time) for performance
-# - Batch-based processing with aggressive memory cleanup (GC.start after each batch)
-# - Batched progress updates (after each parallel batch to reduce DB writes)
+# - Concurrency limiting (configurable via MAX_CONCURRENT_BLOB_MIGRATIONS)
+# - Parallel blob processing (50 blobs at a time) for throughput
+# - Batched progress updates (every 10 blobs to reduce DB writes)
 # - Individual blob retry with exponential backoff
-# - Detailed progress tracking and memory estimation
+# - Post-import reconciliation to fill gaps
 #
 # Flow:
-# 1. Check concurrency limit (max 15 pending_blobs migrations)
+# 1. Check concurrency limit
 # 2. If at capacity, re-enqueue with 30s delay and return
 # 3. Mark blobs_started_at timestamp
 # 4. List all blobs with pagination (cursor-based, no auth required)
-# 5. Estimate memory usage via MemoryEstimatorService
-# 6. Update migration with blob_count and estimated_memory_mb
-# 7. Process blobs IN PARALLEL BATCHES (10 blobs per batch):
-#    - Download 10 blobs concurrently from old PDS
-#    - Upload 10 blobs concurrently to new PDS
-#    - Delete local blob files immediately after upload
-#    - Update progress after each batch
-#    - Log each transfer (CID + size)
-#    - Call GC.start after each batch
+# 5. Update migration with blob_count
+# 6. Process blobs in parallel (50 threads pulling from a shared queue):
+#    - Download blob (streamed to disk)
+#    - Upload blob (streamed from disk)
+#    - Delete local blob file immediately after upload
+#    - Update progress every 10 blobs
+# 7. Reconcile - verify all blobs were imported and fill gaps
 # 8. Mark blobs_completed_at timestamp
 # 9. Advance to pending_prefs status
-#
-# Memory Optimization:
-# - Parallel batches of 10 blobs (configurable via PARALLEL_BLOB_TRANSFERS)
-# - Immediate cleanup after each upload
-# - Progress updates after each batch
-# - Explicit GC after each batch (every 10 blobs)
-# - Track total bytes transferred
-# - Thread-safe counters with Mutex
 #
 # Error Handling:
 # - Rate-limit errors: longer exponential backoff (8s, 16s, 32s), max 3 attempts per blob
@@ -59,8 +48,7 @@ class ImportBlobsJob < ApplicationJob
   REQUEUE_DELAY = 30.seconds
   MAX_BLOB_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10 # Update progress every N blobs
-  GC_INTERVAL = 50 # Run garbage collection every N blobs
-  PARALLEL_BLOB_TRANSFERS = 10 # Number of blobs to transfer in parallel
+  PARALLEL_BLOB_TRANSFERS = 50 # Number of blobs to transfer in parallel
 
   # Retry configuration (3 attempts with exponential backoff)
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
@@ -78,7 +66,7 @@ class ImportBlobsJob < ApplicationJob
       return
     end
 
-    # Step 1: Check concurrency limit (dynamically sized based on available memory)
+    # Step 1: Check concurrency limit
     max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
     if at_concurrency_limit?(max_concurrent, exclude_id: migration.id)
       current_count = Migration.where(status: [:pending_download, :pending_blobs]).where.not(id: migration.id).count
@@ -112,21 +100,23 @@ class ImportBlobsJob < ApplicationJob
 
     logger.info("Found #{all_blobs.length} total blobs to transfer")
 
-    # Step 6: Estimate memory and update migration
-    estimate_and_update_memory(migration, all_blobs)
+    # Step 5: Update migration with blob count
+    migration.update!(
+      progress_data: migration.progress_data.merge('blob_count' => all_blobs.length)
+    )
 
-    # Step 7: Process blobs sequentially
-    process_blobs_sequentially(migration, goat, all_blobs)
+    # Step 6: Process blobs in parallel
+    process_blobs(migration, goat, all_blobs)
 
-    # Step 8: Reconcile - verify all blobs were imported and fill gaps
+    # Step 7: Reconcile - verify all blobs were imported and fill gaps
     reconcile_blobs(migration, goat)
 
-    # Step 9: Mark blobs_completed_at
+    # Step 8: Mark blobs_completed_at
     mark_blobs_completed(migration)
 
     logger.info("Blob import completed for migration #{migration.token}")
 
-    # Step 10: Advance to next stage
+    # Step 9: Advance to next stage
     migration.advance_to_pending_prefs!
 
   rescue StandardError => e
@@ -144,9 +134,7 @@ class ImportBlobsJob < ApplicationJob
   private
 
   # Check if we're at the concurrency limit for heavy I/O migrations.
-  # The limit is dynamically calculated by DynamicConcurrencyService based
-  # on available system memory. Excludes the given migration ID from the
-  # count so the job doesn't block itself.
+  # Excludes the given migration ID from the count so the job doesn't block itself.
   def at_concurrency_limit?(max_concurrent, exclude_id: nil)
     heavy_statuses = [:pending_download, :pending_blobs]
     scope = Migration.where(status: heavy_statuses)
@@ -188,30 +176,9 @@ class ImportBlobsJob < ApplicationJob
     all_blobs
   end
 
-  # Estimate memory usage and update migration record
-  def estimate_and_update_memory(migration, blobs)
-    # Build blob list with size estimates for MemoryEstimatorService
-    blob_list = blobs.map do |cid|
-      # We don't have size info yet, so service will use averages
-      { cid: cid }
-    end
-
-    estimated_mb = MemoryEstimatorService.estimate(blob_list)
-
-    migration.update!(
-      estimated_memory_mb: estimated_mb,
-      progress_data: migration.progress_data.merge(
-        'blob_count' => blobs.length,
-        'estimated_memory_mb' => estimated_mb
-      )
-    )
-
-    logger.info("Estimated memory: #{estimated_mb} MB for #{blobs.length} blobs")
-  end
-
-  # Process all blobs using thread pool pattern for maximum throughput
-  # Threads pick up new work as soon as they finish, no waiting for batches
-  def process_blobs_sequentially(migration, goat, blobs)
+  # Process all blobs using thread pool pattern for maximum throughput.
+  # Threads pick up new work as soon as they finish, no waiting for batches.
+  def process_blobs(migration, goat, blobs)
     # Login to new PDS for uploads
     goat.login_new_pds
 
@@ -222,7 +189,6 @@ class ImportBlobsJob < ApplicationJob
     # Thread-safe counters and queue
     mutex = Mutex.new
     queue = Queue.new
-    gc_counter = 0
 
     # Add all blobs to the queue
     blobs.each_with_index { |cid, index| queue << [cid, index] }
@@ -240,20 +206,19 @@ class ImportBlobsJob < ApplicationJob
           end
 
           begin
-            # Download blob from old PDS
+            # Download blob from old PDS (streamed to disk)
             blob_path = download_blob_with_retry(goat, cid)
 
             # Get file size for tracking
             blob_size = File.size(blob_path)
 
-            # Upload blob to new PDS
+            # Upload blob to new PDS (streamed from disk)
             upload_blob_with_retry(goat, blob_path)
 
             # Update metrics (thread-safe)
             mutex.synchronize do
               total_bytes_transferred += blob_size
               successful_count += 1
-              gc_counter += 1
             end
 
             # Log transfer
@@ -266,17 +231,6 @@ class ImportBlobsJob < ApplicationJob
             if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
                 update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
-              end
-            end
-
-            # Run GC periodically
-            if gc_counter >= GC_INTERVAL
-              mutex.synchronize do
-                if gc_counter >= GC_INTERVAL
-                  logger.debug("Running garbage collection after #{GC_INTERVAL} blobs")
-                  GC.start
-                  gc_counter = 0
-                end
               end
             end
 
@@ -333,9 +287,6 @@ class ImportBlobsJob < ApplicationJob
         logger.info("Wrote failed uploads manifest to #{manifest_path}")
       end
     end
-
-    # Final GC
-    GC.start
   end
 
   # Download blob with retry logic

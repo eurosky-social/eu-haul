@@ -1,4 +1,5 @@
 require 'open3'
+require 'net/http'
 
 # DownloadAllDataJob - Downloads all account data for backup and migration
 #
@@ -14,7 +15,7 @@ require 'open3'
 # 1. Create local storage directory for this migration
 # 2. Download repository as CAR file
 # 3. List all blobs from old PDS
-# 4. Download blobs in parallel batches (10 at a time)
+# 4. Download blobs in parallel (50 at a time, streamed to disk)
 # 5. Update progress tracking
 # 6. Advance to pending_backup status
 #
@@ -25,11 +26,6 @@ require 'open3'
 #       ├── {cid1}         (blob file)
 #       ├── {cid2}
 #       └── ...
-#
-# Memory Management:
-# - Parallel downloads (10 concurrent)
-# - Progress tracking every 10 blobs
-# - Thread-safe counters
 #
 # Error Handling:
 # - Network errors: retry with exponential backoff
@@ -44,7 +40,7 @@ class DownloadAllDataJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  PARALLEL_DOWNLOADS = 10
+  PARALLEL_DOWNLOADS = 50
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
 
@@ -64,7 +60,7 @@ class DownloadAllDataJob < ApplicationJob
       return
     end
 
-    # Concurrency check: dynamically sized based on available memory
+    # Concurrency check
     max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
     if at_heavy_io_limit?(max_concurrent, exclude_id: migration.id)
       logger.info("Heavy I/O concurrency limit reached (#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
@@ -144,8 +140,6 @@ class DownloadAllDataJob < ApplicationJob
   private
 
   # Check if we're at the concurrency limit for heavy I/O jobs.
-  # The limit is dynamically calculated by DynamicConcurrencyService based
-  # on available system memory.
   def at_heavy_io_limit?(max_concurrent, exclude_id: nil)
     heavy_statuses = [:pending_download, :pending_blobs]
     scope = Migration.where(status: heavy_statuses)
@@ -309,24 +303,33 @@ class DownloadAllDataJob < ApplicationJob
     end
   end
 
-  # Download blob with retry logic
+  # Download blob with retry logic. Streams directly to disk via Net::HTTP
+  # to avoid loading entire blobs into memory.
   def download_blob_with_retry(goat, cid, blob_path, attempt = 1)
     url = "#{goat.migration.old_pds_host}/xrpc/com.atproto.sync.getBlob?did=#{goat.migration.did}&cid=#{cid}"
+    uri = URI(url)
 
-    response = HTTParty.get(
-      url,
-      timeout: 300,
-      headers: {
-        'Accept' => 'application/octet-stream'
-      }
-    )
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.read_timeout = 300
+    http.open_timeout = 30
 
-    unless response.success?
-      raise GoatService::NetworkError, "HTTP #{response.code}: #{response.message}"
+    request = Net::HTTP::Get.new(uri)
+    request['Accept'] = 'application/octet-stream'
+
+    http.request(request) do |response|
+      unless response.is_a?(Net::HTTPSuccess)
+        if response.code.to_i == 429
+          retry_after = response['Retry-After']&.to_i
+          raise GoatService::RateLimitError.new("PDS rate limit exceeded: #{response.code}", retry_after: retry_after)
+        end
+        raise GoatService::NetworkError, "HTTP #{response.code}: #{response.message}"
+      end
+
+      File.open(blob_path, 'wb') do |file|
+        response.read_body { |chunk| file.write(chunk) }
+      end
     end
-
-    # Write blob to file
-    File.binwrite(blob_path, response.body)
 
   rescue GoatService::RateLimitError => e
     if attempt < MAX_RETRIES

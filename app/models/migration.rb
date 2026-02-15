@@ -104,7 +104,6 @@ class Migration < ApplicationRecord
   # PDS host URL validation with SSRF protection
   # validate :validate_pds_hosts
   validates :retry_count, numericality: { greater_than_or_equal_to: 0, only_integer: true }
-  validates :estimated_memory_mb, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   # Validate invite code if required by configuration
   validates :encrypted_invite_code, presence: true, if: -> { EuroskyConfig.invite_code_required? && new_record? }
@@ -127,7 +126,6 @@ class Migration < ApplicationRecord
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }
   scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
-  scope :by_memory, -> { order(estimated_memory_mb: :desc) }
   scope :recent, -> { order(created_at: :desc) }
   scope :with_expired_backups, -> { where('backup_expires_at IS NOT NULL AND backup_expires_at < ?', Time.current) }
 

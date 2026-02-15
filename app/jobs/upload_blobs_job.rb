@@ -2,25 +2,20 @@
 #
 # This job uploads all blob files that were previously downloaded
 # by DownloadAllDataJob. It's used when backup is enabled to avoid
-# re-downloading the blobs.
+# re-downloading the blobs. Uploads are streamed from disk, so memory
+# usage per blob is limited to the HTTP chunk size (~16KB).
 #
 # Flow:
 # 1. Verify local blobs directory exists
 # 2. Login to new PDS
 # 3. List all local blob files
-# 4. Upload blobs in parallel batches (10 at a time)
+# 4. Upload blobs in parallel (50 at a time)
 # 5. Track progress and update after each batch
 # 6. Advance to pending_prefs status
 #
 # Differences from ImportBlobsJob:
 # - ImportBlobsJob: Downloads from old PDS and streams to new PDS
 # - UploadBlobsJob: Uploads from local files to new PDS
-#
-# Memory Optimization:
-# - Parallel uploads (10 concurrent)
-# - Progress tracking every batch
-# - GC after each batch
-# - Immediate file cleanup after upload (optional)
 #
 # Error Handling:
 # - Missing files: fail with error
@@ -35,8 +30,9 @@ class UploadBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  PARALLEL_UPLOADS = 10
+  PARALLEL_UPLOADS = 50
   MAX_RETRIES = 3
+  PROGRESS_UPDATE_INTERVAL = 10
 
   REQUEUE_DELAY = 30.seconds
 
@@ -54,7 +50,7 @@ class UploadBlobsJob < ApplicationJob
       return
     end
 
-    # Concurrency check: dynamically sized based on available memory
+    # Concurrency check
     max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
     if at_heavy_io_limit?(max_concurrent, exclude_id: migration.id)
       logger.info("Heavy I/O concurrency limit reached (#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
@@ -120,8 +116,6 @@ class UploadBlobsJob < ApplicationJob
   private
 
   # Check if we're at the concurrency limit for heavy I/O jobs.
-  # The limit is dynamically calculated by DynamicConcurrencyService based
-  # on available system memory.
   def at_heavy_io_limit?(max_concurrent, exclude_id: nil)
     heavy_statuses = [:pending_download, :pending_blobs]
     scope = Migration.where(status: heavy_statuses)
@@ -139,7 +133,6 @@ class UploadBlobsJob < ApplicationJob
     # Thread-safe counters and queue
     mutex = Mutex.new
     queue = Queue.new
-    gc_counter = 0
 
     # Add all blob files to the queue
     blob_files.each_with_index { |blob_file, index| queue << [blob_file, index] }
@@ -162,33 +155,21 @@ class UploadBlobsJob < ApplicationJob
             # Get file size
             blob_size = File.size(blob_file)
 
-            # Upload blob to new PDS
+            # Upload blob to new PDS (streamed from disk)
             upload_blob_with_retry(goat, blob_file)
 
             # Update metrics (thread-safe)
             mutex.synchronize do
               uploaded_count += 1
               total_bytes += blob_size
-              gc_counter += 1
             end
 
             logger.info("Uploaded blob #{index + 1}/#{total_blobs}: #{cid} (#{format_bytes(blob_size)})")
 
             # Update progress periodically
-            if (index + 1) % 10 == 0
+            if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
                 update_upload_progress(migration, uploaded_count, total_blobs, total_bytes)
-              end
-            end
-
-            # Run GC periodically
-            if gc_counter >= 50
-              mutex.synchronize do
-                if gc_counter >= 50
-                  logger.debug("Running garbage collection after #{gc_counter} blobs")
-                  GC.start
-                  gc_counter = 0
-                end
               end
             end
 
@@ -245,9 +226,6 @@ class UploadBlobsJob < ApplicationJob
         logger.info("Wrote failed uploads manifest to #{manifest_path}")
       end
     end
-
-    # Final GC
-    GC.start
   end
 
   # Upload blob with retry logic

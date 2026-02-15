@@ -942,7 +942,6 @@ class MigrationsController < ApplicationController
           created_at: @migration.created_at.iso8601,
           updated_at: @migration.updated_at.iso8601,
           progress_percentage: @migration.progress_percentage,
-          estimated_memory_mb: @migration.estimated_memory_mb,
           progress_data: @migration.progress_data,
           last_error: @migration.last_error,
           retry_count: @migration.retry_count,
