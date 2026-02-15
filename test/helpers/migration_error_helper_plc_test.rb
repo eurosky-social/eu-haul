@@ -92,7 +92,8 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
   end
 
   test "plc_token_expired_context handles missing old_pds_host gracefully" do
-    @migration.update!(old_pds_host: nil)
+    # Stub old_pds_host to return nil (DB has NOT NULL constraint, so we can't persist nil)
+    @migration.stubs(:old_pds_host).returns(nil)
     context = MigrationErrorHelper.explain_error(@migration)
 
     assert_not_nil context

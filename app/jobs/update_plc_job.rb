@@ -59,17 +59,23 @@ class UpdatePlcJob < ApplicationJob
     # NOTE: Missing/expired tokens are NOT critical failures - the PLC directory
     # hasn't been modified yet. We return early (without raising) so the rescue
     # block doesn't overwrite the error with a "CRITICAL:" prefix.
-    plc_token = migration.plc_token
-    if plc_token.nil?
-      error_msg = "PLC token is missing. Please request a new token."
+    #
+    # Check expiry BEFORE the getter — the ExpirationChecks module returns nil
+    # for expired tokens, so we need to distinguish "expired" from "never set".
+    if migration.plc_token_expired?
+      if migration.encrypted_plc_token.present?
+        error_msg = "PLC token has expired (expired at: #{migration.progress_data&.dig('plc_token_expires_at')}). Please request a new token."
+      else
+        error_msg = "PLC token is missing. Please request a new token."
+      end
       Rails.logger.error(error_msg)
       migration.mark_failed!(error_msg)
       return
     end
 
-    # Check if the PLC token has expired (separate from old PDS credential expiry)
-    if migration.plc_token_expired?
-      error_msg = "PLC token has expired (expired at: #{migration.progress_data&.dig('plc_token_expires_at')}). Please request a new token."
+    plc_token = migration.plc_token
+    if plc_token.nil?
+      error_msg = "PLC token is missing. Please request a new token."
       Rails.logger.error(error_msg)
       migration.mark_failed!(error_msg)
       return

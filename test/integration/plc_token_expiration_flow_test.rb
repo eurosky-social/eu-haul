@@ -12,6 +12,11 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
       email: 'test@example.com',
       did: 'did:plc:test123abc'
     )
+    # Set old PDS tokens so request_new_plc_token controller can call the service
+    @migration.set_old_pds_tokens!(
+      access_token: "test_old_access",
+      refresh_token: "test_old_refresh"
+    )
   end
 
   # ============================================================================
@@ -19,15 +24,16 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
   # ============================================================================
 
   test "complete flow: user submits expired token, requests new one, and completes migration" do
-    # Step 1: User has an expired token
+    # Step 1: User has an expired PLC token (credentials still valid)
     @migration.set_plc_token("expired-token")
-    @migration.update!(credentials_expires_at: 1.hour.ago)
+    # Expire the PLC token specifically (not general credentials)
+    @migration.progress_data['plc_token_expires_at'] = 1.hour.ago.iso8601
+    @migration.save!
 
-    # Step 2: User tries to submit the expired token via UpdatePlcJob
+    # Step 2: UpdatePlcJob detects the expired PLC token and marks migration as failed
+    # (returns early without raising — PLC directory hasn't been modified yet)
     job = UpdatePlcJob.new
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    job.perform(@migration.id)
 
     # Step 3: Migration is marked as failed with expiration error
     @migration.reload
@@ -78,16 +84,19 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
     # Step 10: Verify new token is stored and not expired
     @migration.reload
     assert_equal new_token, @migration.plc_token
-    assert_not @migration.credentials_expired?
-    assert @migration.credentials_expires_at > Time.current
+    assert_not @migration.plc_token_expired?
 
     # Step 11: UpdatePlcJob should now succeed with fresh token
+    # Re-set password (needed for get_recommended_plc_operation)
+    @migration.set_password("test_password_123")
     job = UpdatePlcJob.new
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
     service.stubs(:submit_plc_operation)
     GoatService.stubs(:new).returns(service)
+    File.stubs(:read).returns('{"rotationKeys": []}')
 
     job.perform(@migration.id)
 
@@ -138,28 +147,31 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "UpdatePlcJob distinguishes missing token from expired token" do
-    # Test with missing token
+    # Test with missing token (no encrypted value, no expiry set)
     @migration.update!(encrypted_plc_token: nil)
     job = UpdatePlcJob.new
 
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    # Job returns early (no exception) for pre-PLC-update failures
+    job.perform(@migration.id)
 
     @migration.reload
+    assert @migration.failed?
     assert_match(/PLC token is missing/i, @migration.last_error)
-    assert_not_match(/expired/i, @migration.last_error)
+    assert_no_match(/expired/i, @migration.last_error)
 
-    # Test with expired token
+    # Reset for next test
+    @migration.update!(status: :pending_plc, last_error: nil)
+
+    # Test with expired token (encrypted value exists but expired)
     @migration.set_plc_token("expired-token")
-    @migration.update!(credentials_expires_at: 1.hour.ago)
+    @migration.progress_data['plc_token_expires_at'] = 1.hour.ago.iso8601
+    @migration.save!
     job = UpdatePlcJob.new
 
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    job.perform(@migration.id)
 
     @migration.reload
+    assert @migration.failed?
     assert_match(/PLC token has expired/i, @migration.last_error)
     assert_match(/request a new token/i, @migration.last_error)
   end
@@ -179,8 +191,8 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
     first_timestamp = @migration.progress_data['plc_token_requested_at']
     assert_not_nil first_timestamp
 
-    # Wait a moment to ensure timestamp changes
-    sleep 0.01
+    # Use time travel to ensure timestamp changes (ISO 8601 has second precision)
+    travel 2.seconds
 
     # Second request
     post request_new_plc_token_by_token_path(@migration.token)
@@ -191,9 +203,10 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "token expiration checked before other PLC operations" do
-    # Set up expired token
+    # Set up expired PLC token (credentials still valid)
     @migration.set_plc_token("expired-token")
-    @migration.update!(credentials_expires_at: 1.hour.ago)
+    @migration.progress_data['plc_token_expires_at'] = 1.hour.ago.iso8601
+    @migration.save!
 
     # Mock GoatService - should never be called because expiration check happens first
     service = mock('goat_service')
@@ -204,12 +217,11 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
 
     job = UpdatePlcJob.new
 
-    # Should fail on expiration check before attempting any PLC operations
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    # Job returns early for expired token (no exception)
+    job.perform(@migration.id)
 
     @migration.reload
+    assert @migration.failed?
     assert_match(/PLC token has expired/i, @migration.last_error)
   end
 end

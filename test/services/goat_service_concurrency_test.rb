@@ -11,8 +11,10 @@ require 'test_helper'
 #
 class GoatServiceConcurrencyTest < ActiveSupport::TestCase
   def setup
+    # Use unique DIDs per test run to avoid parallel test processes sharing work directories
+    @unique_suffix = SecureRandom.hex(8)
     @migration1 = Migration.create!(
-      did: 'did:plc:test1234567890abcdef',
+      did: "did:plc:conc1#{@unique_suffix}",
       old_handle: 'user1.old-pds.example',
       new_handle: 'user1.new-pds.example',
       old_pds_host: 'https://old-pds.example',
@@ -22,7 +24,7 @@ class GoatServiceConcurrencyTest < ActiveSupport::TestCase
     )
 
     @migration2 = Migration.create!(
-      did: 'did:plc:test0987654321fedcba',
+      did: "did:plc:conc2#{@unique_suffix}",
       old_handle: 'user2.old-pds.example',
       new_handle: 'user2.new-pds.example',
       old_pds_host: 'https://old-pds.example',

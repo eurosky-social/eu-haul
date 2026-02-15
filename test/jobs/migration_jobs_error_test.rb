@@ -257,6 +257,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     service.stubs(:download_blob).with('blob3').returns('/tmp/blob3')
     service.stubs(:upload_blob).with('/tmp/blob3').returns({ 'blob' => {} })
 
+    # Mock reconciliation (post-import step)
+    service.stubs(:get_account_status).returns({ 'expectedBlobs' => 3, 'importedBlobs' => 3 })
+
     GoatService.stubs(:new).returns(service)
 
     job.perform(@migration.id)
@@ -294,6 +297,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     # Mock File.size for the blob
     File.stubs(:size).with('/tmp/blob1').returns(1024)
 
+    # Mock reconciliation (post-import step)
+    service.stubs(:get_account_status).returns({ 'expectedBlobs' => 1, 'importedBlobs' => 1 })
+
     GoatService.stubs(:new).returns(service)
 
     # Stub sleep to prevent actual delays
@@ -325,6 +331,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     # Stub work_dir which might be accessed for manifest writing
     service.stubs(:work_dir).returns(Pathname.new('/tmp'))
+
+    # Mock reconciliation (post-import step)
+    service.stubs(:get_account_status).returns({ 'expectedBlobs' => 2, 'importedBlobs' => 2 })
 
     GoatService.stubs(:new).returns(service)
 
@@ -359,6 +368,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
       "Failed to download blob: 404"
     )
 
+    # Mock reconciliation (post-import step)
+    service.stubs(:get_account_status).returns({ 'expectedBlobs' => 1, 'importedBlobs' => 1 })
+
     GoatService.stubs(:new).returns(service)
 
     job.perform(@migration.id)
@@ -389,6 +401,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     # Mock File.size to return blob size
     File.stubs(:size).with('/tmp/blob1').returns(blob_size)
+
+    # Mock reconciliation (post-import step)
+    service.stubs(:get_account_status).returns({ 'expectedBlobs' => 1, 'importedBlobs' => 1 })
 
     GoatService.stubs(:new).returns(service)
 
@@ -457,7 +472,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
   # WaitForPlcTokenJob - Stage 6 Errors
   # ============================================================================
 
-  test "WaitForPlcTokenJob requests PLC token and generates OTP" do
+  test "WaitForPlcTokenJob requests PLC token and records timestamp" do
     @migration.update!(status: :pending_plc)
 
     job = WaitForPlcTokenJob.new
@@ -467,10 +482,10 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job.perform(@migration.id)
 
-    # Should remain in pending_plc state and have generated OTP
+    # Should remain in pending_plc state and have recorded token request timestamp
     @migration.reload
     assert @migration.pending_plc?
-    assert @migration.plc_otp.present?
+    assert @migration.progress_data['plc_token_requested_at'].present?
   end
 
   test "WaitForPlcTokenJob handles PLC token request failure" do
@@ -508,39 +523,36 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = UpdatePlcJob.new
 
-    # Should raise AuthenticationError when token is missing
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    # Job returns early (no exception) for pre-PLC-update failures
+    job.perform(@migration.id)
 
     @migration.reload
     assert @migration.failed?
-    assert @migration.last_error.include?("PLC token is missing or expired")
+    assert_match(/PLC token is missing/i, @migration.last_error)
   end
 
   test "UpdatePlcJob fails immediately when PLC token expired" do
-    @migration.update!(
-      status: :pending_plc,
-      credentials_expires_at: 1.hour.ago
-    )
+    @migration.update!(status: :pending_plc)
     @migration.set_plc_token("expired-token")
-    @migration.update!(credentials_expires_at: 1.hour.ago)
+    # Expire the PLC token specifically (not general credentials)
+    @migration.progress_data['plc_token_expires_at'] = 1.hour.ago.iso8601
+    @migration.save!
 
     job = UpdatePlcJob.new
 
-    # Should raise AuthenticationError when token is expired
-    assert_raises(GoatService::AuthenticationError) do
-      job.perform(@migration.id)
-    end
+    # Job returns early (no exception) for pre-PLC-update failures
+    job.perform(@migration.id)
 
     @migration.reload
     assert @migration.failed?
-    assert @migration.last_error.include?("PLC token has expired")
-    assert @migration.last_error.include?("Please request a new token")
+    assert_match(/PLC token has expired/i, @migration.last_error)
+    assert_match(/request a new token/i, @migration.last_error)
   end
 
   test "UpdatePlcJob handles PLC operation signing failure" do
     @migration.update!(status: :pending_plc)
+    @migration.set_password("test_password")
+    @migration.set_old_pds_tokens!(access_token: "test_access", refresh_token: "test_refresh")
     @migration.set_plc_token("valid-token")
 
     job = UpdatePlcJob.new
@@ -548,12 +560,15 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).raises(
       GoatService::GoatError,
       "Failed to sign PLC operation"
     )
     GoatService.stubs(:new).returns(service)
+    File.stubs(:read).returns('{"rotationKeys": []}')
+    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::GoatError) do
@@ -561,11 +576,13 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     end
 
     @migration.reload
-    assert @migration.last_error.include?("Failed to sign PLC operation")
+    assert_match(/Failed to sign PLC operation/, @migration.last_error)
   end
 
   test "UpdatePlcJob handles PLC submission failure with retry" do
     @migration.update!(status: :pending_plc)
+    @migration.set_password("test_password")
+    @migration.set_old_pds_tokens!(access_token: "test_access", refresh_token: "test_refresh")
     @migration.set_plc_token("valid-token")
 
     job = UpdatePlcJob.new
@@ -573,6 +590,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
     service.stubs(:submit_plc_operation).raises(
@@ -580,6 +598,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
       "Failed to submit PLC operation"
     )
     GoatService.stubs(:new).returns(service)
+    File.stubs(:read).returns('{"rotationKeys": []}')
+    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::GoatError) do
@@ -589,6 +609,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
   test "UpdatePlcJob handles rate limiting with polynomial backoff" do
     @migration.update!(status: :pending_plc)
+    @migration.set_password("test_password")
+    @migration.set_old_pds_tokens!(access_token: "test_access", refresh_token: "test_refresh")
     @migration.set_plc_token("valid-token")
 
     job = UpdatePlcJob.new
@@ -596,6 +618,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
     service.stubs(:submit_plc_operation).raises(
@@ -603,6 +626,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
       "PLC directory rate-limited"
     )
     GoatService.stubs(:new).returns(service)
+    File.stubs(:read).returns('{"rotationKeys": []}')
+    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::RateLimitError) do
@@ -615,14 +640,19 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
   test "UpdatePlcJob transitions to pending_activation on success" do
     @migration.update!(status: :pending_plc)
+    @migration.set_password("test_password")
+    @migration.set_old_pds_tokens!(access_token: "test_access", refresh_token: "test_refresh")
     @migration.set_plc_token("valid-token")
 
     job = UpdatePlcJob.new
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
     service.stubs(:submit_plc_operation)
     GoatService.stubs(:new).returns(service)
+    File.stubs(:read).returns('{"rotationKeys": []}')
+    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     job.perform(@migration.id)
 

@@ -75,7 +75,7 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       PORT: 3000
-      MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-5}
+      MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-100}
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"
       ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
@@ -116,7 +116,7 @@ services:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_${RAILS_ENV:-development}
       REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis:6379/0
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-5}
+      MAX_CONCURRENT_MIGRATIONS: ${MAX_CONCURRENT_MIGRATIONS:-100}
       ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
       PDS_DISABLE_SSRF_PROTECTION: "true"
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@example.com}

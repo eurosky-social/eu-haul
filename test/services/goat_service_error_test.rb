@@ -324,23 +324,24 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   end
 
   test "upload_blob raises RateLimitError on HTTP 429" do
-    blob_path = @service.work_dir.join('blobs', 'test_blob')
-    FileUtils.mkdir_p(blob_path.dirname)
-    File.binwrite(blob_path, 'test blob data')
+    # Use a unique temp dir to avoid parallel test interference on shared work_dir
+    Dir.mktmpdir("goat_upload_test") do |tmpdir|
+      blob_path = File.join(tmpdir, 'test_blob')
+      File.binwrite(blob_path, 'test blob data')
 
-    # Pre-populate access token to avoid login
-    @service.instance_variable_get(:@access_tokens)["#{@migration.new_pds_host}:#{@migration.did}"] = 'test-token'
+      # Pre-populate access token to avoid login
+      @service.instance_variable_get(:@access_tokens)["#{@migration.new_pds_host}:#{@migration.did}"] = 'test-token'
 
-    stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob")
-      .to_return(status: 429, body: { error: 'RateLimitExceeded' }.to_json)
+      stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob")
+        .to_return(status: 429, body: { error: 'RateLimitExceeded' }.to_json)
 
-    error = assert_raises(GoatService::RateLimitError) do
-      @service.upload_blob(blob_path.to_s)
+      # Call upload_blob_request directly to skip rate-limit retry loop (which sleeps)
+      error = assert_raises(GoatService::RateLimitError) do
+        @service.send(:upload_blob_request, blob_path)
+      end
+
+      assert_match /rate limit exceeded/i, error.message
     end
-
-    assert_match /rate limit exceeded/, error.message
-  ensure
-    FileUtils.rm_rf(blob_path.dirname) if blob_path
   end
 
   test "upload_blob raises GoatError when blob file not found" do
@@ -437,29 +438,31 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   end
 
   test "sign_plc_operation raises GoatError when token is nil" do
-    unsigned_path = @service.work_dir.join('plc_unsigned.json')
-    File.write(unsigned_path, '{}')
+    # Use unique temp dir to avoid parallel test interference on shared work_dir
+    Dir.mktmpdir("goat_sign_test") do |tmpdir|
+      unsigned_path = File.join(tmpdir, 'plc_unsigned.json')
+      File.write(unsigned_path, '{}')
 
-    error = assert_raises(GoatService::GoatError) do
-      @service.sign_plc_operation(unsigned_path.to_s, nil)
+      error = assert_raises(GoatService::GoatError) do
+        @service.sign_plc_operation(unsigned_path, nil)
+      end
+
+      assert_match /PLC token is required/, error.message
     end
-
-    assert_match /PLC token is required/, error.message
-  ensure
-    FileUtils.rm_f(unsigned_path) if unsigned_path
   end
 
   test "sign_plc_operation raises GoatError when token is empty" do
-    unsigned_path = @service.work_dir.join('plc_unsigned.json')
-    File.write(unsigned_path, '{}')
+    # Use unique temp dir to avoid parallel test interference on shared work_dir
+    Dir.mktmpdir("goat_sign_test") do |tmpdir|
+      unsigned_path = File.join(tmpdir, 'plc_unsigned.json')
+      File.write(unsigned_path, '{}')
 
-    error = assert_raises(GoatService::GoatError) do
-      @service.sign_plc_operation(unsigned_path.to_s, "")
+      error = assert_raises(GoatService::GoatError) do
+        @service.sign_plc_operation(unsigned_path, "")
+      end
+
+      assert_match /PLC token is required/, error.message
     end
-
-    assert_match /PLC token is required/, error.message
-  ensure
-    FileUtils.rm_f(unsigned_path) if unsigned_path
   end
 
   test "sign_plc_operation raises GoatError on signing failure" do

@@ -10,6 +10,11 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
       old_pds_host: 'https://oldpds.example.com',
       new_pds_host: 'https://newpds.example.com'
     )
+    # Set old PDS tokens so controller can call GoatService.request_plc_token
+    @pending_plc_migration.set_old_pds_tokens!(
+      access_token: "test_old_access",
+      refresh_token: "test_old_refresh"
+    )
     @pending_plc_migration.set_plc_token("valid-token")
   end
 
@@ -95,7 +100,8 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
     post request_new_plc_token_by_token_path(@pending_plc_migration.token)
 
     assert_redirected_to migration_by_token_path(@pending_plc_migration.token)
-    assert_match(/failed to request.*new PLC token/i, flash[:alert])
+    # Controller falls back to manual instructions when API call fails
+    assert_match(/Could not automatically request.*new PLC token/i, flash[:notice])
   end
 
   # ============================================================================

@@ -25,15 +25,10 @@ This directory contains the RSpec test suite for the Eurosky Migration applicati
   - Error handling (AuthenticationError, NetworkError, RateLimitError)
   - File cleanup
 
-- **memory_estimator_service_spec.rb** - Complete tests for MemoryEstimatorService:
-  - Memory estimation with various blob sizes
-  - Concurrency limit calculations
-  - Boundary conditions and edge cases
-
 ### Jobs (spec/jobs/)
 - **import_blobs_job_spec.rb** - Extensive tests for ImportBlobsJob including:
   - Normal blob import flow
-  - Concurrency limiting (max 15 concurrent migrations)
+  - Concurrency limiting
   - Pagination handling
   - Error handling and retry logic
   - Rate limit handling
@@ -230,7 +225,7 @@ end
 ## Coverage Goals
 
 - **Models**: 100% coverage (currently achieved)
-- **Services**: 95%+ coverage (currently achieved for GoatService, MemoryEstimatorService)
+- **Services**: 95%+ coverage (currently achieved for GoatService)
 - **Jobs**: 90%+ coverage (achieved for ImportBlobsJob, UpdatePlcJob)
 - **Controllers**: 90%+ coverage (currently achieved)
 - **Integration**: Key user flows covered (currently achieved)
