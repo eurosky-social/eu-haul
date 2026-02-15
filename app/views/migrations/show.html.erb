@@ -460,84 +460,106 @@
       <% end %>
 
       <% if @migration.pending_plc? %>
+        <% plc_token_submitted = @migration.encrypted_plc_token.present? && !@migration.plc_token_expired? %>
         <div style="margin-bottom: 24px;">
-          <div style="text-align: center; padding: 24px 0 16px;">
-            <div style="font-size: 48px; margin-bottom: 12px;">📧</div>
-            <h3 style="margin: 0 0 8px 0; font-size: 22px; color: #1a1a1a;">Almost done! Check your email</h3>
-            <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 500px; margin: 0 auto;">
-              Your account data has been copied to your new server. To finalize the move,
-              we need you to enter a <strong>confirmation code</strong> that Bluesky sent to your email.
-            </p>
-          </div>
-
-          <div style="background: #f0f7ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-            <h4 style="margin: 0 0 12px 0; font-size: 16px; color: #0056b3;">What to look for</h4>
-            <p style="margin: 0 0 8px 0; font-size: 15px; color: #333; line-height: 1.6;">
-              You should have received an email with the subject <strong>"PLC update requested"</strong>.
-              It contains a <strong>confirmation code</strong> that looks like this:
-            </p>
-            <div style="background: white; padding: 12px 16px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 20px; letter-spacing: 3px; color: #333; margin: 12px 0;">
-              XXXXX-XXXXX
-            </div>
-            <p style="margin: 8px 0 0 0; font-size: 14px; color: #555;">
-              Copy that code and paste it below.
-            </p>
-          </div>
-
-          <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true do |f| %>
-            <div class="form-group">
-              <%= label_tag :plc_token, "Confirmation Code" %>
-              <%= text_field_tag :plc_token, nil, required: true, placeholder: "XXXXX-XXXXX", autocomplete: "off", style: "font-family: monospace; font-size: 18px; letter-spacing: 2px; text-align: center;" %>
-            </div>
-
-            <%= submit_tag "Complete Migration", class: "submit-button", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
-          <% end %>
-
-          <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 20px;">
-            <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">Didn't receive the email?</h4>
-            <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #78350f; line-height: 1.8;">
-              <li>Check your spam or junk folder</li>
-              <li>The email comes from Bluesky, not from us</li>
-              <li>The code expires after 1 hour</li>
-            </ul>
-            <% unless @migration.has_old_pds_tokens? %>
-              <p style="margin: 0 0 12px 0; font-size: 14px; color: #78350f;">
-                If you need a new code, enter your password below and we'll request one:
+          <% if plc_token_submitted %>
+            <%# PLC token has been submitted — show processing state %>
+            <div style="text-align: center; padding: 32px 0 16px;">
+              <div style="font-size: 48px; margin-bottom: 12px;">
+                <span style="display: inline-block; animation: spin 2s linear infinite;">&#9881;</span>
+              </div>
+              <style>@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
+              <h3 style="margin: 0 0 8px 0; font-size: 22px; color: #1a1a1a;">Updating Your Identity</h3>
+              <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 500px; margin: 0 auto;">
+                Your confirmation code has been accepted. We're now updating your PLC directory entry
+                to point to <strong><%= @migration.new_pds_host %></strong>. This may take a moment.
               </p>
-              <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
-                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                <div style="display: flex; gap: 8px;">
-                  <input type="password" name="password" required
-                         autocomplete="current-password"
-                         placeholder="Password for <%= @migration.old_handle %>"
-                         style="flex: 1; padding: 10px 12px; border: 2px solid #f59e0b; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
-                  <button type="submit"
-                          style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;">
-                    Request New Code
-                  </button>
-                </div>
-              </form>
+            </div>
+            <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; text-align: center;">
+              <p style="margin: 0; font-size: 14px; color: #1e40af;">
+                This page will update automatically when the process completes. Please don't close this tab.
+              </p>
+            </div>
+          <% else %>
+            <%# No PLC token yet (or expired) — show the entry form %>
+            <div style="text-align: center; padding: 24px 0 16px;">
+              <div style="font-size: 48px; margin-bottom: 12px;">&#x1F4E7;</div>
+              <h3 style="margin: 0 0 8px 0; font-size: 22px; color: #1a1a1a;">Almost done! Check your email</h3>
+              <p style="font-size: 16px; color: #555; line-height: 1.6; max-width: 500px; margin: 0 auto;">
+                Your account data has been copied to your new server. To finalize the move,
+                we need you to enter a <strong>confirmation code</strong> that Bluesky sent to your email.
+              </p>
+            </div>
+
+            <div style="background: #f0f7ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+              <h4 style="margin: 0 0 12px 0; font-size: 16px; color: #0056b3;">What to look for</h4>
+              <p style="margin: 0 0 8px 0; font-size: 15px; color: #333; line-height: 1.6;">
+                You should have received an email with the subject <strong>"PLC update requested"</strong>.
+                It contains a <strong>confirmation code</strong> that looks like this:
+              </p>
+              <div style="background: white; padding: 12px 16px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 20px; letter-spacing: 3px; color: #333; margin: 12px 0;">
+                XXXXX-XXXXX
+              </div>
+              <p style="margin: 8px 0 0 0; font-size: 14px; color: #555;">
+                Copy that code and paste it below.
+              </p>
+            </div>
+
+            <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true do |f| %>
+              <div class="form-group">
+                <%= label_tag :plc_token, "Confirmation Code" %>
+                <%= text_field_tag :plc_token, nil, required: true, placeholder: "XXXXX-XXXXX", autocomplete: "off", style: "font-family: monospace; font-size: 18px; letter-spacing: 2px; text-align: center;" %>
+              </div>
+
+              <%= submit_tag "Complete Migration", class: "submit-button", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
             <% end %>
-          </div>
 
-          <details style="margin-top: 20px;">
-            <summary style="cursor: pointer; color: #6b7280; font-size: 14px; font-weight: 500;">
-              Technical details
-            </summary>
-            <div style="margin-top: 12px; padding: 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; color: #4b5563; line-height: 1.7;">
-              <p style="margin: 0 0 8px 0;">
-                The confirmation code is a <strong>PLC operation token</strong> — it authorizes updating your
-                DID document in the PLC directory to point to your new Personal Data Server.
-              </p>
-              <p style="margin: 0 0 8px 0;">
-                <strong>This is irreversible.</strong> Once submitted, your account identity (DID) will permanently
-                point to <strong><%= @migration.new_pds_host %></strong> instead of <strong><%= @migration.old_pds_host %></strong>.
-              </p>
-              <p style="margin: 0;">
-                PLC tokens expire after 1 hour. If yours has expired, you can request a new one.
-              </p>
+            <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 20px;">
+              <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">Didn't receive the email?</h4>
+              <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #78350f; line-height: 1.8;">
+                <li>Check your spam or junk folder</li>
+                <li>The email comes from Bluesky, not from us</li>
+                <li>The code expires after 1 hour</li>
+              </ul>
+              <% unless @migration.has_old_pds_tokens? %>
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #78350f;">
+                  If you need a new code, enter your password below and we'll request one:
+                </p>
+                <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+                  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                  <div style="display: flex; gap: 8px;">
+                    <input type="password" name="password" required
+                           autocomplete="current-password"
+                           placeholder="Password for <%= @migration.old_handle %>"
+                           style="flex: 1; padding: 10px 12px; border: 2px solid #f59e0b; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    <button type="submit"
+                            style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;">
+                      Request New Code
+                    </button>
+                  </div>
+                </form>
+              <% end %>
             </div>
-          </details>
+
+            <details style="margin-top: 20px;">
+              <summary style="cursor: pointer; color: #6b7280; font-size: 14px; font-weight: 500;">
+                Technical details
+              </summary>
+              <div style="margin-top: 12px; padding: 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; color: #4b5563; line-height: 1.7;">
+                <p style="margin: 0 0 8px 0;">
+                  The confirmation code is a <strong>PLC operation token</strong> — it authorizes updating your
+                  DID document in the PLC directory to point to your new Personal Data Server.
+                </p>
+                <p style="margin: 0 0 8px 0;">
+                  <strong>This is irreversible.</strong> Once submitted, your account identity (DID) will permanently
+                  point to <strong><%= @migration.new_pds_host %></strong> instead of <strong><%= @migration.old_pds_host %></strong>.
+                </p>
+                <p style="margin: 0;">
+                  PLC tokens expire after 1 hour. If yours has expired, you can request a new one.
+                </p>
+              </div>
+            </details>
+          <% end %>
         </div>
       <% end %>
 
@@ -656,8 +678,12 @@
               window.location.reload();
               return;
             }
-            // Status changed to pending_plc (needs form interaction) — full reload
+            // Status changed to or from pending_plc (UI layout changes) — full reload
             if (data.status === 'pending_plc' && currentStatus !== 'pending_plc') {
+              window.location.reload();
+              return;
+            }
+            if (currentStatus === 'pending_plc' && data.status !== 'pending_plc') {
               window.location.reload();
               return;
             }

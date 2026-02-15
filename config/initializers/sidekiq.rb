@@ -41,19 +41,12 @@ Sidekiq.configure_server do |config|
   # for non-blob jobs (account creation, repo import, prefs, etc.).
   config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 35)
 
-  # Queue configuration
+  # Queue configuration is defined in the YAML config files:
+  #   - config/sidekiq.yml: migrations, default, low queues
+  #   - config/sidekiq_critical.yml: critical queue only (UpdatePlcJob, ActivateAccountJob)
   #
-  # NOTE: The critical queue is handled by a SEPARATE Sidekiq process
-  # (config/sidekiq_critical.yml) to ensure UpdatePlcJob and ActivateAccountJob
-  # are never starved by long-running blob transfer jobs.
-  #
-  # This main process handles migrations, default, and low queues.
-  # Queue weights determine relative processing priority.
-  config.queues = [
-    ['migrations', 5],
-    ['default', 3],
-    ['low', 1]
-  ]
+  # Do NOT set config.queues here — it would override the YAML for ALL
+  # Sidekiq processes (both main and critical), breaking the queue separation.
 
   # Add middleware to handle deserialization errors gracefully
   config.server_middleware do |chain|
