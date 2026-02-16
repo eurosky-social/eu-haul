@@ -371,22 +371,29 @@
       }
 
       if (!selectedPds || selectedPds === 'custom') {
-        alert('Please select a PDS or enter a custom PDS URL');
+        alert('Please select a Server or enter a custom Server URL');
         return;
       }
 
       // For custom PDS: if not yet verified, check requirements first
       if (pdsSelect.value === 'custom' && (!wizardData.pdsVerified || wizardData.pdsVerifiedHost !== selectedPds)) {
         btn.disabled = true;
-        btn.textContent = 'Checking PDS...';
+        btn.textContent = 'Checking Server...';
         checkPdsRequirements(selectedPds, status, inviteGroup, function(success) {
           btn.disabled = false;
           btn.textContent = 'Continue';
           if (success) {
             updateTargetPasswordVisibility(selectedPds);
             if (inviteCodeField.required) {
-              showStatus(status, 'This PDS requires an invite code. Please enter it below, then click Continue.', 'info');
+              showStatus(status, 'This Server requires an invite code. Please enter it below, then click Continue.', 'info');
               inviteCodeField.focus();
+            } else if (isMigrationIn(selectedPds)) {
+              // Migration back to bsky.social needs target credentials - stay on step 3
+            } else {
+              // No invite code needed, not a migration_in - proceed directly
+              wizardData.pdsHost = selectedPds;
+              showStep(4);
+              setupStep4();
             }
           }
         });
@@ -538,7 +545,7 @@
     });
 
     function checkPdsRequirements(pdsHost, statusElement, inviteGroup, callback) {
-      showStatus(statusElement, 'Checking PDS requirements...', 'info');
+      showStatus(statusElement, 'Checking Server requirements...', 'info');
 
       fetch('/migrations/check_pds', {
         method: 'POST',
@@ -558,7 +565,7 @@
           return;
         }
 
-        showStatus(statusElement, 'PDS verified!', 'success');
+        showStatus(statusElement, 'Server verified!', 'success');
 
         wizardData.availableDomains = data.available_user_domains || [];
         wizardData.pdsVerified = true;
@@ -736,11 +743,11 @@
               <div class="text-start lh-lg">
                 <strong>Account Already Exists on Target PDS</strong><br><br>
                 <strong>What happened:</strong><br>
-                An account with your DID already exists on the target PDS (${wizardData.pdsHost}).
+                An account with your DID already exists on the target Server (${wizardData.pdsHost}).
                 This orphaned account is likely from a previous failed migration attempt.<br><br>
 
                 <strong>What to do:</strong><br>
-                Contact the target PDS provider to remove the orphaned account:<br>
+                Contact the target Server provider to remove the orphaned account:<br>
                 <ul class="ms-3">
                   <li>Email: <strong>${supportEmail}</strong></li>
                   <li>Include your DID: <code>${wizardData.did}</code></li>
@@ -748,7 +755,7 @@
                   ${didData.deactivated ? '<li>Mention the account is <strong>deactivated/orphaned</strong></li>' : ''}
                 </ul>
                 <div class="alert alert-warning mt-2 mb-0 py-2">
-                  <strong>This requires action from the PDS provider - you cannot fix this yourself.</strong><br>
+                  <strong>This requires action from the Server provider - you cannot fix this yourself.</strong><br>
                   Once the orphaned account is removed, you can retry this migration.
                 </div>
               </div>
@@ -929,7 +936,7 @@
           <label class="d-flex align-items-start cursor-pointer user-select-none">
             <input type="checkbox" id="confirm-email-access" class="form-check-input me-3 mt-1 flex-shrink-0">
             <span class="small">
-              I confirm that I have access to this email address. I understand that a <strong>PLC token</strong> will be sent to this email during migration, and I must be able to retrieve it to complete the process.
+              I confirm that I have access to this email address. I understand that a <strong>confirmation code</strong> will be sent to this email during migration, and I must be able to retrieve it to complete the process.
             </span>
           </label>
         </div>
@@ -942,25 +949,25 @@
 
       <!-- STEP 3: Destination PDS -->
       <div id="step-3" class="wizard-step">
-        <h2 class="mb-3">Step 3: Destination PDS</h2>
+        <h2 class="mb-3">Step 3: Destination Sever</h2>
 
         <div class="mb-3">
-          <label for="pds-select" class="form-label">Destination PDS</label>
+          <label for="pds-select" class="form-label">Destination Server</label>
           <select id="pds-select" class="form-select form-select-lg">
-            <option value="">Select a PDS...</option>
+            <option value="">Select a Server...</option>
             <option value="https://eurosky.social">Eurosky (eurosky.social)</option>
             <option value="https://blacksky.app">Blacksky (blacksky.app)</option>
             <option value="https://myatproto.social">myatproto (myatproto.social)</option>
             <option value="https://bsky.social">Bluesky (bsky.social)</option>
-            <option value="custom">Custom PDS...</option>
+            <option value="custom">Custom Server...</option>
           </select>
           <div class="form-text">Choose where you want to migrate your account</div>
         </div>
 
         <div id="custom-pds-group" class="mb-3" style="display: none;">
-          <%= f.label :new_pds_host, "Custom PDS URL", class: "form-label" %>
+          <%= f.label :new_pds_host, "Custom Server URL", class: "form-label" %>
           <%= f.text_field :new_pds_host, id: "migration_new_pds_host", placeholder: "https://pds.example.com", autocomplete: "url", class: "form-control" %>
-          <div class="form-text">Enter the full URL of your custom PDS</div>
+          <div class="form-text">Enter the full URL of your custom Server</div>
         </div>
 
         <div id="pds-status" class="lookup-status"></div>
@@ -968,7 +975,7 @@
         <div id="invite-code-group" class="mb-3" style="display: none;">
           <%= f.label :invite_code, "Invite Code", class: "form-label" %>
           <%= f.text_field :invite_code, id: "migration_invite_code", placeholder: "Enter your invite code", autocomplete: "off", class: "form-control" %>
-          <div class="form-text">This PDS requires an invite code</div>
+          <div class="form-text">This Server requires an invite code</div>
         </div>
 
         <!-- Target PDS password (for migration_in / returning to bsky.social) -->
@@ -1029,7 +1036,7 @@
             <input type="text" id="new-handle-input" class="form-control" placeholder="username" style="padding-right: 200px;">
             <span id="new-handle-suffix" class="handle-suffix"></span>
           </div>
-          <div class="form-text">Choose your new handle on the destination PDS</div>
+          <div class="form-text">Choose your new handle (can be your old) on the destination Server</div>
           <%= f.hidden_field :new_handle, id: "migration_new_handle" %>
         </div>
 
