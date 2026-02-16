@@ -14,8 +14,8 @@
     .page-layout.has-sidebar {
       display: grid;
       grid-template-columns: minmax(0, 700px) 280px;
-      grid-template-rows: auto 1fr;
-      gap: 0 24px;
+      gap: 24px;
+      align-items: start;
       justify-content: center;
     }
 
@@ -24,17 +24,10 @@
     }
 
     .has-sidebar .container {
-      grid-column: 1;
-      grid-row: 1 / -1;
-      display: grid;
-      grid-template-rows: subgrid;
       max-width: none;
     }
 
     .backup-sidebar {
-      grid-column: 2;
-      grid-row: 2;
-      align-self: start;
       position: sticky;
       top: 20px;
     }
@@ -137,6 +130,30 @@
     .status-failed { color: #dc2626; }
     .status-in-progress { color: #3b82f6; }
 
+    /* Header-specific overrides: white text on gradient */
+    .header-eurosky .status-completed,
+    .header-eurosky .status-failed,
+    .header-eurosky .status-in-progress {
+      color: white !important;
+    }
+
+    .header-eurosky .progress-bar-container {
+      background: rgba(255, 255, 255, 0.2);
+      height: 24px;
+      border-radius: 12px;
+    }
+
+    .header-eurosky .progress-bar-fill {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--primary-color);
+      font-size: 13px;
+      border-radius: 12px;
+    }
+
+    .header-eurosky #retry-info {
+      color: rgba(255, 255, 200, 0.9) !important;
+    }
+
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -189,8 +206,36 @@
       <% if EuroskyConfig::LOGO_URL.present? %>
         <img src="<%= EuroskyConfig::LOGO_URL %>" alt="<%= EuroskyConfig::SITE_NAME %>" class="header-logo">
       <% end %>
-      <h1><%= @migration.email_verified? ? 'Migration Status' : 'Verify Your Email' %></h1>
-      <div class="token-badge mt-2"><%= @migration.token %></div>
+
+      <% if @migration.email_verified? %>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h1 class="fs-3 mb-0">Migration Status</h1>
+          <div class="token-badge" style="font-size: 16px; padding: 4px 12px;"><%= @migration.token %></div>
+        </div>
+
+        <div class="d-flex align-items-baseline justify-content-between mb-2">
+          <div>
+            <span class="small" style="opacity: 0.7;">Status:</span>
+            <span id="status-value" class="fw-semibold status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>" data-status="<%= @migration.status %>">
+              <span id="status-text"><%= @migration.status.humanize %></span>
+            </span>
+          </div>
+          <div id="retry-info" class="small" style="<%= 'display:none;' unless @migration.job_retrying? && @migration.current_job_step %>">
+            <% if @migration.job_retrying? && @migration.current_job_step %>
+              Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
+            <% end %>
+          </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar" class="progress-bar-fill" style="width: <%= @migration.progress_percentage %>%">
+            <%= @migration.progress_percentage %>%
+          </div>
+        </div>
+      <% else %>
+        <h1>Verify Your Email</h1>
+        <div class="token-badge mt-2"><%= @migration.token %></div>
+      <% end %>
     </div>
 
     <div class="p-4">
@@ -241,63 +286,35 @@
 
       <% else %>
 
+        <%# ═══════════════════════════════════════════════════════ %>
+        <%# Status + progress bar are now in the header above       %>
+        <%# Body contains: notices, metrics, actions, help          %>
+        <%# ═══════════════════════════════════════════════════════ %>
 
-        <div class="mb-4">
-          <div class="small text-body-secondary mb-1">Current Status</div>
-          <div id="status-value" class="fs-5 fw-semibold status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>" data-status="<%= @migration.status %>">
-            <span id="status-text"><%= @migration.status.humanize %></span>
-            <div id="retry-info" class="small text-warning mt-2" style="<%= 'display:none;' unless @migration.job_retrying? && @migration.current_job_step %>">
-              <% if @migration.job_retrying? && @migration.current_job_step %>
-                Retry <%= @migration.current_job_attempt %>/<%= @migration.current_job_max_attempts %> - <%= @migration.current_job_step.gsub('Job', '').humanize %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div id="queued-notice" class="alert alert-primary border-start border-primary border-4 rounded-1 mb-4" style="<%= 'display:none;' unless @migration.progress_data&.dig('queued') %>">
+        <div id="queued-notice" class="alert alert-primary border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small" style="<%= 'display:none;' unless @migration.progress_data&.dig('queued') %>">
           <div class="fw-semibold text-primary mb-1">In Queue</div>
           <p id="queued-reason" class="text-primary small mb-0">
             <%= @migration.progress_data&.dig('queued_reason') || 'Waiting for other migrations to finish transferring data' %>
           </p>
-          <p class="text-primary small mt-2 mb-0" style="opacity: 0.8;">Your migration will start automatically when a slot opens up. This page updates every 10 seconds.</p>
+          <p class="text-primary small mt-1 mb-0" style="opacity: 0.8;">Your migration will start automatically when a slot opens up.</p>
         </div>
 
-        <div class="mb-4">
-          <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
-            <div id="progress-bar" class="progress-bar-fill" style="width: <%= @migration.progress_percentage %>%">
-              <%= @migration.progress_percentage %>%
-            </div>
+        <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
+          <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
+            &#x1F504; <strong>Converting legacy blob format</strong> — this may take a few minutes...
           </div>
-        </div>
-
-      <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
-        <div class="card bg-warning-subtle border-warning mb-4">
-          <div class="card-body">
-            <div class="small text-body-secondary" style="color: #92400e !important;">&#x1F504; Converting Legacy Blob Format</div>
-            <p class="small mt-2 mb-0" style="color: #92400e;">
-              Pre-2023 blob references are being converted to current format. This may take a few minutes...
-            </p>
+        <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
+          <div class="alert alert-success border-start border-success border-4 rounded-1 py-2 px-3 mb-3 small">
+            &#x2705; Legacy blob format converted successfully.
           </div>
-        </div>
-      <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
-        <div class="card bg-success-subtle border-success mb-4">
-          <div class="card-body">
-            <div class="small text-body-secondary" style="color: #065f46 !important;">&#x2705; Legacy Blobs Converted</div>
-            <p class="small mt-2 mb-0" style="color: #065f46;">
-              Legacy blob format has been successfully converted to current format.
-            </p>
-          </div>
-        </div>
-      <% end %>
+        <% end %>
 
-      <% if @migration.pending_blobs? %>
-        <div class="metrics-grid mb-4">
-          <% if @migration.progress_data['blobs'].present? %>
-            <% blobs = @migration.progress_data['blobs'].values %>
-            <% total_blobs = blobs.count %>
-            <% total_size = blobs.sum { |b| b['size'].to_i } %>
-            <% uploaded_size = blobs.sum { |b| b['uploaded'].to_i } %>
-
+        <% if @migration.pending_blobs? && @migration.progress_data['blobs'].present? %>
+          <% blobs = @migration.progress_data['blobs'].values %>
+          <% total_blobs = blobs.count %>
+          <% total_size = blobs.sum { |b| b['size'].to_i } %>
+          <% uploaded_size = blobs.sum { |b| b['uploaded'].to_i } %>
+          <div class="metrics-grid mb-3">
             <div class="card bg-body-tertiary border">
               <div class="card-body p-3">
                 <div class="small text-body-secondary mb-1">Blobs Uploaded</div>
@@ -307,7 +324,6 @@
                 </div>
               </div>
             </div>
-
             <div class="card bg-body-tertiary border">
               <div class="card-body p-3">
                 <div class="small text-body-secondary mb-1">Data Transferred</div>
@@ -317,7 +333,6 @@
                 </div>
               </div>
             </div>
-
             <% if @migration.estimated_time_remaining %>
               <div class="card bg-body-tertiary border">
                 <div class="card-body p-3">
@@ -328,164 +343,203 @@
                 </div>
               </div>
             <% end %>
-          <% end %>
-        </div>
-      <% end %>
+          </div>
+        <% end %>
 
-      <%# Backup Download Section %>
-      <% if @migration.pending_download? || @migration.pending_backup? %>
-        <div class="card bg-info-subtle border-primary mb-4">
-          <div class="card-body">
-            <div class="small fw-semibold text-primary">
-              <%= @migration.pending_download? ? '&#x1F4E5; Downloading Account Data' : '&#x1F4E6; Creating Backup Bundle' %>
-            </div>
-            <p class="small text-primary mt-2 mb-0">
-              <%= @migration.pending_download? ? 'Downloading your account data (repository + blobs) for backup and migration...' : 'Creating a downloadable backup bundle of your account data...' %>
-            </p>
+        <% if @migration.pending_download? || @migration.pending_backup? %>
+          <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
+            <%= @migration.pending_download? ? '&#x1F4E5; <strong>Downloading account data</strong>' : '&#x1F4E6; <strong>Creating backup bundle</strong>' %> &mdash;
+            <%= @migration.pending_download? ? 'downloading your repository + blobs for backup...' : 'packaging your account data...' %>
             <% if @migration.progress_data&.dig('download_progress') %>
               <% progress = @migration.progress_data['download_progress'] %>
-              <p class="small text-primary mt-2 mb-0">
-                Downloaded: <%= progress['downloaded'] %> / <%= progress['total'] %> blobs
-                <% if progress['bytes'] %>
-                  (<%= number_to_human_size(progress['bytes']) %>)
-                <% end %>
-              </p>
+              <br>Downloaded: <%= progress['downloaded'] %> / <%= progress['total'] %> blobs
+              <% if progress['bytes'] %>(<%= number_to_human_size(progress['bytes']) %>)<% end %>
             <% end %>
           </div>
-        </div>
-      <% end %>
+        <% end %>
 
-      <% if @migration.backup_bundle_path.present? && @migration.backup_expired? %>
-        <div class="card bg-danger-subtle border-danger mb-4">
-          <div class="card-body">
-            <div class="small fw-semibold text-danger">&#x26A0;&#xFE0F; Backup Expired</div>
-            <p class="small text-danger mt-2 mb-0">
-              Your backup bundle has expired and has been deleted from our servers.
-            </p>
+        <% if @migration.backup_bundle_path.present? && @migration.backup_expired? %>
+          <div class="alert alert-danger border-start border-danger border-4 rounded-1 py-2 px-3 mb-3 small">
+            &#x26A0;&#xFE0F; <strong>Backup expired</strong> — your backup bundle has been deleted from our servers.
           </div>
-        </div>
-      <% end %>
+        <% end %>
 
-      <%# Rotation Key Section %>
-      <% if @migration.rotation_key.present? && !@migration.pending_download? && !@migration.pending_backup? %>
-        <div class="card bg-warning-subtle border-warning mb-4">
-          <div class="card-body">
-            <div class="small fw-semibold" style="color: #92400e;">&#x1F511; Account Recovery Key</div>
-            <p class="small mt-2 mb-3" style="color: #92400e;">
-              <strong>IMPORTANT:</strong> Save this rotation key in a secure location. It allows you to revert PLC changes or recover your account.
-            </p>
-            <div class="bg-white p-3 rounded-2 mb-3 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
-              <%= @migration.rotation_key %>
-            </div>
-            <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy to Clipboard', 2000)"
-                    class="btn btn-warning text-white small">
-              &#x1F4CB; Copy to Clipboard
-            </button>
-            <details class="mt-3">
-              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                How to Use This Key to Revert Changes
-              </summary>
-              <div class="bg-white p-3 rounded-2 mt-2 small text-body-secondary lh-lg">
-                <p class="mb-2">If you need to revert the PLC directory changes, you can use this rotation key:</p>
-                <ol class="ps-3 my-2">
-                  <li class="mb-1">Install the <code>goat</code> CLI tool</li>
-                  <li class="mb-1">Get your PLC history: <code>goat plc history &lt;your-did&gt;</code></li>
-                  <li class="mb-1">Identify the desired historical state (CID)</li>
-                  <li class="mb-1">Create reversion operation: <code>goat plc update --prev &lt;cid&gt;</code></li>
-                  <li class="mb-1">Sign with your rotation key: <code>goat plc sign</code></li>
-                  <li>Submit the signed operation: <code>goat plc submit --did &lt;your-did&gt;</code></li>
-                </ol>
-                <p class="text-danger mt-2 mb-0">
-                  <strong>Note:</strong> This is an advanced operation. Only use this if you understand the PLC directory system.
-                </p>
-              </div>
-            </details>
-          </div>
-        </div>
-      <% end %>
+        <%# ═══════════════════════════════════════════════════════ %>
+        <%# ZONE 2: PRIMARY CONTENT — state-specific hero content   %>
+        <%# ═══════════════════════════════════════════════════════ %>
 
-      <% if @migration.pending_plc? %>
-        <% plc_token_submitted = @migration.encrypted_plc_token.present? && !@migration.plc_token_expired? %>
-        <div class="mb-4">
+        <% if @migration.pending_plc? %>
+          <hr class="section-divider">
+          <% plc_token_submitted = @migration.encrypted_plc_token.present? && !@migration.plc_token_expired? %>
+
           <% if plc_token_submitted %>
-            <%# PLC token has been submitted — show processing state %>
-            <div class="text-center pt-4 pb-3">
-              <div class="fs-1 mb-2">
-                <span class="spin">&#9881;</span>
-              </div>
+            <div class="text-center py-4">
+              <div class="fs-1 mb-2"><span class="spin">&#9881;</span></div>
               <h3 class="fs-5 mb-2 text-dark">Updating Your Identity</h3>
-              <p class="fs-6 text-body-secondary lh-lg mx-auto mb-0" style="max-width: 500px;">
+              <p class="text-body-secondary lh-lg mx-auto mb-0" style="max-width: 500px;">
                 Your confirmation code has been accepted. We're now updating your PLC directory entry
                 to point to <strong><%= @migration.new_pds_host %></strong>. This may take a moment.
               </p>
-            </div>
-            <div class="alert alert-primary border-2 border-primary rounded-3 text-center">
-              <p class="text-primary small mb-0">
-                This page will update automatically when the process completes. Please don't close this tab.
-              </p>
-            </div>
-          <% else %>
-            <%# No PLC token yet (or expired) — show the entry form %>
-            <div class="text-center py-3">
-              <div class="fs-1 mb-2">&#x1F4E7;</div>
-              <h3 class="fs-5 mb-2 text-dark">Almost done! Check your email</h3>
-              <p class="fs-6 text-body-secondary lh-lg mx-auto mb-0" style="max-width: 500px;">
-                Your account data has been copied to your new server. To finalize the move,
-                we need you to enter a <strong>confirmation code</strong> that Bluesky sent to your email.
+              <p class="text-primary small mt-3 mb-0">
+                This page will update automatically. Please don't close this tab.
               </p>
             </div>
 
-            <div class="alert alert-info border-2 border-primary rounded-3 p-3 mb-3">
-              <h4 class="fs-6 fw-semibold mb-2 text-primary">What to look for</h4>
-              <p class="small text-dark lh-lg mb-2">
-                You should have received an email with the subject <strong>"PLC update requested"</strong>.
-                It contains a <strong>confirmation code</strong> that looks like this:
-              </p>
-              <div class="bg-white p-3 rounded-2 text-center font-monospace fs-5 text-dark my-2" style="letter-spacing: 3px;">
-                XXXXX-XXXXX
-              </div>
-              <p class="small text-body-secondary mt-2 mb-0">
-                Copy that code and paste it below.
+          <% else %>
+            <div class="text-center mb-3">
+              <h3 class="fs-5 mb-1 text-dark">Enter your confirmation code</h3>
+              <p class="text-body-secondary small mb-0">
+                Check your email for a code from <strong><%= @migration.old_pds_host %></strong> &mdash; it looks like <code class="fs-6">XXXXX-XXXXX</code>
               </p>
             </div>
 
             <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true do |f| %>
               <div class="form-group">
                 <%= label_tag :plc_token, "Confirmation Code" %>
-                <%= text_field_tag :plc_token, nil, required: true, placeholder: "XXXXX-XXXXX", autocomplete: "off", class: "form-control font-monospace fs-5 text-center", style: "letter-spacing: 2px;" %>
+                <%= text_field_tag :plc_token, nil, required: true, placeholder: "XXXXX-XXXXX", autocomplete: "off", class: "form-control font-monospace fs-4 text-center py-3", style: "letter-spacing: 3px;" %>
               </div>
-
               <%= submit_tag "Complete Migration", class: "btn btn-lg btn-gradient w-100 mt-3", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
             <% end %>
+          <% end %>
 
-            <div class="alert alert-warning border-2 border-warning rounded-3 p-3 mt-3">
-              <h4 class="fs-6 fw-semibold mb-2" style="color: #92400e;">Didn't receive the email?</h4>
-              <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
-                <li>Check your spam or junk folder</li>
-                <li>The email comes from Bluesky, not from us</li>
-                <li>The code expires after 1 hour</li>
-              </ul>
-              <% unless @migration.has_old_pds_tokens? %>
-                <p class="small mb-3" style="color: #78350f;">
-                  If you need a new code, enter your password below and we'll request one:
-                </p>
-                <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
-                  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                  <div class="d-flex gap-2">
-                    <input type="password" name="password" required
-                           autocomplete="current-password"
-                           placeholder="Password for <%= @migration.old_handle %>"
-                           class="form-control form-control-sm border-2 border-warning flex-grow-1">
-                    <button type="submit"
-                            class="btn btn-warning text-white fw-semibold small text-nowrap">
-                      Request New Code
-                    </button>
-                  </div>
-                </form>
+        <% elsif @migration.completed? %>
+          <hr class="section-divider">
+
+          <div class="alert alert-success" role="alert">
+            <h3 class="fs-4 mb-3">&#x2705; Migration Completed Successfully!</h3>
+            <p class="fs-6">
+              <% if @migration.returning_to_existing_pds? %>
+                Your account has been successfully migrated back to <strong><%= @migration.new_pds_host %></strong>.
+                You can now log in with your handle: <strong><%= @migration.new_handle %></strong>
+              <% else %>
+                Your account has been successfully migrated to <strong><%= @migration.new_pds_host %></strong>.
+                You can now log in with your new handle: <strong><%= @migration.new_handle %></strong>
               <% end %>
+            </p>
+
+            <% if @migration.rotation_key.present? %>
+              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 my-4">
+                <h4 class="fs-5 mb-2" style="color: #92400e;">&#x26A0;&#xFE0F; SAVE YOUR ROTATION KEY NOW!</h4>
+                <p class="small mb-3" style="color: #92400e;">
+                  <strong>This page will be deleted in 10 minutes for your privacy.</strong><br>
+                  Your rotation key is needed for account recovery. Copy it now and store it securely!
+                </p>
+                <div class="bg-white p-3 rounded-2 my-3 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
+                  <%= @migration.rotation_key %>
+                </div>
+                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy Rotation Key', 2000)"
+                        class="btn btn-warning text-white fw-semibold mb-2">
+                  &#x1F4CB; Copy Rotation Key
+                </button>
+                <p class="small mt-3 mb-0" style="color: #92400e;">
+                  &#x2709;&#xFE0F; We've also emailed this key to <strong><%= @migration.email %></strong>
+                </p>
+              </div>
+            <% end %>
+
+            <div class="bg-info-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
+              <h4 class="fw-semibold mb-2" style="color: #3730a3;">&#x1F512; Privacy Notice</h4>
+              <p class="small mb-0" style="color: #3730a3;">
+                For your privacy and GDPR compliance, this migration record will be automatically deleted in <strong>10 minutes</strong>.
+                Make sure you've saved your rotation key and downloaded your backup before this page disappears!
+              </p>
             </div>
 
-            <details class="mt-3">
+            <p class="mt-3 small text-success">
+              Your old account credentials have been securely deleted. Welcome <%= @migration.returning_to_existing_pds? ? 'back' : 'to your new home' %>!
+            </p>
+          </div>
+
+        <% elsif @migration.failed? %>
+          <hr class="section-divider">
+          <%= render 'migrations/error_details', migration: @migration %>
+        <% end %>
+
+        <%# ═══════════════════════════════════════════════════════ %>
+        <%# ZONE 3: SECONDARY / HELP — collapsed detail sections    %>
+        <%# ═══════════════════════════════════════════════════════ %>
+
+        <% show_zone3 = false %>
+        <% show_zone3 = true if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
+        <% show_zone3 = true if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
+
+        <% if show_zone3 %>
+          <hr class="section-divider">
+
+          <%# Rotation key (collapsible, open by default) %>
+          <% if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
+            <details open class="mb-3">
+              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
+                &#x1F511; Account Recovery Key
+              </summary>
+              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
+                <p class="small mb-2" style="color: #92400e;">
+                  <strong>IMPORTANT:</strong> Save this rotation key securely. It allows you to revert PLC changes or recover your account.
+                </p>
+                <div class="bg-white p-3 rounded-2 mb-2 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
+                  <%= @migration.rotation_key %>
+                </div>
+                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy to Clipboard', 2000)"
+                        class="btn btn-sm btn-warning text-white">
+                  &#x1F4CB; Copy to Clipboard
+                </button>
+                <details class="mt-3">
+                  <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
+                    How to use this key to revert changes
+                  </summary>
+                  <div class="bg-white p-3 rounded-2 mt-2 small text-body-secondary lh-lg">
+                    <p class="mb-2">If you need to revert the PLC directory changes, you can use this rotation key:</p>
+                    <ol class="ps-3 my-2">
+                      <li class="mb-1">Install the <code>goat</code> CLI tool</li>
+                      <li class="mb-1">Get your PLC history: <code>goat plc history &lt;your-did&gt;</code></li>
+                      <li class="mb-1">Identify the desired historical state (CID)</li>
+                      <li class="mb-1">Create reversion operation: <code>goat plc update --prev &lt;cid&gt;</code></li>
+                      <li class="mb-1">Sign with your rotation key: <code>goat plc sign</code></li>
+                      <li>Submit the signed operation: <code>goat plc submit --did &lt;your-did&gt;</code></li>
+                    </ol>
+                    <p class="text-danger mt-2 mb-0">
+                      <strong>Note:</strong> This is an advanced operation. Only use this if you understand the PLC directory system.
+                    </p>
+                  </div>
+                </details>
+              </div>
+            </details>
+          <% end %>
+
+          <%# "Didn't receive the email?" + Technical details (collapsed, only for pending_plc without token) %>
+          <% if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
+            <details class="mb-3">
+              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
+                Didn't receive the email?
+              </summary>
+              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
+                <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
+                  <li>Check your spam or junk folder</li>
+                  <li>The email comes from Bluesky, not from us</li>
+                  <li>The code expires after 1 hour</li>
+                </ul>
+                <% unless @migration.has_old_pds_tokens? %>
+                  <p class="small mb-2" style="color: #78350f;">
+                    If you need a new code, enter your password below and we'll request one:
+                  </p>
+                  <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                    <div class="d-flex gap-2">
+                      <input type="password" name="password" required
+                             autocomplete="current-password"
+                             placeholder="Password for <%= @migration.old_handle %>"
+                             class="form-control form-control-sm border-2 border-warning flex-grow-1">
+                      <button type="submit"
+                              class="btn btn-sm btn-warning text-white fw-semibold text-nowrap">
+                        Request New Code
+                      </button>
+                    </div>
+                  </form>
+                <% end %>
+              </div>
+            </details>
+
+            <details class="mb-3">
               <summary class="text-body-secondary small fw-medium" style="cursor: pointer;">
                 Technical details
               </summary>
@@ -504,61 +558,7 @@
               </div>
             </details>
           <% end %>
-        </div>
-      <% end %>
-
-      <% if @migration.completed? %>
-        <div class="alert alert-success" role="alert">
-          <h3 class="fs-4 mb-3">&#x2705; Migration Completed Successfully!</h3>
-          <p class="fs-6">
-            <% if @migration.returning_to_existing_pds? %>
-              Your account has been successfully migrated back to <strong><%= @migration.new_pds_host %></strong>.
-              You can now log in with your handle: <strong><%= @migration.new_handle %></strong>
-            <% else %>
-              Your account has been successfully migrated to <strong><%= @migration.new_pds_host %></strong>.
-              You can now log in with your new handle: <strong><%= @migration.new_handle %></strong>
-            <% end %>
-          </p>
-
-          <%# CRITICAL: Rotation Key Warning %>
-          <% if @migration.rotation_key.present? %>
-            <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 my-4">
-              <h4 class="fs-5 mb-2" style="color: #92400e;">&#x26A0;&#xFE0F; SAVE YOUR ROTATION KEY NOW!</h4>
-              <p class="small mb-3" style="color: #92400e;">
-                <strong>This page will be deleted in 10 minutes for your privacy.</strong><br>
-                Your rotation key is needed for account recovery. Copy it now and store it securely!
-              </p>
-              <div class="bg-white p-3 rounded-2 my-3 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
-                <%= @migration.rotation_key %>
-              </div>
-              <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy Rotation Key', 2000)"
-                      class="btn btn-warning text-white fw-semibold mb-2">
-                &#x1F4CB; Copy Rotation Key
-              </button>
-              <p class="small mt-3 mb-0" style="color: #92400e;">
-                &#x2709;&#xFE0F; We've also emailed this key to <strong><%= @migration.email %></strong>
-              </p>
-            </div>
-          <% end %>
-
-          <%# Auto-deletion warning %>
-          <div class="bg-info-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
-            <h4 class="fw-semibold mb-2" style="color: #3730a3;">&#x1F512; Privacy Notice</h4>
-            <p class="small mb-0" style="color: #3730a3;">
-              For your privacy and GDPR compliance, this migration record will be automatically deleted in <strong>10 minutes</strong>.
-              Make sure you've saved your rotation key and downloaded your backup before this page disappears!
-            </p>
-          </div>
-
-          <p class="mt-3 small text-success">
-            Your old account credentials have been securely deleted. Welcome <%= @migration.returning_to_existing_pds? ? 'back' : 'to your new home' %>!
-          </p>
-        </div>
-      <% end %>
-
-      <% if @migration.failed? %>
-        <%= render 'migrations/error_details', migration: @migration %>
-      <% end %>
+        <% end %>
 
       <% end %><%# end of email_verified? if/else %>
     </div>
@@ -604,6 +604,16 @@
 </div>
 
 <% content_for :scripts do %>
+  <script>
+    // Align sidebar with card body (below the gradient header)
+    (function() {
+      var header = document.querySelector('.header-eurosky');
+      var sidebar = document.querySelector('.backup-sidebar');
+      if (header && sidebar) {
+        sidebar.style.marginTop = header.offsetHeight + 'px';
+      }
+    })();
+  </script>
   <% unless @migration.completed? || @migration.failed? %>
   <script>
     (function() {
