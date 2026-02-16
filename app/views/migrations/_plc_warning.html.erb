@@ -1,22 +1,22 @@
 <%# Enhanced PLC Stage Warning - Point of No Return %>
 
-<div class="plc-danger-zone" style="margin-bottom: 32px;">
+<div class="plc-danger-zone mb-4">
   <%# CRITICAL WARNING BANNER %>
-  <div style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 24px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);">
-    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-      <span style="font-size: 48px;">🚨</span>
+  <div class="bg-danger text-white p-4 rounded-3 mb-3 shadow">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <span class="fs-1">&#x1F6A8;</span>
       <div>
-        <h2 style="margin: 0; font-size: 28px; font-weight: 800;">POINT OF NO RETURN</h2>
-        <p style="margin: 8px 0 0 0; font-size: 16px; opacity: 0.95;">
+        <h2 class="mb-0 fw-bold" style="font-size: 28px;">POINT OF NO RETURN</h2>
+        <p class="mt-2 mb-0 fs-6 opacity-75">
           The next action will permanently redirect your DID to the new PDS
         </p>
       </div>
     </div>
 
-    <div style="background: rgba(255, 255, 255, 0.15); padding: 16px; border-radius: 6px; border-left: 4px solid rgba(255, 255, 255, 0.5);">
-      <p style="margin: 0; font-size: 15px; line-height: 1.6;">
+    <div class="bg-white bg-opacity-10 p-3 rounded border-start border-3 border-white border-opacity-50">
+      <p class="mb-0 small lh-lg">
         <strong>Once you submit the PLC token:</strong><br>
-        • Your DID (<code style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px;"><%= @migration.did %></code>) will point to <%= @migration.new_pds_host %><br>
+        • Your DID (<code class="bg-white bg-opacity-25 px-1 rounded-1"><%= @migration.did %></code>) will point to <%= @migration.new_pds_host %><br>
         • All AT Protocol apps will resolve your identity to the new PDS<br>
         • This change is immediate and affects the entire federated network<br>
         • <strong>This action CANNOT be undone</strong> without your rotation key
@@ -25,11 +25,11 @@
   </div>
 
   <%# WHAT YOU NEED SECTION %>
-  <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
-    <h3 style="color: #92400e; margin: 0 0 12px 0; font-size: 18px;">
-      📋 What You Need Before Proceeding:
+  <div class="alert alert-warning border-start border-4 border-warning mb-3">
+    <h3 class="text-dark fs-5 mb-2">
+      &#x1F4CB; What You Need Before Proceeding:
     </h3>
-    <ul style="color: #92400e; font-size: 14px; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <ul class="text-dark small mb-0 lh-lg">
       <li><strong>Your rotation key saved securely</strong> (scroll up to copy it)</li>
       <li><strong>Verified all your data migrated</strong> (repository, blobs, preferences)</li>
       <li><strong>The PLC operation token</strong> (will be sent to your email from <%= @migration.old_pds_host %>)</li>
@@ -38,72 +38,74 @@
   </div>
 
   <%# INSTRUCTIONS %>
-  <div style="background: white; border: 2px solid #e5e7eb; padding: 24px; border-radius: 8px; margin-bottom: 20px;">
-    <h3 style="color: #1f2937; margin: 0 0 16px 0; font-size: 18px;">
-      Step-by-Step Instructions:
-    </h3>
+  <div class="card border-2 mb-3">
+    <div class="card-body p-4">
+      <h3 class="text-dark fs-5 mb-3">
+        Step-by-Step Instructions:
+      </h3>
 
-    <div style="margin-bottom: 20px;">
-      <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
-        <div style="background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
-        <div style="flex: 1;">
-          <strong style="color: #1f2937; font-size: 15px;">Save Your Rotation Key</strong>
-          <p style="color: #6b7280; font-size: 14px; margin: 4px 0 0 0;">
-            Scroll up and copy your rotation key to a secure location (password manager, encrypted file).
-            This is your ONLY way to recover if something goes wrong.
-          </p>
+      <div class="mb-3">
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="btn-gradient rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">1</div>
+          <div class="flex-grow-1">
+            <strong class="text-dark">Save Your Rotation Key</strong>
+            <p class="text-secondary small mt-1 mb-0">
+              Scroll up and copy your rotation key to a secure location (password manager, encrypted file).
+              This is your ONLY way to recover if something goes wrong.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
-        <div style="background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
-        <div style="flex: 1;">
-          <strong style="color: #1f2937; font-size: 15px;">Check Your Email</strong>
-          <p style="color: #6b7280; font-size: 14px; margin: 4px 0 0 0;">
-            Your old PDS provider (<strong><%= @migration.old_pds_host %></strong>) has been asked to send you a PLC operation token via email.
-            Check your inbox for an email containing the token.
-          </p>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="btn-gradient rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">2</div>
+          <div class="flex-grow-1">
+            <strong class="text-dark">Check Your Email</strong>
+            <p class="text-secondary small mt-1 mb-0">
+              Your old PDS provider (<strong><%= @migration.old_pds_host %></strong>) has been asked to send you a PLC operation token via email.
+              Check your inbox for an email containing the token.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
-        <div style="background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</div>
-        <div style="flex: 1;">
-          <strong style="color: #1f2937; font-size: 15px;">Copy the PLC Token</strong>
-          <p style="color: #6b7280; font-size: 14px; margin: 4px 0 0 0;">
-            Copy the PLC operation token from the email sent by your old PDS provider.
-            The token will look like a long string of characters.
-          </p>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="btn-gradient rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">3</div>
+          <div class="flex-grow-1">
+            <strong class="text-dark">Copy the PLC Token</strong>
+            <p class="text-secondary small mt-1 mb-0">
+              Copy the PLC operation token from the email sent by your old PDS provider.
+              The token will look like a long string of characters.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div style="display: flex; align-items: start; gap: 12px;">
-        <div style="background: linear-gradient(135deg, <%= EuroskyConfig::PRIMARY_COLOR %> 0%, <%= EuroskyConfig::SECONDARY_COLOR %> 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">4</div>
-        <div style="flex: 1;">
-          <strong style="color: #1f2937; font-size: 15px;">Submit the Token Below</strong>
-          <p style="color: #6b7280; font-size: 14px; margin: 4px 0 0 0;">
-            Paste the PLC token in the form below and submit to complete your migration.
-          </p>
+        <div class="d-flex align-items-start gap-3">
+          <div class="btn-gradient rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">4</div>
+          <div class="flex-grow-1">
+            <strong class="text-dark">Submit the Token Below</strong>
+            <p class="text-secondary small mt-1 mb-0">
+              Paste the PLC token in the form below and submit to complete your migration.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <%# FINAL WARNING BEFORE FORM %>
-  <div style="background: #fee2e2; border: 2px solid #dc2626; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-      <span style="font-size: 32px;">⚠️</span>
-      <h3 style="color: #991b1b; margin: 0; font-size: 18px; font-weight: 700;">
+  <div class="alert alert-danger border-danger border-2 mb-4">
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <span class="fs-3">&#x26A0;&#xFE0F;</span>
+      <h3 class="text-danger-emphasis mb-0 fs-5 fw-bold">
         Final Warning: Are You Ready?
       </h3>
     </div>
-    <ul style="color: #991b1b; font-size: 14px; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <ul class="text-danger-emphasis small mb-0 lh-lg">
       <li>Have you saved your rotation key in a secure location?</li>
       <li>Do you understand this change is permanent and affects the entire AT Protocol network?</li>
       <li>Are you prepared to lose access if you don't have your rotation key?</li>
       <li>Have you verified all your data (posts, media, preferences) migrated successfully?</li>
     </ul>
-    <p style="color: #991b1b; font-size: 14px; margin: 12px 0 0 0; font-weight: 600;">
+    <p class="text-danger-emphasis small mt-2 mb-0 fw-semibold">
       If you answered NO to any of these questions, DO NOT proceed yet.
     </p>
   </div>
