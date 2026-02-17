@@ -90,7 +90,8 @@
     <ul>
       <li><strong>Email address</strong> – used to send migration notifications and the PLC verification token.</li>
       <li><strong>Source account handle</strong> – your current Bluesky/ATProto handle (e.g. <code>alice.bsky.social</code>).</li>
-      <li><strong>Source account password</strong> – stored encrypted (AES-256-GCM) and automatically deleted within 48 hours, or immediately after a successful migration.</li>
+      <li><strong>Source account access &amp; refresh tokens</strong> – obtained at login and stored encrypted (AES-256-GCM). Used to authenticate with your current PDS during the migration and deleted immediately upon completion.</li>
+      <li><strong>Destination account access &amp; refresh tokens</strong> – obtained when your new account is created on the target PDS, stored encrypted (AES-256-GCM), and deleted immediately after a successful migration.</li>
       <li><strong>Target PDS host &amp; new handle</strong> – the destination Personal Data Server you are migrating to.</li>
       <li><strong>Invite code</strong> (if required by target PDS) – stored encrypted and deleted after account creation.</li>
       <li><strong>PLC token</strong> – the one-time verification token emailed to you; stored encrypted and expires within 1 hour.</li>
@@ -109,7 +110,8 @@
 
     <h2>4. Data Retention &amp; Deletion</h2>
     <ul>
-      <li><strong>Passwords &amp; PLC tokens</strong>: Deleted immediately after use or within 48 h / 1 h respectively. Automatic cleanup jobs run every 6 hours.</li>
+      <li><strong>Access &amp; refresh tokens</strong>: Deleted immediately after a successful migration. Automatic cleanup jobs purge any remaining tokens every 6 hours.</li>
+      <li><strong>PLC tokens</strong>: Deleted immediately after use or within 1 hour. Automatic cleanup jobs run every 6 hours.</li>
       <li><strong>Migration record</strong>: The non-sensitive migration record (status, timestamps, handle) may be retained for operational troubleshooting. Contact us to request deletion.</li>
       <li><strong>Email address</strong>: Retained only for the duration of the migration. Contact us to request deletion.</li>
       <li><strong>Backup bundles</strong> (if requested): Available for download for 24 hours, then automatically deleted from our server.</li>

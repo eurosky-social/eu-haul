@@ -132,3 +132,4 @@ docker-compose.override.yml
 
 # Personal development tracking files
 docs/internal/
+public/privacy-policy.html

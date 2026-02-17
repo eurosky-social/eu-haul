@@ -213,7 +213,7 @@ Alternatively, skip steps 1–2 entirely and point the env vars at any external 
 2. **Fill out the migration form:**
    - Your email address (for notifications and PLC token)
    - Old account handle (e.g., `alice.bsky.social`)
-   - Old account password
+   - Old account password (used to obtain access/refresh tokens, not stored)
    - New PDS host (e.g., `https://pds.example.com`)
    - New handle (e.g., `alice.pds.example.com`)
    - Invite code (if required by target PDS)
@@ -305,7 +305,7 @@ The application processes blobs sequentially to avoid memory exhaustion. Adjust 
 
 The application automatically runs scheduled cleanup jobs via Sidekiq:
 
-- **Credential Cleanup**: Every 6 hours - purges expired passwords and PLC tokens
+- **Credential Cleanup**: Every 6 hours - purges expired access/refresh tokens and PLC tokens
 - **Backup Cleanup**: Every hour - removes expired backup bundles to free disk space
 
 These jobs run automatically when Sidekiq starts. No external cron configuration is needed. You can view the schedule in [config/sidekiq.yml](config/sidekiq.yml).
@@ -348,8 +348,8 @@ User Form → CreateAccountJob → ImportRepoJob → ImportBlobsJob → ImportPr
 
 ### Security
 
-- **Credential Encryption**: Passwords and tokens encrypted with Lockbox (AES-256-GCM)
-- **Auto-Expiration**: Passwords expire after 48h, PLC tokens after 1h
+- **Credential Encryption**: Access/refresh tokens encrypted with Lockbox (AES-256-GCM)
+- **Auto-Expiration**: Access/refresh tokens deleted immediately on completion, PLC tokens expire after 1h
 - **Automatic Cleanup**: Credentials are cleared immediately after successful migration
 - **Background Purging**: Expired credentials are automatically purged every 6 hours
 - **Token-Based Access**: Unguessable tokens (62^16 = ~47 bits entropy)
