@@ -825,19 +825,16 @@
         return;
       }
 
-      const confirmed = confirm('We will send a confirmation email to ' + emailField.value + '.\n\nThe migration will only start after you click the link in that email.\n\nOnce confirmed, do NOT use your account until you receive the completion email (~20-30 minutes).');
-      if (confirmed) {
-        document.getElementById('migration_old_access_token').value = wizardData.accessToken || '';
-        document.getElementById('migration_old_refresh_token').value = wizardData.refreshToken || '';
-        document.getElementById('migration_new_access_token').value = wizardData.newPdsAccessToken || '';
-        document.getElementById('migration_new_refresh_token').value = wizardData.newPdsRefreshToken || '';
+      document.getElementById('migration_old_access_token').value = wizardData.accessToken || '';
+      document.getElementById('migration_old_refresh_token').value = wizardData.refreshToken || '';
+      document.getElementById('migration_new_access_token').value = wizardData.newPdsAccessToken || '';
+      document.getElementById('migration_new_refresh_token').value = wizardData.newPdsRefreshToken || '';
 
-        passwordField.value = '';
-        const targetPwdField = document.getElementById('target-pds-password');
-        if (targetPwdField) targetPwdField.value = '';
+      passwordField.value = '';
+      const targetPwdField = document.getElementById('target-pds-password');
+      if (targetPwdField) targetPwdField.value = '';
 
-        form.submit();
-      }
+      form.submit();
     });
   });
 </script>
@@ -909,10 +906,10 @@
         <div id="step1-status" class="lookup-status"></div>
 
         <!-- Two-Factor Authentication -->
-        <div id="two-factor-group" class="mb-3 p-3 border border-warning rounded-3 bg-warning-subtle" style="display: none;">
-          <label for="two_factor_code" class="form-label fw-semibold text-warning-emphasis">Two-Factor Authentication</label>
-          <p class="small text-body-secondary mb-3">
-            Your account has email-based two-factor authentication enabled. A sign-in code has been sent to your email. Please enter it below.
+        <div id="two-factor-group" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3" style="display: none;">
+          <div class="fw-semibold small mb-1" style="color: #92400e;">Two-Factor Authentication</div>
+          <p class="small mb-2" style="color: #78350f;">
+            A sign-in code has been sent to your email. Enter it below.
           </p>
           <input type="text" id="two_factor_code" class="form-control form-control-lg text-center font-monospace" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric">
         </div>
@@ -932,13 +929,13 @@
           <div class="form-text">We'll send migration status updates to this email</div>
         </div>
 
-        <div class="p-3 border border-warning rounded-3 bg-warning-subtle mb-3">
-          <label class="d-flex align-items-start cursor-pointer user-select-none">
-            <input type="checkbox" id="confirm-email-access" class="form-check-input me-3 mt-1 flex-shrink-0">
-            <span class="small">
-              I confirm that I have access to this email address. I understand that a <strong>confirmation code</strong> will be sent to this email during migration, and I must be able to retrieve it to complete the process.
-            </span>
-          </label>
+        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
+          <div class="form-check mb-0">
+            <input type="checkbox" id="confirm-email-access" class="form-check-input">
+            <label class="form-check-label" for="confirm-email-access" style="color: #78350f;">
+              I have access to this email address and can retrieve a confirmation code sent to it.
+            </label>
+          </div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
@@ -979,20 +976,17 @@
         </div>
 
         <!-- Target PDS password (for migration_in / returning to bsky.social) -->
-        <div id="target-password-group" class="p-3 border border-warning rounded-3 bg-warning-subtle mt-4" style="display: none;">
-          <h6 class="fw-bold text-warning-emphasis">Returning to Bluesky</h6>
-          <p class="small text-body-secondary mb-3">
-            Since you're migrating back to bsky.social, we need to verify your old Bluesky password.
-            This is the password you used before you migrated away.
+        <div id="target-password-group" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-3 mb-3" style="display: none;">
+          <div class="fw-semibold small mb-1" style="color: #92400e;">Returning to Bluesky</div>
+          <p class="small mb-2" style="color: #78350f;">
+            We need to verify the password for your existing bsky.social account.
           </p>
           <div class="mb-2">
-            <label for="target-pds-password" class="form-label">Your bsky.social Password</label>
+            <label for="target-pds-password" class="form-label small">Your bsky.social Password</label>
             <input type="password" id="target-pds-password" class="form-control" placeholder="Enter your old bsky.social password" autocomplete="current-password">
-            <div class="form-text">The password for your original Bluesky account</div>
           </div>
-          <!-- 2FA field for target PDS -->
-          <div id="target-2fa-group" class="mt-3" style="display: none;">
-            <label for="target-2fa-code" class="form-label">Sign-in Code (2FA)</label>
+          <div id="target-2fa-group" class="mt-2" style="display: none;">
+            <label for="target-2fa-code" class="form-label small">Sign-in Code (2FA)</label>
             <input type="text" id="target-2fa-code" class="form-control form-control-lg text-center font-monospace" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric">
             <div class="form-text">Check your email for the two-factor authentication code</div>
           </div>
@@ -1014,18 +1008,14 @@
         <h2 class="mb-3">Step 4: New Handle</h2>
 
         <!-- Custom Domain Handle Preservation Option -->
-        <div id="handle-preservation-section" class="card border-info mb-4" style="display: none;">
-          <div class="card-body">
-            <h5 class="card-title text-info">Custom Domain Detected!</h5>
-            <p class="card-text">
-              Your handle <strong id="custom-handle-display"></strong> is a custom domain that you control.
-              You can keep using this handle on the new PDS!
-            </p>
-            <div class="form-check">
-              <input type="checkbox" id="preserve-handle-checkbox" checked class="form-check-input">
-              <label class="form-check-label fw-semibold" for="preserve-handle-checkbox">Keep my current handle</label>
-              <div class="form-text ms-4">Your DNS record will continue to point to your account on the new PDS</div>
-            </div>
+        <div id="handle-preservation-section" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mb-3 small" style="display: none;">
+          <div class="fw-semibold mb-1" style="color: #075985;">Custom Domain Detected</div>
+          <p class="mb-2" style="color: #075985;">
+            Your handle <strong id="custom-handle-display"></strong> is a custom domain. You can keep using it on the new server.
+          </p>
+          <div class="form-check mb-0">
+            <input type="checkbox" id="preserve-handle-checkbox" checked class="form-check-input">
+            <label class="form-check-label fw-semibold" for="preserve-handle-checkbox">Keep my current handle</label>
           </div>
         </div>
 
@@ -1048,101 +1038,62 @@
         </div>
       </div>
 
-      <!-- STEP 5: Summary & Backup -->
+      <!-- STEP 5: Summary & Confirm -->
       <div id="step-5" class="wizard-step">
         <h2 class="mb-3">Step 5: Review & Confirm</h2>
 
-        <div class="mb-4">
-          <h5 class="mb-3">Migration Summary</h5>
-          <table class="table">
-            <tr>
-              <td class="fw-semibold">Current Handle:</td>
-              <td id="summary-handle"></td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Email:</td>
-              <td id="summary-email"></td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Destination PDS:</td>
-              <td id="summary-pds"></td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">New Handle:</td>
-              <td class="fw-bold text-primary" id="summary-new-handle"></td>
-            </tr>
-            <tr id="summary-invite-row" style="display: none;">
-              <td class="fw-semibold">Invite Code:</td>
-              <td id="summary-invite"></td>
-            </tr>
-          </table>
-        </div>
+        <table class="table mb-4">
+          <tr>
+            <td class="fw-semibold">Current Handle:</td>
+            <td id="summary-handle"></td>
+          </tr>
+          <tr>
+            <td class="fw-semibold">Email:</td>
+            <td id="summary-email"></td>
+          </tr>
+          <tr>
+            <td class="fw-semibold">Destination Server:</td>
+            <td id="summary-pds"></td>
+          </tr>
+          <tr>
+            <td class="fw-semibold">New Handle:</td>
+            <td class="fw-bold text-primary" id="summary-new-handle"></td>
+          </tr>
+          <tr id="summary-invite-row" style="display: none;">
+            <td class="fw-semibold">Invite Code:</td>
+            <td id="summary-invite"></td>
+          </tr>
+        </table>
 
-        <!-- Backup Bundle Option -->
-        <div class="card border-primary mb-4">
-          <div class="card-body">
-            <h5 class="card-title text-primary">Backup Your Data</h5>
-            <div class="alert alert-success py-2">
-              <strong>Highly Recommended</strong>
-              <p class="mb-0 mt-1">
-                Download a complete backup of your account data (all posts + media) before migration.
-                The backup will be available for 24 hours and sent to your email.
-              </p>
-              <ul class="mt-2 mb-0 small">
-                <li>Protects against data loss during migration</li>
-                <li>Includes all your posts, media, and account data</li>
-                <li>Can be used to restore your account if needed</li>
-              </ul>
-            </div>
-            <div class="form-check">
-              <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true, class: "form-check-input" %>
-              <label class="form-check-label fw-bold text-primary" for="migration_create_backup_bundle">
-                Create backup bundle before migration
-              </label>
+        <div class="alert alert-success border-start border-success border-4 rounded-1 py-2 px-3 mb-3 small">
+          <div class="form-check mb-0">
+            <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true, class: "form-check-input" %>
+            <label class="form-check-label fw-semibold" for="migration_create_backup_bundle">
+              Create a backup before migration
+            </label>
+            <div class="text-body-secondary mt-1">
+              Downloads a complete copy of your account data. Available for 24 hours.
             </div>
           </div>
         </div>
 
-        <!-- How it works -->
-        <div class="card border-primary mb-4">
-          <div class="card-body">
-            <h5 class="card-title text-primary">How it works</h5>
-            <p class="card-text mb-0">
-              When you click <strong>Continue</strong>, we'll send a confirmation email to <strong id="summary-email-reminder"></strong>.
-              The migration will <strong>only start</strong> once you click the confirmation link in that email.
-              This gives you a chance to review everything before committing.
-            </p>
-          </div>
+        <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
+          When you click <strong>Continue</strong>, we'll send a confirmation email to <strong id="summary-email-reminder"></strong>.
+          The migration will only start once you confirm via that email.
         </div>
 
-        <!-- Critical Warning: Do Not Use Account During Migration -->
-        <div class="card border-danger mb-4">
-          <div class="card-body">
-            <h5 class="card-title text-danger d-flex align-items-center gap-2">
-              <span class="fs-4">&#x26A0;&#xFE0F;</span>
-              CRITICAL: Do Not Use Your Account During Migration
-            </h5>
-            <div class="alert alert-danger">
-              <p class="fw-bold mb-2">
-                Once you confirm the migration via the email link, you MUST NOT use your account until it completes.
-              </p>
-              <p class="mb-2"><strong>Any activity during migration will NOT be transferred:</strong></p>
-              <ul class="mb-3">
-                <li>Posts, replies, or likes made during migration will be lost</li>
-                <li>Follows or blocks added during migration will not carry over</li>
-                <li>Profile changes will not be included</li>
-                <li>Media uploads will not be transferred</li>
-              </ul>
-              <p class="mb-0">
-                <strong>What to do:</strong> Close all apps and browser tabs with your account. Wait for the migration completion email (~20-30 minutes) before logging in again.
-              </p>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" id="acknowledge-no-usage" class="form-check-input" required>
-              <label class="form-check-label fw-bold text-danger" for="acknowledge-no-usage">
-                I understand I must not use my account during migration
-              </label>
-            </div>
+        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
+          <div class="fw-semibold mb-1" style="color: #92400e;">Do not use your account during migration</div>
+          <p class="mb-2" style="color: #78350f;">
+            Once the migration starts, close all apps and browser tabs with your account.
+            Any posts, likes, or follows made during migration will not be transferred.
+            You'll receive an email when it's complete (~20-30 minutes).
+          </p>
+          <div class="form-check mb-0">
+            <input type="checkbox" id="acknowledge-no-usage" class="form-check-input" required>
+            <label class="form-check-label fw-semibold" for="acknowledge-no-usage" style="color: #92400e;">
+              I understand I should not use my account during migration
+            </label>
           </div>
         </div>
 

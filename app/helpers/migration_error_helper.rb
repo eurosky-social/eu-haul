@@ -362,25 +362,24 @@ module MigrationErrorHelper
   end
 
   def self.critical_plc_context(migration)
-    # Check if PLC update was attempted - if rotation_key exists, PLC was updated
-    # If no rotation_key, the failure happened before PLC update, so we can request new token
-    plc_not_yet_updated = migration.rotation_key.blank?
+    # Check if PLC operation was actually submitted to the directory.
+    # The rotation key is generated BEFORE submission as a safety net,
+    # so its presence does NOT mean the PLC was updated.
+    plc_not_yet_updated = migration.progress_data&.dig('plc_operation_submitted_at').blank?
 
     base_context = {
       severity: :critical,
-      icon: "🚨",
-      title: "CRITICAL: PLC Directory Update Failed",
-      what_happened: "The PLC directory update failed at the point of no return. Your account may be in an uncertain state.",
-      current_status: "CRITICAL FAILURE - Manual recovery required",
+      icon: "⚠️",
+      title: "PLC Directory Update Failed",
+      what_happened: "The PLC directory update did not complete successfully. Your account data is safe.",
+      current_status: plc_not_yet_updated ? "The PLC directory was not modified — you can request a new token and try again." : "The PLC directory may have been partially updated. Please contact support.",
       what_to_do: [
-        "🚨 DO NOT start a new migration",
-        "🚨 DO NOT attempt manual recovery without support",
-        "Your rotation key: #{migration.rotation_key.present? ? '[Available on status page]' : '[Not yet generated]'}",
+        "Do not start a new migration",
+        "Your account data is safe and intact",
+        migration.rotation_key.present? ? "Your recovery key is available on this page — save it securely" : nil,
         "Save this migration token: #{migration.token}",
-        "Contact support IMMEDIATELY: support@example.com",
-        "We will investigate and contact you within 24 hours",
-        "Your account data is safe - this requires manual verification"
-      ],
+        "Contact support if the issue persists: support@example.com"
+      ].compact,
       show_retry_button: false,
       show_retry_info: false,
       show_contact_support: true,

@@ -199,7 +199,8 @@
   </style>
 <% end %>
 
-<div class="page-layout<%= ' has-sidebar' if @migration.backup_available? %>">
+<% show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) %>
+<div class="page-layout<%= ' has-sidebar' if show_sidebar %>">
   <div class="container">
     <div class="card-eurosky">
     <div class="header-eurosky p-4">
@@ -233,8 +234,10 @@
           </div>
         </div>
       <% else %>
-        <h1>Verify Your Email</h1>
-        <div class="token-badge mt-2"><%= @migration.token %></div>
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="fs-3 mb-0">Verify Your Email</h1>
+          <div class="token-badge" style="font-size: 16px; padding: 4px 12px;"><%= @migration.token %></div>
+        </div>
       <% end %>
     </div>
 
@@ -252,12 +255,10 @@
 
       <% if !@migration.email_verified? %>
         <%# Awaiting email confirmation — show code entry form %>
-        <div class="text-center pt-4 pb-3">
-          <div class="fs-1 mb-2">&#x1F4E7;</div>
+        <div class="text-center pt-2 pb-3">
           <h2 class="fs-4 mb-2 text-dark">Enter Your Verification Code</h2>
-          <p class="fs-6 text-body-secondary lh-lg mx-auto mb-2" style="max-width: 480px;">
-            We've sent a verification code to <strong><%= @migration.email %></strong>.
-            Enter it below to start the migration.
+          <p class="small text-body-secondary mx-auto mb-0" style="max-width: 480px;">
+            We've sent a code to <strong><%= @migration.email %></strong>. Enter it below to start the migration.
           </p>
         </div>
 
@@ -269,19 +270,13 @@
           <%= submit_tag "Verify & Start Migration", class: "btn btn-lg btn-gradient w-100 mt-3" %>
         <% end %>
 
-        <div class="alert alert-warning border-2 border-warning rounded-3 p-3 mt-4 mb-4">
-          <h3 class="fs-6 fw-semibold mb-2" style="color: #92400e;">Didn't receive the email?</h3>
-          <ul class="mb-0 ps-3 small lh-lg" style="color: #78350f;">
+        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-4 mb-3 small">
+          <div class="fw-semibold mb-1" style="color: #92400e;">Didn't receive the email?</div>
+          <ul class="mb-0 ps-3 lh-lg" style="color: #78350f;">
             <li>Check your spam or junk folder</li>
             <li>Make sure <strong><%= @migration.email %></strong> is correct</li>
             <li>The email may take a few minutes to arrive</li>
           </ul>
-        </div>
-
-        <div class="alert alert-info border-start border-info border-4 rounded-1 bookmark-notice" role="note">
-          <h3 class="fs-6 fw-semibold mb-2" style="color: #075985;">Bookmark This Page</h3>
-          <p class="small mb-2" style="color: #075985;">Save this URL to return and enter your code later:</p>
-          <code><%= migration_by_token_url(@migration.token) %></code>
         </div>
 
       <% else %>
@@ -301,11 +296,11 @@
 
         <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
           <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-            &#x1F504; <strong>Converting legacy blob format</strong> — this may take a few minutes...
+            🔄 <strong>Converting legacy blob format</strong> — this may take a few minutes...
           </div>
         <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
           <div class="alert alert-success border-start border-success border-4 rounded-1 py-2 px-3 mb-3 small">
-            &#x2705; Legacy blob format converted successfully.
+            ✅ Legacy blob format converted successfully.
           </div>
         <% end %>
 
@@ -348,7 +343,7 @@
 
         <% if @migration.pending_download? || @migration.pending_backup? %>
           <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-            <%= @migration.pending_download? ? '&#x1F4E5; <strong>Downloading account data</strong>' : '&#x1F4E6; <strong>Creating backup bundle</strong>' %> &mdash;
+            <%= @migration.pending_download? ? '📥 <strong>Downloading account data</strong>' : '📦 <strong>Creating backup bundle</strong>' %> &mdash;
             <%= @migration.pending_download? ? 'downloading your repository + blobs for backup...' : 'packaging your account data...' %>
             <% if @migration.progress_data&.dig('download_progress') %>
               <% progress = @migration.progress_data['download_progress'] %>
@@ -360,7 +355,7 @@
 
         <% if @migration.backup_bundle_path.present? && @migration.backup_expired? %>
           <div class="alert alert-danger border-start border-danger border-4 rounded-1 py-2 px-3 mb-3 small">
-            &#x26A0;&#xFE0F; <strong>Backup expired</strong> — your backup bundle has been deleted from our servers.
+            ⚠️ <strong>Backup expired</strong> — your backup bundle has been deleted from our servers.
           </div>
         <% end %>
 
@@ -374,7 +369,7 @@
 
           <% if plc_token_submitted %>
             <div class="text-center py-4">
-              <div class="fs-1 mb-2"><span class="spin">&#9881;</span></div>
+              <div class="fs-1 mb-2"><span class="spin">⚙</span></div>
               <h3 class="fs-5 mb-2 text-dark">Updating Your Identity</h3>
               <p class="text-body-secondary lh-lg mx-auto mb-0" style="max-width: 500px;">
                 Your confirmation code has been accepted. We're now updating your PLC directory entry
@@ -400,13 +395,27 @@
               </div>
               <%= submit_tag "Complete Migration", class: "btn btn-lg btn-gradient w-100 mt-3", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
             <% end %>
+
+            <% if @migration.rotation_key.present? %>
+              <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-4 mb-3 small">
+                <div class="fw-semibold mb-1" style="color: #92400e;">🔑 Recovery Key</div>
+                <p class="mb-2" style="color: #78350f;">Save this key securely. It allows you to recover your account if something goes wrong.</p>
+                <div class="bg-white p-2 rounded-2 mb-2 font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
+                  <%= @migration.rotation_key %>
+                </div>
+                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy', 2000)"
+                        class="btn btn-sm btn-warning text-white">
+                  📋 Copy
+                </button>
+              </div>
+            <% end %>
           <% end %>
 
         <% elsif @migration.completed? %>
           <hr class="section-divider">
 
           <div class="alert alert-success" role="alert">
-            <h3 class="fs-4 mb-3">&#x2705; Migration Completed Successfully!</h3>
+            <h3 class="fs-4 mb-3">✅ Migration Completed Successfully!</h3>
             <p class="fs-6">
               <% if @migration.returning_to_existing_pds? %>
                 Your account has been successfully migrated back to <strong><%= @migration.new_pds_host %></strong>.
@@ -419,7 +428,7 @@
 
             <% if @migration.rotation_key.present? %>
               <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 my-4">
-                <h4 class="fs-5 mb-2" style="color: #92400e;">&#x26A0;&#xFE0F; SAVE YOUR ROTATION KEY NOW!</h4>
+                <h4 class="fs-5 mb-2" style="color: #92400e;">⚠️ SAVE YOUR ROTATION KEY NOW!</h4>
                 <p class="small mb-3" style="color: #92400e;">
                   <strong>This page will be deleted in 10 minutes for your privacy.</strong><br>
                   Your rotation key is needed for account recovery. Copy it now and store it securely!
@@ -427,18 +436,18 @@
                 <div class="bg-white p-3 rounded-2 my-3 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
                   <%= @migration.rotation_key %>
                 </div>
-                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy Rotation Key', 2000)"
+                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
                         class="btn btn-warning text-white fw-semibold mb-2">
-                  &#x1F4CB; Copy Rotation Key
+                  📋 Copy Rotation Key
                 </button>
                 <p class="small mt-3 mb-0" style="color: #92400e;">
-                  &#x2709;&#xFE0F; We've also emailed this key to <strong><%= @migration.email %></strong>
+                  ✉️ We've also emailed this key to <strong><%= @migration.email %></strong>
                 </p>
               </div>
             <% end %>
 
             <div class="bg-info-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
-              <h4 class="fw-semibold mb-2" style="color: #3730a3;">&#x1F512; Privacy Notice</h4>
+              <h4 class="fw-semibold mb-2" style="color: #3730a3;">🔒 Privacy Notice</h4>
               <p class="small mb-0" style="color: #3730a3;">
                 For your privacy and GDPR compliance, this migration record will be automatically deleted in <strong>10 minutes</strong>.
                 Make sure you've saved your rotation key and downloaded your backup before this page disappears!
@@ -470,7 +479,7 @@
           <% if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
             <details open class="mb-3">
               <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                &#x1F511; Account Recovery Key
+                🔑 Account Recovery Key
               </summary>
               <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
                 <p class="small mb-2" style="color: #92400e;">
@@ -479,9 +488,9 @@
                 <div class="bg-white p-3 rounded-2 mb-2 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
                   <%= @migration.rotation_key %>
                 </div>
-                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='&#x2705; Copied!'; setTimeout(() => this.textContent='&#x1F4CB; Copy to Clipboard', 2000)"
+                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy to Clipboard', 2000)"
                         class="btn btn-sm btn-warning text-white">
-                  &#x1F4CB; Copy to Clipboard
+                  📋 Copy to Clipboard
                 </button>
                 <details class="mt-3">
                   <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
@@ -565,39 +574,47 @@
     </div><%# end card-eurosky %>
   </div>
 
-  <% if @migration.backup_available? %>
+  <% if show_sidebar %>
     <div class="backup-sidebar">
-      <div class="backup-sidebar-card<%= ' backup-urgent' if @migration.completed? %>">
-        <div class="backup-sidebar-header">
-          <%= @migration.completed? ? '&#x1F4E6; Download Your Backup' : '&#x2705; Backup Ready' %>
-        </div>
-        <div class="backup-sidebar-body">
-          <% if @migration.completed? %>
-            <p>Your backup bundle will be deleted in <strong>10 minutes</strong>. Download it now!</p>
-          <% else %>
-            <p>Your account backup is ready! Download it before it expires.</p>
-          <% end %>
-          <div class="backup-meta">
-            <strong>Size:</strong> <%= number_to_human_size(@migration.backup_size) %><br>
-            <strong>Expires:</strong> <%= @migration.backup_expires_at.strftime('%b %d, %Y %l:%M %p') %>
-          </div>
-          <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>" class="backup-download-btn">
-            &#x2B07;&#xFE0F; Download Backup
-          </a>
-        </div>
-      </div>
-
-      <%# Email verified — show normal progress tracking %>
-        <div class="backup-sidebar-card">
+      <% if @migration.backup_available? %>
+        <div class="backup-sidebar-card<%= ' backup-urgent' if @migration.completed? %>">
           <div class="backup-sidebar-header">
-          Bookmark This Page
+            <%= @migration.completed? ? '📦 Download Your Backup' : '✅ Backup Ready' %>
           </div>
           <div class="backup-sidebar-body">
-          <p>Save this URL to track your migration progress:</p>
-          <code><%= migration_by_token_url(@migration.token) %></code>
+            <% if @migration.completed? %>
+              <p>Your backup bundle will be deleted in <strong>10 minutes</strong>. Download it now!</p>
+            <% else %>
+              <p>Your account backup is ready! Download it before it expires.</p>
+            <% end %>
+            <div class="backup-meta">
+              <strong>Size:</strong> <%= number_to_human_size(@migration.backup_size) %><br>
+              <strong>Expires:</strong> <%= @migration.backup_expires_at.strftime('%b %d, %Y %l:%M %p') %>
+            </div>
+            <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>" class="backup-download-btn">
+              ⬇️ Download Backup
+            </a>
           </div>
         </div>
+      <% end %>
 
+      <% if @migration.rotation_key.present? %>
+        <div class="backup-sidebar-card" style="border-left-color: #f59e0b;">
+          <div class="backup-sidebar-header" style="background: #fef3c7; color: #92400e;">
+            🔑 Recovery Key
+          </div>
+          <div class="backup-sidebar-body">
+            <p>Save this key securely. It allows you to recover your account.</p>
+            <div class="font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all; background: #f9fafb; padding: 8px; border-radius: 6px; margin-bottom: 12px;">
+              <%= @migration.rotation_key %>
+            </div>
+            <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Key', 2000)"
+                    class="backup-download-btn" style="border: none; cursor: pointer; width: 100%;">
+              📋 Copy Key
+            </button>
+          </div>
+        </div>
+      <% end %>
     </div>
   <% end %>
 
