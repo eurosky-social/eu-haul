@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>Privacy Policy – Account Migration</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body {
+      background: #f8f9fa;
+      color: #212529;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .legal-container {
+      max-width: 760px;
+      margin: 60px auto;
+      padding: 0 24px 80px;
+    }
+    .legal-header {
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+    .legal-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .effective-date {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    p, li {
+      line-height: 1.75;
+      color: #343a40;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 32px;
+      color: #6c757d;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link:hover { color: #343a40; }
+    .highlight-box {
+      background: #e8f4fd;
+      border-left: 4px solid #0d6efd;
+      border-radius: 4px;
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="legal-container">
+    <a href="/" class="back-link">← Back to migration tool</a>
+
+    <div class="legal-header">
+      <h1>Privacy Policy</h1>
+      <!-- UPDATE: Replace with your operator name and actual effective date -->
+      <p class="effective-date">Operated by: <strong>[Your Name / Organization]</strong> &nbsp;·&nbsp; Effective: [Date]</p>
+    </div>
+
+    <div class="highlight-box">
+      <strong>Summary:</strong> This tool processes your ATProto credentials only for the duration of the migration.
+      No data is sold, shared with third parties, or retained beyond the migration window.
+    </div>
+
+    <h2>1. Who We Are</h2>
+    <p>
+      This account migration service ("<strong>Service</strong>") is self-hosted software provided by
+      <!-- UPDATE: Replace with your name/entity and contact details -->
+      <strong>[Your Name / Organization]</strong> ("<strong>Operator</strong>", "we", "us").
+      Contact: <a href="mailto:[your-email]">[your-email]</a>.
+    </p>
+    <p>
+      The underlying migration tool is open-source software
+      (<a href="https://github.com/yourusername/u-haul" target="_blank" rel="noopener">u-haul</a>).
+      The Operator is the data controller for data processed through this hosted instance.
+    </p>
+
+    <h2>2. What Data We Collect</h2>
+    <p>To perform a migration we temporarily collect and process:</p>
+    <ul>
+      <li><strong>Email address</strong> – used to send migration notifications and the PLC verification token.</li>
+      <li><strong>Source account handle</strong> – your current Bluesky/ATProto handle (e.g. <code>alice.bsky.social</code>).</li>
+      <li><strong>Source account password</strong> – stored encrypted (AES-256-GCM) and automatically deleted within 48 hours, or immediately after a successful migration.</li>
+      <li><strong>Target PDS host &amp; new handle</strong> – the destination Personal Data Server you are migrating to.</li>
+      <li><strong>Invite code</strong> (if required by target PDS) – stored encrypted and deleted after account creation.</li>
+      <li><strong>PLC token</strong> – the one-time verification token emailed to you; stored encrypted and expires within 1 hour.</li>
+      <li><strong>Migration token</strong> – an unguessable identifier (e.g. <code>EURO-ABC12345</code>) generated to let you track migration progress. No personal data is embedded in this token.</li>
+      <li><strong>Technical log data</strong> – server logs may contain IP addresses and timestamps for operational purposes.</li>
+    </ul>
+    <p>We do <strong>not</strong> collect: browsing history, analytics beyond those disclosed below, or any data unrelated to the migration.</p>
+
+    <h2>3. How We Use Your Data</h2>
+    <ul>
+      <li>Execute the ATProto account migration on your behalf (the sole purpose).</li>
+      <li>Send transactional emails (migration start, completion, PLC token, backup ready).</li>
+      <li>Diagnose and recover from migration errors.</li>
+    </ul>
+    <p>We do <strong>not</strong> use your data for marketing, profiling, or any purpose beyond operating the migration.</p>
+
+    <h2>4. Data Retention &amp; Deletion</h2>
+    <ul>
+      <li><strong>Passwords &amp; PLC tokens</strong>: Deleted immediately after use or within 48 h / 1 h respectively. Automatic cleanup jobs run every 6 hours.</li>
+      <li><strong>Migration record</strong>: The non-sensitive migration record (status, timestamps, handle) may be retained for operational troubleshooting. Contact us to request deletion.</li>
+      <li><strong>Email address</strong>: Retained only for the duration of the migration. Contact us to request deletion.</li>
+      <li><strong>Backup bundles</strong> (if requested): Available for download for 24 hours, then automatically deleted from our server.</li>
+      <li><strong>Server logs</strong>: Retained for up to [X] days for operational security, then purged.</li>
+    </ul>
+
+    <h2>5. Data Sharing</h2>
+    <p>
+      We do not sell, rent, or share your personal data with third parties, except:
+    </p>
+    <ul>
+      <li><strong>Target PDS</strong>: Your account credentials are passed to the destination Personal Data Server you specify, which operates under its own privacy policy.</li>
+      <li><strong>Source PDS (Bluesky / bsky.social)</strong>: The migration tool reads your repository data from your current PDS.</li>
+      <li><strong>Email provider</strong>: Transactional emails are sent via the SMTP provider configured by the Operator.</li>
+      <li><strong>Legal requirements</strong>: We may disclose data if required by applicable law.</li>
+    </ul>
+
+    <h2>6. Security</h2>
+    <p>
+      Sensitive credentials are encrypted at rest using AES-256-GCM (Lockbox).
+      Connections to this service use TLS. Rate limiting is applied to all endpoints.
+      Despite these measures, no system is perfectly secure — use a strong, unique password.
+    </p>
+
+    <h2>7. Your Rights</h2>
+    <p>
+      Depending on your jurisdiction (e.g. GDPR, CCPA) you may have the right to access, correct, or delete
+      your personal data, or to object to certain processing. To exercise these rights, contact us at
+      <a href="mailto:[your-email]">[your-email]</a>.
+    </p>
+    <p>
+      Because credentials are deleted automatically within 48 hours, there is typically very little
+      data to retrieve. We will respond within 30 days.
+    </p>
+
+    <h2>8. Cookies &amp; Analytics</h2>
+    <p>
+      This Service does not use tracking cookies. A session cookie is set by the Rails framework for
+      CSRF protection only. No cross-site tracking occurs.
+    </p>
+    <!-- Optional: If you use Plausible or another privacy-respecting analytics tool, disclose it here -->
+    <!-- <p>We use <a href="https://plausible.io" target="_blank" rel="noopener">Plausible Analytics</a> (cookieless, GDPR-compliant) to measure aggregate page views. No personal data is shared.</p> -->
+
+    <h2>9. Children</h2>
+    <p>This Service is not directed at children under 13 (or 16 in the EU). We do not knowingly collect data from minors.</p>
+
+    <h2>10. Changes to This Policy</h2>
+    <p>
+      We may update this policy. Material changes will be announced on the migration page or via email
+      (if you provided one). Continued use after changes constitutes acceptance.
+    </p>
+
+    <h2>11. Contact</h2>
+    <p>
+      <!-- UPDATE: Replace with actual contact details -->
+      <strong>[Your Name / Organization]</strong><br>
+      Email: <a href="mailto:[your-email]">[your-email]</a><br>
+      <!-- Address (required for GDPR controllers in EEA): [Street, City, Country] -->
+    </p>
+  </div>
+</body>
+</html>

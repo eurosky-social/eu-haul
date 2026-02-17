@@ -378,7 +378,7 @@ module MigrationErrorHelper
         "Your account data is safe and intact",
         migration.rotation_key.present? ? "Your recovery key is available on this page — save it securely" : nil,
         "Save this migration token: #{migration.token}",
-        "Contact support if the issue persists: support@example.com"
+        "Contact support if the issue persists: #{SUPPORT_EMAIL}"
       ].compact,
       show_retry_button: false,
       show_retry_info: false,
@@ -387,7 +387,7 @@ module MigrationErrorHelper
       show_request_new_plc_token: true,  # Always show for PLC failures - user may need new token
       help_link: "/docs/troubleshooting#critical-plc-failure",
       migration_token: migration.token,
-      support_email: "support@example.com"
+      support_email: "#{SUPPORT_EMAIL}"
     }
 
     # If PLC was not yet updated, emphasize token request

@@ -15,6 +15,7 @@
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
+  - [Legal Pages](#legal-pages)
 - [Migration Process](#migration-process)
 - [Deployment](#deployment)
 - [Architecture](#architecture)
@@ -40,7 +41,7 @@
 
 ## How It Works
 
-u-haul wraps the [goat](https://github.com/bluesky-social/goat) CLI tool and provides a web interface for ATProto account migrations. The migration happens in **7 sequential stages**:
+u-haul provides a web interface for ATProto account migrations, communicating directly with the AT Protocol APIs. The migration happens in **7 sequential stages**:
 
 1. **Create Account** - Creates a deactivated account on the target PDS
 2. **Import Repository** - Exports and imports your repository (posts, follows, blocks, etc.)
@@ -54,7 +55,6 @@ u-haul wraps the [goat](https://github.com/bluesky-social/goat) CLI tool and pro
 
 - **Docker** and **Docker Compose** (recommended) OR
 - **Ruby 3.2.2**, **PostgreSQL 15**, **Redis 7** (for local development)
-- **goat CLI** (automatically installed in Docker)
 - Access to both source and target PDS instances
 - Admin credentials or invite code for target PDS (if required)
 
@@ -161,7 +161,49 @@ INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 SITE_NAME=Account Migration
 PRIMARY_COLOR=#667eea
 SECONDARY_COLOR=#764ba2
+
+# Legal Pages (optional)
+# If set, links to these URLs are shown in the wizard footer
+PRIVACY_POLICY_URL=https://yourdomain.com/privacy-policy.html
+TERMS_OF_SERVICE_URL=https://yourdomain.com/terms-of-service.html
 ```
+
+### Legal Pages
+
+Example Privacy Policy and Terms of Service templates are included in the project root:
+
+```
+privacy-policy.html    # Example privacy policy template
+terms-of-service.html  # Example terms of service template
+```
+
+These are **not active by default** — they live outside `public/` so they won't be served until you explicitly move them. To use them:
+
+1. **Fill in the placeholders** — open each file and replace:
+   - `[Your Name / Organization]` — your legal entity or operator name
+   - `[your-email]` — your support/contact email
+   - `[Date]` — the effective date
+   - `[Your Jurisdiction / Country]` — governing law jurisdiction (ToS only)
+   - `[X] days` — how long server logs are retained (Privacy Policy only)
+   - `[€100 / ...]` — liability cap or remove the clause (ToS only)
+
+2. **Move them to `public/`** so Rails serves them as static files:
+   ```bash
+   mv privacy-policy.html public/
+   mv terms-of-service.html public/
+   ```
+
+3. **Set the env vars** in `.env`:
+   ```bash
+   PRIVACY_POLICY_URL=https://yourdomain.com/privacy-policy.html
+   TERMS_OF_SERVICE_URL=https://yourdomain.com/terms-of-service.html
+   ```
+
+4. Links will appear in the migration wizard footer automatically.
+
+Alternatively, skip steps 1–2 entirely and point the env vars at any external URL (e.g. a hosted legal page on your main website).
+
+> **Note:** The example documents are templates only — they do not constitute legal advice. Review them with a qualified professional before deploying to users.
 
 ## Migration Process
 
@@ -286,7 +328,7 @@ docker compose exec web rails runner "CleanupBackupBundleJob.perform_now"
 - **Cache/Queue**: Redis 7
 - **Background Jobs**: Sidekiq 7.2
 - **Encryption**: Lockbox (AES-256-GCM)
-- **CLI Wrapper**: goat v0.2.0
+- **ATProto**: Direct AT Protocol API integration
 
 ### Migration Flow
 
@@ -326,13 +368,13 @@ u-haul/
 │   ├── controllers/     # MigrationsController (form, status, token submission)
 │   ├── jobs/            # 7 Sidekiq jobs (migration stages)
 │   ├── models/          # Migration model (state machine, encryption)
-│   ├── services/        # GoatService (CLI wrapper + API client)
+│   ├── services/        # ATProto API client + migration orchestration
 │   └── views/           # Web interface (form, status page)
 ├── config/              # Rails configuration
 ├── db/                  # Database migrations
 ├── docker-compose.yml   # Development stack
 ├── compose.yml.production  # Production stack with Caddy
-├── Dockerfile           # Multi-stage build with goat CLI
+├── Dockerfile           # Multi-stage build
 ├── scripts/             # Admin scripts (cleanup orphaned accounts)
 └── docs/                # Additional documentation
 ```
@@ -429,13 +471,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Credits
 
-- **Built with**: [goat](https://github.com/bluesky-social/goat) by Bluesky
 - **Protocol**: [AT Protocol](https://atproto.com) by Bluesky PBLLC
 - **Inspiration**: The need for self-hosted migration tools in the federated ATProto ecosystem
 
 ## Acknowledgments
 
-- Bluesky team for the AT Protocol and goat CLI
+- Bluesky team for the AT Protocol specification
 - The open-source community for Rails, Sidekiq, and supporting libraries
 - Contributors who help improve this tool
 

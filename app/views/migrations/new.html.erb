@@ -1105,6 +1105,21 @@
 
     <% end %>
 
+    <!-- Legal Links -->
+    <% if EuroskyConfig::PRIVACY_POLICY_URL.present? || EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
+      <div class="text-center mt-3 small text-muted">
+        <% if EuroskyConfig::PRIVACY_POLICY_URL.present? %>
+          <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener" class="text-muted">Privacy Policy</a>
+        <% end %>
+        <% if EuroskyConfig::PRIVACY_POLICY_URL.present? && EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
+          <span class="mx-1">·</span>
+        <% end %>
+        <% if EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
+          <a href="<%= EuroskyConfig::TERMS_OF_SERVICE_URL %>" target="_blank" rel="noopener" class="text-muted">Terms of Service</a>
+        <% end %>
+      </div>
+    <% end %>
+
     <!-- Image Attribution -->
     <div class="text-center mt-3 small text-muted">
       Background photo: <a href="https://commons.wikimedia.org/wiki/File:GMC_U-Haul_truck_front_1.JPG" target="_blank" rel="noopener" class="text-muted">GMC U-Haul truck</a> by <a href="https://commons.wikimedia.org/wiki/User:BrokenSphere" target="_blank" rel="noopener" class="text-muted">BrokenSphere</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener" class="text-muted">CC BY 3.0</a>

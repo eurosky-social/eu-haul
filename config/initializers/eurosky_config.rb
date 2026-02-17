@@ -36,6 +36,10 @@ module EuroskyConfig
   # PDS Configuration
   DEFAULT_TARGET_PDS = ENV['DEFAULT_TARGET_PDS']&.freeze
 
+  # Legal URLs (optional)
+  PRIVACY_POLICY_URL = ENV['PRIVACY_POLICY_URL']&.freeze
+  TERMS_OF_SERVICE_URL = ENV['TERMS_OF_SERVICE_URL']&.freeze
+
   # Validation
   class ConfigurationError < StandardError; end
 

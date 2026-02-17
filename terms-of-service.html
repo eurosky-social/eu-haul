@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>Terms of Service – Account Migration</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body {
+      background: #f8f9fa;
+      color: #212529;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .legal-container {
+      max-width: 760px;
+      margin: 60px auto;
+      padding: 0 24px 80px;
+    }
+    .legal-header {
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+    .legal-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .effective-date {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    p, li {
+      line-height: 1.75;
+      color: #343a40;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 32px;
+      color: #6c757d;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link:hover { color: #343a40; }
+    .warning-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="legal-container">
+    <a href="/" class="back-link">← Back to migration tool</a>
+
+    <div class="legal-header">
+      <h1>Terms of Service</h1>
+      <!-- UPDATE: Replace with your operator name and actual effective date -->
+      <p class="effective-date">Operated by: <strong>[Your Name / Organization]</strong> &nbsp;·&nbsp; Effective: [Date]</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Important:</strong> ATProto account migration includes an irreversible step (PLC directory update).
+      By using this Service you confirm you understand this and accept these terms.
+    </div>
+
+    <h2>1. About This Service</h2>
+    <p>
+      This account migration service ("<strong>Service</strong>") is provided by
+      <!-- UPDATE: Replace with your name/entity -->
+      <strong>[Your Name / Organization]</strong> ("<strong>Operator</strong>", "we", "us").
+      It allows holders of ATProto / Bluesky accounts to transfer their account from one
+      Personal Data Server ("<strong>PDS</strong>") to another using the AT Protocol.
+    </p>
+    <p>
+      This is a self-hosted, community tool. It is not affiliated with, endorsed by, or operated by
+      Bluesky PBLLC.
+    </p>
+
+    <h2>2. Eligibility</h2>
+    <p>
+      You must be at least 13 years old (or the minimum age required in your jurisdiction) to use this Service.
+      You must be the legitimate owner of the ATProto account you are migrating, or have explicit authority
+      to act on behalf of the account owner.
+    </p>
+
+    <h2>3. Your Responsibilities</h2>
+    <ul>
+      <li>Provide accurate credentials for your own account only.</li>
+      <li>Do not use this Service to migrate accounts you do not own or are not authorized to migrate.</li>
+      <li>Ensure you have a valid invite code (if required by the target PDS) before starting.</li>
+      <li>Save your rotation key when displayed — we cannot recover it for you after it is shown.</li>
+      <li>Download your backup bundle (if requested) within 24 hours — it is deleted automatically after that.</li>
+      <li>Do not attempt to abuse, overload, or interfere with this Service.</li>
+    </ul>
+
+    <h2>4. The Irreversible PLC Update Step</h2>
+    <p>
+      The migration process includes a step that updates the AT Protocol PLC directory to point your
+      Decentralized Identifier (DID) to the new PDS. <strong>This step cannot be undone through this tool.</strong>
+    </p>
+    <p>
+      You will be shown a rotation key before this step. This key can be used independently of this
+      tool to revert the PLC change if needed. You are solely responsible for securely storing this key.
+      The Operator accepts no liability for loss of the rotation key or inability to revert a migration.
+    </p>
+
+    <h2>5. No Warranty</h2>
+    <p>
+      THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+      INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+      PURPOSE, OR NON-INFRINGEMENT. The Operator does not guarantee that:
+    </p>
+    <ul>
+      <li>The migration will succeed for every account or PDS combination.</li>
+      <li>All blobs (media files) will transfer without error.</li>
+      <li>The Service will be available at all times.</li>
+      <li>Data on the source or target PDS is preserved beyond what the Operator controls.</li>
+    </ul>
+    <p>
+      You are strongly encouraged to create a backup bundle before migrating.
+    </p>
+
+    <h2>6. Limitation of Liability</h2>
+    <p>
+      TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE OPERATOR SHALL NOT BE LIABLE
+      FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS
+      OF DATA, ACCOUNTS, OR CONTENT, ARISING OUT OF OR RELATED TO YOUR USE OF THIS SERVICE,
+      EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+    </p>
+    <p>
+      <!-- UPDATE: Adjust or remove this cap as appropriate for your jurisdiction -->
+      The Operator's total liability to you for any claim shall not exceed [€100 / the amount you
+      paid to use the Service, if any].
+    </p>
+
+    <h2>7. Credential Security</h2>
+    <p>
+      By submitting your credentials you acknowledge:
+    </p>
+    <ul>
+      <li>Your password is transmitted over TLS and encrypted at rest (AES-256-GCM).</li>
+      <li>Your password is automatically deleted within 48 hours or immediately upon successful migration.</li>
+      <li>You should change your password at the source PDS after migration if you have any security concerns.</li>
+    </ul>
+
+    <h2>8. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Migrate accounts belonging to others without authorization.</li>
+      <li>Attempt to extract other users' credentials or migration data.</li>
+      <li>Circumvent rate limits or security measures.</li>
+      <li>Use the Service for any unlawful purpose.</li>
+    </ul>
+    <p>
+      We reserve the right to terminate or block access to the Service for violations of these terms.
+    </p>
+
+    <h2>9. Third-Party Services</h2>
+    <p>
+      Migration involves interaction with third-party services (your source PDS, your target PDS, and
+      the AT Protocol PLC directory). The Operator is not responsible for the policies, availability,
+      or actions of these third parties.
+    </p>
+
+    <h2>10. Changes to These Terms</h2>
+    <p>
+      We may update these Terms at any time. Material changes will be announced on the migration page.
+      Continued use of the Service after changes constitutes acceptance of the new Terms.
+    </p>
+
+    <h2>11. Governing Law</h2>
+    <p>
+      <!-- UPDATE: Replace with your jurisdiction -->
+      These Terms are governed by the laws of <strong>[Your Jurisdiction / Country]</strong>,
+      without regard to conflict of law principles.
+    </p>
+
+    <h2>12. Contact</h2>
+    <p>
+      <!-- UPDATE: Replace with actual contact details -->
+      <strong>[Your Name / Organization]</strong><br>
+      Email: <a href="mailto:[your-email]">[your-email]</a>
+    </p>
+  </div>
+</body>
+</html>
