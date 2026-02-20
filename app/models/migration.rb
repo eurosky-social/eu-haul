@@ -190,6 +190,14 @@ class Migration < ApplicationRecord
     )
   end
 
+  # Whether this migration can be cancelled by the user.
+  # Cancellation is allowed before the PLC operation is submitted (point of no return).
+  def cancellable?
+    return false if completed? || failed? || pending_activation?
+    return false if progress_data&.dig('plc_operation_submitted_at').present?
+    true
+  end
+
   # Job retry tracking
   def start_job_attempt!(job_name, max_attempts, attempt_number = 1)
     update!(
@@ -263,27 +271,21 @@ class Migration < ApplicationRecord
   end
 
   def estimated_time_remaining
-    return nil unless pending_blobs? && progress_data['blobs'].present?
+    return nil unless pending_blobs?
 
-    blobs = progress_data['blobs'].values
-    total_size = blobs.sum { |b| b['size'].to_i }
-    uploaded_size = blobs.sum { |b| b['uploaded'].to_i }
+    completed = progress_data['blobs_completed'].to_i
+    total = progress_data['blobs_total'].to_i
+    started_at = progress_data['blobs_started_at']
 
-    return nil if uploaded_size.zero?
+    return nil if completed.zero? || total.zero? || started_at.blank?
 
-    # Calculate upload rate based on timestamps
-    first_blob = blobs.min_by { |b| b['updated_at'] }
-    last_blob = blobs.max_by { |b| b['updated_at'] }
-
-    return nil unless first_blob && last_blob
-
-    time_elapsed = Time.parse(last_blob['updated_at']) - Time.parse(first_blob['updated_at'])
+    time_elapsed = Time.current - Time.parse(started_at)
     return nil if time_elapsed.zero?
 
-    upload_rate = uploaded_size / time_elapsed
-    remaining_size = total_size - uploaded_size
+    rate = completed.to_f / time_elapsed # blobs per second
+    remaining = total - completed
 
-    (remaining_size / upload_rate).to_i
+    (remaining / rate).to_i
   end
 
   # Credential management
@@ -541,16 +543,13 @@ class Migration < ApplicationRecord
     base = create_backup_bundle ? 40 : 20
     range = 30
 
-    return base unless progress_data['blobs'].present?
+    completed = progress_data['blobs_completed'].to_i
+    total = progress_data['blobs_total'].to_i
 
-    blobs = progress_data['blobs'].values
-    total_size = blobs.sum { |b| b['size'].to_i }
-    uploaded_size = blobs.sum { |b| b['uploaded'].to_i }
-
-    return base if total_size.zero?
+    return base if total.zero?
 
     # Blobs stage is 40-70% (with backup) or 20-50% (without backup)
-    percentage = (uploaded_size.to_f / total_size * range).round
+    percentage = (completed.to_f / total * range).round
     base + percentage
   end
 

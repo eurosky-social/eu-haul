@@ -523,11 +523,13 @@
           wizardData.accountExistsOnTarget = true;
           wizardData.accountDeactivatedOnTarget = data.deactivated || false;
           wizardData.targetPdsSupportEmail = data.support_email || null;
+          wizardData.existingHandleOnTarget = data.handle || null;
           callback(true, data);
         } else {
           wizardData.accountExistsOnTarget = false;
           wizardData.accountDeactivatedOnTarget = false;
           wizardData.targetPdsSupportEmail = null;
+          wizardData.existingHandleOnTarget = null;
           callback(false, data);
         }
       })
@@ -535,6 +537,7 @@
         // On error, assume account doesn't exist (proceed with migration_out)
         wizardData.accountExistsOnTarget = false;
         wizardData.accountDeactivatedOnTarget = false;
+        wizardData.existingHandleOnTarget = null;
         callback(false);
       });
     }
@@ -687,14 +690,28 @@
     const customHandleDisplay = document.getElementById('custom-handle-display');
 
     function setupStep4() {
-      if (wizardData.canPreserveHandle && wizardData.handleType === 'dns_verified') {
+      // Existing account on target: show handle as read-only
+      if (wizardData.accountExistsOnTarget && wizardData.existingHandleOnTarget) {
+        preservationSection.style.display = 'none';
+        newHandleSection.style.display = 'block';
+        newHandleInput.value = wizardData.existingHandleOnTarget;
+        newHandleSuffix.textContent = '';
+        newHandleInput.readOnly = true;
+        newHandleInput.style.paddingRight = '12px';
+      } else if (wizardData.canPreserveHandle && wizardData.handleType === 'dns_verified') {
+        // Custom domain: offer to keep it
         preservationSection.style.display = 'block';
         customHandleDisplay.textContent = '@' + wizardData.oldHandle;
         preserveCheckbox.checked = true;
         newHandleSection.style.display = 'none';
+        newHandleInput.readOnly = false;
+        newHandleInput.style.paddingRight = '200px';
       } else {
+        // New account: editable handle, pre-filled with old handle prefix
         preservationSection.style.display = 'none';
         newHandleSection.style.display = 'block';
+        newHandleInput.readOnly = false;
+        newHandleInput.style.paddingRight = '200px';
 
         if (wizardData.availableDomains.length > 0) {
           const domain = wizardData.availableDomains[0];
@@ -703,7 +720,10 @@
           const pdsUrl = new URL(wizardData.pdsHost);
           newHandleSuffix.textContent = '.' + pdsUrl.hostname;
         }
-        newHandleInput.value = '';
+
+        // Pre-fill with the username part of the old handle
+        const oldHandleParts = (wizardData.oldHandle || '').split('.');
+        newHandleInput.value = oldHandleParts.length > 0 ? oldHandleParts[0] : '';
         newHandleInput.focus();
       }
     }
@@ -737,6 +757,19 @@
       const btn = e.target;
       const status = document.getElementById('step4-status');
       let fullHandle;
+
+      // Existing account: use the handle as-is, skip all checks
+      if (wizardData.accountExistsOnTarget && wizardData.existingHandleOnTarget) {
+        fullHandle = wizardData.existingHandleOnTarget;
+        document.getElementById('migration_new_handle').value = fullHandle;
+        showStatus(status, 'Using your existing handle on the target server.', 'success');
+
+        setTimeout(() => {
+          showStep(5);
+          setupStep5();
+        }, 500);
+        return;
+      }
 
       if (wizardData.canPreserveHandle && preserveCheckbox.checked) {
         fullHandle = wizardData.oldHandle;

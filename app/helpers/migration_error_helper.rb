@@ -58,6 +58,8 @@ module MigrationErrorHelper
       :authentication
     when /already exists|AlreadyExists|orphaned/i
       :account_exists
+    when /invite.*code/i
+      :invite_code
     when /expired|credentials expired/i
       :credentials_expired
     when /blob.*not found|404/i
@@ -66,8 +68,8 @@ module MigrationErrorHelper
       :data_corruption
     when /disk.*full|out of space|no space/i
       :disk_space
-    when /invite.*code/i
-      :invite_code
+    when /cancelled by user/i
+      :cancelled
     when /CRITICAL|PLC.*failed/i
       :critical_plc
     else
@@ -100,6 +102,8 @@ module MigrationErrorHelper
       disk_space_context(migration)
     when :invite_code
       invite_code_context(migration)
+    when :cancelled
+      cancelled_context(migration)
     when :critical_plc
       critical_plc_context(migration)
     else
@@ -358,6 +362,23 @@ module MigrationErrorHelper
       show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#invite-codes"
+    }
+  end
+
+  def self.cancelled_context(migration)
+    {
+      severity: :warning,
+      icon: "🚫",
+      title: "Migration Cancelled",
+      what_happened: "This migration was cancelled at your request. No changes were made to your account.",
+      current_status: "Migration cancelled — your account remains on #{migration.old_pds_host}",
+      what_to_do: [
+        "Your account is safe and unchanged on #{migration.old_pds_host}",
+        "You can start a new migration at any time"
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_new_migration_button: true
     }
   end
 

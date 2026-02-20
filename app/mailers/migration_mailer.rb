@@ -120,4 +120,18 @@ class MigrationMailer < ApplicationMailer
       subject: "⚠️ Migration Paused - Orphaned Account on Target PDS (#{migration.token})"
     )
   end
+
+  def cancellation_confirmation(migration)
+    @migration = migration
+    @confirm_url = confirm_cancellation_by_token_url(
+      token: migration.token,
+      cancellation_token: migration.progress_data['cancellation_token'],
+      host: ENV.fetch('DOMAIN', 'localhost:3001')
+    )
+
+    mail(
+      to: migration.email,
+      subject: "Confirm Migration Cancellation (#{migration.token})"
+    )
+  end
 end

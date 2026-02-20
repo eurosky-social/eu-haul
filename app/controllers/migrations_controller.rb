@@ -78,8 +78,10 @@ class MigrationsController < ApplicationController
       Rails.logger.info("PDS DID check response: #{response.code} - #{response.body[0..200]}")
 
       if response.success?
-        Rails.logger.info("DID #{did} has active repo on #{pds_host}")
-        render json: { exists: true, deactivated: false, support_email: support_email }
+        parsed = JSON.parse(response.body) rescue {}
+        handle = parsed['handle']
+        Rails.logger.info("DID #{did} has active repo on #{pds_host} (handle: #{handle})")
+        render json: { exists: true, deactivated: false, handle: handle, support_email: support_email }
       elsif response.code == 400
         parsed = JSON.parse(response.body) rescue {}
         if parsed['error'] == 'RepoDeactivated'
@@ -758,6 +760,67 @@ class MigrationsController < ApplicationController
     end
   end
 
+  # POST /migrate/:token/request_cancellation
+  # Initiates migration cancellation by sending a confirmation email
+  def request_cancellation
+    unless @migration.cancellable?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "This migration cannot be cancelled at its current stage."
+      return
+    end
+
+    # Generate cancellation token and store in progress_data
+    cancellation_token = SecureRandom.urlsafe_base64(32)
+    @migration.progress_data['cancellation_token'] = cancellation_token
+    @migration.progress_data['cancellation_requested_at'] = Time.current.iso8601
+    @migration.save!
+
+    # Send confirmation email
+    begin
+      MigrationMailer.cancellation_confirmation(@migration).deliver_later
+      Rails.logger.info("[CancelMigration] Cancellation confirmation email sent for migration #{@migration.token}")
+    rescue StandardError => e
+      Rails.logger.error("[CancelMigration] Failed to send cancellation email for #{@migration.token}: #{e.message}")
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Failed to send cancellation email. Please try again."
+      return
+    end
+
+    redirect_to migration_by_token_path(@migration.token),
+                notice: "A cancellation confirmation link has been sent to your email. Please check your inbox."
+  end
+
+  # GET /migrate/:token/confirm_cancellation?cancellation_token=XYZ
+  # Confirms and executes migration cancellation
+  def confirm_cancellation
+    stored_token = @migration.progress_data&.dig('cancellation_token')
+    provided_token = params[:cancellation_token]
+
+    if stored_token.blank? || provided_token.blank? || stored_token != provided_token
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Invalid cancellation link. Please request a new one from the migration status page."
+      return
+    end
+
+    unless @migration.cancellable?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "This migration can no longer be cancelled (it may have progressed past the point of no return)."
+      return
+    end
+
+    # Cancel the migration
+    @migration.progress_data.delete('cancellation_token')
+    @migration.progress_data.delete('cancellation_requested_at')
+    @migration.progress_data['cancelled_at'] = Time.current.iso8601
+    @migration.save!
+    @migration.mark_failed!("Migration cancelled by user.")
+
+    Rails.logger.info("[CancelMigration] Migration #{@migration.token} cancelled by user")
+
+    redirect_to migration_by_token_path(@migration.token),
+                notice: "Migration cancelled successfully. Your account remains unchanged on #{@migration.old_pds_host}. You can start a new migration at any time."
+  end
+
   # GET /migrations/:id/status
   # JSON API endpoint for real-time status polling
   #
@@ -1085,9 +1148,11 @@ class MigrationsController < ApplicationController
       status_humanized: @migration.status.humanize,
       progress_percentage: @migration.progress_percentage,
       estimated_time_remaining: @migration.estimated_time_remaining,
-      blob_count: blob_data[:count],
-      blobs_uploaded: blob_data[:uploaded],
-      total_bytes_transferred: blob_data[:bytes_transferred],
+      blobs_total: blob_data[:total],
+      blobs_completed: blob_data[:completed],
+      bytes_transferred: blob_data[:bytes_transferred],
+      bytes_transferred_formatted: helpers.number_to_human_size(blob_data[:bytes_transferred]),
+      blobs_failed: blob_data[:failed],
       last_error: @migration.last_error,
       completed: @migration.completed?,
       failed: @migration.failed?,
@@ -1104,14 +1169,13 @@ class MigrationsController < ApplicationController
   end
 
   # Calculate blob upload statistics from progress_data
-  # Returns a hash with count, uploaded, and bytes_transferred
+  # Uses aggregate counters from ImportBlobsJob (blobs_completed/blobs_total/bytes_transferred)
   def calculate_blob_statistics
-    blobs = @migration.progress_data['blobs'] || {}
-
     {
-      count: blobs.size,
-      uploaded: blobs.values.count { |b| b['uploaded'] == b['size'] },
-      bytes_transferred: blobs.values.sum { |b| b['uploaded'].to_i }
+      total: @migration.progress_data['blobs_total'].to_i,
+      completed: @migration.progress_data['blobs_completed'].to_i,
+      bytes_transferred: @migration.progress_data['bytes_transferred'].to_i,
+      failed: (@migration.progress_data['failed_blobs'] || []).length
     }
   end
 

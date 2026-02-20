@@ -199,7 +199,7 @@
   </style>
 <% end %>
 
-<% show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) %>
+<% show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) || (@migration.cancellable? && @migration.email_verified?) %>
 <div class="page-layout<%= ' has-sidebar' if show_sidebar %>">
   <div class="container">
     <div class="card-eurosky">
@@ -304,47 +304,55 @@
           </div>
         <% end %>
 
-        <% if @migration.pending_blobs? && @migration.progress_data['blobs'].present? %>
-          <% blobs = @migration.progress_data['blobs'].values %>
-          <% total_blobs = blobs.count %>
-          <% total_size = blobs.sum { |b| b['size'].to_i } %>
-          <% uploaded_size = blobs.sum { |b| b['uploaded'].to_i } %>
-          <div class="metrics-grid mb-3">
-            <div class="card bg-body-tertiary border">
-              <div class="card-body p-3">
-                <div class="small text-body-secondary mb-1">Blobs Uploaded</div>
-                <div class="metric-value">
-                  <%= total_blobs %>
-                  <span class="small fw-normal text-body-secondary">files</span>
-                </div>
-              </div>
-            </div>
-            <div class="card bg-body-tertiary border">
-              <div class="card-body p-3">
-                <div class="small text-body-secondary mb-1">Data Transferred</div>
-                <div class="metric-value">
-                  <%= number_to_human_size(uploaded_size) %>
-                  <span class="small fw-normal text-body-secondary">/ <%= number_to_human_size(total_size) %></span>
-                </div>
-              </div>
-            </div>
-            <% if @migration.estimated_time_remaining %>
+        <% if @migration.pending_blobs? %>
+          <% blobs_completed = @migration.progress_data['blobs_completed'].to_i %>
+          <% blobs_total = @migration.progress_data['blobs_total'].to_i %>
+          <% bytes_transferred = @migration.progress_data['bytes_transferred'].to_i %>
+          <% if blobs_total > 0 %>
+            <div id="blob-progress-section" class="metrics-grid mb-3">
               <div class="card bg-body-tertiary border">
                 <div class="card-body p-3">
-                  <div class="small text-body-secondary mb-1">Time Remaining</div>
+                  <div class="small text-body-secondary mb-1">Blobs Uploaded</div>
                   <div class="metric-value">
-                    <%= distance_of_time_in_words(@migration.estimated_time_remaining) %>
+                    <span id="blobs-completed"><%= blobs_completed %></span>
+                    <span class="small fw-normal text-body-secondary">/ <span id="blobs-total"><%= blobs_total %></span> files</span>
                   </div>
                 </div>
               </div>
-            <% end %>
-          </div>
+              <div class="card bg-body-tertiary border">
+                <div class="card-body p-3">
+                  <div class="small text-body-secondary mb-1">Data Transferred</div>
+                  <div class="metric-value">
+                    <span id="bytes-transferred"><%= number_to_human_size(bytes_transferred) %></span>
+                  </div>
+                </div>
+              </div>
+              <% if @migration.progress_data['failed_blobs'].present? %>
+                <div class="card bg-body-tertiary border">
+                  <div class="card-body p-3">
+                    <div class="small text-body-secondary mb-1">Failed</div>
+                    <div class="metric-value text-danger">
+                      <span id="blobs-failed"><%= @migration.progress_data['failed_blobs'].length %></span>
+                      <span class="small fw-normal text-body-secondary">files</span>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% elsif @migration.progress_data['blob_count'].to_i > 0 %>
+            <div id="blob-progress-section" class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
+              Preparing to transfer <strong><%= @migration.progress_data['blob_count'] %></strong> blobs...
+            </div>
+          <% end %>
         <% end %>
 
         <% if @migration.pending_download? || @migration.pending_backup? %>
           <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-            <%= @migration.pending_download? ? '📥 <strong>Downloading account data</strong>' : '📦 <strong>Creating backup bundle</strong>' %> &mdash;
-            <%= @migration.pending_download? ? 'downloading your repository + blobs for backup...' : 'packaging your account data...' %>
+            <% if @migration.pending_download? %>
+              📥 <strong>Downloading account data</strong> &mdash; downloading your repository + blobs for backup...
+            <% else %>
+              📦 <strong>Creating backup bundle</strong> &mdash; packaging your account data...
+            <% end %>
             <% if @migration.progress_data&.dig('download_progress') %>
               <% progress = @migration.progress_data['download_progress'] %>
               <br>Downloaded: <%= progress['downloaded'] %> / <%= progress['total'] %> blobs
@@ -615,6 +623,24 @@
           </div>
         </div>
       <% end %>
+
+      <% if @migration.cancellable? && @migration.email_verified? %>
+        <div class="backup-sidebar-card" style="border-left-color: #dc2626;">
+          <div class="backup-sidebar-header" style="background: #fee2e2; color: #991b1b;">
+            Cancel Migration
+          </div>
+          <div class="backup-sidebar-body">
+            <p>Cancel this migration and keep your account on its current server.</p>
+            <form action="<%= request_cancellation_by_token_path(@migration.token) %>" method="post"
+                  onsubmit="return confirm('Are you sure you want to cancel this migration?\n\nA confirmation link will be sent to your email. The migration will only be cancelled after you click that link.');">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit" class="backup-download-btn" style="background: #dc2626; width: 100%; border: none; cursor: pointer;">
+                Cancel Migration
+              </button>
+            </form>
+          </div>
+        </div>
+      <% end %>
     </div>
   <% end %>
 
@@ -651,12 +677,12 @@
               window.location.reload();
               return;
             }
-            // Status changed to or from pending_plc (UI layout changes) — full reload
-            if (data.status === 'pending_plc' && currentStatus !== 'pending_plc') {
+            // Status changed to or from pending_plc/pending_blobs (UI layout changes) — full reload
+            if (['pending_plc', 'pending_blobs'].includes(data.status) && !['pending_plc', 'pending_blobs'].includes(currentStatus)) {
               window.location.reload();
               return;
             }
-            if (currentStatus === 'pending_plc' && data.status !== 'pending_plc') {
+            if (['pending_plc', 'pending_blobs'].includes(currentStatus) && !['pending_plc', 'pending_blobs'].includes(data.status)) {
               window.location.reload();
               return;
             }
@@ -704,6 +730,20 @@
               } else {
                 queuedNotice.style.display = 'none';
               }
+            }
+
+            // Update blob progress metrics
+            var blobsCompleted = document.getElementById('blobs-completed');
+            if (blobsCompleted && data.blobs_completed !== undefined) {
+              blobsCompleted.textContent = data.blobs_completed;
+            }
+            var blobsTotal = document.getElementById('blobs-total');
+            if (blobsTotal && data.blobs_total !== undefined) {
+              blobsTotal.textContent = data.blobs_total;
+            }
+            var bytesTransferred = document.getElementById('bytes-transferred');
+            if (bytesTransferred && data.bytes_transferred_formatted) {
+              bytesTransferred.textContent = data.bytes_transferred_formatted;
             }
           })
           .catch(function() {

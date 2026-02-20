@@ -150,6 +150,8 @@ class GoatService
     new_pds_client
 
     logger.info("Successfully logged in to new PDS")
+  rescue RateLimitError
+    raise  # Re-raise rate limit errors for proper retry handling
   rescue StandardError => e
     raise AuthenticationError, "Failed to login to new PDS: #{e.message}"
   end
@@ -711,6 +713,8 @@ class GoatService
     FileUtils.cp(plc_recommended_path, plc_unsigned_path)
 
     plc_unsigned_path.to_s
+  rescue RateLimitError
+    raise  # Re-raise rate limit errors for proper retry handling
   rescue StandardError => e
     raise GoatError, "Failed to get recommended PLC operation: #{e.message}"
   end
@@ -1178,6 +1182,8 @@ class GoatService
 
     logger.info("PDS client authenticated for #{host}")
     client
+  rescue RateLimitError
+    raise  # Re-raise rate limit errors for proper retry handling
   rescue StandardError => e
     raise AuthenticationError, "Failed to create PDS client for #{host}: #{e.message}"
   end
