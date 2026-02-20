@@ -100,6 +100,16 @@ class MigrationMailer < ApplicationMailer
     )
   end
 
+  def invalid_invite_code(migration)
+    @migration = migration
+    @new_migration_url = new_migration_url(host: ENV.fetch('DOMAIN', 'localhost:3001'))
+
+    mail(
+      to: migration.email,
+      subject: "Migration Failed - Invalid Invite Code (#{migration.token})"
+    )
+  end
+
   def orphaned_account_error(migration)
     @migration = migration
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))

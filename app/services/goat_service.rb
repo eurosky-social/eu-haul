@@ -104,6 +104,7 @@ class GoatService
     end
   end
   class AccountExistsError < GoatError; end  # Raised when account already exists on target PDS
+  class InvalidInviteCodeError < GoatError; end  # Raised when invite code is invalid, expired, or already used
   class TwoFactorRequiredError < GoatError; end  # Raised when PDS requires email-based 2FA token
 
   DEFAULT_TIMEOUT = 300 # 5 minutes
@@ -254,7 +255,14 @@ class GoatService
 
     unless response.success?
       error_body = JSON.parse(response.body) rescue {}
-      error_message = error_body['message'] || error_body['error'] || "HTTP #{response.code}"
+      error_code = error_body['error'] || ''
+      error_message = error_body['message'] || error_code || "HTTP #{response.code}"
+
+      # Check if this is an invalid invite code error
+      if error_code == 'InvalidInviteCode' || error_message.include?('InvalidInviteCode')
+        raise InvalidInviteCodeError, "The invite code provided for #{migration.new_pds_host} is invalid, expired, or has already been used. " \
+          "Please start a new migration with a valid invite code."
+      end
 
       # Check if this is an "AlreadyExists" error
       if error_message.include?("AlreadyExists") || error_message.include?("Repo already exists")
@@ -283,7 +291,7 @@ class GoatService
     end
 
     logger.info("Account created on new PDS (DID verified: #{parsed['did']})")
-  rescue AccountExistsError
+  rescue AccountExistsError, InvalidInviteCodeError
     raise
   rescue StandardError => e
     raise GoatError, "Failed to create account on new PDS: #{e.message}"

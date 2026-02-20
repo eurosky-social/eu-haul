@@ -345,8 +345,15 @@
       if (defaultTargetPds && pdsSelect.value === defaultTargetPds) {
         const status = document.getElementById('pds-status');
         const inviteGroup = document.getElementById('invite-code-group');
-        checkPdsRequirements(defaultTargetPds, status, inviteGroup);
-        updateTargetPasswordVisibility(defaultTargetPds);
+        checkPdsRequirements(defaultTargetPds, status, inviteGroup, function(success) {
+          if (success) {
+            checkAccountExistsOnTarget(defaultTargetPds, function(exists) {
+              if (exists) {
+                showTargetPasswordSection(defaultTargetPds);
+              }
+            });
+          }
+        });
       }
     }
 
@@ -380,40 +387,49 @@
         btn.disabled = true;
         btn.textContent = 'Checking Server...';
         checkPdsRequirements(selectedPds, status, inviteGroup, function(success) {
-          btn.disabled = false;
-          btn.textContent = 'Continue';
-          if (success) {
-            updateTargetPasswordVisibility(selectedPds);
-            if (inviteCodeField.required) {
+          if (!success) {
+            btn.disabled = false;
+            btn.textContent = 'Continue';
+            return;
+          }
+
+          // After PDS check succeeds, check if account already exists on target
+          btn.textContent = 'Checking for existing account...';
+          checkAccountExistsOnTarget(selectedPds, function(exists) {
+            btn.disabled = false;
+            btn.textContent = 'Continue';
+            if (exists) {
+              showTargetPasswordSection(selectedPds);
+              // Stay on step 3 for credential entry
+            } else if (inviteCodeField.required) {
+              hideTargetPasswordSection();
               showStatus(status, 'This Server requires an invite code. Please enter it below, then click Continue.', 'info');
               inviteCodeField.focus();
-            } else if (isMigrationIn(selectedPds)) {
-              // Migration back to bsky.social needs target credentials - stay on step 3
             } else {
-              // No invite code needed, not a migration_in - proceed directly
+              hideTargetPasswordSection();
               wizardData.pdsHost = selectedPds;
               showStep(4);
               setupStep4();
             }
-          }
+          });
         });
         return;
       }
 
-      // Check if invite code is required and empty
-      if (inviteCodeField.required && !inviteCodeField.value.trim()) {
+      // Check if invite code is required and empty (only for migration_out)
+      if (!wizardData.accountExistsOnTarget && inviteCodeField.required && !inviteCodeField.value.trim()) {
         showStatus(status, 'Please enter an invite code to continue.', 'error');
         inviteCodeField.focus();
         return;
       }
 
-      // For migration_in (returning to bsky.social), verify target PDS credentials
-      if (isMigrationIn(selectedPds)) {
+      // If account exists on target, verify credentials before proceeding
+      if (wizardData.accountExistsOnTarget) {
         const targetPassword = document.getElementById('target-pds-password').value.trim();
         const targetStatus = document.getElementById('target-password-status');
 
         if (!targetPassword) {
-          showStatus(targetStatus, 'Please enter your bsky.social password', 'error');
+          showStatus(targetStatus, 'Please enter your password for this server', 'error');
           return;
         }
 
@@ -425,8 +441,8 @@
         }
 
         btn.disabled = true;
-        btn.textContent = 'Verifying bsky.social credentials...';
-        showStatus(targetStatus, 'Authenticating with your bsky.social account...', 'info');
+        btn.textContent = 'Verifying credentials...';
+        showStatus(targetStatus, 'Authenticating with your existing account...', 'info');
 
         fetch('/migrations/verify_target_credentials', {
           method: 'POST',
@@ -462,7 +478,7 @@
           wizardData.newPdsAccessToken = data.access_token;
           wizardData.newPdsRefreshToken = data.refresh_token;
 
-          showStatus(targetStatus, 'bsky.social credentials verified!', 'success');
+          showStatus(targetStatus, 'Credentials verified!', 'success');
 
           setTimeout(() => {
             wizardData.pdsHost = selectedPds;
@@ -483,28 +499,93 @@
       setupStep4();
     });
 
-    function isMigrationIn(pdsUrl) {
-      if (!pdsUrl || !wizardData.oldPdsHost) return false;
-      const targetHost = pdsUrl.toLowerCase().replace(/^https?:\/\//, '');
-      const sourceHost = wizardData.oldPdsHost.toLowerCase().replace(/^https?:\/\//, '');
-      return targetHost.includes('bsky.social') && !sourceHost.includes('bsky.social');
+    // Check if account already exists on target PDS (replaces old bsky.social-only isMigrationIn check)
+    function checkAccountExistsOnTarget(pdsUrl, callback) {
+      if (!pdsUrl || !wizardData.did) {
+        callback(false);
+        return;
+      }
+
+      fetch('/migrations/check_did_on_pds', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          did: wizardData.did,
+          pds_host: pdsUrl
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.exists) {
+          wizardData.accountExistsOnTarget = true;
+          wizardData.accountDeactivatedOnTarget = data.deactivated || false;
+          wizardData.targetPdsSupportEmail = data.support_email || null;
+          callback(true, data);
+        } else {
+          wizardData.accountExistsOnTarget = false;
+          wizardData.accountDeactivatedOnTarget = false;
+          wizardData.targetPdsSupportEmail = null;
+          callback(false, data);
+        }
+      })
+      .catch(error => {
+        // On error, assume account doesn't exist (proceed with migration_out)
+        wizardData.accountExistsOnTarget = false;
+        wizardData.accountDeactivatedOnTarget = false;
+        callback(false);
+      });
     }
 
-    function updateTargetPasswordVisibility(pdsUrl) {
+    function showTargetPasswordSection(pdsUrl) {
       const targetPasswordGroup = document.getElementById('target-password-group');
       const targetPasswordStatus = document.getElementById('target-password-status');
-      if (isMigrationIn(pdsUrl)) {
-        targetPasswordGroup.style.display = 'block';
-        wizardData.targetCredentialsVerified = false;
-        wizardData.newPdsAccessToken = null;
-        wizardData.newPdsRefreshToken = null;
-        targetPasswordStatus.style.display = 'none';
-      } else {
-        targetPasswordGroup.style.display = 'none';
-        wizardData.targetCredentialsVerified = false;
-        wizardData.newPdsAccessToken = null;
-        wizardData.newPdsRefreshToken = null;
+      const deactivatedHelp = document.getElementById('target-deactivated-help');
+      const deactivatedPwdLink = document.getElementById('target-deactivated-pwd-link');
+      const deactivatedSupportEmail = document.getElementById('target-deactivated-support-email');
+      const deactivatedDid = document.getElementById('target-deactivated-did');
+
+      // Hide invite code section - not needed when using existing account
+      const inviteGroup = document.getElementById('invite-code-group');
+      if (inviteGroup) inviteGroup.style.display = 'none';
+
+      targetPasswordGroup.style.display = 'block';
+      wizardData.targetCredentialsVerified = false;
+      wizardData.newPdsAccessToken = null;
+      wizardData.newPdsRefreshToken = null;
+      targetPasswordStatus.style.display = 'none';
+
+      // Show deactivated account help if applicable
+      if (deactivatedHelp) {
+        if (wizardData.accountDeactivatedOnTarget) {
+          deactivatedHelp.style.display = 'block';
+          if (deactivatedPwdLink) {
+            deactivatedPwdLink.href = pdsUrl.replace(/\/$/, '') + '/.well-known/change-password';
+            deactivatedPwdLink.textContent = pdsUrl.replace(/\/$/, '') + '/.well-known/change-password';
+          }
+          if (deactivatedSupportEmail && wizardData.targetPdsSupportEmail) {
+            deactivatedSupportEmail.href = 'mailto:' + wizardData.targetPdsSupportEmail;
+            deactivatedSupportEmail.textContent = wizardData.targetPdsSupportEmail;
+          }
+          if (deactivatedDid) {
+            deactivatedDid.textContent = wizardData.did;
+          }
+        } else {
+          deactivatedHelp.style.display = 'none';
+        }
       }
+    }
+
+    function hideTargetPasswordSection() {
+      const targetPasswordGroup = document.getElementById('target-password-group');
+      targetPasswordGroup.style.display = 'none';
+      wizardData.targetCredentialsVerified = false;
+      wizardData.newPdsAccessToken = null;
+      wizardData.newPdsRefreshToken = null;
+      wizardData.accountExistsOnTarget = false;
+      wizardData.accountDeactivatedOnTarget = false;
     }
 
     // PDS selection
@@ -516,6 +597,7 @@
 
       wizardData.pdsVerified = false;
       wizardData.pdsVerifiedHost = null;
+      hideTargetPasswordSection();
 
       if (selectedValue === 'custom') {
         customGroup.style.display = 'block';
@@ -523,17 +605,23 @@
         customPdsField.focus();
         inviteGroup.style.display = 'none';
         status.style.display = 'none';
-        updateTargetPasswordVisibility(null);
       } else if (selectedValue) {
         customGroup.style.display = 'none';
         customPdsField.value = selectedValue;
-        checkPdsRequirements(selectedValue, status, inviteGroup);
-        updateTargetPasswordVisibility(selectedValue);
+        checkPdsRequirements(selectedValue, status, inviteGroup, function(success) {
+          if (success) {
+            // After PDS check succeeds, check if account already exists on target
+            checkAccountExistsOnTarget(selectedValue, function(exists) {
+              if (exists) {
+                showTargetPasswordSection(selectedValue);
+              }
+            });
+          }
+        });
       } else {
         customGroup.style.display = 'none';
         inviteGroup.style.display = 'none';
         status.style.display = 'none';
-        updateTargetPasswordVisibility(null);
       }
     });
 
@@ -711,9 +799,21 @@
           return;
         }
 
-        showStatus(status, 'Handle available, checking for orphaned accounts...', 'info');
+        // Skip DID check if account was already verified in Step 3 (migration_in)
+        if (wizardData.accountExistsOnTarget && wizardData.targetCredentialsVerified) {
+          showStatus(status, 'All checks passed!', 'success');
+          document.getElementById('migration_new_handle').value = fullHandle;
+
+          setTimeout(() => {
+            showStep(5);
+            setupStep5();
+          }, 500);
+          return;
+        }
+
+        showStatus(status, 'Handle available, checking for existing accounts...', 'info');
         btn.disabled = true;
-        btn.textContent = 'Checking for orphaned accounts...';
+        btn.textContent = 'Checking for existing accounts...';
 
         fetch('/migrations/check_did_on_pds', {
           method: 'POST',
@@ -723,8 +823,7 @@
           },
           body: JSON.stringify({
             did: wizardData.did,
-            pds_host: wizardData.pdsHost,
-            old_pds_host: wizardData.oldPdsHost
+            pds_host: wizardData.pdsHost
           })
         })
         .then(response => response.json())
@@ -741,23 +840,18 @@
             const supportEmail = didData.support_email || 'support@example.com';
             const errorMessage = `
               <div class="text-start lh-lg">
-                <strong>Account Already Exists on Target PDS</strong><br><br>
+                <strong>Account Already Exists on Target Server</strong><br><br>
                 <strong>What happened:</strong><br>
                 An account with your DID already exists on the target Server (${wizardData.pdsHost}).
-                This orphaned account is likely from a previous failed migration attempt.<br><br>
+                This may be from a previous migration attempt.<br><br>
 
                 <strong>What to do:</strong><br>
-                Contact the target Server provider to remove the orphaned account:<br>
+                Go back to the previous step and enter your password for the existing account. If you don't know the password:
                 <ul class="ms-3">
-                  <li>Email: <strong>${supportEmail}</strong></li>
+                  <li>Try resetting your password: <a href="${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password" target="_blank" rel="noopener">${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password</a></li>
+                  <li>Contact the Server provider at <strong>${supportEmail}</strong> to remove the orphaned account</li>
                   <li>Include your DID: <code>${wizardData.did}</code></li>
-                  <li>Include your old handle: <strong>${wizardData.oldHandle || wizardData.identifier}</strong></li>
-                  ${didData.deactivated ? '<li>Mention the account is <strong>deactivated/orphaned</strong></li>' : ''}
                 </ul>
-                <div class="alert alert-warning mt-2 mb-0 py-2">
-                  <strong>This requires action from the Server provider - you cannot fix this yourself.</strong><br>
-                  Once the orphaned account is removed, you can retry this migration.
-                </div>
               </div>
             `;
 
@@ -778,7 +872,7 @@
         .catch(didError => {
           btn.disabled = false;
           btn.textContent = 'Continue';
-          showStatus(status, 'Failed to check for orphaned accounts: ' + didError.message, 'error');
+          showStatus(status, 'Failed to check for existing accounts: ' + didError.message, 'error');
         });
       })
       .catch(error => {
@@ -975,20 +1069,28 @@
           <div class="form-text">This Server requires an invite code</div>
         </div>
 
-        <!-- Target PDS password (for migration_in / returning to bsky.social) -->
-        <div id="target-password-group" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-3 mb-3" style="display: none;">
-          <div class="fw-semibold small mb-1" style="color: #92400e;">Returning to Bluesky</div>
-          <p class="small mb-2" style="color: #78350f;">
-            We need to verify the password for your existing bsky.social account.
+        <!-- Target PDS password (for existing account on target server) -->
+        <div id="target-password-group" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mt-3 mb-3" style="display: none;">
+          <div class="fw-semibold small mb-1" style="color: #0c4a6e;">Existing Account Found</div>
+          <p class="small mb-2" style="color: #164e63;">
+            Your account already exists on this server. Please verify your password to continue with the migration.
           </p>
           <div class="mb-2">
-            <label for="target-pds-password" class="form-label small">Your bsky.social Password</label>
-            <input type="password" id="target-pds-password" class="form-control" placeholder="Enter your old bsky.social password" autocomplete="current-password">
+            <label for="target-pds-password" class="form-label small">Your password on the target server</label>
+            <input type="password" id="target-pds-password" class="form-control" placeholder="Enter your password for the existing account" autocomplete="current-password">
           </div>
           <div id="target-2fa-group" class="mt-2" style="display: none;">
             <label for="target-2fa-code" class="form-label small">Sign-in Code (2FA)</label>
             <input type="text" id="target-2fa-code" class="form-control form-control-lg text-center font-monospace" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric">
             <div class="form-text">Check your email for the two-factor authentication code</div>
+          </div>
+          <div id="target-deactivated-help" class="mt-2 small" style="display: none; color: #78350f; background: #fef3c7; padding: 10px; border-radius: 4px;">
+            <strong>This account appears to be deactivated</strong> (possibly from a previous migration attempt).<br>
+            If you don't remember your password, you can try:
+            <ul class="mb-1 mt-1">
+              <li>Reset your password: <a id="target-deactivated-pwd-link" href="#" target="_blank" rel="noopener"></a></li>
+              <li>Contact the PDS admin at <a id="target-deactivated-support-email" href="#"></a> to remove the orphaned account. Include your DID: <code id="target-deactivated-did"></code></li>
+            </ul>
           </div>
           <div id="target-password-status" class="lookup-status"></div>
         </div>

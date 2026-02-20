@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+    .content {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 0 0 8px 8px;
+    }
+    .error-box {
+      background: #fee2e2;
+      border-left: 4px solid #dc2626;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .action-box {
+      background: white;
+      border: 2px solid #2563eb;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .action-button {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      padding: 15px 40px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 15px 0;
+    }
+    .action-button:hover {
+      background: #1d4ed8;
+    }
+    .footer {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Migration Failed</h1>
+    <p>Invalid Invite Code</p>
+    <p>Migration <%= @migration.token %></p>
+  </div>
+
+  <div class="content">
+    <p>Hello,</p>
+
+    <p>Your account migration from <strong>@<%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong> could not be completed because the invite code you provided is invalid.</p>
+
+    <div class="error-box">
+      <h3 style="margin-top: 0; color: #991b1b;">What Happened</h3>
+      <p style="margin-bottom: 0;">
+        The invite code provided for <strong><%= @migration.new_pds_host %></strong> was rejected. This can happen if:
+      </p>
+      <ul style="margin-top: 10px; margin-bottom: 0;">
+        <li>The invite code was mistyped</li>
+        <li>The invite code has already been used</li>
+        <li>The invite code has expired</li>
+        <li>The invite code is not valid for this PDS</li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <h3 style="margin-top: 0;">Your Account is Safe</h3>
+      <ul style="margin: 10px 0;">
+        <li>No changes were made to your account on <strong><%= @migration.old_pds_host %></strong></li>
+        <li>No data was transferred or modified</li>
+        <li>Your account continues to work normally on your current PDS</li>
+      </ul>
+    </div>
+
+    <div class="action-box">
+      <h3 style="margin-top: 0; color: #2563eb;">Start a New Migration</h3>
+      <p style="margin-bottom: 15px;">
+        Please obtain a valid invite code from your target PDS provider and start a new migration.
+      </p>
+      <a href="<%= @new_migration_url %>" class="action-button">
+        Start New Migration
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>Migration Token: <code><%= @migration.token %></code></p>
+      <p>DID: <code><%= @migration.did %></code></p>
+      <p>Target PDS: <%= @migration.new_pds_host %></p>
+      <p style="margin-top: 20px;">Eurosky Migration Service</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -31,6 +31,9 @@ class CreateAccountJob < ApplicationJob
   # Don't retry account exists errors - they require manual intervention
   discard_on GoatService::AccountExistsError
 
+  # Don't retry invalid invite code errors - user needs to start a new migration
+  discard_on GoatService::InvalidInviteCodeError
+
   def perform(migration_id)
     migration = Migration.find(migration_id)
 
@@ -121,6 +124,23 @@ class CreateAccountJob < ApplicationJob
   rescue GoatService::NetworkError => e
     Rails.logger.error("[CreateAccountJob] Network error for migration #{migration&.token}: #{e.message}")
     handle_error(migration, e)
+
+  rescue GoatService::InvalidInviteCodeError => e
+    Rails.logger.error("[CreateAccountJob] Invalid invite code for migration #{migration&.token}: #{e.message}")
+    if migration
+      migration.mark_failed!(
+        "The invite code provided for #{migration.new_pds_host} is invalid, expired, or has already been used. " \
+        "Please start a new migration with a valid invite code."
+      )
+
+      begin
+        MigrationMailer.invalid_invite_code(migration).deliver_later
+        Rails.logger.info("[CreateAccountJob] Sent invalid invite code notification email to #{migration.email}")
+      rescue => email_error
+        Rails.logger.error("[CreateAccountJob] Failed to send invalid invite code notification: #{email_error.message}")
+      end
+    end
+    raise
 
   rescue GoatService::AccountExistsError => e
     Rails.logger.error("[CreateAccountJob] Account exists error for migration #{migration&.token}: #{e.message}")

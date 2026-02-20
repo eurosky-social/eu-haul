@@ -42,19 +42,18 @@ class MigrationsController < ApplicationController
   end
 
   # POST /migrations/check_did_on_pds
-  # Check if a DID already has an account on a PDS (orphaned account check)
+  # Check if a DID already has an account on a PDS
   #
   # Params:
   #   - did: DID to check
   #   - pds_host: PDS host URL
   #
   # Response:
-  #   - Success: { exists: true/false, deactivated: true/false (if exists) }
+  #   - Success: { exists: true/false, deactivated: true/false (if exists), support_email: '...' }
   #   - Failure: { error: 'message' }
   def check_did_on_pds
     did = params[:did]&.strip
     pds_host = params[:pds_host]&.strip
-    old_pds_host = params[:old_pds_host]&.strip
 
     if did.blank?
       render json: { error: 'DID is required' }, status: :bad_request
@@ -68,17 +67,7 @@ class MigrationsController < ApplicationController
 
     # Normalize PDS host
     pds_host = normalize_pds_host(pds_host)
-
-    # Detect if this is a migration_in (returning to a PDS where the account originally lived).
-    # For migration_in, finding the DID on the target PDS is expected and required, not an error.
-    is_migration_in = false
-    if old_pds_host.present?
-      old_normalized = normalize_pds_host(old_pds_host)
-      new_host = pds_host.downcase.gsub(%r{https?://}, '')
-      old_host = old_normalized.downcase.gsub(%r{https?://}, '')
-      # It's a migration_in if target is bsky.social and source is not
-      is_migration_in = new_host.include?('bsky.social') && !old_host.include?('bsky.social')
-    end
+    support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
 
     # Check if repo exists on the PDS
     begin
@@ -89,36 +78,18 @@ class MigrationsController < ApplicationController
       Rails.logger.info("PDS DID check response: #{response.code} - #{response.body[0..200]}")
 
       if response.success?
-        if is_migration_in
-          # For migration_in, an active repo on the target PDS is expected
-          Rails.logger.info("DID #{did} has active repo on #{pds_host} (migration_in - expected)")
-          render json: { exists: false }
-        else
-          # Active repo exists (unexpected for migration_out)
-          Rails.logger.info("DID #{did} has active repo on #{pds_host}")
-          support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
-          render json: { exists: true, deactivated: false, support_email: support_email }
-        end
+        Rails.logger.info("DID #{did} has active repo on #{pds_host}")
+        render json: { exists: true, deactivated: false, support_email: support_email }
       elsif response.code == 400
         parsed = JSON.parse(response.body) rescue {}
         if parsed['error'] == 'RepoDeactivated'
-          if is_migration_in
-            # For migration_in, a deactivated repo is also expected (account was moved away)
-            Rails.logger.info("DID #{did} has deactivated repo on #{pds_host} (migration_in - expected)")
-            render json: { exists: false }
-          else
-            # Deactivated/orphaned repo exists (unexpected for migration_out)
-            Rails.logger.info("DID #{did} has deactivated repo on #{pds_host}")
-            support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
-            render json: { exists: true, deactivated: true, support_email: support_email }
-          end
+          Rails.logger.info("DID #{did} has deactivated repo on #{pds_host}")
+          render json: { exists: true, deactivated: true, support_email: support_email }
         else
-          # DID doesn't exist
           Rails.logger.info("DID #{did} does not exist on #{pds_host}")
           render json: { exists: false }
         end
       else
-        # DID doesn't exist
         Rails.logger.info("DID #{did} does not exist on #{pds_host}")
         render json: { exists: false }
       end
@@ -440,40 +411,39 @@ class MigrationsController < ApplicationController
         Rails.logger.info("Resolved handle #{@migration.old_handle}: DID=#{@migration.did}, PDS=#{@migration.old_pds_host}")
       end
 
-      # Auto-detect migration type: if new_pds_host is bsky.social and old_pds_host is not, this is migration_in
-      if @migration.new_pds_host.present? && @migration.old_pds_host.present?
-        new_host_normalized = @migration.new_pds_host.downcase.gsub(%r{https?://}, '')
-        old_host_normalized = @migration.old_pds_host.downcase.gsub(%r{https?://}, '')
+      # Detect migration type based on whether the user authenticated with an existing
+      # account on the target PDS (indicated by presence of new PDS tokens from the wizard).
+      # This works for any PDS, not just bsky.social.
+      new_access_token_param = params[:migration][:new_access_token]
+      new_refresh_token_param = params[:migration][:new_refresh_token]
 
-        if new_host_normalized.include?('bsky.social') && !old_host_normalized.include?('bsky.social')
-          @migration.migration_type = 'migration_in'
-          Rails.logger.info("Auto-detected migration_in (returning to Bluesky)")
+      if new_access_token_param.present? && new_refresh_token_param.present?
+        @migration.migration_type = 'migration_in'
+        Rails.logger.info("Auto-detected migration_in (existing account on target PDS: #{@migration.new_pds_host})")
 
-          # CRITICAL: Verify the account actually exists on bsky.social before starting migration
-          Rails.logger.info("Verifying pre-existing account on bsky.social for DID: #{@migration.did}")
-          begin
-            account_check = verify_account_exists_on_pds(@migration.new_pds_host, @migration.did)
+        # Safety check: verify the account actually exists on the target PDS
+        Rails.logger.info("Verifying pre-existing account on #{@migration.new_pds_host} for DID: #{@migration.did}")
+        begin
+          account_check = verify_account_exists_on_pds(@migration.new_pds_host, @migration.did)
 
-            unless account_check[:exists]
-              @migration.errors.add(:base, "Cannot migrate back to bsky.social: No account found with your DID (#{@migration.did}). " \
-                "Migration_in (returning to Bluesky) is only for users who previously had a bsky.social account. " \
-                "If you've never had a bsky.social account, you cannot migrate to it - bsky.social does not accept new accounts via migration.")
-              render :new, status: :unprocessable_entity
-              return
-            end
-
-            Rails.logger.info("Pre-existing account verified on bsky.social (deactivated: #{account_check[:deactivated]}, handle: #{account_check[:handle]})")
-          rescue StandardError => e
-            Rails.logger.error("Failed to verify pre-existing account on bsky.social: #{e.message}")
-            @migration.errors.add(:base, "Failed to verify account existence on bsky.social: #{e.message}. " \
-              "Please ensure you have a pre-existing bsky.social account before attempting to migrate back.")
+          unless account_check[:exists]
+            @migration.errors.add(:base, "No account found on #{@migration.new_pds_host} with your DID (#{@migration.did}). " \
+              "Please go back and select a different target PDS, or start a new migration.")
             render :new, status: :unprocessable_entity
             return
           end
-        else
-          @migration.migration_type = 'migration_out'
-          Rails.logger.info("Auto-detected migration_out (migrating to new PDS)")
+
+          Rails.logger.info("Pre-existing account verified on #{@migration.new_pds_host} (deactivated: #{account_check[:deactivated]}, handle: #{account_check[:handle]})")
+        rescue StandardError => e
+          Rails.logger.error("Failed to verify pre-existing account on #{@migration.new_pds_host}: #{e.message}")
+          @migration.errors.add(:base, "Failed to verify account existence on #{@migration.new_pds_host}: #{e.message}. " \
+            "Please try again.")
+          render :new, status: :unprocessable_entity
+          return
         end
+      else
+        @migration.migration_type = 'migration_out'
+        Rails.logger.info("Auto-detected migration_out (creating new account on #{@migration.new_pds_host})")
       end
 
       # Retrieve the old PDS tokens from the AJAX authentication (stored in hidden fields)
@@ -501,7 +471,7 @@ class MigrationsController < ApplicationController
         new_refresh_token = params[:migration][:new_refresh_token]
 
         if new_access_token.blank? || new_refresh_token.blank?
-          @migration.errors.add(:base, "Target PDS authentication tokens are missing. Please go back and verify your bsky.social credentials.")
+          @migration.errors.add(:base, "Target PDS authentication tokens are missing. Please go back and verify your credentials on #{@migration.new_pds_host}.")
           render :new, status: :unprocessable_entity
           return
         end

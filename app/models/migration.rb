@@ -106,7 +106,7 @@ class Migration < ApplicationRecord
   validates :retry_count, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   # Validate invite code if required by configuration
-  validates :encrypted_invite_code, presence: true, if: -> { EuroskyConfig.invite_code_required? && new_record? }
+  validates :encrypted_invite_code, presence: true, if: -> { EuroskyConfig.invite_code_required? && new_record? && !migration_in? }
 
   # Callbacks
   before_validation :generate_token, on: :create
