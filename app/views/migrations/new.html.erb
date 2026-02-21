@@ -32,26 +32,27 @@
   .new-migration-container {
     position: relative;
     z-index: 1;
-    max-width: 700px;
-    width: 90%;
+    max-width: 800px;
+    width: 95%;
     margin: 40px auto;
   }
 
   .new-migration-content {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 24px;
-    padding: 48px;
+    border-radius: 1.5rem;
+    padding: 3rem;
     padding-top: 0;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 5px 15px -5px rgba(0, 0, 0, 0.05);
   }
 
   .new-migration-header {
     text-align: center;
-    margin-bottom: 24px;
-    padding: 24px 48px;
+    margin-bottom: 2rem;
+    padding: 2rem 3rem;
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 1rem;
   }
 
   .new-migration-header h1 {
@@ -124,6 +125,7 @@
     const progress3 = document.getElementById('progress-3');
     const progress4 = document.getElementById('progress-4');
     const progress5 = document.getElementById('progress-5');
+    const progressBar = document.getElementById('progress-bar');
 
     // Configuration from server
     const defaultTargetPds = '<%= EuroskyConfig::DEFAULT_TARGET_PDS %>';
@@ -144,6 +146,7 @@
     function showStep(stepNumber) {
       [step1, step2, step3, step4, step5].forEach(s => s.classList.remove('active'));
       [progress1, progress2, progress3, progress4, progress5].forEach(p => p.classList.remove('active', 'completed'));
+      progressBar.style.width = ((stepNumber - 1) / 4 * 100) + '%';
 
       if (stepNumber === 1) {
         step1.classList.add('active');
@@ -989,6 +992,11 @@
       <!-- Hidden fields for authentication tokens -->
       <%= hidden_field_tag 'migration[old_access_token]', '', id: 'migration_old_access_token' %>
       <%= hidden_field_tag 'migration[old_refresh_token]', '', id: 'migration_old_refresh_token' %>
+
+      <!-- Progress Bar -->
+      <div class="step-progress-bar">
+        <div class="progress-indicator" id="progress-bar" style="width: 0%;"></div>
+      </div>
 
       <!-- Progress Indicator -->
       <div class="wizard-progress mb-4">

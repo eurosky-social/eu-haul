@@ -2,8 +2,39 @@
 
 <% content_for :head do %>
   <style>
+    /* Background + centering (matches new.html.erb) */
+    body {
+      margin: 0;
+      padding: 0;
+      <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
+      background: url('<%= EuroskyConfig::BACKGROUND_IMAGE_URL %>') no-repeat center center fixed;
+      background-size: cover;
+      <% else %>
+      background: var(--gradient);
+      <% end %>
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+    <% end %>
+
     /* Page-specific layout styles for show.html.erb */
     .page-layout {
+      position: relative;
+      z-index: 1;
       display: flex;
       justify-content: center;
       max-width: 1020px;
