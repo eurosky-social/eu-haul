@@ -38,7 +38,7 @@ completed_migration:
   updated_at: <%= 1.day.ago %>
 
 failed_migration:
-  token: EURO-FAILED76543210090
+  token: EURO-FAILED7654321090
   did: did:plc:failed789
   old_handle: failed.oldpds.com
   new_handle: failed.newpds.com
@@ -74,7 +74,7 @@ migration_in:
   updated_at: <%= Time.current %>
 
 pending_blobs:
-  token: EURO-BLOBS999999999990
+  token: EURO-BLOBS99999999990
   did: did:plc:blobs111
   old_handle: blobuser.oldpds.com
   new_handle: blobuser.newpds.com
@@ -118,7 +118,7 @@ pending_plc:
   updated_at: <%= Time.current %>
 
 expired_credentials:
-  token: EURO-EXPIRED77777777790
+  token: EURO-EXPIRED7777777790
   did: did:plc:expired333
   old_handle: expired.oldpds.com
   new_handle: expired.newpds.com
@@ -136,7 +136,7 @@ expired_credentials:
   updated_at: <%= 1.hour.ago %>
 
 with_backup_bundle:
-  token: EURO-BACKUP66666666690
+  token: EURO-BACKUP6666666690
   did: did:plc:backup444
   old_handle: backup.oldpds.com
   new_handle: backup.newpds.com

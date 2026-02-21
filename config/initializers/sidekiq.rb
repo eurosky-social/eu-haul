@@ -36,21 +36,17 @@ end
 Sidekiq.configure_server do |config|
   config.redis = sidekiq_config
 
-  # Set concurrency based on environment
-  config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 25)
+  # Set concurrency based on environment.
+  # Default 35 threads to support concurrent blob jobs + headroom
+  # for non-blob jobs (account creation, repo import, prefs, etc.).
+  config.concurrency = ENV['SIDEKIQ_CONCURRENCY']&.to_i || (Rails.env.test? ? 1 : 35)
 
-  # Configure queues with priority
-  # Queue priorities (weight determines relative processing priority):
-  # - critical: 10 (UpdatePlcJob, ActivateAccountJob)
-  # - migrations: 5 (ImportPreferencesJob, WaitForPlcTokenJob, and other migration steps)
-  # - default: 3 (general application jobs)
-  # - low: 1 (cleanup, maintenance, etc.)
-  config.queues = [
-    ['critical', 10],
-    ['migrations', 5],
-    ['default', 3],
-    ['low', 1]
-  ]
+  # Queue configuration is defined in the YAML config files:
+  #   - config/sidekiq.yml: migrations, default, low queues
+  #   - config/sidekiq_critical.yml: critical queue only (UpdatePlcJob, ActivateAccountJob)
+  #
+  # Do NOT set config.queues here — it would override the YAML for ALL
+  # Sidekiq processes (both main and critical), breaking the queue separation.
 
   # Add middleware to handle deserialization errors gracefully
   config.server_middleware do |chain|

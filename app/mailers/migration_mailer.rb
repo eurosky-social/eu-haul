@@ -37,40 +37,39 @@ class MigrationMailer < ApplicationMailer
     )
   end
 
-  def migration_completed(migration)
+  def migration_completed(migration, new_account_password = nil)
     @migration = migration
+    @password = new_account_password
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
-    @rotation_key_private = migration.rotation_key
-    @rotation_key_public = migration.progress_data['rotation_key_public']
     @backup_available = migration.backup_available?
     @download_url = migration_download_backup_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001')) if @backup_available
     @completed_at = migration.progress_data['completed_at']
 
     mail(
       to: migration.email,
-      subject: "✅ Migration Complete - Save Your Rotation Key! (#{migration.token})"
-    )
-  end
-
-  def plc_otp(migration, otp)
-    @migration = migration
-    @otp = otp
-    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
-    @expires_in = '15 minutes'
-
-    mail(
-      to: migration.email,
-      subject: "PLC Verification Code: #{otp} (#{migration.token})"
+      subject: "Migration Complete! (#{migration.token})"
     )
   end
 
   def email_verification(migration)
     @migration = migration
-    @verification_url = verify_email_url(token: migration.token, verification_token: migration.email_verification_token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @status_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
 
     mail(
       to: migration.email,
-      subject: "Verify your email to start migration (#{migration.token})"
+      subject: "Your verification code: #{migration.email_verification_token} (#{migration.token})"
+    )
+  end
+
+  def rotation_key_notice(migration)
+    @migration = migration
+    @rotation_key_private = migration.rotation_key
+    @rotation_key_public = migration.progress_data['rotation_key_public']
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+
+    mail(
+      to: migration.email,
+      subject: "Important: Your Account Recovery Key (#{migration.token})"
     )
   end
 
@@ -98,6 +97,41 @@ class MigrationMailer < ApplicationMailer
     mail(
       to: migration.email,
       subject: "Blob Retry Complete: #{successful_count} succeeded, #{failed_count} still failed (#{migration.token})"
+    )
+  end
+
+  def invalid_invite_code(migration)
+    @migration = migration
+    @new_migration_url = new_migration_url(host: ENV.fetch('DOMAIN', 'localhost:3001'))
+
+    mail(
+      to: migration.email,
+      subject: "Migration Failed - Invalid Invite Code (#{migration.token})"
+    )
+  end
+
+  def orphaned_account_error(migration)
+    @migration = migration
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+
+    mail(
+      to: migration.email,
+      subject: "⚠️ Migration Paused - Orphaned Account on Target PDS (#{migration.token})"
+    )
+  end
+
+  def cancellation_confirmation(migration)
+    @migration = migration
+    @confirm_url = confirm_cancellation_by_token_url(
+      token: migration.token,
+      cancellation_token: migration.progress_data['cancellation_token'],
+      host: ENV.fetch('DOMAIN', 'localhost:3001')
+    )
+
+    mail(
+      to: migration.email,
+      subject: "Confirm Migration Cancellation (#{migration.token})"
     )
   end
 end

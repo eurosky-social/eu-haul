@@ -1,41 +1,31 @@
-# ImportBlobsJob - Memory-intensive blob transfer job for Eurosky migration
+# ImportBlobsJob - Blob transfer job for Eurosky migration
 #
-# This is the most critical and resource-intensive job in the migration pipeline.
+# This is the most critical job in the migration pipeline.
 # It handles downloading blobs from the old PDS and uploading them to the new PDS
-# with strict memory management and concurrency control.
+# with concurrency control. Blobs are streamed to/from disk, so memory usage per
+# blob is limited to the HTTP chunk size (~16KB) regardless of blob size.
 #
 # Critical Features:
-# - Concurrency limiting (max 15 migrations in pending_blobs simultaneously)
-# - Parallel blob processing (10 blobs at a time) for performance
-# - Batch-based processing with aggressive memory cleanup (GC.start after each batch)
-# - Batched progress updates (after each parallel batch to reduce DB writes)
+# - Concurrency limiting (configurable via MAX_CONCURRENT_BLOB_MIGRATIONS)
+# - Parallel blob processing (50 blobs at a time) for throughput
+# - Batched progress updates (every 10 blobs to reduce DB writes)
 # - Individual blob retry with exponential backoff
-# - Detailed progress tracking and memory estimation
+# - Post-import reconciliation to fill gaps
 #
 # Flow:
-# 1. Check concurrency limit (max 15 pending_blobs migrations)
+# 1. Check concurrency limit
 # 2. If at capacity, re-enqueue with 30s delay and return
 # 3. Mark blobs_started_at timestamp
 # 4. List all blobs with pagination (cursor-based, no auth required)
-# 5. Estimate memory usage via MemoryEstimatorService
-# 6. Update migration with blob_count and estimated_memory_mb
-# 7. Process blobs IN PARALLEL BATCHES (10 blobs per batch):
-#    - Download 10 blobs concurrently from old PDS
-#    - Upload 10 blobs concurrently to new PDS
-#    - Delete local blob files immediately after upload
-#    - Update progress after each batch
-#    - Log each transfer (CID + size)
-#    - Call GC.start after each batch
+# 5. Update migration with blob_count
+# 6. Process blobs in parallel (50 threads pulling from a shared queue):
+#    - Download blob (streamed to disk)
+#    - Upload blob (streamed from disk)
+#    - Delete local blob file immediately after upload
+#    - Update progress every 10 blobs
+# 7. Reconcile - verify all blobs were imported and fill gaps
 # 8. Mark blobs_completed_at timestamp
 # 9. Advance to pending_prefs status
-#
-# Memory Optimization:
-# - Parallel batches of 10 blobs (configurable via PARALLEL_BLOB_TRANSFERS)
-# - Immediate cleanup after each upload
-# - Progress updates after each batch
-# - Explicit GC after each batch (every 10 blobs)
-# - Track total bytes transferred
-# - Thread-safe counters with Mutex
 #
 # Error Handling:
 # - Rate-limit errors: longer exponential backoff (8s, 16s, 32s), max 3 attempts per blob
@@ -55,12 +45,10 @@ class ImportBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  MAX_CONCURRENT_BLOB_MIGRATIONS = 15
   REQUEUE_DELAY = 30.seconds
   MAX_BLOB_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10 # Update progress every N blobs
-  GC_INTERVAL = 50 # Run garbage collection every N blobs
-  PARALLEL_BLOB_TRANSFERS = 10 # Number of blobs to transfer in parallel
+  PARALLEL_BLOB_TRANSFERS = 50 # Number of blobs to transfer in parallel
 
   # Retry configuration (3 attempts with exponential backoff)
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
@@ -79,10 +67,26 @@ class ImportBlobsJob < ApplicationJob
     end
 
     # Step 1: Check concurrency limit
-    if at_concurrency_limit?
-      logger.info("Concurrency limit reached (#{MAX_CONCURRENT_BLOB_MIGRATIONS}), re-enqueuing in #{REQUEUE_DELAY}s")
+    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
+    if at_concurrency_limit?(max_concurrent, exclude_id: migration.id)
+      current_count = Migration.where(status: [:pending_download, :pending_blobs]).where.not(id: migration.id).count
+      logger.info("Concurrency limit reached (#{current_count}/#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
+      migration.update_columns(
+        progress_data: migration.progress_data.merge(
+          'queued' => true,
+          'queued_reason' => 'Waiting for other migrations to finish transferring data',
+          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
+        )
+      )
       self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
       return
+    end
+
+    # Clear queued state now that we're starting
+    if migration.progress_data&.dig('queued')
+      migration.update_columns(
+        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
+      )
     end
 
     # Step 2: Mark blobs_started_at
@@ -96,11 +100,16 @@ class ImportBlobsJob < ApplicationJob
 
     logger.info("Found #{all_blobs.length} total blobs to transfer")
 
-    # Step 6: Estimate memory and update migration
-    estimate_and_update_memory(migration, all_blobs)
+    # Step 5: Update migration with blob count
+    migration.update!(
+      progress_data: migration.progress_data.merge('blob_count' => all_blobs.length)
+    )
 
-    # Step 7: Process blobs sequentially
-    process_blobs_sequentially(migration, goat, all_blobs)
+    # Step 6: Process blobs in parallel
+    process_blobs(migration, goat, all_blobs)
+
+    # Step 7: Reconcile - verify all blobs were imported and fill gaps
+    reconcile_blobs(migration, goat)
 
     # Step 8: Mark blobs_completed_at
     mark_blobs_completed(migration)
@@ -124,10 +133,13 @@ class ImportBlobsJob < ApplicationJob
 
   private
 
-  # Check if we're at the concurrency limit for blob migrations
-  def at_concurrency_limit?
-    current_count = Migration.where(status: :pending_blobs).count
-    current_count >= MAX_CONCURRENT_BLOB_MIGRATIONS
+  # Check if we're at the concurrency limit for heavy I/O migrations.
+  # Excludes the given migration ID from the count so the job doesn't block itself.
+  def at_concurrency_limit?(max_concurrent, exclude_id: nil)
+    heavy_statuses = [:pending_download, :pending_blobs]
+    scope = Migration.where(status: heavy_statuses)
+    scope = scope.where.not(id: exclude_id) if exclude_id
+    scope.count >= max_concurrent
   end
 
   # Mark the start time for blob transfer
@@ -164,30 +176,9 @@ class ImportBlobsJob < ApplicationJob
     all_blobs
   end
 
-  # Estimate memory usage and update migration record
-  def estimate_and_update_memory(migration, blobs)
-    # Build blob list with size estimates for MemoryEstimatorService
-    blob_list = blobs.map do |cid|
-      # We don't have size info yet, so service will use averages
-      { cid: cid }
-    end
-
-    estimated_mb = MemoryEstimatorService.estimate(blob_list)
-
-    migration.update!(
-      estimated_memory_mb: estimated_mb,
-      progress_data: migration.progress_data.merge(
-        'blob_count' => blobs.length,
-        'estimated_memory_mb' => estimated_mb
-      )
-    )
-
-    logger.info("Estimated memory: #{estimated_mb} MB for #{blobs.length} blobs")
-  end
-
-  # Process all blobs using thread pool pattern for maximum throughput
-  # Threads pick up new work as soon as they finish, no waiting for batches
-  def process_blobs_sequentially(migration, goat, blobs)
+  # Process all blobs using thread pool pattern for maximum throughput.
+  # Threads pick up new work as soon as they finish, no waiting for batches.
+  def process_blobs(migration, goat, blobs)
     # Login to new PDS for uploads
     goat.login_new_pds
 
@@ -198,7 +189,6 @@ class ImportBlobsJob < ApplicationJob
     # Thread-safe counters and queue
     mutex = Mutex.new
     queue = Queue.new
-    gc_counter = 0
 
     # Add all blobs to the queue
     blobs.each_with_index { |cid, index| queue << [cid, index] }
@@ -216,20 +206,19 @@ class ImportBlobsJob < ApplicationJob
           end
 
           begin
-            # Download blob from old PDS
+            # Download blob from old PDS (streamed to disk)
             blob_path = download_blob_with_retry(goat, cid)
 
             # Get file size for tracking
             blob_size = File.size(blob_path)
 
-            # Upload blob to new PDS
+            # Upload blob to new PDS (streamed from disk)
             upload_blob_with_retry(goat, blob_path)
 
             # Update metrics (thread-safe)
             mutex.synchronize do
               total_bytes_transferred += blob_size
               successful_count += 1
-              gc_counter += 1
             end
 
             # Log transfer
@@ -242,17 +231,6 @@ class ImportBlobsJob < ApplicationJob
             if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
                 update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
-              end
-            end
-
-            # Run GC periodically
-            if gc_counter >= GC_INTERVAL
-              mutex.synchronize do
-                if gc_counter >= GC_INTERVAL
-                  logger.debug("Running garbage collection after #{GC_INTERVAL} blobs")
-                  GC.start
-                  gc_counter = 0
-                end
               end
             end
 
@@ -309,9 +287,6 @@ class ImportBlobsJob < ApplicationJob
         logger.info("Wrote failed uploads manifest to #{manifest_path}")
       end
     end
-
-    # Final GC
-    GC.start
   end
 
   # Download blob with retry logic
@@ -372,6 +347,124 @@ class ImportBlobsJob < ApplicationJob
     migration.save!
 
     logger.debug("Progress: #{completed}/#{total} blobs (#{format_bytes(bytes_transferred)})")
+  end
+
+  # Post-import blob reconciliation.
+  # Checks account status to compare expected vs imported blobs,
+  # then fetches and uploads any missing blobs. Best-effort: failures
+  # are logged but do not fail the migration.
+  def reconcile_blobs(migration, goat)
+    logger.info("Starting post-import blob reconciliation")
+
+    migration.progress_data ||= {}
+    migration.progress_data['reconciliation_started_at'] = Time.current.iso8601
+    migration.save!
+
+    # Step 1: Check account status to see if there's a mismatch
+    begin
+      status = goat.get_account_status
+      expected = status['expectedBlobs'] || 0
+      imported = status['importedBlobs'] || 0
+
+      logger.info("Blob reconciliation: expected=#{expected}, imported=#{imported}")
+
+      migration.progress_data['reconciliation_expected_blobs'] = expected
+      migration.progress_data['reconciliation_imported_blobs'] = imported
+      migration.save!
+
+      if expected == imported
+        logger.info("All blobs accounted for, no reconciliation needed")
+        migration.progress_data['reconciliation_status'] = 'complete'
+        migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+        migration.save!
+        return
+      end
+
+      logger.warn("Blob mismatch detected: #{expected - imported} blobs missing")
+    rescue StandardError => e
+      logger.error("Failed to check account status during reconciliation: #{e.message}")
+      migration.progress_data['reconciliation_status'] = 'skipped'
+      migration.progress_data['reconciliation_error'] = "Account status check failed: #{e.message}"
+      migration.save!
+      return
+    end
+
+    # Step 2: Get the list of missing blob CIDs
+    begin
+      missing_cids = goat.collect_all_missing_blobs
+      logger.info("Found #{missing_cids.length} missing blobs to reconcile")
+
+      migration.progress_data['reconciliation_missing_count'] = missing_cids.length
+      migration.save!
+    rescue StandardError => e
+      logger.error("Failed to list missing blobs during reconciliation: #{e.message}")
+      migration.progress_data['reconciliation_status'] = 'partial'
+      migration.progress_data['reconciliation_error'] = "List missing blobs failed: #{e.message}"
+      migration.save!
+      return
+    end
+
+    if missing_cids.empty?
+      logger.info("No missing blobs returned despite count mismatch (may be eventual consistency)")
+      migration.progress_data['reconciliation_status'] = 'complete'
+      migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+      migration.save!
+      return
+    end
+
+    # Step 3: Attempt to fetch and upload each missing blob
+    reconciled_count = 0
+    still_missing = []
+
+    missing_cids.each_with_index do |cid, index|
+      begin
+        logger.info("Reconciling missing blob #{index + 1}/#{missing_cids.length}: #{cid}")
+
+        # Download from old PDS
+        blob_path = goat.download_blob(cid)
+        blob_size = File.size(blob_path)
+
+        # Upload to new PDS
+        goat.upload_blob(blob_path)
+
+        # Cleanup
+        FileUtils.rm_f(blob_path)
+
+        reconciled_count += 1
+        logger.info("Reconciled blob #{cid} (#{blob_size} bytes)")
+      rescue StandardError => e
+        logger.warn("Failed to reconcile blob #{cid}: #{e.message}")
+        still_missing << cid
+      end
+    end
+
+    # Step 4: Record reconciliation results
+    migration.progress_data['reconciliation_status'] = still_missing.empty? ? 'complete' : 'partial'
+    migration.progress_data['reconciliation_recovered'] = reconciled_count
+    migration.progress_data['reconciliation_still_missing'] = still_missing if still_missing.any?
+    migration.progress_data['reconciliation_completed_at'] = Time.current.iso8601
+    migration.save!
+
+    logger.info("Blob reconciliation finished: #{reconciled_count}/#{missing_cids.length} recovered, #{still_missing.length} still missing")
+
+    if still_missing.any?
+      # Merge still-missing blobs into the failed_blobs list
+      existing_failed = migration.progress_data['failed_blobs'] || []
+      all_failed = (existing_failed + still_missing).uniq
+      migration.progress_data['failed_blobs'] = all_failed
+      migration.save!
+
+      logger.warn("#{still_missing.length} blobs could not be reconciled: #{still_missing.join(', ')}")
+    end
+  rescue StandardError => e
+    # Best-effort: log the error but don't fail the migration
+    logger.error("Blob reconciliation failed unexpectedly: #{e.message}")
+    logger.error(e.backtrace&.first(5)&.join("\n"))
+
+    migration.progress_data ||= {}
+    migration.progress_data['reconciliation_status'] = 'error'
+    migration.progress_data['reconciliation_error'] = e.message
+    migration.save!
   end
 
   # Format bytes for human-readable output

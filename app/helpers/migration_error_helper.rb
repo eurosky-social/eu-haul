@@ -42,16 +42,24 @@ module MigrationErrorHelper
   end
 
   # Detect error type from error message
+  # NOTE: Order matters - more specific patterns must come before broader ones.
+  # PLC token expiration must be checked before generic CRITICAL/PLC patterns.
   def self.detect_error_type(error_message)
     case error_message
     when /rate limit|429|RateLimitExceeded/i
       :rate_limit
     when /network|timeout|connection|unreachable/i
       :network
+    when /PLC token.*(?:expired|missing)|PLC token has expired|token is missing/i
+      :plc_token_expired
+    when /Credentials expired:.*no longer available.*re-authenticate|New PDS password.*no longer available/i
+      :credentials_need_reauth
     when /authentication|unauthorized|401|invalid password/i
       :authentication
     when /already exists|AlreadyExists|orphaned/i
       :account_exists
+    when /invite.*code/i
+      :invite_code
     when /expired|credentials expired/i
       :credentials_expired
     when /blob.*not found|404/i
@@ -60,8 +68,8 @@ module MigrationErrorHelper
       :data_corruption
     when /disk.*full|out of space|no space/i
       :disk_space
-    when /invite.*code/i
-      :invite_code
+    when /cancelled by user/i
+      :cancelled
     when /CRITICAL|PLC.*failed/i
       :critical_plc
     else
@@ -76,6 +84,10 @@ module MigrationErrorHelper
       rate_limit_context(migration, retry_attempt, max_attempts)
     when :network
       network_context(migration, retry_attempt, max_attempts)
+    when :plc_token_expired
+      plc_token_expired_context(migration)
+    when :credentials_need_reauth
+      credentials_need_reauth_context(migration)
     when :authentication
       authentication_context(migration)
     when :account_exists
@@ -90,6 +102,8 @@ module MigrationErrorHelper
       disk_space_context(migration)
     when :invite_code
       invite_code_context(migration)
+    when :cancelled
+      cancelled_context(migration)
     when :critical_plc
       critical_plc_context(migration)
     else
@@ -99,11 +113,15 @@ module MigrationErrorHelper
     # Add technical details
     base_context[:technical_details] = error_message
     base_context[:job_step] = job_step
-    base_context[:retry_info] = {
-      attempt: retry_attempt,
-      max_attempts: max_attempts,
-      remaining: [max_attempts - retry_attempt, 0].max
-    }
+
+    # Only include retry info when the error type supports automatic retries
+    unless base_context[:show_retry_info] == false
+      base_context[:retry_info] = {
+        attempt: retry_attempt,
+        max_attempts: max_attempts,
+        remaining: [max_attempts - retry_attempt, 0].max
+      }
+    end
 
     base_context
   end
@@ -171,6 +189,7 @@ module MigrationErrorHelper
         "If you're sure the password is correct, contact your PDS administrator"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#authentication-errors",
       credentials_expire_at: migration.credentials_expires_at
@@ -178,23 +197,73 @@ module MigrationErrorHelper
   end
 
   def self.account_exists_context(migration)
+    target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+
     {
       severity: :error,
       icon: "👥",
       title: "Account Already Exists on Target PDS",
-      what_happened: "An account with your DID already exists on the target PDS. This is likely from a previous failed migration attempt.",
-      current_status: "Migration blocked - orphaned account needs cleanup",
+      what_happened: "An account with your DID already exists on the target PDS (#{migration.new_pds_host}). This orphaned account is likely from a previous failed migration attempt.",
+      current_status: "Migration paused - orphaned account needs removal by PDS provider",
       what_to_do: [
-        "This requires manual cleanup of the orphaned account",
-        "Option 1: Use the cleanup script (if you have server access):",
-        "  cd scripts && ./cleanup_orphaned_account_db.sh #{migration.did}",
-        "Option 2: Contact the target PDS administrator to delete the orphaned account",
-        "After cleanup, you can retry this migration or start a new one"
+        "📧 Contact the target PDS provider to remove the orphaned account:",
+        "   Email: #{target_pds_support_email}",
+        "   Include: Migration Token (#{migration.token}) and DID (#{migration.did})",
+        "",
+        "Once the orphaned account is removed, you can retry this migration.",
+        "",
+        "⚠️ This requires action from the PDS provider - you cannot fix this yourself."
       ],
       show_retry_button: false,
-      show_cleanup_instructions: true,
+      show_retry_info: false,
+      show_contact_support: true,
+      support_email: target_pds_support_email,
+      migration_token: migration.token,
       help_link: "/docs/troubleshooting#orphaned-accounts",
       did: migration.did
+    }
+  end
+
+  def self.plc_token_expired_context(migration)
+    {
+      severity: :warning,
+      icon: "⏰",
+      title: "PLC Token Expired",
+      what_happened: "The PLC operation token you submitted has expired. PLC tokens are only valid for 1 hour after they are issued by your old PDS provider.",
+      current_status: "Migration paused - new PLC token required",
+      what_to_do: [
+        "Click the 'Request New PLC Token' button below to request a fresh token",
+        "Check your email from #{migration.old_pds_host} for the new token",
+        "Submit the new token within 1 hour of receiving it",
+        "The rest of your migration data is safe and ready - you just need a fresh token"
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_request_new_plc_token: true,
+      help_link: "/docs/troubleshooting#plc-token-expiration",
+      expired_at: migration.credentials_expires_at,
+      old_pds_host: migration.old_pds_host
+    }
+  end
+
+  def self.credentials_need_reauth_context(migration)
+    {
+      severity: :warning,
+      icon: "🔑",
+      title: "Session Expired — Re-authentication Required",
+      what_happened: "Your stored credentials have expired. For security, credentials are automatically cleared after 48 hours. " \
+                     "To continue the migration, you need to re-authenticate.",
+      current_status: "Migration paused — re-authentication required to continue",
+      what_to_do: [
+        "Enter your password below to re-authenticate",
+        "Your migration data is safe — you just need fresh credentials",
+        "After re-authenticating, the migration will continue where it left off"
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_reauth_form: true,
+      help_link: "/docs/troubleshooting#credential-expiration",
+      old_pds_host: migration.old_pds_host
     }
   end
 
@@ -213,6 +282,7 @@ module MigrationErrorHelper
         "Consider using faster network connection if migrations timeout frequently"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#credential-expiration",
       expired_at: migration.credentials_expires_at
@@ -269,6 +339,7 @@ module MigrationErrorHelper
         "Once disk space is freed, you can retry the migration"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_contact_admin: true,
       help_link: "/docs/troubleshooting#disk-space"
     }
@@ -288,34 +359,64 @@ module MigrationErrorHelper
         "Some PDS instances don't require invite codes - check with the administrator"
       ],
       show_retry_button: false,
+      show_retry_info: false,
       show_new_migration_button: true,
       help_link: "/docs/troubleshooting#invite-codes"
     }
   end
 
-  def self.critical_plc_context(migration)
+  def self.cancelled_context(migration)
     {
-      severity: :critical,
-      icon: "🚨",
-      title: "CRITICAL: PLC Directory Update Failed",
-      what_happened: "The PLC directory update failed at the point of no return. Your account may be in an uncertain state.",
-      current_status: "CRITICAL FAILURE - Manual recovery required",
+      severity: :warning,
+      icon: "🚫",
+      title: "Migration Cancelled",
+      what_happened: "This migration was cancelled at your request. No changes were made to your account.",
+      current_status: "Migration cancelled — your account remains on #{migration.old_pds_host}",
       what_to_do: [
-        "🚨 DO NOT start a new migration",
-        "🚨 DO NOT attempt manual recovery without support",
-        "Your rotation key: #{migration.rotation_key.present? ? '[Available on status page]' : '[Not yet generated]'}",
-        "Save this migration token: #{migration.token}",
-        "Contact support IMMEDIATELY: support@example.com",
-        "We will investigate and contact you within 24 hours",
-        "Your account data is safe - this requires manual verification"
+        "Your account is safe and unchanged on #{migration.old_pds_host}",
+        "You can start a new migration at any time"
       ],
       show_retry_button: false,
+      show_retry_info: false,
+      show_new_migration_button: true
+    }
+  end
+
+  def self.critical_plc_context(migration)
+    # Check if PLC operation was actually submitted to the directory.
+    # The rotation key is generated BEFORE submission as a safety net,
+    # so its presence does NOT mean the PLC was updated.
+    plc_not_yet_updated = migration.progress_data&.dig('plc_operation_submitted_at').blank?
+
+    base_context = {
+      severity: :critical,
+      icon: "⚠️",
+      title: "PLC Directory Update Failed",
+      what_happened: "The PLC directory update did not complete successfully. Your account data is safe.",
+      current_status: plc_not_yet_updated ? "The PLC directory was not modified — you can request a new token and try again." : "The PLC directory may have been partially updated. Please contact support.",
+      what_to_do: [
+        "Do not start a new migration",
+        "Your account data is safe and intact",
+        migration.rotation_key.present? ? "Your recovery key is available on this page — save it securely" : nil,
+        "Save this migration token: #{migration.token}",
+        "Contact support if the issue persists: #{SUPPORT_EMAIL}"
+      ].compact,
+      show_retry_button: false,
+      show_retry_info: false,
       show_contact_support: true,
       show_rotation_key: true,
+      show_request_new_plc_token: true,  # Always show for PLC failures - user may need new token
       help_link: "/docs/troubleshooting#critical-plc-failure",
       migration_token: migration.token,
-      support_email: "support@example.com"
+      support_email: "#{SUPPORT_EMAIL}"
     }
+
+    # If PLC was not yet updated, emphasize token request
+    if plc_not_yet_updated
+      base_context[:what_to_do].unshift("Try requesting a new PLC token - the update hasn't happened yet")
+    end
+
+    base_context
   end
 
   def self.generic_context(migration, retry_attempt, max_attempts)

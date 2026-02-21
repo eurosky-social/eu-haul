@@ -4,31 +4,22 @@
 
 Your Bluesky/ATProto account has been successfully migrated to the new PDS.
 
+<% if @password.present? %>
+================================================================================
+🔐 YOUR NEW ACCOUNT PASSWORD
+================================================================================
 
-⚠️⚠️⚠️ SAVE YOUR ROTATION KEY NOW ⚠️⚠️⚠️
+Use this password to log in to your new account:
 
-This is the ONLY time you'll receive this key!
-
-Your rotation key is needed for account recovery if you lose access to your PDS.
-Store it securely (password manager, encrypted file, etc.).
-
-<% if @rotation_key_private.present? %>
-ROTATION KEY (PRIVATE):
 ----------------------------------------
-<%= @rotation_key_private %>
+<%= @password %>
 ----------------------------------------
 
-<% else %>
-⚠️ Rotation key generation failed during migration.
-You should generate one manually using your PDS tools.
+Save this password now — store it in a password manager.
+You can change it after logging in for the first time.
+
+
 <% end %>
-
-<% if @rotation_key_public.present? %>
-PUBLIC KEY (for reference):
-<%= @rotation_key_public %>
-<% end %>
-
-
 <% if @backup_available %>
 ================================================================================
 📦 BACKUP BUNDLE AVAILABLE
@@ -76,7 +67,6 @@ PRIVACY & SECURITY
 
 • This migration record will be automatically deleted in 10 minutes for GDPR compliance
 • All encrypted credentials have been securely erased from our servers
-• Save your rotation key and backup now - they won't be available later
 
 
 ================================================================================

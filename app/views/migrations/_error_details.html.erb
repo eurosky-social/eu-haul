@@ -1,40 +1,54 @@
-<%# Error Details Partial - Enhanced user-friendly error display
-  Renders detailed error information with actionable guidance
 
-  Usage:
-    <%= render 'migrations/error_details', migration: @migration %>
-%>
 
 <% if @migration.last_error.present? %>
   <% error_context = MigrationErrorHelper.explain_error(@migration) %>
 
   <% if error_context %>
-    <div class="error-details-section" style="margin-bottom: 32px;">
+    <%
+      severity = error_context[:severity]
+      if severity == :critical
+        severity_bg_class    = "bg-danger-subtle"
+        severity_border_class = "border-start border-4 border-danger"
+        severity_text_class  = "text-danger-emphasis"
+        alert_class          = "alert-danger"
+      elsif severity == :error
+        severity_bg_class    = "bg-warning-subtle"
+        severity_border_class = "border-start border-4 border-warning"
+        severity_text_class  = "text-warning-emphasis"
+        alert_class          = "alert-warning"
+      else
+        severity_bg_class    = "bg-warning-subtle"
+        severity_border_class = "border-start border-4 border-warning"
+        severity_text_class  = "text-warning-emphasis"
+        alert_class          = "alert-warning"
+      end
+    %>
+    <div class="error-details-section mb-5">
       <%# Error Header %>
-      <div class="error-header" style="background: <%= error_context[:severity] == :critical ? '#fee2e2' : error_context[:severity] == :error ? '#fef3c7' : '#fef9c3' %>; border-left: 4px solid <%= error_context[:severity] == :critical ? '#dc2626' : error_context[:severity] == :error ? '#f59e0b' : '#eab308' %>; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
-        <h3 style="color: <%= error_context[:severity] == :critical ? '#991b1b' : error_context[:severity] == :error ? '#92400e' : '#854d0e' %>; font-size: 20px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 24px;"><%= error_context[:icon] %></span>
+      <div class="error-header <%= severity_bg_class %> <%= severity_border_class %> p-4 rounded-3 mb-3">
+        <h3 class="<%= severity_text_class %> fs-5 fw-bold mb-2 d-flex align-items-center gap-2">
+          <span class="fs-4"><%= error_context[:icon] %></span>
           <%= error_context[:title] %>
         </h3>
 
         <%# Current Status %>
-        <div style="background: rgba(255,255,255,0.7); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-          <div style="font-size: 13px; font-weight: 600; color: <%= error_context[:severity] == :critical ? '#991b1b' : error_context[:severity] == :error ? '#92400e' : '#854d0e' %>; margin-bottom: 4px;">
+        <div class="bg-white bg-opacity-75 p-3 rounded-2 mb-3">
+          <div class="small fw-semibold <%= severity_text_class %> mb-1">
             Current Status:
           </div>
-          <div style="font-size: 14px; color: #1f2937;">
+          <div class="small text-dark">
             <%= error_context[:current_status] %>
           </div>
 
-          <%# Retry Information %>
+          <%# Retry Information (only shown for errors with automatic retries) %>
           <% if error_context[:retry_info] && error_context[:retry_info][:remaining] > 0 %>
-            <div style="margin-top: 8px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 4px;">
-              <div style="font-size: 13px; color: #1e40af;">
+            <div class="mt-2 p-2 bg-info-subtle rounded-2">
+              <div class="small text-primary">
                 <strong>⏱️ Retry Attempt:</strong> <%= error_context[:retry_info][:attempt] %> / <%= error_context[:retry_info][:max_attempts] %>
                 <br>
                 <strong>Remaining Attempts:</strong> <%= error_context[:retry_info][:remaining] %>
               </div>
-              <div id="retry-countdown" style="margin-top: 4px; font-size: 12px; color: #3b82f6;">
+              <div id="retry-countdown" class="mt-1 text-primary" style="font-size: 12px;">
                 Next retry in <span id="countdown-timer">calculating...</span>
               </div>
             </div>
@@ -42,111 +56,185 @@
         </div>
       </div>
 
+      <%# Re-authentication form - shown when credentials have expired but migration data is intact %>
+      <% if error_context[:show_reauth_form] %>
+        <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
+          <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
+            Your migration data is safe — just re-enter your password to continue.
+          </h4>
+          <p class="text-primary small mb-3">
+            Enter your password for <strong><%= @migration.old_handle %></strong> to restore your session and continue the migration.
+          </p>
+          <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <div class="mb-3">
+              <label for="reauth_password" class="form-label small text-primary fw-semibold mb-1">
+                Password for <%= @migration.old_handle %>
+              </label>
+              <input type="password" name="password" id="reauth_password" required
+                     autocomplete="current-password"
+                     placeholder="Enter your account password"
+                     class="form-control">
+            </div>
+            <button type="submit" class="btn btn-lg btn-gradient">
+              Re-authenticate & Continue Migration
+            </button>
+          </form>
+        </div>
+      <% end %>
+
+      <%# PLC Token Action - shown when a new PLC token is needed %>
+      <% if error_context[:show_request_new_plc_token] %>
+        <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
+          <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
+            Your migration data is safe — you just need a fresh PLC token.
+          </h4>
+
+          <% if @migration.has_old_pds_tokens? %>
+            <%# Old PDS session is still valid — can request token automatically %>
+            <p class="text-primary small mb-3">
+              Click the button below to request a new PLC token. You'll receive it via email from <strong><%= @migration.old_pds_host %></strong>.
+            </p>
+            <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post" class="d-inline">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit"
+                      onclick="return confirm('Request a new PLC token from your old PDS?');"
+                      class="btn btn-lg btn-gradient">
+                Request New PLC Token
+              </button>
+            </form>
+          <% else %>
+            <%# Old PDS session expired — need password to re-authenticate %>
+            <p class="text-primary small mb-3">
+              Your session with <strong><%= @migration.old_pds_host %></strong> has expired.
+              Enter your password for <strong><%= @migration.old_handle %></strong> to re-connect and request a new PLC token.
+            </p>
+            <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <div class="mb-3">
+                <label for="reauth_plc_password" class="form-label small text-primary fw-semibold mb-1">
+                  Password for <%= @migration.old_handle %>
+                </label>
+                <input type="password" name="password" id="reauth_plc_password" required
+                       autocomplete="current-password"
+                       placeholder="Enter your account password"
+                       class="form-control">
+              </div>
+              <button type="submit" class="btn btn-lg btn-gradient">
+                Re-authenticate & Request PLC Token
+              </button>
+            </form>
+          <% end %>
+        </div>
+      <% end %>
+
       <%# Expandable Details %>
-      <details class="error-expandable" style="margin-bottom: 16px;">
-        <summary style="cursor: pointer; padding: 16px; background: #f3f4f6; border-radius: 6px; font-weight: 600; color: #374151; font-size: 15px; user-select: none;">
+      <details class="error-expandable mb-3">
+        <summary class="p-3 bg-light rounded-2 fw-semibold text-dark small" style="cursor: pointer; user-select: none;">
           📋 What Happened & What To Do
         </summary>
 
-        <div style="padding: 20px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; margin-top: 8px;">
+        <div class="p-4 bg-white border rounded-2 mt-2">
           <%# What Happened %>
-          <div style="margin-bottom: 20px;">
-            <h4 style="color: #1f2937; font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+          <div class="mb-4">
+            <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
               What Happened:
             </h4>
-            <p style="color: #4b5563; font-size: 14px; line-height: 1.6;">
+            <p class="text-body-secondary small lh-lg">
               <%= error_context[:what_happened] %>
             </p>
           </div>
 
           <%# What To Do %>
-          <div style="margin-bottom: 20px;">
-            <h4 style="color: #1f2937; font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+          <div class="mb-4">
+            <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
               What You Can Do:
             </h4>
-            <ul style="list-style-type: disc; padding-left: 24px; color: #4b5563; font-size: 14px; line-height: 1.8;">
+            <ul class="text-body-secondary small lh-lg ps-4">
               <% error_context[:what_to_do].each do |action| %>
-                <li style="margin-bottom: 6px;"><%= action %></li>
+                <li class="mb-1"><%= action %></li>
               <% end %>
             </ul>
           </div>
 
           <%# Action Buttons %>
-          <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          <div class="d-flex flex-wrap gap-2 mt-4 pt-4 border-top">
+            <% if error_context[:show_request_new_plc_token] %>
+              <%= button_to "📧 Request New PLC Token", request_new_plc_token_by_token_path(@migration.token),
+                  method: :post,
+                  data: { confirm: "Request a new PLC token from your old PDS provider?" },
+                  class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
+            <% end %>
+
             <% if error_context[:show_retry_button] %>
-              <%= link_to "🔄 Retry Migration", retry_migration_by_token_path(@migration.token),
+              <%= button_to "🔄 Retry Migration", retry_migration_by_token_path(@migration.token),
                   method: :post,
                   data: { confirm: "Retry this migration from the current stage?" },
-                  style: "padding: 10px 20px; background: linear-gradient(135deg, #{EuroskyConfig::PRIMARY_COLOR} 0%, #{EuroskyConfig::SECONDARY_COLOR} 100%); color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:show_new_migration_button] %>
               <%= link_to "➕ Start New Migration", new_migration_path,
-                  style: "padding: 10px 20px; background: #10b981; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  class: "btn btn-success d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:check_url] %>
               <%= link_to "🔍 Check PDS Status", error_context[:check_url],
                   target: "_blank",
                   rel: "noopener noreferrer",
-                  style: "padding: 10px 20px; background: #6b7280; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  class: "btn btn-secondary d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:show_download_manifest] && @migration.progress_data&.dig('failed_blobs').present? %>
               <%= link_to "📄 Download Failed Blobs Report", export_recovery_data_migration_by_token_path(@migration.token, format: :txt),
-                  style: "padding: 10px 20px; background: #f59e0b; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
+                  class: "btn btn-warning d-inline-flex align-items-center gap-1" %>
             <% end %>
 
-            <% if error_context[:help_link] %>
-              <%= link_to "📖 View Help Guide", error_context[:help_link],
-                  target: "_blank",
-                  style: "padding: 10px 20px; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;" %>
-            <% end %>
           </div>
 
           <%# Special Sections %>
           <% if error_context[:show_cleanup_instructions] %>
-            <div style="margin-top: 20px; padding: 16px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 6px;">
-              <h4 style="color: #92400e; font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+            <div class="mt-4 p-3 bg-warning-subtle border-start border-4 border-warning rounded-2">
+              <h4 class="text-warning-emphasis fw-bold mb-2" style="font-size: 15px;">
                 🛠️ Cleanup Instructions
               </h4>
-              <p style="color: #92400e; font-size: 13px; margin-bottom: 8px;">
+              <p class="text-warning-emphasis small mb-2">
                 To clean up the orphaned account, run this command (requires server access):
               </p>
-              <code style="display: block; background: rgba(255,255,255,0.8); padding: 12px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow-wrap: break-word;">
+              <code class="d-block bg-white bg-opacity-75 p-3 rounded-2 font-monospace" style="font-size: 12px; overflow-wrap: break-word;">
                 cd scripts && ./cleanup_orphaned_account_db.sh <%= error_context[:did] %>
               </code>
-              <p style="color: #92400e; font-size: 13px; margin-top: 8px;">
+              <p class="text-warning-emphasis small mt-2 mb-0">
                 Or contact the target PDS administrator to manually delete the orphaned account.
               </p>
             </div>
           <% end %>
 
           <% if error_context[:show_rotation_key] && @migration.rotation_key.present? %>
-            <div style="margin-top: 20px; padding: 16px; background: #fee2e2; border-left: 4px solid #dc2626; border-radius: 6px;">
-              <h4 style="color: #991b1b; font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+            <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
+              <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
                 🔑 Your Rotation Key (SAVE THIS)
               </h4>
-              <div style="background: white; padding: 12px; border-radius: 4px; margin: 8px 0; font-family: monospace; font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
+              <div class="bg-white p-3 rounded-2 my-2 font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
                 <%= @migration.rotation_key %>
               </div>
-              <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
-                      style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
+              <button onclick="navigator.clipboard.writeText('<%= j @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
+                      class="btn btn-sm btn-danger fw-semibold">
                 📋 Copy Rotation Key
               </button>
             </div>
           <% end %>
 
           <% if error_context[:show_contact_support] %>
-            <div style="margin-top: 20px; padding: 16px; background: #fee2e2; border-left: 4px solid #dc2626; border-radius: 6px;">
-              <h4 style="color: #991b1b; font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+            <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
+              <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
                 🚨 Contact Support Immediately
               </h4>
-              <p style="color: #991b1b; font-size: 14px; margin-bottom: 8px;">
+              <p class="text-danger-emphasis small mb-2">
                 <strong>Support Email:</strong> <%= error_context[:support_email] %><br>
-                <strong>Migration Token:</strong> <code style="background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 3px;"><%= error_context[:migration_token] %></code>
+                <strong>Migration Token:</strong> <code class="bg-white bg-opacity-75 px-1 rounded-1"><%= error_context[:migration_token] %></code>
               </p>
-              <p style="color: #991b1b; font-size: 13px;">
+              <p class="text-danger-emphasis small mb-0">
                 Include your migration token in your support request for faster assistance.
               </p>
             </div>
@@ -155,46 +243,45 @@
       </details>
 
       <%# Technical Details (Collapsed by Default) %>
-      <details class="technical-details" style="margin-bottom: 16px;">
-        <summary style="cursor: pointer; padding: 12px; background: #f9fafb; border-radius: 6px; font-weight: 600; color: #6b7280; font-size: 14px; user-select: none;">
+      <details class="technical-details mb-3">
+        <summary class="p-3 bg-light rounded-2 fw-semibold text-muted small" style="cursor: pointer; user-select: none;">
           🔧 Technical Details (For Debugging)
         </summary>
 
-        <div style="padding: 16px; background: #1f2937; border-radius: 6px; margin-top: 8px; color: #f3f4f6; font-family: monospace; font-size: 12px; overflow-x: auto;">
-          <div style="margin-bottom: 8px;">
-            <strong style="color: #9ca3af;">Error Message:</strong>
+        <div class="p-3 rounded-2 mt-2 font-monospace" style="background: #1f2937; color: #f3f4f6; font-size: 12px; overflow-x: auto;">
+          <div class="mb-2">
+            <strong class="text-secondary">Error Message:</strong>
           </div>
-          <div style="padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; white-space: pre-wrap; word-break: break-word;">
-<%= error_context[:technical_details] %>
-          </div>
+          <div class="p-2 rounded-2" style="background: rgba(0,0,0,0.3); white-space: pre-wrap; word-break: break-word;"><%= error_context[:technical_details] %></div>
 
           <% if error_context[:job_step] %>
-            <div style="margin-top: 12px;">
-              <strong style="color: #9ca3af;">Job Step:</strong> <%= error_context[:job_step] %>
+            <div class="mt-3">
+              <strong class="text-secondary">Job Step:</strong> <%= error_context[:job_step] %>
             </div>
           <% end %>
 
-          <div style="margin-top: 12px;">
-            <strong style="color: #9ca3af;">Migration Status:</strong> <%= @migration.status %>
+          <div class="mt-3">
+            <strong class="text-secondary">Migration Status:</strong> <%= @migration.status %>
           </div>
 
-          <div style="margin-top: 8px;">
-            <strong style="color: #9ca3af;">Migration Token:</strong> <%= @migration.token %>
+          <div class="mt-2">
+            <strong class="text-secondary">Migration Token:</strong> <%= @migration.token %>
           </div>
 
-          <div style="margin-top: 8px;">
-            <strong style="color: #9ca3af;">DID:</strong> <%= @migration.did %>
+          <div class="mt-2">
+            <strong class="text-secondary">DID:</strong> <%= @migration.did %>
           </div>
         </div>
       </details>
     </div>
 
-    <%# Auto-refresh countdown script %>
+    <%# Auto-refresh countdown script (only when retry info is present) %>
+    <% if error_context[:retry_info] %>
     <script>
       (function() {
         // Estimated retry countdown (approximation based on exponential backoff)
-        const attempt = <%= error_context[:retry_info]&.dig(:attempt) || 0 %>;
-        const maxAttempts = <%= error_context[:retry_info]&.dig(:max_attempts) || 3 %>;
+        const attempt = <%= error_context[:retry_info][:attempt] || 0 %>;
+        const maxAttempts = <%= error_context[:retry_info][:max_attempts] || 3 %>;
 
         if (attempt > 0 && attempt < maxAttempts) {
           // Exponential backoff estimate: 2^attempt seconds
@@ -225,5 +312,6 @@
         }
       })();
     </script>
+    <% end %>
   <% end %>
 <% end %>

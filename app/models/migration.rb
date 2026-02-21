@@ -8,12 +8,32 @@ class Migration < ApplicationRecord
     end
 
     def plc_token
-      return nil if credentials_expired?
+      return nil if plc_token_expired?
       super
     end
 
     def invite_code
       return nil if invite_code_expired?
+      super
+    end
+
+    def old_access_token
+      return nil if credentials_expired?
+      super
+    end
+
+    def old_refresh_token
+      return nil if credentials_expired?
+      super
+    end
+
+    def new_access_token
+      return nil if credentials_expired?
+      super
+    end
+
+    def new_refresh_token
+      return nil if credentials_expired?
       super
     end
   end
@@ -51,6 +71,10 @@ class Migration < ApplicationRecord
   has_encrypted :invite_code, key: lockbox_key, encrypted_attribute: :encrypted_invite_code
   has_encrypted :rotation_key, key: lockbox_key, encrypted_attribute: :rotation_private_key_ciphertext
   has_encrypted :plc_otp, key: lockbox_key, encrypted_attribute: :encrypted_plc_otp
+  has_encrypted :old_access_token, key: lockbox_key, encrypted_attribute: :encrypted_old_access_token
+  has_encrypted :old_refresh_token, key: lockbox_key, encrypted_attribute: :encrypted_old_refresh_token
+  has_encrypted :new_access_token, key: lockbox_key, encrypted_attribute: :encrypted_new_access_token
+  has_encrypted :new_refresh_token, key: lockbox_key, encrypted_attribute: :encrypted_new_refresh_token
 
   # Prepend the expiration check module AFTER Lockbox has defined its methods
   prepend ExpirationChecks
@@ -62,6 +86,7 @@ class Migration < ApplicationRecord
   # Custom validation: Only allow one active migration per DID
   # Allows historical records and future migrations after completion/failure
   validate :no_concurrent_active_migration, on: :create
+  validate :global_migration_capacity_available, on: :create
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :status, presence: true, inclusion: { in: Migration.statuses.keys }
   validates :old_pds_host, :new_pds_host, presence: true
@@ -79,22 +104,28 @@ class Migration < ApplicationRecord
   # PDS host URL validation with SSRF protection
   # validate :validate_pds_hosts
   validates :retry_count, numericality: { greater_than_or_equal_to: 0, only_integer: true }
-  validates :estimated_memory_mb, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   # Validate invite code if required by configuration
-  validates :encrypted_invite_code, presence: true, if: -> { EuroskyConfig.invite_code_required? && new_record? }
+  validates :encrypted_invite_code, presence: true, if: -> { EuroskyConfig.invite_code_required? && new_record? && !migration_in? }
 
   # Callbacks
   before_validation :generate_token, on: :create
   before_validation :generate_email_verification_token, on: :create
   before_validation :normalize_hosts
-  after_create :send_email_verification
+  after_create_commit :send_email_verification
 
   # Scopes
+  # Global migration capacity limit (configurable via env var).
+  # This is intentionally high — the real throttling happens at the
+  # blob-transfer stage (MAX_CONCURRENT_BLOB_MIGRATIONS, default 8).
+  # Fast stages (account creation, repo import, prefs, PLC, activation)
+  # are lightweight API calls that can run for many migrations in parallel.
+  # This limit only exists to prevent abuse (e.g. scripted mass submissions).
+  MAX_CONCURRENT_MIGRATIONS = ENV.fetch('MAX_CONCURRENT_MIGRATIONS', 100).to_i
+
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }
   scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
-  scope :by_memory, -> { order(estimated_memory_mb: :desc) }
   scope :recent, -> { order(created_at: :desc) }
   scope :with_expired_backups, -> { where('backup_expires_at IS NOT NULL AND backup_expires_at < ?', Time.current) }
 
@@ -159,6 +190,14 @@ class Migration < ApplicationRecord
     )
   end
 
+  # Whether this migration can be cancelled by the user.
+  # Cancellation is allowed before the PLC operation is submitted (point of no return).
+  def cancellable?
+    return false if completed? || failed? || pending_activation?
+    return false if progress_data&.dig('plc_operation_submitted_at').present?
+    true
+  end
+
   # Job retry tracking
   def start_job_attempt!(job_name, max_attempts, attempt_number = 1)
     update!(
@@ -187,21 +226,6 @@ class Migration < ApplicationRecord
 
   def job_retrying?
     current_job_attempt.to_i > 1
-  end
-
-  # Check if migration can be safely cancelled
-  def can_cancel?
-    # Cannot cancel during PLC update or after activation
-    !['pending_plc', 'pending_activation', 'completed'].include?(status)
-  end
-
-  def cancel!
-    return false unless can_cancel?
-
-    update!(
-      status: :failed,
-      last_error: "Migration cancelled by user at #{Time.current.iso8601}"
-    )
   end
 
   # Progress tracking
@@ -247,27 +271,21 @@ class Migration < ApplicationRecord
   end
 
   def estimated_time_remaining
-    return nil unless pending_blobs? && progress_data['blobs'].present?
+    return nil unless pending_blobs?
 
-    blobs = progress_data['blobs'].values
-    total_size = blobs.sum { |b| b['size'].to_i }
-    uploaded_size = blobs.sum { |b| b['uploaded'].to_i }
+    completed = progress_data['blobs_completed'].to_i
+    total = progress_data['blobs_total'].to_i
+    started_at = progress_data['blobs_started_at']
 
-    return nil if uploaded_size.zero?
+    return nil if completed.zero? || total.zero? || started_at.blank?
 
-    # Calculate upload rate based on timestamps
-    first_blob = blobs.min_by { |b| b['updated_at'] }
-    last_blob = blobs.max_by { |b| b['updated_at'] }
-
-    return nil unless first_blob && last_blob
-
-    time_elapsed = Time.parse(last_blob['updated_at']) - Time.parse(first_blob['updated_at'])
+    time_elapsed = Time.current - Time.parse(started_at)
     return nil if time_elapsed.zero?
 
-    upload_rate = uploaded_size / time_elapsed
-    remaining_size = total_size - uploaded_size
+    rate = completed.to_f / time_elapsed # blobs per second
+    remaining = total - completed
 
-    (remaining_size / upload_rate).to_i
+    (remaining / rate).to_i
   end
 
   # Credential management
@@ -279,52 +297,23 @@ class Migration < ApplicationRecord
 
   def set_plc_token(token, expires_in: 1.hour)
     self.plc_token = token  # Lockbox handles encryption automatically
-    self.credentials_expires_at = expires_in.from_now
+    # Store PLC token expiry separately in progress_data so it doesn't
+    # overwrite credentials_expires_at (which governs old PDS token access)
+    self.progress_data ||= {}
+    self.progress_data['plc_token_expires_at'] = expires_in.from_now.iso8601
     save!
-  end
-
-  # Generate and store OTP for PLC submission (6-digit code)
-  def generate_plc_otp!(expires_in: 15.minutes)
-    otp = SecureRandom.random_number(1_000_000).to_s.rjust(6, '0')
-    self.plc_otp = otp  # Lockbox handles encryption automatically
-    self.plc_otp_expires_at = expires_in.from_now
-    self.plc_otp_attempts ||= 0
-    save!
-    Rails.logger.info("Generated PLC OTP for migration #{token} (expires at #{plc_otp_expires_at})")
-    otp
-  end
-
-  # Verify PLC OTP with rate limiting (max 5 attempts)
-  def verify_plc_otp(submitted_otp)
-    # Check if OTP has expired
-    if plc_otp_expires_at.nil? || plc_otp_expires_at < Time.current
-      Rails.logger.warn("PLC OTP verification failed for migration #{token}: OTP expired")
-      return { valid: false, error: 'OTP has expired. Please request a new one.' }
-    end
-
-    # Check attempt limit
-    if plc_otp_attempts >= 5
-      Rails.logger.warn("PLC OTP verification failed for migration #{token}: Too many attempts")
-      return { valid: false, error: 'Too many failed attempts. Please request a new OTP.' }
-    end
-
-    # Increment attempts
-    increment!(:plc_otp_attempts)
-
-    # Verify OTP
-    if plc_otp == submitted_otp.to_s.strip
-      Rails.logger.info("PLC OTP verified successfully for migration #{token}")
-      # Clear OTP after successful verification
-      update!(encrypted_plc_otp: nil, plc_otp_expires_at: nil, plc_otp_attempts: 0)
-      return { valid: true }
-    else
-      Rails.logger.warn("PLC OTP verification failed for migration #{token}: Invalid code (attempt #{plc_otp_attempts}/5)")
-      return { valid: false, error: "Invalid OTP. #{5 - plc_otp_attempts} attempts remaining." }
-    end
   end
 
   def credentials_expired?
     credentials_expires_at.nil? || credentials_expires_at < Time.current
+  end
+
+  # PLC token has its own expiry (1 hour) separate from old PDS credentials (48 hours)
+  def plc_token_expired?
+    plc_expires = progress_data&.dig('plc_token_expires_at')
+    return true if plc_expires.nil?
+
+    Time.parse(plc_expires) < Time.current
   end
 
   # Clear all encrypted credentials (for security after migration completes)
@@ -332,9 +321,57 @@ class Migration < ApplicationRecord
     update!(
       encrypted_password: nil,
       encrypted_plc_token: nil,
+      encrypted_old_access_token: nil,
+      encrypted_old_refresh_token: nil,
+      encrypted_new_access_token: nil,
+      encrypted_new_refresh_token: nil,
       credentials_expires_at: nil
     )
     Rails.logger.info("Cleared encrypted credentials for migration #{token}")
+  end
+
+  # Old PDS token management
+  def set_old_pds_tokens!(access_token:, refresh_token:, expires_in: 48.hours)
+    self.old_access_token = access_token
+    self.old_refresh_token = refresh_token
+    self.credentials_expires_at = expires_in.from_now
+    save!
+  end
+
+  def update_old_pds_tokens!(access_token:, refresh_token:)
+    self.old_access_token = access_token
+    self.old_refresh_token = refresh_token
+    save!
+  end
+
+  def has_old_pds_tokens?
+    encrypted_old_refresh_token.present?
+  end
+
+  def clear_old_pds_tokens!
+    update!(
+      encrypted_old_access_token: nil,
+      encrypted_old_refresh_token: nil
+    )
+    Rails.logger.info("Cleared old PDS tokens for migration #{token}")
+  end
+
+  # New (target) PDS token management — used for migration_in when the user
+  # authenticates against their existing account on the target PDS (e.g. bsky.social)
+  def set_new_pds_tokens!(access_token:, refresh_token:)
+    self.new_access_token = access_token
+    self.new_refresh_token = refresh_token
+    save!
+  end
+
+  def update_new_pds_tokens!(access_token:, refresh_token:)
+    self.new_access_token = access_token
+    self.new_refresh_token = refresh_token
+    save!
+  end
+
+  def has_new_pds_tokens?
+    encrypted_new_refresh_token.present?
   end
 
   # Invite code management
@@ -352,10 +389,6 @@ class Migration < ApplicationRecord
   def set_rotation_key(private_key)
     self.rotation_key = private_key  # Lockbox handles encryption automatically
     save!
-  end
-
-  def rotation_key
-    rotation_private_key_ciphertext
   end
 
   # Backup bundle management
@@ -411,16 +444,16 @@ class Migration < ApplicationRecord
     migration_in?
   end
 
-  # Verify email with token
-  def verify_email!(token)
-    if email_verification_token == token
+  # Verify email with code (XXX-XXX format, case-insensitive)
+  def verify_email!(code)
+    if email_verification_token.present? && email_verification_token.upcase == code.to_s.strip.upcase
       update!(email_verified_at: Time.current, email_verification_token: nil)
       Rails.logger.info("Email verified for migration #{self.token}")
       # Now actually start the migration
       schedule_first_job
       true
     else
-      Rails.logger.warn("Invalid email verification token for migration #{self.token}")
+      Rails.logger.warn("Invalid email verification code for migration #{self.token}")
       false
     end
   end
@@ -447,12 +480,15 @@ class Migration < ApplicationRecord
     end
   end
 
-  # Email verification token generation (32 characters = ~190 bits entropy)
+  # Email verification code generation (XXX-XXX format, ~30 bits entropy)
+  # Short human-readable code that the user enters manually on the status page.
+  # This avoids issues with email link scanners auto-loading verification URLs.
   def generate_email_verification_token
     return if email_verification_token.present?
 
+    chars = [*'A'..'Z', *'0'..'9']
     loop do
-      candidate = SecureRandom.urlsafe_base64(32)
+      candidate = "#{Array.new(3) { chars.sample }.join}-#{Array.new(3) { chars.sample }.join}"
       self.email_verification_token = candidate
       break unless Migration.exists?(email_verification_token: candidate)
     end
@@ -507,16 +543,13 @@ class Migration < ApplicationRecord
     base = create_backup_bundle ? 40 : 20
     range = 30
 
-    return base unless progress_data['blobs'].present?
+    completed = progress_data['blobs_completed'].to_i
+    total = progress_data['blobs_total'].to_i
 
-    blobs = progress_data['blobs'].values
-    total_size = blobs.sum { |b| b['size'].to_i }
-    uploaded_size = blobs.sum { |b| b['uploaded'].to_i }
-
-    return base if total_size.zero?
+    return base if total.zero?
 
     # Blobs stage is 40-70% (with backup) or 20-50% (without backup)
-    percentage = (uploaded_size.to_f / total_size * range).round
+    percentage = (completed.to_f / total * range).round
     base + percentage
   end
 
@@ -552,6 +585,16 @@ class Migration < ApplicationRecord
                .where.not(id: id)
                .exists?
       errors.add(:did, "already has an active migration in progress. Please wait for it to complete or fail before starting a new migration.")
+    end
+  end
+
+  # Prevent accepting new migrations when the system is at capacity.
+  # This protects against resource exhaustion when many users submit
+  # migrations simultaneously.
+  def global_migration_capacity_available
+    if Migration.active.count >= MAX_CONCURRENT_MIGRATIONS
+      errors.add(:base, "The migration service is currently at capacity (#{MAX_CONCURRENT_MIGRATIONS} active migrations). " \
+        "Please try again in a few minutes.")
     end
   end
 

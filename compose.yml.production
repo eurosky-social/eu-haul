@@ -188,6 +188,58 @@ services:
     networks:
       - eurosky-internal
 
+  # Dedicated Sidekiq process for critical queue (UpdatePlcJob, ActivateAccountJob)
+  # Runs separately to ensure time-sensitive jobs (PLC tokens expire in 1h)
+  # are never blocked by long-running blob transfer jobs.
+  eurosky-sidekiq-critical:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eurosky-sidekiq-critical-${PARTITION:-production}
+    hostname: eurosky-sidekiq-critical-${PARTITION:-production}
+    command: bundle exec sidekiq -C config/sidekiq_critical.yml
+    environment:
+      RAILS_ENV: production
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres-${PARTITION:-production}:5432/eurosky_migration_production
+      REDIS_URL: redis://:${REDIS_PASSWORD}@eurosky-redis-${PARTITION:-production}:6379/0
+      RAILS_MASTER_KEY: ${MIGRATION_MASTER_KEY}
+      LOCKBOX_MASTER_KEY: ${MIGRATION_MASTER_KEY}
+      ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: ${ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY}
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: ${ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY}
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: ${ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT}
+      PDS_DISABLE_SSRF_PROTECTION: "true"
+      MAILER_FROM_EMAIL: ${MAILER_FROM_EMAIL:-noreply@${DOMAIN}}
+      SMTP_ADDRESS: ${SMTP_ADDRESS}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_DOMAIN: ${SMTP_DOMAIN:-${DOMAIN}}
+    volumes:
+      - eurosky_tmp_data:/rails/tmp
+    depends_on:
+      eurosky-postgres:
+        condition: service_healthy
+      eurosky-redis:
+        condition: service_healthy
+      eurosky-migrate:
+        condition: service_completed_successfully
+      eurosky-web:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pgrep -f sidekiq || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - eurosky-internal
+
   # Caddy reverse proxy for PUBLIC web access
   # Uses custom build with rate limiting plugin
   eurosky-caddy:

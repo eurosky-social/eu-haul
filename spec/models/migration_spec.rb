@@ -129,19 +129,6 @@ RSpec.describe Migration, type: :model do
       end
     end
 
-    describe 'estimated_memory_mb validation' do
-      it 'must be non-negative integer' do
-        migration = described_class.new(valid_attributes.merge(estimated_memory_mb: -100))
-        expect(migration).not_to be_valid
-      end
-
-      it 'accepts zero and positive integers' do
-        [0, 100, 1000].each do |mb|
-          migration = described_class.new(valid_attributes.merge(estimated_memory_mb: mb))
-          expect(migration).to be_valid
-        end
-      end
-    end
   end
 
   describe 'callbacks' do
@@ -555,20 +542,6 @@ RSpec.describe Migration, type: :model do
         expect(in_progress.count).to eq(2)
         statuses = in_progress.pluck(:status)
         expect(statuses).to include('pending_repo', 'pending_blobs')
-      end
-    end
-
-    describe '.by_memory' do
-      before do
-        described_class.first.update!(estimated_memory_mb: 500)
-        described_class.second.update!(estimated_memory_mb: 1000)
-        described_class.third.update!(estimated_memory_mb: 200)
-      end
-
-      it 'orders migrations by memory usage descending' do
-        ordered = described_class.by_memory
-        memory_values = ordered.pluck(:estimated_memory_mb).compact
-        expect(memory_values).to eq(memory_values.sort.reverse)
       end
     end
 

@@ -31,6 +31,9 @@ class CreateAccountJob < ApplicationJob
   # Don't retry account exists errors - they require manual intervention
   discard_on GoatService::AccountExistsError
 
+  # Don't retry invalid invite code errors - user needs to start a new migration
+  discard_on GoatService::InvalidInviteCodeError
+
   def perform(migration_id)
     migration = Migration.find(migration_id)
 
@@ -122,16 +125,44 @@ class CreateAccountJob < ApplicationJob
     Rails.logger.error("[CreateAccountJob] Network error for migration #{migration&.token}: #{e.message}")
     handle_error(migration, e)
 
+  rescue GoatService::InvalidInviteCodeError => e
+    Rails.logger.error("[CreateAccountJob] Invalid invite code for migration #{migration&.token}: #{e.message}")
+    if migration
+      migration.mark_failed!(
+        "The invite code provided for #{migration.new_pds_host} is invalid, expired, or has already been used. " \
+        "Please start a new migration with a valid invite code."
+      )
+
+      begin
+        MigrationMailer.invalid_invite_code(migration).deliver_later
+        Rails.logger.info("[CreateAccountJob] Sent invalid invite code notification email to #{migration.email}")
+      rescue => email_error
+        Rails.logger.error("[CreateAccountJob] Failed to send invalid invite code notification: #{email_error.message}")
+      end
+    end
+    raise
+
   rescue GoatService::AccountExistsError => e
     Rails.logger.error("[CreateAccountJob] Account exists error for migration #{migration&.token}: #{e.message}")
     # This is a special case - account already exists (likely from failed previous migration)
-    # Mark as failed with specific instructions for manual cleanup
+    # Mark as failed and send notification email to user
     if migration
+      target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+
       migration.mark_failed!(
-        "Account already exists on target PDS. This is likely from a previous failed migration attempt. " \
-        "To resolve: 1) Clean up orphaned account: scripts/cleanup_orphaned_account_db.sh #{migration.did} " \
-        "2) Reset migration: docker compose exec web bundle exec rake 'migration:reset_migration[#{migration.token}]'"
+        "Orphaned account exists on target PDS (#{migration.new_pds_host}). " \
+        "Please contact the PDS provider at #{target_pds_support_email} to remove the orphaned account. " \
+        "Include your migration token (#{migration.token}) and DID (#{migration.did}) in your request. " \
+        "Once removed, you can retry this migration."
       )
+
+      # Send orphaned account error email to user
+      begin
+        MigrationMailer.orphaned_account_error(migration).deliver_later
+        Rails.logger.info("[CreateAccountJob] Sent orphaned account error notification email to #{migration.email}")
+      rescue => email_error
+        Rails.logger.error("[CreateAccountJob] Failed to send orphaned account notification: #{email_error.message}")
+      end
     end
     # Re-raise to trigger discard_on (prevents subsequent jobs from running)
     raise

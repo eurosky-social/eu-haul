@@ -9,11 +9,13 @@
 #
 # What This Job Does:
 #   1. Retrieves user-submitted PLC token from migration record (must not be expired)
-#   2. Gets recommended PLC operation from new PDS
-#   3. Signs the PLC operation with old PDS using the token
-#   4. Submits the signed operation to PLC directory
-#   5. Clears the encrypted PLC token for security
-#   6. Advances to pending_activation
+#   2. Generates rotation key and sends it to user (safety net before point of no return)
+#   3. Gets recommended PLC operation from new PDS
+#   4. Injects user's rotation key into PLC operation (highest priority)
+#   5. Signs the PLC operation with old PDS using the token
+#   6. Submits the signed operation to PLC directory
+#   7. Clears the encrypted PLC token for security
+#   8. Advances to pending_activation
 #
 # Retries: 1 time only (this is critical and must succeed or fail definitively)
 # Queue: :critical (highest priority)
@@ -25,6 +27,7 @@
 #   - Only one retry to avoid repeated PLC operations
 #
 # Security:
+#   - Generates and stores rotation key BEFORE PLC submission (user safety net)
 #   - Clears encrypted_plc_token after successful submission
 #   - Logs all PLC operations for audit trail
 #
@@ -53,18 +56,75 @@ class UpdatePlcJob < ApplicationJob
     end
 
     # Step 1: Validate PLC token is present and not expired
-    plc_token = migration.plc_token
-    if plc_token.nil?
-      error_msg = "PLC token is missing or expired (credentials_expires_at: #{migration.credentials_expires_at})"
+    # NOTE: Missing/expired tokens are NOT critical failures - the PLC directory
+    # hasn't been modified yet. We return early (without raising) so the rescue
+    # block doesn't overwrite the error with a "CRITICAL:" prefix.
+    #
+    # Check expiry BEFORE the getter — the ExpirationChecks module returns nil
+    # for expired tokens, so we need to distinguish "expired" from "never set".
+    if migration.plc_token_expired?
+      if migration.encrypted_plc_token.present?
+        error_msg = "PLC token has expired (expired at: #{migration.progress_data&.dig('plc_token_expires_at')}). Please request a new token."
+      else
+        error_msg = "PLC token is missing. Please request a new token."
+      end
       Rails.logger.error(error_msg)
       migration.mark_failed!(error_msg)
-      raise GoatService::AuthenticationError, error_msg
+      return
+    end
+
+    plc_token = migration.plc_token
+    if plc_token.nil?
+      error_msg = "PLC token is missing. Please request a new token."
+      Rails.logger.error(error_msg)
+      migration.mark_failed!(error_msg)
+      return
     end
 
     Rails.logger.info("PLC token retrieved and validated for migration #{migration.token}")
 
+    # Step 1b: Validate all credentials needed for PLC update are available.
+    # Both the new PDS password (for get_recommended_plc_operation) and old PDS
+    # refresh token (for sign_plc_operation) are required. If either is missing,
+    # this is NOT a critical failure (PLC directory hasn't been modified yet).
+    missing = []
+    missing << "new PDS password" if migration.password.nil?
+    missing << "old PDS session" unless migration.has_old_pds_tokens?
+
+    if missing.any?
+      error_msg = "Credentials expired: #{missing.join(' and ')} no longer available. Please re-authenticate to continue."
+      Rails.logger.error(error_msg)
+      migration.mark_failed!(error_msg)
+      return
+    end
+
     # Initialize GoatService
     service = GoatService.new(migration)
+
+    # Step 1c: Generate rotation key BEFORE PLC submission (user's safety net)
+    # The key is pure local crypto (OpenSSL P-256) — no network required.
+    # We store it now so the user has a recovery mechanism if something goes
+    # wrong during or after the PLC update (the point of no return).
+    unless migration.rotation_key.present?
+      Rails.logger.info("Generating rotation key before PLC submission (safety net)")
+      rotation_key = service.generate_rotation_key
+      migration.set_rotation_key(rotation_key[:private_key])
+      migration.progress_data['rotation_key_public'] = rotation_key[:public_key]
+      migration.progress_data['rotation_key_generated_at'] = Time.current.iso8601
+      migration.save!
+      Rails.logger.info("Rotation key generated and stored (public key: #{rotation_key[:public_key]})")
+
+      # Send rotation key email — user's safety net before the point of no return
+      begin
+        MigrationMailer.rotation_key_notice(migration).deliver_later
+        Rails.logger.info("Rotation key notice email queued for #{migration.email}")
+      rescue StandardError => e
+        # Don't block PLC update if email fails — key is safely in the DB
+        Rails.logger.warn("Failed to send rotation key email: #{e.message}")
+      end
+    else
+      Rails.logger.info("Rotation key already exists, skipping generation")
+    end
 
     # Step 2: Get recommended PLC operation from new PDS
     Rails.logger.info("Getting recommended PLC operation parameters from new PDS")
@@ -73,6 +133,20 @@ class UpdatePlcJob < ApplicationJob
     # Update progress
     migration.progress_data['plc_operation_recommended_at'] = Time.current.iso8601
     migration.save!
+
+    # Step 2b: Inject user's rotation key into the unsigned PLC operation
+    # This ensures the key is part of the PLC update itself, giving the user
+    # signing authority over their DID from the moment the operation is submitted.
+    rotation_key_public = migration.progress_data['rotation_key_public']
+    if rotation_key_public.present?
+      Rails.logger.info("Injecting user rotation key into PLC operation (highest priority)")
+      unsigned_op = JSON.parse(File.read(unsigned_op_path))
+      rotation_keys = unsigned_op['rotationKeys'] || []
+      rotation_keys = [rotation_key_public] + rotation_keys.reject { |k| k == rotation_key_public }
+      unsigned_op['rotationKeys'] = rotation_keys
+      File.write(unsigned_op_path, unsigned_op.to_json)
+      Rails.logger.info("Rotation key injected at front of rotationKeys array (#{rotation_keys.length} keys total)")
+    end
 
     # Step 3: Sign the PLC operation with old PDS
     Rails.logger.info("Signing PLC operation with old PDS using token")

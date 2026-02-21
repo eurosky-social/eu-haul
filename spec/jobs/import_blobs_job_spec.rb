@@ -41,8 +41,6 @@ RSpec.describe ImportBlobsJob, type: :job do
           allow(goat_service).to receive(:upload_blob).with(blob_path).and_return(cid)
         end
 
-        # Mock memory estimator
-        allow(MemoryEstimatorService).to receive(:estimate).and_return(100)
       end
 
       it 'processes all blobs successfully' do
@@ -90,14 +88,6 @@ RSpec.describe ImportBlobsJob, type: :job do
         end
 
         described_class.perform_now(migration.id)
-      end
-
-      it 'estimates memory usage' do
-        expect(MemoryEstimatorService).to receive(:estimate).and_return(100)
-        described_class.perform_now(migration.id)
-
-        migration.reload
-        expect(migration.estimated_memory_mb).to eq(100)
       end
 
       it 'updates blob count' do
@@ -180,7 +170,6 @@ RSpec.describe ImportBlobsJob, type: :job do
           allow(goat_service).to receive(:upload_blob).with(blob_path).and_return(cid)
         end
 
-        allow(MemoryEstimatorService).to receive(:estimate).and_return(100)
       end
 
       it 'fetches all pages of blobs' do
@@ -208,7 +197,6 @@ RSpec.describe ImportBlobsJob, type: :job do
           GoatService::NetworkError, 'Download failed'
         )
 
-        allow(MemoryEstimatorService).to receive(:estimate).and_return(100)
       end
 
       it 'marks migration as failed' do
@@ -263,7 +251,6 @@ RSpec.describe ImportBlobsJob, type: :job do
           { 'cids' => [], 'cursor' => nil }
         )
 
-        allow(MemoryEstimatorService).to receive(:estimate).and_return(0)
       end
 
       it 'completes successfully' do
@@ -280,12 +267,6 @@ RSpec.describe ImportBlobsJob, type: :job do
         expect(migration.progress_data['blob_count']).to eq(0)
       end
 
-      it 'sets estimated memory to zero' do
-        described_class.perform_now(migration.id)
-
-        migration.reload
-        expect(migration.estimated_memory_mb).to eq(0)
-      end
     end
 
     context 'with large number of blobs' do
@@ -306,7 +287,6 @@ RSpec.describe ImportBlobsJob, type: :job do
           allow(goat_service).to receive(:upload_blob).with(blob_path).and_return(cid)
         end
 
-        allow(MemoryEstimatorService).to receive(:estimate).and_return(1000)
       end
 
       it 'processes all blobs' do
@@ -341,27 +321,17 @@ RSpec.describe ImportBlobsJob, type: :job do
     end
   end
 
-  describe 'concurrency control' do
-    it 'enforces maximum concurrent blob migrations' do
-      expect(described_class::MAX_CONCURRENT_BLOB_MIGRATIONS).to eq(15)
-    end
-
+  describe 'constants' do
     it 'uses appropriate requeue delay' do
       expect(described_class::REQUEUE_DELAY).to eq(30.seconds)
     end
-  end
 
-  describe 'memory management' do
     it 'defines progress update interval' do
       expect(described_class::PROGRESS_UPDATE_INTERVAL).to eq(10)
     end
 
-    it 'defines garbage collection interval' do
-      expect(described_class::GC_INTERVAL).to eq(50)
-    end
-
     it 'defines parallel blob transfer count' do
-      expect(described_class::PARALLEL_BLOB_TRANSFERS).to eq(10)
+      expect(described_class::PARALLEL_BLOB_TRANSFERS).to eq(50)
     end
   end
 end
