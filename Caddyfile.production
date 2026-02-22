@@ -5,11 +5,8 @@
   # Global options
   email {$LETSENCRYPT_EMAIL}
 
-  # Enable automatic HTTPS via Let's Encrypt
-  auto_https on
-
-  # Admin API (for metrics, debugging - can be disabled in production)
-  admin :2019
+  # Admin API disabled in production for security
+  admin off
 
   # Performance tuning
   servers {
