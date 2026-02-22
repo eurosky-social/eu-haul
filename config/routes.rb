@@ -1,17 +1,17 @@
-require 'sidekiq/web'
+# require 'sidekiq/web'
 
 Rails.application.routes.draw do
   # Mount Sidekiq Web UI with Basic Auth
-  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    ActiveSupport::SecurityUtils.secure_compare(
-      ::Digest::SHA256.hexdigest(username),
-      ::Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_USERNAME', 'admin'))
-    ) & ActiveSupport::SecurityUtils.secure_compare(
-      ::Digest::SHA256.hexdigest(password),
-      ::Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_PASSWORD', ''))
-    )
-  end
-  mount Sidekiq::Web => '/sidekiq'
+  # Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+  #   ActiveSupport::SecurityUtils.secure_compare(
+  #     ::Digest::SHA256.hexdigest(username),
+  #     ::Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_USERNAME', 'admin'))
+  #   ) & ActiveSupport::SecurityUtils.secure_compare(
+  #     ::Digest::SHA256.hexdigest(password),
+  #     ::Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_PASSWORD', ''))
+  #   )
+  # end
+  # mount Sidekiq::Web => '/sidekiq'
 
   # Root route
   root "migrations#new"
