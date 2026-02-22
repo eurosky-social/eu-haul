@@ -112,5 +112,6 @@ Rails.application.configure do
 
   # Allow requests from migration hostnames
   config.hosts << /migration\..+\.theeverythingapp\.de/
+  config.hosts << ENV["DOMAIN"] if ENV["DOMAIN"].present?
   config.hosts << "localhost"
 end
