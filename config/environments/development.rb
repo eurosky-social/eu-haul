@@ -34,16 +34,31 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # ActionMailer configuration for development
-  # Use test delivery method (stores emails in memory, doesn't send)
-  config.action_mailer.delivery_method = :test
-  config.action_mailer.raise_delivery_errors = false
+  # Set to :test to disable real email sending, :smtp to test with real provider
+  config.action_mailer.delivery_method = ENV.fetch('MAILER_DELIVERY_METHOD', 'test').to_sym
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
 
   # Log email delivery to console
   config.action_mailer.logger = Logger.new(STDOUT)
 
+  # SMTP settings (used when delivery_method is :smtp)
+  config.action_mailer.smtp_settings = {
+    address:              ENV.fetch('SMTP_ADDRESS', 'localhost'),
+    port:                 ENV.fetch('SMTP_PORT', 587).to_i,
+    domain:               ENV.fetch('SMTP_DOMAIN', 'localhost'),
+    user_name:            ENV['SMTP_USERNAME'],
+    password:             ENV['SMTP_PASSWORD'],
+    authentication:       ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
+    enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
+  }
+
   # Default URL options for mailer (required for generating links in emails)
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  config.action_mailer.default_options = {
+    from: ENV.fetch('SMTP_FROM_EMAIL', 'noreply@localhost')
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

@@ -1,5 +1,5 @@
 class MigrationMailer < ApplicationMailer
-  default from: ENV.fetch('MAILER_FROM_EMAIL', 'noreply@eurosky-migration.local')
+  # from and reply_to inherited from ApplicationMailer
 
   def account_password(migration, password)
     @migration = migration
