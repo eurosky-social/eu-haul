@@ -35,9 +35,35 @@ class WaitForPlcTokenJob < ApplicationJob
       return
     end
 
-    # Request PLC token from old PDS (sends email to user from their old provider)
+    service = GoatService.new(migration)
+
+    # Step 1: Generate rotation key BEFORE requesting PLC token
+    # The user needs this safety net before the point of no return.
+    # By sending it now, they receive the recovery key email before the
+    # PLC token email from Bluesky, giving them time to save it.
+    unless migration.rotation_key.present?
+      Rails.logger.info("Generating rotation key before PLC token request (safety net)")
+      rotation_key = service.generate_rotation_key
+      migration.set_rotation_key(rotation_key[:private_key])
+      migration.progress_data['rotation_key_public'] = rotation_key[:public_key]
+      migration.progress_data['rotation_key_generated_at'] = Time.current.iso8601
+      migration.save!
+      Rails.logger.info("Rotation key generated and stored (public key: #{rotation_key[:public_key]})")
+
+      # Send rotation key email — user's safety net before the point of no return
+      begin
+        MigrationMailer.rotation_key_notice(migration).deliver_later
+        Rails.logger.info("Rotation key notice email queued for #{migration.email}")
+      rescue StandardError => e
+        # Don't block migration if email fails — key is safely in the DB
+        Rails.logger.warn("Failed to send rotation key email: #{e.message}")
+      end
+    else
+      Rails.logger.info("Rotation key already exists, skipping generation")
+    end
+
+    # Step 2: Request PLC token from old PDS (sends email to user from their old provider)
     begin
-      service = GoatService.new(migration)
       service.request_plc_token
 
       # Update progress to indicate token was requested

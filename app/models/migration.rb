@@ -188,13 +188,22 @@ class Migration < ApplicationRecord
       last_error: error.to_s,
       retry_count: retry_count + 1
     )
+
+    # Send re-authentication email for auth/credential failures.
+    # CRITICAL PLC failures have their own dedicated email — skip those.
+    if error.to_s.match?(/authentication error|credentials expired/i) && !error.to_s.start_with?("CRITICAL:")
+      MigrationMailer.reauthentication_required(self).deliver_later rescue nil
+    end
   end
 
   # Whether this migration can be cancelled by the user.
   # Cancellation is allowed before the PLC operation is submitted (point of no return).
+  # Once the user submits the PLC token and UpdatePlcJob is running, cancellation
+  # is no longer safe — the PLC directory could be modified at any moment.
   def cancellable?
     return false if completed? || failed? || pending_activation?
     return false if progress_data&.dig('plc_operation_submitted_at').present?
+    return false if encrypted_plc_token.present? && !plc_token_expired?
     true
   end
 

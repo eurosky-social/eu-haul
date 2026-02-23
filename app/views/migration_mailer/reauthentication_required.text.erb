@@ -1,0 +1,27 @@
+Re-authentication Required
+=========================
+
+Hello,
+
+Your migration <%= @migration.token %> has been paused because a login session expired. To continue, you need to re-enter your password on the migration status page.
+
+Account Details:
+- Old Handle: @<%= @migration.old_handle %>
+- New Handle: @<%= @migration.new_handle %>
+- Failed Step: <%= @failed_step.to_s.gsub('Job', '').humanize %>
+
+What You Need to Do:
+
+1. Visit your migration status page:
+   <%= @migration_url %>
+
+2. Enter your password for @<%= @migration.old_handle %> to re-authenticate
+
+3. The migration will continue automatically where it left off
+
+YOUR DATA IS SAFE:
+All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.
+
+---
+Migration Token: <%= @migration.token %>
+This email was sent to <%= @migration.email %> because you initiated an account migration.

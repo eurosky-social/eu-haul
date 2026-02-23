@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #f59e0b; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+    .details { background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .button { display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+    .button:hover { background-color: #1d4ed8; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; color: #6b7280; }
+    .info-list { list-style: none; padding: 0; }
+    .info-list li { padding: 5px 0; }
+    .info-list strong { display: inline-block; width: 180px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin: 0;">Re-authentication Required</h1>
+  </div>
+
+  <p>Hello,</p>
+
+  <p>Your migration <strong><%= @migration.token %></strong> has been paused because a login session expired. To continue, you need to re-enter your password on the migration status page.</p>
+
+  <div class="details">
+    <h3 style="margin-top: 0;">Account Details</h3>
+    <ul class="info-list">
+      <li><strong>Old Handle:</strong> @<%= @migration.old_handle %></li>
+      <li><strong>New Handle:</strong> @<%= @migration.new_handle %></li>
+      <li><strong>Failed Step:</strong> <%= @failed_step.to_s.gsub('Job', '').humanize %></li>
+    </ul>
+  </div>
+
+  <h3>What You Need to Do:</h3>
+  <ol>
+    <li>Click the button below to open your migration status page</li>
+    <li>Enter your password for <strong>@<%= @migration.old_handle %></strong> to re-authenticate</li>
+    <li>The migration will continue automatically where it left off</li>
+  </ol>
+
+  <a href="<%= @migration_url %>" class="button">Re-authenticate & Continue</a>
+
+  <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
+    <p style="margin: 0;"><strong>Your data is safe.</strong></p>
+    <p style="margin: 5px 0 0 0;">All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.</p>
+  </div>
+
+  <div class="footer">
+    <p>Migration Token: <%= @migration.token %></p>
+    <p>This email was sent to <%= @migration.email %> because you initiated an account migration.</p>
+  </div>
+</body>
+</html>

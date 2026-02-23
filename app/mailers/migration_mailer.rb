@@ -121,6 +121,18 @@ class MigrationMailer < ApplicationMailer
     )
   end
 
+  def reauthentication_required(migration)
+    @migration = migration
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @error_message = migration.last_error
+    @failed_step = migration.current_job_step || migration.status
+
+    mail(
+      to: migration.email,
+      subject: "Action Required: Re-authentication Needed (#{migration.token})"
+    )
+  end
+
   def cancellation_confirmation(migration)
     @migration = migration
     @confirm_url = confirm_cancellation_by_token_url(
