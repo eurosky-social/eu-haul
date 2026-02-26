@@ -25,7 +25,7 @@ class CredentialHandoffTest < ActiveSupport::TestCase
     @new_handle = "testuser.newpds.com"
     @did = "did:plc:handofftest123"
     @user_real_password = "users_real_p@ssword_456"
-    @old_access_jwt = mock_jwt(exp: 1.hour.from_now.to_i)
+    @old_access_jwt = mock_jwt(exp: 30.seconds.from_now.to_i)  # Expired within 60s buffer so check_access triggers refresh
     @old_refresh_jwt = mock_jwt(exp: 90.days.from_now.to_i)
 
     WebMock.disable_net_connect!(allow_localhost: false)
@@ -85,7 +85,7 @@ class CredentialHandoffTest < ActiveSupport::TestCase
         handle: @old_handle,
         accessJwt: refreshed_access_jwt,
         refreshJwt: refreshed_refresh_jwt
-      }.to_json)
+      }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     # createSession should NOT be called for the old PDS
     create_session_stub = stub_request(:post, "#{@old_pds_host}/xrpc/com.atproto.server.createSession")
@@ -178,7 +178,7 @@ class CredentialHandoffTest < ActiveSupport::TestCase
         handle: @old_handle,
         accessJwt: mock_jwt,
         refreshJwt: mock_jwt
-      }.to_json)
+      }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     service = GoatService.new(migration)
     service.login_old_pds
@@ -204,7 +204,8 @@ class CredentialHandoffTest < ActiveSupport::TestCase
   test "tokens survive across separate GoatService instances (simulating job chain)" do
     migration = create_test_migration
 
-    refreshed_jwt_1 = mock_jwt(exp: 1.hour.from_now.to_i)
+    # Job 1 gets a short-lived access token (expired by the time job 2 runs)
+    refreshed_jwt_1 = mock_jwt(exp: 30.seconds.from_now.to_i)
     refreshed_refresh_1 = mock_jwt(exp: 90.days.from_now.to_i)
 
     # Job 1: Creates a GoatService, uses login_old_pds
@@ -215,7 +216,7 @@ class CredentialHandoffTest < ActiveSupport::TestCase
         handle: @old_handle,
         accessJwt: refreshed_jwt_1,
         refreshJwt: refreshed_refresh_1
-      }.to_json)
+      }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     service1 = GoatService.new(migration)
     service1.login_old_pds
@@ -236,7 +237,7 @@ class CredentialHandoffTest < ActiveSupport::TestCase
         handle: @old_handle,
         accessJwt: refreshed_jwt_2,
         refreshJwt: refreshed_refresh_2
-      }.to_json)
+      }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     service2 = GoatService.new(migration.reload)
     service2.login_old_pds

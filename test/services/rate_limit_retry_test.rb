@@ -145,8 +145,8 @@ class RateLimitRetryTest < ActiveSupport::TestCase
     FileUtils.mkdir_p(blob_path.dirname)
     File.binwrite(blob_path, 'test blob data for upload')
 
-    # Pre-populate access token to avoid login
-    @service.instance_variable_get(:@access_tokens)["#{@migration.new_pds_host}:#{@migration.did}"] = 'test-token'
+    # Stub new PDS login so new_pds_client gets a valid access token
+    stub_new_pds_login
 
     # First request returns 429, second returns success
     stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob")
@@ -170,5 +170,15 @@ class RateLimitRetryTest < ActiveSupport::TestCase
     payload = Base64.strict_encode64({ sub: 'test', exp: exp }.to_json)
     signature = Base64.strict_encode64('mock-signature')
     "#{header}.#{payload}.#{signature}"
+  end
+
+  def stub_new_pds_login
+    stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.server.createSession")
+      .to_return(status: 200, body: {
+        did: @migration.did,
+        handle: @migration.new_handle,
+        accessJwt: mock_jwt,
+        refreshJwt: mock_jwt
+      }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 end

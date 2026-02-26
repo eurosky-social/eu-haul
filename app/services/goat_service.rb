@@ -83,6 +83,17 @@ class TokenPdsClient
     }
   end
 
+  # Override minisky's check_access: when the access token is missing,
+  # refresh using the stored refresh token instead of calling log_in
+  # (which requires a password we don't have).
+  def check_access
+    if config['access_token'].nil?
+      perform_token_refresh
+    else
+      super
+    end
+  end
+
   def save_config
     # Persist refreshed tokens back to the migration record
     @on_token_refresh&.call(config['access_token'], config['refresh_token'])
@@ -116,9 +127,6 @@ class GoatService
     @work_dir = Rails.root.join('tmp', 'goat', migration.did)
     @logger = Rails.logger
 
-    # Session token cache to avoid creating new sessions for every API call
-    @access_tokens = {}
-
     # Ensure work directory exists
     FileUtils.mkdir_p(@work_dir)
   end
@@ -139,14 +147,7 @@ class GoatService
   def login_new_pds
     logger.info("Logging in to new PDS: #{migration.new_pds_host}")
 
-    # Clear any existing new PDS session first to avoid conflicts
-    @pds_clients&.delete(:new_pds)
-
-    # Use DID for login to new PDS
-    password = migration.password
-    logger.info("Password available: #{!password.nil?}, length: #{password&.length || 0}")
-
-    # Create/retrieve minisky client (handles login automatically)
+    # Create/retrieve minisky client (cached via ||= in new_pds_client)
     new_pds_client
 
     logger.info("Successfully logged in to new PDS")
@@ -159,7 +160,6 @@ class GoatService
   def logout_goat
     logger.debug("Clearing PDS sessions")
     clear_pds_clients
-    @access_tokens = {}
   end
 
   # Account Creation Methods
@@ -379,14 +379,9 @@ class GoatService
     # We'll use a direct curl call similar to the test script
     url = "#{migration.old_pds_host}/xrpc/com.atproto.sync.getRepo?did=#{migration.did}"
 
-    # Need to be logged in first to get session
+    # Reuse the minisky client's access token (created/cached by login_old_pds)
     login_old_pds
-
-    # Get access token for OLD PDS using old handle
-    access_token = get_access_token_from_session(
-      pds_host: migration.old_pds_host,
-      identifier: migration.old_handle
-    )
+    access_token = old_pds_client.config['access_token']
 
     # Execute curl to download CAR file with progress and strict timeout
     # --max-time: hard timeout (300s = 5 min)
@@ -576,11 +571,8 @@ class GoatService
     url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob"
     uri = URI(url)
 
-    # Get access token for NEW PDS using DID (uses cached token from login_new_pds)
-    access_token = get_access_token_from_session(
-      pds_host: migration.new_pds_host,
-      identifier: migration.did
-    )
+    # Reuse the minisky client's access token (created/cached by new_pds_client)
+    access_token = new_pds_client.config['access_token']
 
     # Stream from disk to avoid loading entire blob into memory.
     http = Net::HTTP.new(uri.host, uri.port)
@@ -599,11 +591,11 @@ class GoatService
     end
 
     unless response.is_a?(Net::HTTPSuccess)
-      # Check for expired token
+      # Check for expired token - let minisky handle the refresh
       if response.code.to_i == 401
-        logger.info("Token expired, refreshing session and retrying")
-        refresh_access_token(pds_host: migration.new_pds_host, identifier: migration.did)
-        return upload_blob(blob_path)  # Retry with new token
+        logger.info("Token expired, refreshing via minisky and retrying")
+        new_pds_client.check_access
+        return upload_blob(blob_path)  # Retry with refreshed token
       end
 
       # Check for rate-limiting
@@ -927,168 +919,29 @@ class GoatService
     [stdout, stderr, status]
   end
 
-  # Get access token from session cache or create new session
-  # @param pds_host [String] The PDS host to get a token for (old or new PDS)
-  # @param identifier [String] The identifier to use for login (handle or DID)
-  def get_access_token_from_session(pds_host:, identifier:)
-    # Use cache key based on PDS host to support both old and new PDS
-    cache_key = "#{pds_host}:#{identifier}"
-
-    # Return cached token if available
-    return @access_tokens[cache_key] if @access_tokens[cache_key]
-
-    # Create new session and cache the token
-    logger.info("Creating new session for #{pds_host} (#{identifier})")
-    token = create_direct_session(pds_host: pds_host, identifier: identifier)
-    @access_tokens[cache_key] = token
-    token
-  end
-
-  # Refresh access token by clearing cache and creating new session
-  def refresh_access_token(pds_host:, identifier:)
-    cache_key = "#{pds_host}:#{identifier}"
-
-    # Clear cached token
-    @access_tokens.delete(cache_key)
-
-    # Create new session
-    logger.info("Refreshing access token for #{pds_host} (#{identifier})")
-    token = create_direct_session(pds_host: pds_host, identifier: identifier)
-    @access_tokens[cache_key] = token
-    token
-  end
-
-  # Create session directly via API
-  # For old PDS: uses stored refresh token
-  # For new PDS: uses system-generated password
-  # @param pds_host [String] The PDS host to authenticate against
-  # @param identifier [String] The identifier to use for login (handle or DID)
-  def create_direct_session(pds_host:, identifier:, auth_factor_token: nil)
-    if old_pds_host?(pds_host)
-      # Old PDS: refresh session using stored refresh token
-      tokens = refresh_session_with_token(
-        host: pds_host,
-        refresh_token: migration.old_refresh_token
-      )
-      # Persist rotated tokens back to migration record
-      migration.update_old_pds_tokens!(
-        access_token: tokens[:access_token],
-        refresh_token: tokens[:refresh_token]
-      )
-      tokens[:access_token]
-    else
-      # New PDS: create session using system-generated password
-      url = "#{pds_host}/xrpc/com.atproto.server.createSession"
-
-      body = {
-        identifier: identifier,
-        password: migration.password
-      }
-      body[:authFactorToken] = auth_factor_token if auth_factor_token.present?
-
-      response = HTTParty.post(
-        url,
-        headers: { 'Content-Type' => 'application/json' },
-        body: body.to_json,
-        timeout: 30
-      )
-
-      unless response.success?
-        if response.code == 429
-          retry_after = response.headers['Retry-After']&.to_i
-          logger.warn("Rate limit hit during session creation: #{response.code} #{response.message}")
-          raise RateLimitError.new("Failed to create session: #{response.code} #{response.message}", retry_after: retry_after)
-        end
-
-        # Check for 2FA requirement
-        error_body = JSON.parse(response.body) rescue {}
-        if error_body['error'] == 'AuthFactorTokenRequired'
-          logger.info("Two-factor authentication required for #{pds_host} (#{identifier})")
-          raise TwoFactorRequiredError, "Two-factor authentication is required. Please check your email for a sign-in code."
-        end
-
-        raise AuthenticationError, "Failed to create session: #{response.code} #{response.message}"
-      end
-
-      parsed = JSON.parse(response.body)
-      parsed['accessJwt']
-    end
-  rescue RateLimitError
-    raise  # Re-raise rate limit errors
-  rescue TwoFactorRequiredError
-    raise  # Re-raise 2FA errors
-  rescue StandardError => e
-    raise AuthenticationError, "Failed to create direct session: #{e.message}"
-  end
-
-  # Check if a host is the old (source) PDS
-  def old_pds_host?(host)
-    host == migration.old_pds_host
-  end
-
-  # Refresh an ATProto session using a refresh token
-  # Returns { access_token:, refresh_token: } with fresh tokens
-  def refresh_session_with_token(host:, refresh_token:)
-    raise AuthenticationError, "No refresh token available for #{host}" if refresh_token.blank?
-
-    url = "#{host}/xrpc/com.atproto.server.refreshSession"
-
-    response = HTTParty.post(
-      url,
-      headers: {
-        'Authorization' => "Bearer #{refresh_token}"
-      },
-      timeout: 30
-    )
-
-    unless response.success?
-      if response.code == 429
-        retry_after = response.headers['Retry-After']&.to_i
-        raise RateLimitError.new("Rate limit during session refresh: #{response.code} #{response.message}", retry_after: retry_after)
-      end
-      raise AuthenticationError, "Failed to refresh session on #{host}: #{response.code} #{response.message}"
-    end
-
-    parsed = JSON.parse(response.body)
-    {
-      access_token: parsed['accessJwt'],
-      refresh_token: parsed['refreshJwt']
-    }
-  rescue RateLimitError
-    raise
-  rescue AuthenticationError
-    raise
-  rescue StandardError => e
-    raise AuthenticationError, "Failed to refresh session: #{e.message}"
-  end
-
-  # Create a TokenPdsClient for old PDS using stored tokens
-  # Refreshes the access token first to ensure it's valid
+  # Create a TokenPdsClient for old PDS using stored tokens.
+  # Minisky's check_access handles token validation and refresh automatically:
+  # - If the access token is still valid (>60s remaining), it's reused as-is
+  # - If expired or missing, minisky calls refreshSession and persists via save_config
   def create_token_authenticated_client(host:, identifier:)
     logger.info("Creating token-authenticated PDS client for #{host} (#{identifier})")
 
     refresh_token = migration.old_refresh_token
     raise AuthenticationError, "No old PDS refresh token available" if refresh_token.blank?
 
-    # Refresh to get fresh tokens (access token may have expired between jobs)
-    tokens = refresh_session_with_token(host: host, refresh_token: refresh_token)
-
-    # Persist rotated tokens back to migration record
-    migration.update_old_pds_tokens!(
-      access_token: tokens[:access_token],
-      refresh_token: tokens[:refresh_token]
-    )
-
-    # Create client with fresh tokens and a callback to persist future refreshes
     client = TokenPdsClient.new(
       host,
       identifier,
-      access_token: tokens[:access_token],
-      refresh_token: tokens[:refresh_token],
+      access_token: migration.old_access_token,
+      refresh_token: refresh_token,
       on_token_refresh: ->(access, refresh) {
         migration.update_old_pds_tokens!(access_token: access, refresh_token: refresh)
       }
     )
+
+    # Eagerly validate tokens so callers that extract config['access_token']
+    # for direct HTTP calls (e.g. export_repo curl) get a valid token.
+    client.check_access
 
     logger.info("Token-authenticated PDS client created for #{host}")
     client
@@ -1123,47 +976,38 @@ class GoatService
     )
   end
 
-  # Returns a cached PdsClient for the new (target) PDS
-  # For migration_in, uses stored tokens (like old_pds_client) instead of password
+  # Returns a cached client for the new (target) PDS.
+  # Prefers reusing stored tokens (from migration_in or a previous job's password login).
+  # Falls back to password-based login only when no tokens are available.
   def new_pds_client
     @pds_clients ||= {}
     @pds_clients[:new_pds] ||= if migration.has_new_pds_tokens?
       create_new_pds_token_client
     else
-      create_pds_client(
-        host: migration.new_pds_host,
-        identifier: migration.did,
-        password: migration.password
-      )
+      create_new_pds_password_client
     end
   end
 
-  # Creates a token-authenticated client for the new (target) PDS
-  # Used for migration_in where we have pre-authenticated tokens from the wizard
+  # Creates a token-authenticated client for the new (target) PDS.
+  # Used for migration_in where we have pre-authenticated tokens from the wizard,
+  # or for migration_out after the first job persisted tokens.
   def create_new_pds_token_client
     logger.info("Creating token-authenticated client for new PDS: #{migration.new_pds_host}")
 
     refresh_token = migration.new_refresh_token
     raise AuthenticationError, "No new PDS refresh token available" if refresh_token.blank?
 
-    # Refresh to get fresh tokens
-    tokens = refresh_session_with_token(host: migration.new_pds_host, refresh_token: refresh_token)
-
-    # Persist rotated tokens
-    migration.update_new_pds_tokens!(
-      access_token: tokens[:access_token],
-      refresh_token: tokens[:refresh_token]
-    )
-
     client = TokenPdsClient.new(
       migration.new_pds_host,
       migration.did,
-      access_token: tokens[:access_token],
-      refresh_token: tokens[:refresh_token],
+      access_token: migration.new_access_token,
+      refresh_token: refresh_token,
       on_token_refresh: ->(access, refresh) {
         migration.update_new_pds_tokens!(access_token: access, refresh_token: refresh)
       }
     )
+
+    client.check_access
 
     logger.info("Token-authenticated client created for new PDS")
     client
@@ -1171,14 +1015,26 @@ class GoatService
     raise AuthenticationError, "Failed to create token-authenticated client for new PDS: #{e.message}"
   end
 
-  # Creates a new PdsClient and authenticates
-  def create_pds_client(host:, identifier:, password:)
-    logger.info("Creating PDS client for #{host} (#{identifier})")
+  # Creates a client for the new PDS using password-based login (migration_out).
+  # After the first login, persists tokens so subsequent jobs can reuse them
+  # without re-authenticating with the password.
+  def create_new_pds_password_client
+    host = migration.new_pds_host
+    identifier = migration.did
+    logger.info("Creating password-based PDS client for #{host} (#{identifier})")
 
-    client = PdsClient.new(host, identifier, password)
+    client = PdsClient.new(host, identifier, migration.password)
 
     # Perform login to get tokens
     client.log_in
+
+    # Persist tokens so the next job can reuse them via create_new_pds_token_client
+    access_token = client.config['access_token']
+    refresh_token = client.config['refresh_token']
+    if access_token.present? && refresh_token.present?
+      migration.update_new_pds_tokens!(access_token: access_token, refresh_token: refresh_token)
+      logger.info("Persisted new PDS tokens for reuse by subsequent jobs")
+    end
 
     logger.info("PDS client authenticated for #{host}")
     client

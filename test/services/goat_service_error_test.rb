@@ -33,6 +33,11 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   # ============================================================================
 
   test "login_old_pds raises AuthenticationError when refresh token is rejected" do
+    # Use expired access token so check_access triggers a refresh attempt
+    @migration.old_access_token = mock_jwt(exp: 10.seconds.from_now.to_i)
+    @migration.save!
+    @service = GoatService.new(@migration.reload)
+
     stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_return(status: 401, body: { error: 'ExpiredToken', message: 'Token has been revoked' }.to_json)
 
@@ -44,6 +49,11 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   end
 
   test "login_old_pds raises AuthenticationError when PDS unreachable" do
+    # Use expired access token so check_access triggers a refresh attempt
+    @migration.old_access_token = mock_jwt(exp: 10.seconds.from_now.to_i)
+    @migration.save!
+    @service = GoatService.new(@migration.reload)
+
     stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_timeout
 
@@ -198,19 +208,18 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
     end
   end
 
-  test "create_account_on_new_pds raises GoatError for invalid invite code" do
+  test "create_account_on_new_pds raises InvalidInviteCodeError for invalid invite code" do
     @migration.set_invite_code('invalid-code')
 
     stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.server.createAccount")
       .to_return(status: 400, body: { error: 'InvalidInviteCode', message: 'Invite code is invalid or expired' }.to_json)
 
-    error = assert_raises(GoatService::GoatError) do
+    error = assert_raises(GoatService::InvalidInviteCodeError) do
       @service.create_account_on_new_pds('test-token')
     end
 
-    assert_match /Failed to create account/, error.message
-    # The error message contains "Invite code is invalid or expired" from the response
-    assert_match /Invite code is invalid or expired/, error.message
+    assert_match /invite code/, error.message
+    assert_match /invalid, expired, or has already been used/, error.message
   end
 
   # ============================================================================
@@ -218,6 +227,11 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
   # ============================================================================
 
   test "login_old_pds raises AuthenticationError with rate limit info on HTTP 429" do
+    # Use expired access token so check_access triggers a refresh attempt
+    @migration.old_access_token = mock_jwt(exp: 10.seconds.from_now.to_i)
+    @migration.save!
+    @service = GoatService.new(@migration.reload)
+
     stub_request(:post, "#{@migration.old_pds_host}/xrpc/com.atproto.server.refreshSession")
       .to_return(status: 429, body: { error: 'RateLimitExceeded', message: 'Too Many Requests' }.to_json)
 
@@ -329,8 +343,8 @@ class GoatServiceErrorTest < ActiveSupport::TestCase
       blob_path = File.join(tmpdir, 'test_blob')
       File.binwrite(blob_path, 'test blob data')
 
-      # Pre-populate access token to avoid login
-      @service.instance_variable_get(:@access_tokens)["#{@migration.new_pds_host}:#{@migration.did}"] = 'test-token'
+      # Pre-populate new PDS client so upload_blob_request can get the access token
+      stub_new_pds_login
 
       stub_request(:post, "#{@migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob")
         .to_return(status: 429, body: { error: 'RateLimitExceeded' }.to_json)
