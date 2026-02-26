@@ -24,12 +24,12 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
     assert_equal :plc_token_expired, error_type
   end
 
-  test "detect_error_type distinguishes PLC token expiration from general credential expiration" do
-    plc_error = "PLC token has expired"
-    general_error = "credentials expired"
+  test "detect_error_type distinguishes PLC token expiration from credential expiration" do
+    plc_error = "PLC token has expired (expired at: 2026-02-11 20:00:00 UTC). Please request a new token."
+    cred_error = "Credentials expired: old PDS session no longer available. Please re-authenticate to continue."
 
     assert_equal :plc_token_expired, MigrationErrorHelper.detect_error_type(plc_error)
-    assert_equal :credentials_expired, MigrationErrorHelper.detect_error_type(general_error)
+    assert_equal :credentials_need_reauth, MigrationErrorHelper.detect_error_type(cred_error)
   end
 
   # ============================================================================

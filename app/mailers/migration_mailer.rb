@@ -73,6 +73,17 @@ class MigrationMailer < ApplicationMailer
     )
   end
 
+  def plc_token_failed(migration)
+    @migration = migration
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @error_message = migration.last_error
+
+    mail(
+      to: migration.email,
+      subject: "Action Required: Request a New PLC Confirmation Code (#{migration.token})"
+    )
+  end
+
   def critical_plc_failure(migration)
     @migration = migration
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))

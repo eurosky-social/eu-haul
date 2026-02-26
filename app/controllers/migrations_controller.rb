@@ -591,6 +591,42 @@ class MigrationsController < ApplicationController
       return
     end
 
+    # Extend credentials expiry to give UpdatePlcJob time to complete.
+    # The user is actively engaged (just submitted a token), so it's safe to extend.
+    if @migration.credentials_expired?
+      Rails.logger.warn("Credentials expired at PLC token submission for migration #{@migration.token} — cannot extend without re-authentication")
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Your session has expired. Please re-enter your password to continue."
+      return
+    end
+    @migration.update!(credentials_expires_at: 2.hours.from_now)
+    Rails.logger.info("Extended credentials expiry for migration #{@migration.token}")
+
+    # Validate that old PDS tokens are still available (needed for sign_plc_operation)
+    unless @migration.has_old_pds_tokens?
+      Rails.logger.warn("Old PDS tokens missing at PLC token submission for migration #{@migration.token}")
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Your session with #{@migration.old_pds_host} has expired. Please re-enter your password to continue."
+      return
+    end
+
+    # Validate new PDS access is available (needed for get_recommended_plc_operation + submit)
+    if @migration.migration_in?
+      unless @migration.has_new_pds_tokens?
+        Rails.logger.warn("New PDS tokens missing at PLC token submission for migration_in #{@migration.token}")
+        redirect_to migration_by_token_path(@migration.token),
+                    alert: "Your session with #{@migration.new_pds_host} has expired. Please re-enter your password to continue."
+        return
+      end
+    else
+      if @migration.password.nil?
+        Rails.logger.warn("New PDS password missing at PLC token submission for migration #{@migration.token}")
+        redirect_to migration_by_token_path(@migration.token),
+                    alert: "Your credentials have expired. Please re-enter your password to continue."
+        return
+      end
+    end
+
     # Store the encrypted PLC token with expiration
     @migration.set_plc_token(plc_token)
     Rails.logger.info("PLC token accepted for migration #{@migration.token}")

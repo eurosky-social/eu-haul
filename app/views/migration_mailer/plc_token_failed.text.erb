@@ -1,0 +1,51 @@
+PLC CONFIRMATION CODE EXPIRED
+==============================
+
+Your migration needs a fresh confirmation code to continue.
+
+
+YOUR ACCOUNT IS SAFE
+=====================
+
+The PLC directory was NOT modified. Your account remains on
+<%= @migration.old_pds_host %> and all your migration data
+(repository, blobs, preferences) is safely stored and ready.
+
+
+WHAT HAPPENED?
+==============
+
+The confirmation code from your old PDS provider expired before
+it could be used. These codes are only valid for a limited time
+(typically 1 hour).
+
+<% if @error_message.present? %>
+Error Details:
+<%= @error_message %>
+<% end %>
+
+
+WHAT TO DO
+==========
+
+1. Go to your migration status page (link below)
+2. Click "Request New PLC Token" to get a fresh confirmation code
+3. Check your email from <%= @migration.old_pds_host %> for the new code
+4. Enter the code within 1 hour of receiving it
+
+
+View your migration status:
+<%= @migration_url %>
+
+
+Migration Details:
+------------------
+Token: <%= @migration.token %>
+DID: <%= @migration.did %>
+Old PDS: <%= @migration.old_pds_host %>
+New PDS: <%= @migration.new_pds_host %>
+
+
+---
+This is an automated notification from <%= EuroskyConfig::SITE_NAME %>
+Migration Token: <%= @migration.token %>

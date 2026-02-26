@@ -42,26 +42,53 @@ module MigrationErrorHelper
   end
 
   # Detect error type from error message
-  # NOTE: Order matters - more specific patterns must come before broader ones.
-  # PLC token expiration must be checked before generic CRITICAL/PLC patterns.
+  #
+  # Each pattern is anchored (\A) or uses phrases unique to one mark_failed! call
+  # site so that error types never cross-match. See the comments for the exact
+  # messages each pattern targets.
   def self.detect_error_type(error_message)
     case error_message
     when /rate limit|429|RateLimitExceeded/i
       :rate_limit
-    when /network|timeout|connection|unreachable/i
-      :network
-    when /PLC token.*(?:expired|missing)|PLC token has expired|token is missing/i
+
+    # --- PLC-related errors (most specific first) ---
+
+    # PLC OTP token expired or missing (UpdatePlcJob early-return checks)
+    #   "PLC token has expired (expired at: ...). Please request a new token."
+    #   "PLC token is missing. Please request a new token."
+    #   "PLC confirmation code expired. The code from your old PDS..."
+    when /\APLC token has expired/, /\APLC token is missing/, /\APLC confirmation code expired/
       :plc_token_expired
-    when /Credentials expired:.*no longer available.*re-authenticate|New PDS password.*no longer available/i
+
+    # Post-submission critical PLC failure (UpdatePlcJob rescue, plc_submitted=true)
+    #   "CRITICAL: PLC update failed after submission - ..."
+    when /\ACRITICAL: PLC update failed after submission/
+      :critical_plc
+
+    # Pre-submission recoverable PLC failure (UpdatePlcJob rescue, plc_submitted=false)
+    #   "PLC update failed (before submission) - ..."
+    when /\APLC update failed \(before submission\)/
+      :plc_pre_submission_failure
+
+    # --- Credential / auth errors ---
+
+    # Credentials expired — need re-authentication (UpdatePlcJob credential check)
+    #   "Credentials expired: ... no longer available. Please re-authenticate to continue."
+    when /\ACredentials expired:.*re-authenticate/
       :credentials_need_reauth
+
+    # Authentication failure (wrong password, 401, etc.)
     when /authentication|unauthorized|401|invalid password/i
       :authentication
+
+    # --- Infrastructure / data errors ---
+
+    when /network|timeout|connection|unreachable/i
+      :network
     when /already exists|AlreadyExists|orphaned/i
       :account_exists
     when /invite.*code/i
       :invite_code
-    when /expired|credentials expired/i
-      :credentials_expired
     when /blob.*not found|404/i
       :blob_not_found
     when /corrupt|invalid.*format|parse error/i
@@ -70,8 +97,11 @@ module MigrationErrorHelper
       :disk_space
     when /cancelled by user/i
       :cancelled
-    when /CRITICAL|PLC.*failed/i
+
+    # Legacy catch-all for older "CRITICAL:" PLC messages (before pre/post split)
+    when /\ACRITICAL:.*PLC/
       :critical_plc
+
     else
       :generic
     end
@@ -86,14 +116,14 @@ module MigrationErrorHelper
       network_context(migration, retry_attempt, max_attempts)
     when :plc_token_expired
       plc_token_expired_context(migration)
+    when :plc_pre_submission_failure
+      plc_pre_submission_failure_context(migration)
     when :credentials_need_reauth
       credentials_need_reauth_context(migration)
     when :authentication
       authentication_context(migration)
     when :account_exists
       account_exists_context(migration)
-    when :credentials_expired
-      credentials_expired_context(migration)
     when :blob_not_found
       blob_not_found_context(migration)
     when :data_corruption
@@ -246,6 +276,28 @@ module MigrationErrorHelper
     }
   end
 
+  def self.plc_pre_submission_failure_context(migration)
+    {
+      severity: :warning,
+      icon: "⚠️",
+      title: "PLC Update Could Not Complete",
+      what_happened: "The PLC directory update could not be completed, but your account is safe. " \
+                     "The PLC directory was NOT modified — your account remains on #{migration.old_pds_host}.",
+      current_status: "Migration paused — request a new confirmation code to try again",
+      what_to_do: [
+        "Click 'Request New PLC Token' below to get a fresh confirmation code",
+        "Check your email from #{migration.old_pds_host} for the new code",
+        "Submit the new code within 1 hour of receiving it",
+        "Your migration data (repository, blobs, preferences) is safe and ready"
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_request_new_plc_token: true,
+      help_link: "/docs/troubleshooting#plc-token-expiration",
+      old_pds_host: migration.old_pds_host
+    }
+  end
+
   def self.credentials_need_reauth_context(migration)
     {
       severity: :warning,
@@ -264,28 +316,6 @@ module MigrationErrorHelper
       show_reauth_form: true,
       help_link: "/docs/troubleshooting#credential-expiration",
       old_pds_host: migration.old_pds_host
-    }
-  end
-
-  def self.credentials_expired_context(migration)
-    {
-      severity: :error,
-      icon: "⏰",
-      title: "Credentials Expired",
-      what_happened: "Your encrypted credentials have expired. For security, passwords expire after 48 hours and PLC tokens after 1 hour.",
-      current_status: "Migration stopped - credentials no longer valid",
-      what_to_do: [
-        "Start a new migration with fresh credentials",
-        "Complete future migrations within the time limits:",
-        "  • Passwords: 48 hours",
-        "  • PLC tokens: 1 hour after receipt",
-        "Consider using faster network connection if migrations timeout frequently"
-      ],
-      show_retry_button: false,
-      show_retry_info: false,
-      show_new_migration_button: true,
-      help_link: "/docs/troubleshooting#credential-expiration",
-      expired_at: migration.credentials_expires_at
     }
   end
 
@@ -387,6 +417,7 @@ module MigrationErrorHelper
     # The rotation key is generated BEFORE submission as a safety net,
     # so its presence does NOT mean the PLC was updated.
     plc_not_yet_updated = migration.progress_data&.dig('plc_operation_submitted_at').blank?
+    support_email = ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
 
     base_context = {
       severity: :critical,
@@ -399,7 +430,7 @@ module MigrationErrorHelper
         "Your account data is safe and intact",
         migration.rotation_key.present? ? "Your recovery key is available on this page — save it securely" : nil,
         "Save this migration token: #{migration.token}",
-        "Contact support if the issue persists: #{SUPPORT_EMAIL}"
+        "Contact support if the issue persists: #{support_email}"
       ].compact,
       show_retry_button: false,
       show_retry_info: false,
@@ -408,7 +439,7 @@ module MigrationErrorHelper
       show_request_new_plc_token: true,  # Always show for PLC failures - user may need new token
       help_link: "/docs/troubleshooting#critical-plc-failure",
       migration_token: migration.token,
-      support_email: "#{SUPPORT_EMAIL}"
+      support_email: support_email
     }
 
     # If PLC was not yet updated, emphasize token request

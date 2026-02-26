@@ -84,11 +84,15 @@ class UpdatePlcJob < ApplicationJob
     Rails.logger.info("PLC token retrieved and validated for migration #{migration.token}")
 
     # Step 1b: Validate all credentials needed for PLC update are available.
-    # Both the new PDS password (for get_recommended_plc_operation) and old PDS
-    # refresh token (for sign_plc_operation) are required. If either is missing,
-    # this is NOT a critical failure (PLC directory hasn't been modified yet).
+    # For migration_out: needs new PDS password + old PDS session
+    # For migration_in: needs new PDS session (tokens) + old PDS session
+    # If any are missing, this is NOT a critical failure (PLC directory hasn't been modified yet).
     missing = []
-    missing << "new PDS password" if migration.password.nil?
+    if migration.migration_in?
+      missing << "new PDS session" unless migration.has_new_pds_tokens?
+    else
+      missing << "new PDS password" if migration.password.nil?
+    end
     missing << "old PDS session" unless migration.has_old_pds_tokens?
 
     if missing.any?
@@ -165,36 +169,38 @@ class UpdatePlcJob < ApplicationJob
     Rails.logger.info("PLC update completed successfully for migration #{migration.token}")
 
   rescue GoatService::RateLimitError => e
-    Rails.logger.warn("CRITICAL JOB: Rate limit hit for migration #{migration.token}: #{e.message}")
+    Rails.logger.warn("PLC JOB: Rate limit hit for migration #{migration.token}: #{e.message}")
     Rails.logger.warn("Will retry with exponential backoff (up to 3 attempts for this critical job)")
     migration.update(last_error: "Rate limit: #{e.message}")
     raise  # Re-raise to trigger ActiveJob retry with polynomially_longer backoff
 
-  rescue GoatService::AuthenticationError => e
-    Rails.logger.error("CRITICAL FAILURE: Authentication failed for migration #{migration.token}: #{e.message}")
-    Rails.logger.error("This is a critical failure - manual intervention required")
-    migration.mark_failed!("CRITICAL: PLC update failed - Authentication error - #{e.message}")
-    alert_admin_of_critical_failure(migration, e)
-    raise
-  rescue GoatService::NetworkError => e
-    Rails.logger.error("CRITICAL FAILURE: Network error for migration #{migration.token}: #{e.message}")
-    Rails.logger.error("This is a critical failure - manual intervention required")
-    migration.mark_failed!("CRITICAL: PLC update failed - Network error - #{e.message}")
-    alert_admin_of_critical_failure(migration, e)
-    raise
-  rescue GoatService::GoatError => e
-    Rails.logger.error("CRITICAL FAILURE: Goat error for migration #{migration.token}: #{e.message}")
-    Rails.logger.error("This is a critical failure - manual intervention required")
-    migration.mark_failed!("CRITICAL: PLC update failed - #{e.message}")
-    alert_admin_of_critical_failure(migration, e)
-    raise
-  rescue StandardError => e
-    Rails.logger.error("CRITICAL FAILURE: Unexpected error for migration #{migration&.token || migration_id}: #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    Rails.logger.error("This is a critical failure - manual intervention required")
-    if migration
-      migration.mark_failed!("CRITICAL: PLC update failed - #{e.message}")
+  rescue GoatService::AuthenticationError, GoatService::NetworkError, GoatService::GoatError, StandardError => e
+    plc_submitted = migration&.progress_data&.dig('plc_operation_submitted_at').present?
+
+    if plc_submitted
+      # POST-SUBMISSION: The PLC directory may have been modified — this IS critical
+      Rails.logger.error("CRITICAL FAILURE: Error AFTER PLC submission for migration #{migration.token}: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      Rails.logger.error("PLC directory may have been modified - manual intervention required")
+      migration.mark_failed!("CRITICAL: PLC update failed after submission - #{e.message}")
       alert_admin_of_critical_failure(migration, e)
+    else
+      # PRE-SUBMISSION: The PLC directory was NOT modified — this is recoverable
+      Rails.logger.error("PLC update failed BEFORE submission for migration #{migration&.token || migration_id}: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+
+      if migration
+        # Detect PLC OTP token expiry (old PDS returned "Token is expired" during signing)
+        if e.message.match?(/sign PLC operation.*Token is expired|Token is expired.*sign/i) ||
+           e.message.match?(/400 Bad Request.*Token is expired/i)
+          error_msg = "PLC confirmation code expired. The code from your old PDS is only valid for a limited time. Please request a new one."
+        else
+          error_msg = "PLC update failed (before submission) - #{e.message}"
+        end
+
+        migration.mark_failed!(error_msg)
+        alert_user_of_plc_token_failure(migration, e)
+      end
     end
     raise
   end
@@ -209,20 +215,34 @@ class UpdatePlcJob < ApplicationJob
     Rails.logger.error("DID: #{migration.did}")
     Rails.logger.error("Email: #{migration.email}")
     Rails.logger.error("Error: #{error.class.name} - #{error.message}")
-    Rails.logger.error("Status: PLC update failed - requires manual recovery")
+    Rails.logger.error("Status: PLC update SUBMITTED but post-submission step failed - requires manual recovery")
     Rails.logger.error("=" * 80)
 
-    # Send critical failure email to user
+    # Send critical failure email to user (only for post-submission failures)
     begin
       MigrationMailer.critical_plc_failure(migration).deliver_later
       Rails.logger.info("Sent critical failure notification to #{migration.email}")
     rescue => email_error
       Rails.logger.error("Failed to send critical failure email: #{email_error.message}")
     end
+  end
 
-    # TODO: Add additional alerting mechanisms
-    # AdminMailer.critical_migration_failure(migration, error).deliver_later
-    # SlackNotifier.alert_critical_failure(migration, error)
-    # PagerDuty.trigger_incident(migration, error)
+  def alert_user_of_plc_token_failure(migration, error)
+    # Non-critical: PLC was NOT updated, user can request a new token
+    Rails.logger.warn("=" * 80)
+    Rails.logger.warn("PLC UPDATE FAILED (PRE-SUBMISSION) - RECOVERABLE")
+    Rails.logger.warn("Migration Token: #{migration.token}")
+    Rails.logger.warn("DID: #{migration.did}")
+    Rails.logger.warn("Error: #{error.class.name} - #{error.message}")
+    Rails.logger.warn("PLC directory was NOT modified - user can request a new PLC token")
+    Rails.logger.warn("=" * 80)
+
+    # Send a non-scary email telling the user to request a new PLC token
+    begin
+      MigrationMailer.plc_token_failed(migration).deliver_later
+      Rails.logger.info("Sent PLC token failure notification to #{migration.email}")
+    rescue => email_error
+      Rails.logger.error("Failed to send PLC token failure email: #{email_error.message}")
+    end
   end
 end
