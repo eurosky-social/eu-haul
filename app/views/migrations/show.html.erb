@@ -435,19 +435,7 @@
               <%= submit_tag "Complete Migration", class: "btn btn-lg btn-gradient w-100 mt-3", onclick: "return confirm('This will finalize your account migration. This step cannot be undone.\\n\\nAre you sure you want to continue?');" %>
             <% end %>
 
-            <% if @migration.rotation_key.present? %>
-              <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-4 mb-3 small">
-                <div class="fw-semibold mb-1" style="color: #92400e;">🔑 Recovery Key</div>
-                <p class="mb-2" style="color: #78350f;">Save this key securely. It allows you to recover your account if something goes wrong.</p>
-                <div class="bg-white p-2 rounded-2 mb-2 font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
-                  <%= @migration.rotation_key %>
-                </div>
-                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy', 2000)"
-                        class="btn btn-sm btn-warning text-white">
-                  📋 Copy
-                </button>
-              </div>
-            <% end %>
+           
           <% end %>
 
         <% elsif @migration.completed? %>
@@ -516,7 +504,7 @@
 
           <%# Rotation key (collapsible, open by default) %>
           <% if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
-            <details open class="mb-3">
+            <details class="mb-3">
               <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
                 🔑 Account Recovery Key
               </summary>
