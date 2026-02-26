@@ -115,7 +115,6 @@ The application uses Docker Compose to orchestrate the following services:
 
 ### Installed Tools
 - PostgreSQL client
-- goat CLI (v0.2.0) for ATProto migrations
 - curl, wget, bash for scripting
 
 ### Security
@@ -359,14 +358,6 @@ docker-compose exec redis redis-cli -a "${REDIS_PASSWORD}"
 
 # Test connection
 docker-compose exec redis redis-cli -a "${REDIS_PASSWORD}" PING
-```
-
-## goat CLI Integration
-
-The goat CLI is installed in the container and available at `/usr/local/bin/goat`. This tool is used for ATProto account migrations and can be invoked from within the Rails application or via docker exec:
-
-```bash
-docker-compose exec web goat --help
 ```
 
 ## Architecture

@@ -177,9 +177,9 @@ Generates and provides users with a **rotation key** (private key) that:
 ### How It Works
 
 1. **During Account Creation** (CreateAccountJob):
-   - Generates P-256 rotation key pair using `goat key generate`
+   - Generates P-256 rotation key pair using Ruby crypto libraries
    - Stores private key encrypted in migration record
-   - Adds public key to new PDS account with `--first` flag (highest priority)
+   - Adds public key to new PDS account via ATProto API (highest priority)
 
 2. **User Access**:
    - Private key displayed on status page
@@ -206,11 +206,11 @@ goat.add_rotation_key_to_pds(rotation_key[:public_key])
 **New methods** ([app/services/goat_service.rb](u-at-proto/eurosky-migration/app/services/goat_service.rb)):
 
 1. `generate_rotation_key` - Generates P-256 key pair
-   - Calls: `goat key generate --type P-256`
+   - Uses Ruby OpenSSL for key generation
    - Returns: `{ private_key: "z...", public_key: "did:key:z..." }`
 
 2. `add_rotation_key_to_pds` - Adds key to account
-   - Calls: `goat account plc add-rotation-key --first`
+   - Uses ATProto API to update rotation keys
    - Prepends key to rotation key array (highest priority)
 
 #### UI Display
