@@ -1,17 +1,19 @@
 # DeleteMigrationJob - Deletes completed migration records for GDPR compliance
 #
 # This job is scheduled by ActivateAccountJob after successful migration completion.
-# It provides a short grace period (10 minutes) for users to:
+# It provides a 2-day grace period for users to:
 # - View the completion status page
 # - Copy their rotation key
 # - Download their backup bundle (if created)
 # - Receive and read the completion email
 #
+# Users can also trigger immediate deletion via the "Delete my data" button
+# on the completion page, which bypasses this scheduled job.
+#
 # After the grace period, the migration record is permanently deleted because:
 # 1. GDPR compliance - no legitimate reason to store personal data
 # 2. Security - minimize attack surface (encrypted credentials already cleared)
 # 3. User has been emailed all critical information
-# 4. Backup bundle (if created) has limited usefulness after migration
 #
 # What gets deleted:
 # - Migration database record (email, DID, handles, token)
@@ -20,7 +22,7 @@
 #
 # What the user should have saved:
 # - Rotation key (from completion page or email)
-# - Backup bundle (downloaded within 10-minute window)
+# - Backup bundle (downloaded before expiry)
 # - Migration summary (from email)
 #
 # Queue: :low (no urgency, cleanup task)

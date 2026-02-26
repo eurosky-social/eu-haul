@@ -16,9 +16,10 @@ class CleanupOldMigrationsJob < ApplicationJob
   queue_as :low
 
   # Retention periods
-  # Note: Completed migrations are normally deleted immediately by DeleteMigrationJob (10 min grace period)
+  # Note: Completed migrations are normally deleted by DeleteMigrationJob (2-day grace period)
+  # or earlier if the user clicks "Delete my data" on the status page.
   # This cleanup job is a safety net for any completed migrations that weren't caught by DeleteMigrationJob
-  COMPLETED_RETENTION = 1.hour  # Safety net - most are deleted via DeleteMigrationJob at 10 min
+  COMPLETED_RETENTION = 2.days  # Safety net - most are deleted via DeleteMigrationJob or user action
   FAILED_RETENTION = 7.days     # Give users time to retry failed migrations
 
   def perform

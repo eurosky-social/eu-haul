@@ -126,11 +126,16 @@ class ActivateAccountJob < ApplicationJob
     migration.clear_credentials!
     Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
 
-    # Step 6: Schedule migration record deletion for GDPR compliance
-    # Give user 10 minutes to view status page
-    # After that, no reason to keep their personal data
-    Rails.logger.info("Scheduling migration record deletion in 10 minutes (GDPR compliance)")
-    DeleteMigrationJob.set(wait: 10.minutes).perform_later(migration.id)
+    # Step 6: Clear non-essential data from the migration record
+    # Keep only what the user needs: email, rotation key, backup, handles, status
+    Rails.logger.info("Clearing non-essential data from migration record")
+    migration.clear_non_essential_data!
+
+    # Step 7: Schedule migration record deletion for GDPR compliance
+    # Give user 2 days to view status page, download backup, copy rotation key
+    # User can also manually delete via the "Delete my data" button on the status page
+    Rails.logger.info("Scheduling migration record deletion in 2 days (GDPR compliance)")
+    DeleteMigrationJob.set(wait: 2.days).perform_later(migration.id)
 
     Rails.logger.info("=" * 80)
     Rails.logger.info("MIGRATION COMPLETE")
@@ -143,7 +148,7 @@ class ActivateAccountJob < ApplicationJob
       Rails.logger.info("Rotation key in PLC: #{migration.progress_data['rotation_key_public']}")
     end
     Rails.logger.info("Completion email sent to: #{migration.email}")
-    Rails.logger.info("Migration record will be deleted in 10 minutes")
+    Rails.logger.info("Migration record will be auto-deleted in 2 days (or earlier via user action)")
     Rails.logger.info("=" * 80)
 
   rescue GoatService::RateLimitError => e

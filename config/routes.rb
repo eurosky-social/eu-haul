@@ -52,4 +52,5 @@ Rails.application.routes.draw do
   post "/migrate/:token/reauthenticate", to: "migrations#reauthenticate", as: :reauthenticate_by_token
   post "/migrate/:token/request_cancellation", to: "migrations#request_cancellation", as: :request_cancellation_by_token
   get "/migrate/:token/confirm_cancellation", to: "migrations#confirm_cancellation", as: :confirm_cancellation_by_token
+  post "/migrate/:token/confirm_delete", to: "migrations#confirm_delete", as: :confirm_delete_by_token
 end

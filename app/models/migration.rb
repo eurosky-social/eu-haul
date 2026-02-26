@@ -344,6 +344,24 @@ class Migration < ApplicationRecord
     Rails.logger.info("Cleared encrypted credentials for migration #{token}")
   end
 
+  # Clear non-essential data after migration completes.
+  # Keeps only what the user needs on the completion page:
+  # email, rotation_key, token, handles, PDS hosts, status, backup info, migration_type
+  def clear_non_essential_data!
+    update!(
+      encrypted_plc_otp: nil,
+      encrypted_invite_code: nil,
+      invite_code_expires_at: nil,
+      last_error: nil,
+      error_code: nil,
+      current_job_step: nil,
+      current_job_attempt: 0,
+      current_job_max_attempts: 3,
+      retry_count: 0
+    )
+    Rails.logger.info("Cleared non-essential data for migration #{token}")
+  end
+
   # Old PDS token management
   def set_old_pds_tokens!(access_token:, refresh_token:, expires_in: 48.hours)
     self.old_access_token = access_token

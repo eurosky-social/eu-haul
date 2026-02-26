@@ -27,7 +27,7 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
-  before_action :set_migration, only: [:show, :verify_email, :submit_plc_token, :request_new_plc_token, :reauthenticate, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs]
+  before_action :set_migration, only: [:show, :verify_email, :submit_plc_token, :request_new_plc_token, :reauthenticate, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs, :confirm_delete]
   before_action :set_security_headers
 
   # GET /migrations/new
@@ -860,6 +860,38 @@ class MigrationsController < ApplicationController
 
     redirect_to migration_by_token_path(@migration.token),
                 notice: "Migration cancelled successfully. Your account remains unchanged on #{@migration.old_pds_host}. You can start a new migration at any time."
+  end
+
+  # POST /migrate/:token/confirm_delete
+  # Permanently delete a completed migration record at the user's request.
+  # This allows users to delete their data immediately after saving their
+  # rotation key and backup, instead of waiting for the 2-day auto-deletion.
+  def confirm_delete
+    unless @migration.completed?
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: "Only completed migrations can be deleted."
+      return
+    end
+
+    Rails.logger.info("User requested deletion of completed migration #{@migration.token}")
+
+    # Clean up associated files
+    @migration.cleanup_backup! if @migration.backup_bundle_path.present?
+    @migration.cleanup_downloaded_data! if @migration.downloaded_data_path.present?
+
+    # Delete the migration record
+    token = @migration.token
+    @migration.destroy!
+
+    Rails.logger.info("Migration #{token} deleted at user request")
+
+    # Redirect to root with a confirmation message
+    redirect_to root_path,
+                notice: "All migration data has been permanently deleted. Thank you for using #{EuroskyConfig::SITE_NAME}!"
+  rescue StandardError => e
+    Rails.logger.error("Failed to delete migration #{@migration&.token}: #{e.message}")
+    redirect_to migration_by_token_path(@migration.token),
+                alert: "Failed to delete migration data. Please try again."
   end
 
   # GET /migrations/:id/status
