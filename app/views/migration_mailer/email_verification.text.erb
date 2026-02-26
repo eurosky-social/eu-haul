@@ -1,37 +1,37 @@
-VERIFY YOUR EMAIL - START ACCOUNT MIGRATION
+<%= t('mailers.email_verification.heading') %>
 ==========================================
 
-Migration Token: <%= @migration.token %>
+<%= t('mailers.email_verification.migration_token', token: @migration.token) %>
 
 Hello,
 
-You've initiated a migration for <%= @migration.old_handle %> to <%= @migration.new_pds_host %>.
+<%= t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host) %>
 
-Enter the following verification code on the migration page to start the process:
+<%= t('mailers.email_verification.enter_code') %>
 
     <%= @migration.email_verification_token %>
 
-Go to the migration page: <%= @status_url %>
+<%= t('mailers.email_verification.go_to_page') %> <%= @status_url %>
 
 
-WHAT HAPPENS NEXT?
+<%= t('mailers.email_verification.what_next') %>
 -------------------
-- Enter the verification code above on the migration page
-- Your migration will start automatically
-- You'll receive status updates via email
-- The entire process takes approximately 20-30 minutes
+- <%= t('mailers.email_verification.next_step1') %>
+- <%= t('mailers.email_verification.next_step2') %>
+- <%= t('mailers.email_verification.next_step3') %>
+- <%= t('mailers.email_verification.next_step4') %>
 
 
-IMPORTANT REMINDERS
+<%= t('mailers.email_verification.important') %>
 -------------------
-- Do not use your account during the migration
-- Any activity during migration will not be transferred
-- Close all apps and browser tabs with your account
-- Wait for the completion email before logging in again
+- <%= t('mailers.email_verification.reminder1') %>
+- <%= t('mailers.email_verification.reminder2') %>
+- <%= t('mailers.email_verification.reminder3') %>
+- <%= t('mailers.email_verification.reminder4') %>
 
 
 ---
 
-If you didn't initiate this migration, please ignore this email.
+<%= t('mailers.email_verification.not_you') %>
 
-Eurosky Migration Service
+<%= t('mailers.common.eurosky_migration') %>

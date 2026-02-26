@@ -1,38 +1,38 @@
-Eurosky Migration Failed - Action Required
+<%= t('mailers.migration_failed.heading') %>
 ==========================================
 
 Hello,
 
-Your account migration <%= @migration.token %> has encountered an error and needs your attention.
+<%= t('mailers.migration_failed.intro', token: @migration.token) %>
 
-Account Details:
-- DID: <%= @migration.did %>
-- Old Handle: @<%= @migration.old_handle %>
-- New Handle: @<%= @migration.new_handle %>
+<%= t('mailers.migration_failed.account_details') %>
+- <%= t('mailers.migration_failed.did', did: @migration.did) %>
+- <%= t('mailers.migration_failed.old_handle', handle: @migration.old_handle) %>
+- <%= t('mailers.migration_failed.new_handle', handle: @migration.new_handle) %>
 
-Failure Information:
-- Failed Step: <%= @failed_step.to_s.humanize %>
-- Error: <%= @error_message %>
-- Previous Retry Attempts: <%= @retry_count %>
+<%= t('mailers.migration_failed.failure_info') %>
+- <%= t('mailers.migration_failed.failed_step', step: @failed_step.to_s.humanize) %>
+- <%= t('mailers.migration_failed.error', error: @error_message) %>
+- <%= t('mailers.migration_failed.previous_retries', count: @retry_count) %>
 
-What You Can Do:
+<%= t('mailers.migration_failed.what_to_do') %>
 
-1. Review the Migration Status:
+1. <%= t('mailers.migration_failed.do_step1') %>
    <%= @migration_url %>
 
-2. Click the "Retry Migration" button to attempt the migration again
+2. <%= t('mailers.migration_failed.do_step2') %>
 
-3. If the problem persists after multiple retries, please contact support with your migration token: <%= @migration.token %>
+3. <%= t('mailers.migration_failed.do_step3', token: @migration.token) %>
 
-Common Issues and Solutions:
-- Network timeouts: Usually resolve on retry
-- Rate limiting: Wait a few minutes before retrying
-- Missing data: Check if all data is accessible on the old PDS
+<%= t('mailers.migration_failed.common_issues') %>
+- <%= t('mailers.migration_failed.issue1') %>
+- <%= t('mailers.migration_failed.issue2') %>
+- <%= t('mailers.migration_failed.issue3') %>
 
-IMPORTANT:
-- Your data on the old PDS remains intact
-- You can safely retry the migration
-- If you need help, reference your migration token: <%= @migration.token %>
+<%= t('mailers.migration_failed.important') %>
+- <%= t('mailers.migration_failed.note1') %>
+- <%= t('mailers.migration_failed.note2') %>
+- <%= t('mailers.migration_failed.note3', token: @migration.token) %>
 
 ---
-Eurosky Migration Service
+<%= t('mailers.common.eurosky_migration') %>

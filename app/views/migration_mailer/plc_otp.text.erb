@@ -1,46 +1,46 @@
-PLC VERIFICATION CODE
+<%= t('mailers.plc_otp.heading') %>
 Migration <%= @migration.token %>
 
-CRITICAL: Point of No Return
+<%= t('mailers.plc_otp.critical') %>
 ============================
 
 Hello,
 
-Your migration is ready for the final, IRREVERSIBLE step. You're about to submit your PLC token to redirect your DID to the new PDS.
+<%= t('mailers.plc_otp.intro') %>
 
-YOUR VERIFICATION CODE:
+<%= t('mailers.plc_otp.your_code') %>:
 
     <%= @otp %>
 
-Expires in: <%= @expires_in %>
+<%= t('mailers.plc_otp.expires_in', time: @expires_in) %>
 
 
-🚨 THIS IS THE POINT OF NO RETURN
+<%= t('mailers.plc_otp.point_of_no_return') %>
 
-Once you submit this code along with your PLC token, your account will be permanently migrated to the new PDS.
+<%= t('mailers.plc_otp.point_of_no_return_detail') %>
 
-- Your DID will point to the new PDS immediately
-- You cannot undo this operation
-- Make sure your new account is ready before proceeding
+- <%= t('mailers.plc_otp.did_will_point') %>
+- <%= t('mailers.plc_otp.cannot_undo') %>
+- <%= t('mailers.plc_otp.ensure_ready') %>
 
 
-How to Use This Code:
+<%= t('mailers.plc_otp.how_to_use') %>:
 
-1. Go to your migration status page:
+1. <%= t('mailers.plc_otp.step1') %>:
    <%= @migration_url %>
 
-2. Enter your PLC token (from your old PDS email)
+2. <%= t('mailers.plc_otp.step2') %>
 
-3. Enter this verification code: <%= @otp %>
+3. <%= t('mailers.plc_otp.step3', code: @otp) %>
 
-4. Submit both to complete the migration
+4. <%= t('mailers.plc_otp.step4') %>
 
-Note: You have 5 attempts to enter the correct code. After that, you'll need to request a new one.
+Note: <%= t('mailers.plc_otp.attempts_note') %>
 
 
 ---
 Migration Token: <%= @migration.token %>
 
-If you didn't request this code, someone may be attempting to access your migration.
+<%= t('mailers.plc_otp.not_you') %>
 
-Eurosky Migration Service
+<%= t('mailers.common.eurosky_migration') %>

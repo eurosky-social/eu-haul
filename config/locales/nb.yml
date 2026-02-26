@@ -1,0 +1,652 @@
+nb:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Start kontomigrering"
+    privacy_policy: "Personvernerklaering"
+    terms_of_service: "Vilkar for bruk"
+    background_attribution: "Bakgrunnsbilde:"
+    background_attribution_by: "av"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Språk"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Start kontomigrering"
+      errors_heading: "Vennligst rett opp følgende feil:"
+
+      # Progress bar labels
+      progress:
+        account: "Konto"
+        email: "E-post"
+        destination: "Destinasjon"
+        handle: "Handle"
+        review: "Gjennomgang"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Steg 1: Kontoinformasjon"
+        handle_label: "Din handle"
+        handle_placeholder: "dinhandle.bsky.social"
+        handle_help: "Skriv inn din nåværende AT Protocol-handle"
+        password_label: "Kontopassord"
+        password_help: "Ditt nåværende kontopassord"
+        two_factor_title: "Tofaktorautentisering"
+        two_factor_help: "En innloggingskode er sendt til e-posten din. Skriv den inn nedenfor."
+        two_factor_placeholder: "Skriv inn innloggingskoden din"
+        continue: "Fortsett"
+
+      # Step 2: Email
+      step2:
+        title: "Steg 2: E-postadresse"
+        email_label: "E-postadresse"
+        email_help: "Vi sender oppdateringer om migreringsstatusen til denne e-posten"
+        email_readonly_help: "E-post hentet fra kontoen din"
+        email_manual_help: "Vi kunne ikke hente e-posten din. Vennligst skriv den inn manuelt."
+        confirm_access: "Jeg har tilgang til denne e-postadressen og kan hente en bekreftelseskode sendt dit."
+        back: "Tilbake"
+        continue: "Fortsett"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Steg 3: Destinasjonsserver"
+        server_label: "Destinasjonsserver"
+        server_placeholder: "Velg en server..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Egendefinert server..."
+        server_help: "Velg hvor du vil migrere kontoen din"
+        custom_url_label: "Egendefinert server-URL"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Skriv inn den fullstendige URL-en til den egendefinerte serveren"
+        invite_code_label: "Invitasjonskode"
+        invite_code_placeholder: "Skriv inn invitasjonskoden din"
+        invite_code_help: "Denne serveren krever en invitasjonskode"
+        existing_account_title: "Eksisterende konto funnet"
+        existing_account_help: "Kontoen din finnes allerede på destinasjonsserveren. Vennligst bekreft passordet ditt for å fortsette med migreringen."
+        target_password_label: "Ditt passord på målserveren"
+        target_password_placeholder: "Skriv inn passordet ditt for den eksisterende kontoen"
+        target_2fa_label: "Innloggingskode (2FA)"
+        target_2fa_help: "Sjekk e-posten din for tofaktorautentiseringskoden"
+        deactivated_notice: "Denne kontoen ser ut til å være deaktivert"
+        deactivated_reason: "(muligens fra et tidligere migreringsforsøk)."
+        deactivated_help: "Hvis du ikke husker passordet ditt, kan du prøve:"
+        deactivated_reset: "Tilbakestill passordet ditt:"
+        deactivated_contact: "Kontakt PDS-administratoren på %{email} for å fjerne denne inaktive kontoen og starte migreringen på nytt. Inkluder din DID:"
+        back: "Tilbake"
+        continue: "Fortsett"
+
+      # Step 4: New Handle
+      step4:
+        title: "Steg 4: Ny handle"
+        custom_domain_title: "Egendefinert domene oppdaget"
+        custom_domain_help: "Din handle %{handle} er et egendefinert domene. Du kan fortsette å bruke det på den nye serveren."
+        keep_handle: "Behold min nåværende handle"
+        new_handle_label: "Din nye handle"
+        new_handle_placeholder: "brukernavn"
+        new_handle_help: "Velg din nye handle (kan være den gamle) på destinasjonsserveren"
+        back: "Tilbake"
+        continue: "Fortsett"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Steg 5: Gjennomgang og bekreftelse"
+        current_handle: "Nåværende handle:"
+        email: "E-post:"
+        destination_server: "Destinasjonsserver:"
+        new_handle: "Ny handle:"
+        invite_code: "Invitasjonskode:"
+        create_backup: "Opprett en sikkerhetskopi før migrering"
+        backup_help: "Laster ned en komplett kopi av kontodataene dine. Tilgjengelig i 24 timer."
+        confirm_email_html: "Når du klikker <strong>Fortsett</strong>, sender vi en bekreftelses-e-post til <strong>%{email}</strong>. Migreringen starter først når du bekrefter via den e-posten."
+        no_usage_title: "Ikke bruk kontoen din under migrering"
+        no_usage_help: "Når migreringen starter, lukk alle apper og nettleserfaner med kontoen din. Innlegg, likerklikk eller følginger gjort under migreringen vil ikke bli overført. Du mottar en e-post når den er fullført (~20-30 minutter)."
+        acknowledge: "Jeg forstår at jeg ikke bør bruke kontoen min under migrering"
+        back: "Tilbake"
+        continue: "Fortsett"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Vennligst skriv inn en handle"
+      enter_password: "Vennligst skriv inn passordet ditt"
+      handle_needs_domain: "Handle må inkludere et domene (f.eks. user.bsky.social)"
+      authenticating: "Autentiserer..."
+      authenticating_details: "Autentiserer og henter kontodetaljer..."
+      two_factor_sent: "En innloggingskode er sendt til e-posten din. Skriv den inn ovenfor og klikk Fortsett igjen."
+      auth_success: "Autentisering vellykket!"
+      network_error: "Nettverksfeil. Vennligst prøv igjen."
+      continue: "Fortsett"
+      # Step 2
+      email_readonly_help: "E-post hentet fra kontoen din"
+      email_manual_help: "Vi kunne ikke hente e-posten din. Vennligst skriv den inn manuelt."
+      enter_email: "Vennligst skriv inn e-postadressen din"
+      invalid_email: "Vennligst skriv inn en gyldig e-postadresse"
+      confirm_email_access: "Vennligst bekreft at du har tilgang til denne e-postadressen."
+      # Step 3
+      select_server: "Vennligst velg en server eller skriv inn en egendefinert server-URL"
+      checking_server: "Sjekker server..."
+      checking_requirements: "Sjekker serverkrav..."
+      server_verified: "Server verifisert!"
+      failed_verify_pds: "Kunne ikke verifisere PDS. Vennligst sjekk URL-en."
+      invite_code_required: "Denne serveren krever en invitasjonskode. Vennligst skriv den inn nedenfor, og klikk deretter Fortsett."
+      enter_invite_code: "Vennligst skriv inn en invitasjonskode for å fortsette."
+      checking_existing: "Sjekker for eksisterende konto..."
+      verifying_credentials: "Verifiserer legitimasjon..."
+      authenticating_existing: "Autentiserer med din eksisterende konto..."
+      credentials_verified: "Legitimasjon verifisert!"
+      enter_target_password: "Vennligst skriv inn passordet ditt for denne serveren"
+      # Step 4
+      custom_domain_help: "Din handle {handle} er et egendefinert domene. Du kan fortsette å bruke det på den nye serveren."
+      enter_handle_short: "Vennligst skriv inn en handle"
+      checking_availability: "Sjekker tilgjengelighet..."
+      checking_handle: "Sjekker om handlen er tilgjengelig..."
+      handle_taken: "Denne handlen er allerede tatt. Vennligst velg en annen."
+      all_checks_passed: "Alle sjekker bestått!"
+      using_existing_handle: "Bruker din eksisterende handle på målserveren."
+      keeping_custom_handle: "Beholder din egendefinerte domene-handle!"
+      handle_available_checking: "Handle tilgjengelig, sjekker for eksisterende kontoer..."
+      checking_existing_accounts: "Sjekker for eksisterende kontoer..."
+      failed_check_availability: "Kunne ikke sjekke tilgjengelighet. Vennligst prøv igjen."
+      failed_check_existing: "Kunne ikke sjekke for eksisterende kontoer: "
+      account_exists_title: "Konto finnes allerede på målserveren"
+      account_exists_what: "En konto med din DID finnes allerede på målserveren (%{pds}). Dette kan skyldes et tidligere migreringsforsøk."
+      account_exists_do: "Gå tilbake til forrige steg og skriv inn passordet ditt for den eksisterende kontoen. Hvis du ikke kjenner passordet:"
+      account_exists_reset: "Prøv å tilbakestille passordet ditt:"
+      account_exists_contact: "Kontakt serverleverandøren på <strong>%{email}</strong> for å fjerne den foreldreløse kontoen"
+      account_exists_did: "Inkluder din DID:"
+      # Step 5
+      confirm_email_html: "Når du klikker <strong>Fortsett</strong>, sender vi en bekreftelses-e-post til <strong>{email}</strong>. Migreringen starter først når du bekrefter via den e-posten."
+      confirm_no_usage: "Vennligst bekreft at du forstår at du ikke må bruke kontoen din under migrering."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migrering %{token}"
+      migration_status: "Migreringsstatus"
+      status_label: "Status:"
+      retry_info: "Forsøk %{attempt}/%{max} - %{step}"
+      verify_email: "Bekreft e-posten din"
+      enter_verification: "Skriv inn bekreftelseskoden din"
+      verification_sent: "Vi har sendt en kode til <strong>%{email}</strong>. Skriv den inn nedenfor for å starte migreringen."
+      verification_label: "Bekreftelseskode"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Bekreft og start migrering"
+      didnt_receive: "Mottok du ikke e-posten?"
+      check_spam: "Sjekk spam- eller søppelpostmappen din"
+      check_email_correct: "Kontroller at <strong>%{email}</strong> er riktig"
+      email_delay: "E-posten kan ta noen minutter å komme frem"
+
+      # Queue
+      in_queue: "I kø"
+      queue_default: "Venter på at andre migreringer skal fullføre dataoverføring"
+      queue_auto_start: "Migreringen din starter automatisk når en plass blir ledig."
+
+      # Blob conversion
+      converting_blobs: "Konverterer eldre blob-format"
+      converting_blobs_detail: "dette kan ta noen minutter..."
+      blobs_converted: "Eldre blob-format konvertert."
+
+      # Blob progress
+      blobs_uploaded: "Blober lastet opp"
+      files: "filer"
+      data_transferred: "Data overført"
+      failed: "Mislykket"
+      preparing_blobs: "Forbereder overføring av <strong>%{count}</strong> blober..."
+
+      # Download/backup progress
+      downloading_account: "Laster ned kontodata"
+      downloading_detail: "laster ned ditt depot + blober for sikkerhetskopi..."
+      creating_backup: "Oppretter sikkerhetskopipakke"
+      creating_backup_detail: "pakker kontodataene dine..."
+      downloaded_count: "Lastet ned: %{downloaded} / %{total} blober"
+      backup_expired: "Sikkerhetskopi utløpt"
+      backup_expired_detail: "sikkerhetskopipakken din er slettet fra serverne våre."
+
+      # PLC pending
+      updating_identity: "Oppdaterer identiteten din"
+      plc_accepted: "Bekreftelseskoden din er godtatt. Vi oppdaterer nå PLC-katalogoppføringen din til å peke til <strong>%{pds}</strong>. Dette kan ta et øyeblikk."
+      page_auto_update: "Denne siden oppdateres automatisk. Vennligst ikke lukk denne fanen."
+      enter_confirmation: "Skriv inn bekreftelseskoden din"
+      confirmation_hint: "Sjekk e-posten din for en kode fra <strong>%{pds}</strong> &mdash; den ser ut som <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Bekreftelseskode"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Fullfør migrering"
+      complete_confirm: "Dette vil fullføre kontomigreringen din. Dette steget kan ikke angres.\n\nEr du sikker på at du vil fortsette?"
+
+      # Completed
+      completed_title: "Migrering fullført!"
+      completed_migrated_to: "Kontoen din er migrert til <strong>%{pds}</strong>. Du kan nå logge inn med din nye handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Kontoen din er migrert tilbake til <strong>%{pds}</strong>. Du kan nå logge inn med din handle: <strong>%{handle}</strong>"
+      email_sent_html: "Vi har sendt en e-post til %{email} med ditt nye kontopassord, innloggingsinstruksjoner og en lenke for å endre passordet ditt. Vennligst sjekk innboksen din (og spam-mappen)."
+      save_rotation_key: "LAGRE ROTASJONSNØKKELEN DIN!"
+      page_auto_delete: "Denne siden slettes automatisk om 2 dager."
+      rotation_key_needed: "Rotasjonsnøkkelen din trengs for kontogjenoppretting. Kopier den nå og oppbevar den sikkert!"
+      copy_rotation_key: "Kopier rotasjonsnøkkel"
+      key_emailed: "Vi har også sendt denne nøkkelen til <strong>%{email}</strong>"
+      privacy_notice: "Personvernerklæring"
+      privacy_detail: "For ditt personvern og GDPR-overholdelse vil denne migreringsposten automatisk slettes om <strong>2 dager</strong>. Sørg for at du har lagret rotasjonsnøkkelen din og lastet ned sikkerhetskopien din før det!"
+      privacy_delete_now: "Når du har lagret alt, kan du slette dataene dine umiddelbart med knappen nedenfor."
+      delete_confirm: "Er du sikker på at du vil slette alle migreringsdata permanent?\n\nSørg for at du har:\n• Kopiert rotasjonsnøkkelen din\n• Lastet ned sikkerhetskopien din (hvis aktuelt)\n\nDenne handlingen kan ikke angres."
+      delete_button: "Jeg har lagret sikkerhetskopien og rotasjonsnøkkelen min — slett alle mine data"
+      welcome_back: "Dine gamle kontolegitimasjoner er sikkert slettet. Velkommen tilbake!"
+      welcome_new: "Dine gamle kontolegitimasjoner er sikkert slettet. Velkommen til ditt nye hjem!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Kontogjenopprettingsnøkkel"
+      recovery_key_important: "VIKTIG:"
+      recovery_key_help: "Lagre denne rotasjonsnøkkelen sikkert. Den lar deg tilbakestille PLC-endringer eller gjenopprette kontoen din."
+      copy_clipboard: "Kopier til utklippstavlen"
+      revert_title: "Hvordan bruke denne nøkkelen til å tilbakestille endringer"
+      revert_help: "Hvis du trenger å tilbakestille PLC-katalogendringene, kan du bruke denne rotasjonsnøkkelen:"
+      revert_step1: "Installer CLI-verktøyet <code>goat</code>"
+      revert_step2: "Hent PLC-historikken din: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identifiser ønsket historisk tilstand (CID)"
+      revert_step4: "Opprett tilbakestillingsoperasjon: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Signer med rotasjonsnøkkelen din: <code>goat plc sign</code>"
+      revert_step6: "Send inn den signerte operasjonen: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Dette er en avansert operasjon. Bruk den kun hvis du forstår PLC-katalogsystemet."
+
+      # PLC help section
+      didnt_receive_plc: "Mottok du ikke e-posten?"
+      plc_check_spam: "Sjekk spam- eller søppelpostmappen din"
+      plc_from_bluesky: "E-posten kommer fra Bluesky, ikke fra oss"
+      plc_expires: "Koden utløper etter 1 time"
+      plc_new_code_help: "Hvis du trenger en ny kode, skriv inn passordet ditt nedenfor, så ber vi om en:"
+      plc_password_placeholder: "Passord for %{handle}"
+      request_new_code: "Be om ny kode"
+      technical_details: "Tekniske detaljer"
+      plc_explanation: "Bekreftelseskoden er et <strong>PLC-operasjonstoken</strong> — den autoriserer oppdatering av DID-dokumentet ditt i PLC-katalogen til å peke til din nye Personal Data Server."
+      plc_irreversible: "<strong>Dette er irreversibelt.</strong> Når det er sendt inn, vil kontoidentiteten din (DID) permanent peke til <strong>%{new_pds}</strong> i stedet for <strong>%{old_pds}</strong>."
+      plc_expiry_note: "PLC-tokens utløper etter 1 time. Hvis ditt har utløpt, kan du be om et nytt."
+
+      # Sidebar
+      download_backup: "Last ned sikkerhetskopien din"
+      backup_ready: "Sikkerhetskopi klar"
+      backup_download_completed: "Last ned sikkerhetskopipakken din før den utløper."
+      backup_download_ready: "Sikkerhetskopien av kontoen din er klar! Last den ned før den utløper."
+      size: "Størrelse:"
+      expires: "Utløper:"
+      download_button: "Last ned sikkerhetskopi"
+      recovery_key: "Gjenopprettingsnøkkel"
+      recovery_key_sidebar: "Lagre denne nøkkelen sikkert. Den lar deg gjenopprette kontoen din."
+      copy_key: "Kopier nøkkel"
+      cancel_migration: "Avbryt migrering"
+      cancel_help: "Avbryt denne migreringen og behold kontoen din på den nåværende serveren."
+      cancel_button: "Avbryt migrering"
+      cancel_confirm: "Er du sikker på at du vil avbryte denne migreringen?\n\nEn bekreftelseslenke sendes til e-posten din. Migreringen avbrytes først når du klikker på den lenken."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Nåværende status:"
+      retry_attempt: "Forsøksnummer:"
+      remaining_attempts: "Gjenværende forsøk:"
+      next_retry: "Neste forsøk om"
+      calculating: "beregner..."
+      retrying_now: "prøver igjen nå..."
+      reauth_safe: "Migreringsdataene dine er trygge — bare skriv inn passordet ditt på nytt for å fortsette."
+      reauth_help: "Skriv inn passordet ditt for <strong>%{handle}</strong> for å gjenopprette økten og fortsette migreringen."
+      password_for: "Passord for %{handle}"
+      enter_password_placeholder: "Skriv inn kontopassordet ditt"
+      reauth_button: "Autentiser på nytt og fortsett migrering"
+      plc_safe: "Migreringsdataene dine er trygge — du trenger bare et nytt PLC-token."
+      plc_request_help: "Klikk knappen nedenfor for å be om et nytt PLC-token. Du mottar det via e-post fra <strong>%{pds}</strong>."
+      request_plc_confirm: "Be om et nytt PLC-token fra din gamle PDS?"
+      request_plc_button: "Be om nytt PLC-token"
+      plc_session_expired: "Økten din med <strong>%{pds}</strong> har utløpt. Skriv inn passordet ditt for <strong>%{handle}</strong> for å koble til på nytt og be om et nytt PLC-token."
+      reauth_plc_button: "Autentiser på nytt og be om PLC-token"
+      what_happened_title: "Hva skjedde og hva du kan gjøre"
+      what_happened: "Hva skjedde:"
+      what_to_do: "Hva du kan gjøre:"
+      request_plc_action: "Be om nytt PLC-token"
+      retry_migration: "Prøv migrering på nytt"
+      retry_confirm: "Prøve denne migreringen på nytt fra nåværende steg?"
+      start_new: "Start ny migrering"
+      check_pds: "Sjekk PDS-status"
+      download_report: "Last ned rapport over mislykkede blober"
+      cleanup_title: "Oppryddingsinstruksjoner"
+      cleanup_help: "For å rydde opp den foreldreløse kontoen, kjør denne kommandoen (krever servertilgang):"
+      cleanup_contact: "Eller kontakt mål-PDS-administratoren for å slette den foreldreløse kontoen manuelt."
+      rotation_key_save: "Din rotasjonsnøkkel (LAGRE DENNE)"
+      copy_rotation_key: "Kopier rotasjonsnøkkel"
+      contact_support: "Kontakt support umiddelbart"
+      support_email: "Support-e-post:"
+      migration_token: "Migreringstoken:"
+      include_token: "Inkluder migreringtokenet ditt i supporthenvendelsen for raskere hjelp."
+      technical_title: "Tekniske detaljer (for feilsøking)"
+      error_message: "Feilmelding:"
+      job_step: "Jobbsteg:"
+      migration_status: "Migreringsstatus:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PUNKT UTEN RETUR"
+      subtitle: "Den neste handlingen vil permanent omdirigere din DID til den nye PDS-en"
+      once_submit: "Når du sender inn PLC-tokenet:"
+      will_point: "Din DID (%{did}) vil peke til %{pds}"
+      all_apps: "Alle AT Protocol-apper vil løse identiteten din til den nye PDS-en"
+      immediate: "Denne endringen er umiddelbar og påvirker hele det fødererte nettverket"
+      cannot_undo: "Denne handlingen KAN IKKE angres uten rotasjonsnøkkelen din"
+      what_you_need: "Hva du trenger før du fortsetter:"
+      need_rotation_key: "Rotasjonsnøkkelen din lagret sikkert (rull opp for å kopiere den)"
+      need_data_verified: "Bekreftet at all data er migrert (depot, blober, preferanser)"
+      need_plc_token: "PLC-operasjonstokenet (sendes til e-posten din fra %{pds})"
+      need_understanding: "Forståelse for at dette er irreversibelt uten rotasjonsnøkkelen"
+      instructions_title: "Steg-for-steg-instruksjoner:"
+      step1_title: "Lagre rotasjonsnøkkelen din"
+      step1_help: "Rull opp og kopier rotasjonsnøkkelen din til et sikkert sted (passordbehandler, kryptert fil). Dette er din ENESTE måte å gjenopprette hvis noe går galt."
+      step2_title: "Sjekk e-posten din"
+      step2_help: "Din gamle PDS-leverandør (<strong>%{pds}</strong>) har blitt bedt om å sende deg et PLC-operasjonstoken via e-post. Sjekk innboksen din for en e-post med tokenet."
+      step3_title: "Kopier PLC-tokenet"
+      step3_help: "Kopier PLC-operasjonstokenet fra e-posten sendt av din gamle PDS-leverandør. Tokenet vil se ut som en lang tegnstreng."
+      step4_title: "Send inn tokenet nedenfor"
+      step4_help: "Lim inn PLC-tokenet i skjemaet nedenfor og send inn for å fullføre migreringen."
+      final_warning: "Siste advarsel: Er du klar?"
+      check_saved: "Har du lagret rotasjonsnøkkelen din på et sikkert sted?"
+      check_understand: "Forstår du at denne endringen er permanent og påvirker hele AT Protocol-nettverket?"
+      check_prepared: "Er du forberedt på å miste tilgang hvis du ikke har rotasjonsnøkkelen din?"
+      check_verified: "Har du bekreftet at all data (innlegg, media, preferanser) er migrert?"
+      do_not_proceed: "Hvis du svarte NEI på noen av disse spørsmålene, IKKE fortsett ennå."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Vi har sendt en bekreftelseskode til %{email}. Skriv den inn på neste side for å starte migreringen."
+      # Verify email
+      email_verified: "E-post bekreftet! Migreringen din har startet."
+      invalid_code: "Ugyldig bekreftelseskode. Vennligst sjekk koden i e-posten din og prøv igjen."
+      enter_code: "Vennligst skriv inn bekreftelseskoden fra e-posten din."
+      # PLC token
+      plc_submitted: "PLC-token sendt inn! DID-en din oppdateres snart."
+      plc_blank: "PLC-token kan ikke være tomt"
+      session_expired: "Økten din har utløpt. Vennligst skriv inn passordet ditt på nytt for å fortsette."
+      old_session_expired: "Økten din med %{pds} har utløpt. Vennligst skriv inn passordet ditt på nytt for å fortsette."
+      credentials_expired: "Legitimasjonen din har utløpt. Vennligst skriv inn passordet ditt på nytt for å fortsette."
+      # Cancellation
+      cancellation_sent: "En bekreftelseslenke for avbryting er sendt til e-posten din. Vennligst sjekk innboksen din."
+      cannot_cancel: "Denne migreringen kan ikke avbrytes på nåværende steg."
+      cancel_email_failed: "Kunne ikke sende avbrytings-e-post. Vennligst prøv igjen."
+      invalid_cancel_link: "Ugyldig avbrytingslenke. Vennligst be om en ny fra migreringsstatussiden."
+      cancel_too_late: "Denne migreringen kan ikke lenger avbrytes (den kan ha passert punktet uten retur)."
+      cancelled: "Migrering avbrutt. Kontoen din forblir uendret på %{pds}. Du kan starte en ny migrering når som helst."
+      # Delete
+      only_completed: "Bare fullførte migreringer kan slettes."
+      deleted: "Alle migreringsdata er permanent slettet. Takk for at du brukte %{site_name}!"
+      # Retry
+      retry_started: "Nytt migreringsforsøk startet!"
+      not_failed: "Migreringen er ikke i feilet tilstand og kan ikke prøves på nytt"
+      no_failed_blobs: "Ingen mislykkede blober å prøve på nytt"
+      retrying_blobs: "Prøver %{count} mislykkede blober på nytt..."
+      # Backup
+      backup_not_found: "Sikkerhetskopi ikke funnet eller utløpt"
+      # API errors
+      did_required: "DID er påkrevd"
+      pds_required: "PDS-vert er påkrevd"
+      handle_required: "Handle er påkrevd"
+      password_required: "Passord er påkrevd"
+      pds_did_password_required: "PDS-vert, DID og passord er påkrevd"
+      two_factor_required: "Tofaktorautentisering påkrevd. Sjekk e-posten din for en innloggingskode."
+      wrong_password: "Feil passord for Bluesky-kontoen din. Vennligst skriv inn passordet du brukte på bsky.social."
+      auth_failed: "Autentisering mislyktes: %{error}"
+      invalid_pds_response: "Ugyldig svar fra mål-PDS"
+      pds_connect_failed: "Kunne ikke koble til mål-PDS. Vennligst prøv igjen."
+      resolve_failed: "Kunne ikke løse handle. Vennligst sjekk at handlen er riktig."
+      auth_check_failed: "Autentisering mislyktes. Vennligst sjekk passordet ditt."
+      unexpected_error: "En uventet feil oppstod. Vennligst prøv igjen."
+      unexpected_error_detail: "En uventet feil oppstod: %{error}"
+      tokens_missing: "Autentiseringstokens mangler. Vennligst gå tilbake og autentiser på nytt."
+      account_not_found: "Ingen konto funnet på %{pds} med din DID (%{did}). Vennligst gå tilbake og velg en annen mål-PDS, eller start en ny migrering."
+      account_verify_failed: "Kunne ikke verifisere kontoeksistens på %{pds}: %{error}. Vennligst prøv igjen."
+      target_tokens_missing: "Autentiseringstokens for mål-PDS mangler. Vennligst gå tilbake og verifiser legitimasjonen din på %{pds}."
+      reauth_not_available: "Ny autentisering er ikke tilgjengelig på dette steget."
+      reauth_failed: "Autentisering mislyktes: %{error}. Vennligst sjekk passordet ditt."
+      reauth_error: "Kunne ikke autentisere på nytt: %{error}"
+      plc_not_available: "Kan ikke be om et nytt PLC-token på dette steget. PLC-oppdateringen kan allerede ha blitt forsøkt."
+      plc_requested: "Et nytt PLC-token er forespurt. Sjekk e-posten din fra %{pds}."
+      plc_request_failed: "Kunne ikke automatisk be om et nytt PLC-token (%{error}). Vennligst be om et manuelt via innstillingene til din gamle PDS-leverandør (f.eks. Bluesky-appen → Settings → Account → Request PLC Token), og skriv det inn nedenfor."
+      plc_session_expired: "Økten din med %{pds} har utløpt. Vennligst be om et nytt PLC-token manuelt: logg inn på den gamle kontoen din og gå til Settings → Account → Request PLC Token, og skriv deretter inn tokenet nedenfor."
+      pds_connect_check: "Kunne ikke koble til PDS. Vennligst sjekk URL-en."
+      migration_not_found: "Migrering ikke funnet"
+      password_required_short: "Passord er påkrevd."
+      reauth_success_plc_valid: "Ny autentisering vellykket! PLC-tokenet ditt er fortsatt gyldig — prøver PLC-oppdateringen nå."
+      reauth_success_plc_requested: "Ny autentisering vellykket! Et nytt PLC-token er forespurt — sjekk e-posten din fra %{pds}."
+      reauth_success_plc_failed: "Ny autentisering vellykket, men kunne ikke automatisk be om PLC-token (%{error}). Du kan be om et manuelt via innstillingene til din gamle PDS-leverandør, og deretter skrive det inn nedenfor."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky migreringstjeneste"
+
+    email_verification:
+      subject: "Din bekreftelseskode: %{code} (%{token})"
+      heading: "BEKREFT E-POSTEN DIN - START KONTOMIGRERING"
+      migration_token: "Migreringstoken: %{token}"
+      initiated: "Du har startet en migrering av %{handle} til %{pds}."
+      enter_code: "Skriv inn følgende bekreftelseskode på migreringssiden for å starte prosessen:"
+      go_to_page: "Gå til migreringssiden:"
+      what_next: "HVA SKJER VIDERE?"
+      next_step1: "Skriv inn bekreftelseskoden ovenfor på migreringssiden"
+      next_step2: "Migreringen din starter automatisk"
+      next_step3: "Du mottar statusoppdateringer via e-post"
+      next_step4: "Hele prosessen tar omtrent 20-30 minutter"
+      important: "VIKTIGE PÅMINNELSER"
+      reminder1: "Ikke bruk kontoen din under migreringen"
+      reminder2: "Aktivitet under migreringen vil ikke bli overført"
+      reminder3: "Lukk alle apper og nettleserfaner med kontoen din"
+      reminder4: "Vent på fullførings-e-posten før du logger inn igjen"
+      not_you: "Hvis du ikke startet denne migreringen, kan du ignorere denne e-posten."
+
+    account_password:
+      subject: "Ditt nye kontopassord for %{handle} (%{token})"
+      heading: "DITT NYE KONTOPASSORD"
+      intro: "Migreringen din har startet! Vi har opprettet et sikkert passord for din nye konto."
+      security_notice: "SIKKERHETSVARSEL"
+      save_password: "LAGRE DETTE PASSORDET UMIDDELBART! Du trenger det for å logge inn på den nye kontoen din."
+      tip1: "Lagre det i en sikker passordbehandler"
+      tip2: "Ikke del det med noen"
+      tip3: "Du kan endre det etter første innlogging"
+      account_details: "KONTODETALJER"
+      new_handle: "Ny handle: @%{handle}"
+      new_pds: "Ny PDS: %{pds}"
+      email: "E-post: %{email}"
+      whats_happening: "HVA SKJER NÅ?"
+      backup_step1: "Vi oppretter en sikkerhetskopi av kontodataene dine"
+      backup_step2: "Du mottar en e-post når sikkerhetskopien er klar til nedlasting"
+      backup_step3: "Kontoen din opprettes og dataene dine migreres"
+      no_backup_step1: "Kontoen din opprettes på den nye PDS-en"
+      no_backup_step2: "Dataene dine migreres (uten sikkerhetskopi)"
+      no_backup_step3: "Du blir varslet når migreringen er fullført"
+      track_progress: "Følg migreringsfremdriften din her:"
+
+    migration_completed:
+      subject: "Migrering fullført! (%{token})"
+      heading: "MIGRERING FULLFØRT!"
+      success: "Bluesky/ATProto-kontoen din er migrert til den nye PDS-en."
+      password_heading: "DITT NYE KONTOPASSORD"
+      password_help: "Bruk dette passordet for å logge inn på den nye kontoen din:"
+      save_password: "Lagre dette passordet nå — lagre det i en passordbehandler."
+      change_password: "Du kan endre det etter første innlogging."
+      backup_heading: "SIKKERHETSKOPIPAKKE TILGJENGELIG"
+      backup_help: "Sikkerhetskopien av kontodataene dine er tilgjengelig for nedlasting i de neste 10 minuttene:"
+      backup_expiry: "Etter 10 minutter utløper denne lenken og sikkerhetskopien slettes permanent."
+      summary: "MIGRERINGSSAMMENDRAG"
+      migration_token: "Migreringstoken: %{token}"
+      did: "DID: %{did}"
+      old_account: "Gammel konto: %{handle} @ %{pds}"
+      new_account: "Ny konto: %{handle} @ %{pds}"
+      completed_at: "Fullført: %{time}"
+      status_page: "Se statussiden (tilgjengelig i 10 minutter):"
+      login_heading: "SLIK LOGGER DU INN PÅ DIN NYE KONTO"
+      login_help: "Hvis du ikke allerede har gjort det, logg ut av den gamle kontoen din i alle Bluesky-apper, og logg deretter inn med den nye handlen din:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "VIKTIG: Sørg for å skrive inn \"%{pds}\" som hostingleverandør øverst i innloggingsskjemaet!"
+      hosting_miss: "Mange brukere overser dette steget — uten riktig hostingleverandør vil du ikke kunne logge inn."
+      change_password_heading: "ENDRE PASSORDET DITT"
+      change_password_help: "For din sikkerhet anbefaler vi sterkt å endre passordet ditt umiddelbart:"
+      change_password_later: "Du kan også endre det senere i kontoinnstillingene dine."
+      whats_next: "HVA SKJER VIDERE?"
+      next1: "Kontoen din er nå aktiv på %{pds}"
+      next2: "Din gamle konto på %{old_pds} er deaktivert"
+      next3: "Alle innlegg, følginger og data er overført"
+      next4: "Følgerne dine bør automatisk se din nye plassering (DID-basert)"
+      privacy_heading: "PERSONVERN OG SIKKERHET"
+      privacy1: "Denne migreringsposten slettes automatisk om 10 minutter for GDPR-overholdelse"
+      privacy2: "All kryptert legitimasjon er sikkert slettet fra serverne våre"
+      support: "Hvis du har spørsmål eller problemer, kontakt support med migreringtokenet ditt:"
+      email_footer: "Denne e-posten ble sendt til %{email} fordi du startet en kontomigrering."
+
+    migration_failed:
+      subject: "Migrering mislyktes - handling påkrevd (%{token})"
+      heading: "Eurosky-migrering mislyktes - handling påkrevd"
+      intro: "Kontomigreringen din %{token} har støtt på en feil og trenger din oppmerksomhet."
+      account_details: "Kontodetaljer:"
+      did: "DID: %{did}"
+      old_handle: "Gammel handle: @%{handle}"
+      new_handle: "Ny handle: @%{handle}"
+      failure_info: "Feilinformasjon:"
+      failed_step: "Feilet steg: %{step}"
+      error: "Feil: %{error}"
+      previous_retries: "Tidligere forsøk: %{count}"
+      what_to_do: "Hva du kan gjøre:"
+      do_step1: "Se migreringsstatusen:"
+      do_step2: "Klikk på \"Prøv migrering på nytt\"-knappen for å forsøke migreringen igjen"
+      do_step3: "Hvis problemet vedvarer etter flere forsøk, kontakt support med migreringtokenet ditt: %{token}"
+      common_issues: "Vanlige problemer og løsninger:"
+      issue1: "Nettverkstidsavbrudd: Løser seg vanligvis ved nytt forsøk"
+      issue2: "Hastighetsbegrensning: Vent noen minutter før du prøver igjen"
+      issue3: "Manglende data: Sjekk om all data er tilgjengelig på den gamle PDS-en"
+      important: "VIKTIG:"
+      note1: "Dataene dine på den gamle PDS-en er intakte"
+      note2: "Du kan trygt prøve migreringen på nytt"
+      note3: "Hvis du trenger hjelp, referer til migreringtokenet ditt: %{token}"
+
+    backup_ready:
+      subject: "Sikkerhetskopien for Eurosky-migrering er klar (%{token})"
+      heading: "SIKKERHETSKOPIEN DIN ER KLAR"
+      intro: "Sikkerhetskopien av kontodataene dine for migrering %{token} er klar til nedlasting."
+      download: "Last ned sikkerhetskopien din:"
+      size: "Størrelse på sikkerhetskopi: %{size}"
+      expires: "Denne nedlastingslenken utløper %{time}."
+      expiry_warning: "Etter utløp slettes sikkerhetskopien permanent fra serverne våre."
+      whats_next: "Migreringen din fortsetter i bakgrunnen. Du mottar en ny e-post når den er fullført."
+
+    rotation_key_notice:
+      subject: "Handling påkrevd: Bekreft migreringen med PLC-koden (%{token})"
+      heading: "BEKREFT MIGRERINGEN DIN"
+      intro: "Kontodataene dine er overført. For å fullføre migreringen må du sende inn en PLC-bekreftelseskode."
+      key_heading: "DIN ROTASJONSNØKKEL (LAGRE DENNE FØRST!)"
+      key_help: "Før du fortsetter, lagre denne rotasjonsnøkkelen sikkert. Det er din eneste måte å gjenopprette kontoen din hvis noe går galt:"
+      key_warning: "Lagre denne nøkkelen i en passordbehandler eller et annet sikkert sted. Du vil IKKE kunne hente den senere."
+      next_step: "Gå til migreringssiden for å skrive inn PLC-bekreftelseskoden:"
+      check_email: "Sjekk e-posten din for en kode fra din gamle PDS-leverandør — den ser ut som XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Handling påkrevd: Be om ny PLC-bekreftelseskode (%{token})"
+      heading: "PLC-TOKEN UTLØPT ELLER UGYLDIG"
+      intro: "PLC-bekreftelseskoden for migreringen din %{token} har utløpt eller var ugyldig."
+      what_to_do: "Hva du må gjøre:"
+      step1: "Gå til migreringssiden:"
+      step2: "Be om et nytt PLC-token (du må kanskje skrive inn passordet ditt på nytt)"
+      step3: "Skriv inn det nye tokenet når du mottar det via e-post"
+      error_detail: "Feil: %{error}"
+
+    critical_plc_failure:
+      subject: "HASTER: Kritisk migreringsfeil - IKKE START NY MIGRERING (%{token})"
+      heading: "KRITISK MIGRERINGSFEIL"
+      warning: "IKKE start en ny migrering. Kontoen din kan være i en inkonsistent tilstand."
+      intro: "PLC-katalogoppdateringen for migrering %{token} har mislyktes etter punktet uten retur."
+      key_heading: "DIN ROTASJONSNØKKEL"
+      key_help: "Du trenger denne nøkkelen for å gjenopprette kontoen din:"
+      contact: "Kontakt support umiddelbart:"
+      error_detail: "Feil: %{error}"
+
+    invalid_invite_code:
+      subject: "Migrering mislyktes - ugyldig invitasjonskode (%{token})"
+      heading: "UGYLDIG INVITASJONSKODE"
+      intro: "Migreringen din %{token} kunne ikke fortsette fordi invitasjonskoden var ugyldig eller allerede brukt."
+      what_to_do: "For å starte en ny migrering med en gyldig invitasjonskode:"
+
+    orphaned_account_error:
+      subject: "Migrering satt på pause - foreldreløs konto på mål-PDS (%{token})"
+      heading: "FORELDRELØS KONTO OPPDAGET"
+      intro: "Migreringen din %{token} er satt på pause fordi en foreldreløs konto ble funnet på mål-PDS-en."
+      explanation: "Dette skjer vanligvis når et tidligere migreringsforsøk ble avbrutt. Den gamle kontoen finnes fortsatt på målserveren og må fjernes før vi kan fortsette."
+      what_to_do: "Hva du kan gjøre:"
+      option1: "Kontakt mål-PDS-administratoren på %{email} for å fjerne den foreldreløse kontoen"
+      option2: "Inkluder din DID: %{did}"
+      option3: "Når den er fjernet, prøv migreringen på nytt fra statussiden:"
+
+    reauthentication_required:
+      subject: "Handling påkrevd: Ny autentisering nødvendig (%{token})"
+      heading: "NY AUTENTISERING NØDVENDIG"
+      intro: "Migreringen din %{token} trenger at du skriver inn passordet ditt på nytt for å fortsette."
+      reason: "Økten din med den gamle PDS-en har utløpt under migreringsprosessen."
+      what_to_do: "Gå til migreringssiden og skriv inn passordet ditt på nytt:"
+      error_detail: "Feil: %{error}"
+      step: "Feilet steg: %{step}"
+
+    cancellation_confirmation:
+      subject: "Bekreft avbryting av migrering (%{token})"
+      heading: "BEKREFT AVBRYTING"
+      intro: "Du har bedt om å avbryte migrering %{token}."
+      confirm_help: "Klikk lenken nedenfor for å bekrefte avbrytingen:"
+      confirm_link: "Bekreft avbryting"
+      not_you: "Hvis du ikke ba om denne avbrytingen, kan du trygt ignorere denne e-posten. Migreringen din fortsetter som normalt."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "må være en gyldig ATProto-handle (f.eks. user.bsky.social)"

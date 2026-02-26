@@ -1,0 +1,652 @@
+mt:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Ibda l-Migrazzjoni tal-Kont"
+    privacy_policy: "Politika tal-Privatezza"
+    terms_of_service: "Termini tas-Servizz"
+    background_attribution: "Ritratt tal-isfond:"
+    background_attribution_by: "minn"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Lingwa"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Ibda l-Migrazzjoni tal-Kont"
+      errors_heading: "Jekk jogħġbok ikkoreġi l-iżbalji li ġejjin:"
+
+      # Progress bar labels
+      progress:
+        account: "Kont"
+        email: "Email"
+        destination: "Destinazzjoni"
+        handle: "Handle"
+        review: "Reviżjoni"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Pass 1: Kredenzjali tal-Kont"
+        handle_label: "Il-Handle Tiegħek"
+        handle_placeholder: "ilhandle.bsky.social"
+        handle_help: "Daħħal il-handle attwali tiegħek tal-AT Protocol"
+        password_label: "Password tal-Kont"
+        password_help: "Il-password attwali tal-kont tiegħek"
+        two_factor_title: "Awtentikazzjoni b'Żewġ Fatturi"
+        two_factor_help: "Kodiċi tad-dħul intbagħat lill-email tiegħek. Daħħlu hawn taħt."
+        two_factor_placeholder: "Daħħal il-kodiċi tad-dħul tiegħek"
+        continue: "Kompli"
+
+      # Step 2: Email
+      step2:
+        title: "Pass 2: Indirizz tal-Email"
+        email_label: "Indirizz tal-Email"
+        email_help: "Se nibagħtulek aġġornamenti dwar l-istat tal-migrazzjoni f'dan l-email"
+        email_readonly_help: "Email miksub mill-kont tiegħek"
+        email_manual_help: "Ma stajniex niksbu l-email tiegħek. Jekk jogħġbok daħħlu manwalment."
+        confirm_access: "Għandi aċċess għal dan l-indirizz tal-email u nista' nikseb kodiċi ta' konferma mibgħut lilu."
+        back: "Lura"
+        continue: "Kompli"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Pass 3: Server tad-Destinazzjoni"
+        server_label: "Server tad-Destinazzjoni"
+        server_placeholder: "Agħżel Server..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Server Personalizzat..."
+        server_help: "Agħżel fejn trid timmigra l-kont tiegħek"
+        custom_url_label: "URL tas-Server Personalizzat"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Daħħal l-URL sħiħ tas-Server personalizzat tiegħek"
+        invite_code_label: "Kodiċi ta' Stedina"
+        invite_code_placeholder: "Daħħal il-kodiċi ta' stedina tiegħek"
+        invite_code_help: "Dan is-Server jeħtieġ kodiċi ta' stedina"
+        existing_account_title: "Kont Eżistenti Misjub"
+        existing_account_help: "Il-kont tiegħek diġa jeżisti fuq is-server tad-destinazzjoni. Jekk jogħġbok ivverifika l-password tiegħek biex tkompli bil-migrazzjoni."
+        target_password_label: "Il-password tiegħek fuq is-server fil-mira"
+        target_password_placeholder: "Daħħal il-password tiegħek għall-kont eżistenti"
+        target_2fa_label: "Kodiċi tad-Dħul (2FA)"
+        target_2fa_help: "Iċċekkja l-email tiegħek għall-kodiċi tal-awtentikazzjoni b'żewġ fatturi"
+        deactivated_notice: "Dan il-kont jidher li ġie diżattivat"
+        deactivated_reason: "(possibbilment minn tentattiv ta' migrazzjoni preċedenti)."
+        deactivated_help: "Jekk ma tiftakarx il-password tiegħek, tista' tipprova:"
+        deactivated_reset: "Irrisettja l-password tiegħek:"
+        deactivated_contact: "Ikkuntattja l-amministratur tal-PDS fuq %{email} biex ineħħi dan il-kont inattiv u erġa' ibda l-migrazzjoni. Inkludi d-DID tiegħek:"
+        back: "Lura"
+        continue: "Kompli"
+
+      # Step 4: New Handle
+      step4:
+        title: "Pass 4: Handle Ġdid"
+        custom_domain_title: "Dominju Personalizzat Misjub"
+        custom_domain_help: "Il-handle tiegħek %{handle} huwa dominju personalizzat. Tista' tkompli tużah fuq is-server il-ġdid."
+        keep_handle: "Żomm il-handle attwali tiegħi"
+        new_handle_label: "Il-Handle Ġdid Tiegħek"
+        new_handle_placeholder: "username"
+        new_handle_help: "Agħżel il-handle ġdid tiegħek (jista' jkun dak l-antik) fuq is-Server tad-destinazzjoni"
+        back: "Lura"
+        continue: "Kompli"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Pass 5: Reviżjoni u Konferma"
+        current_handle: "Handle Attwali:"
+        email: "Email:"
+        destination_server: "Server tad-Destinazzjoni:"
+        new_handle: "Handle Ġdid:"
+        invite_code: "Kodiċi ta' Stedina:"
+        create_backup: "Oħloq backup qabel il-migrazzjoni"
+        backup_help: "Iniżżel kopja sħiħa tad-data tal-kont tiegħek. Disponibbli għal 24 siegħa."
+        confirm_email_html: "Meta tagħfas <strong>Kompli</strong>, se nibagħtu email ta' konferma lil <strong>%{email}</strong>. Il-migrazzjoni tibda biss meta tikkonferma permezz ta' dak l-email."
+        no_usage_title: "Tużax il-kont tiegħek waqt il-migrazzjoni"
+        no_usage_help: "Ladarba tibda l-migrazzjoni, agħlaq l-apps u t-tabs tal-browser kollha bil-kont tiegħek. Kwalunkwe posts, likes, jew follows magħmulin waqt il-migrazzjoni mhux se jiġu trasferiti. Se tirċievi email meta tlesti (~20-30 minuta)."
+        acknowledge: "Nifhem li m'għandix nuża l-kont tiegħi waqt il-migrazzjoni"
+        back: "Lura"
+        continue: "Kompli"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Jekk jogħġbok daħħal handle"
+      enter_password: "Jekk jogħġbok daħħal il-password tiegħek"
+      handle_needs_domain: "Il-handle għandu jinkludi dominju (eż., user.bsky.social)"
+      authenticating: "Qed jawtentika..."
+      authenticating_details: "Qed jawtentika u jikseb id-dettalji tal-kont tiegħek..."
+      two_factor_sent: "Kodiċi tad-dħul intbagħat lill-email tiegħek. Daħħlu hawn fuq u agħfas Kompli mill-ġdid."
+      auth_success: "Awtentikazzjoni b'suċċess!"
+      network_error: "Żball fin-network. Jekk jogħġbok erġa' pprova."
+      continue: "Kompli"
+      # Step 2
+      email_readonly_help: "Email miksub mill-kont tiegħek"
+      email_manual_help: "Ma stajniex niksbu l-email tiegħek. Jekk jogħġbok daħħlu manwalment."
+      enter_email: "Jekk jogħġbok daħħal l-indirizz tal-email tiegħek"
+      invalid_email: "Jekk jogħġbok daħħal indirizz tal-email validu"
+      confirm_email_access: "Jekk jogħġbok ikkonferma li għandek aċċess għal dan l-indirizz tal-email."
+      # Step 3
+      select_server: "Jekk jogħġbok agħżel Server jew daħħal URL ta' Server personalizzat"
+      checking_server: "Qed jiċċekkja s-Server..."
+      checking_requirements: "Qed jiċċekkja r-rekwiżiti tas-Server..."
+      server_verified: "Server ivverifikat!"
+      failed_verify_pds: "Ma rnexxiex tivverifika l-PDS. Jekk jogħġbok iċċekkja l-URL."
+      invite_code_required: "Dan is-Server jeħtieġ kodiċi ta' stedina. Jekk jogħġbok daħħlu hawn taħt, imbagħad agħfas Kompli."
+      enter_invite_code: "Jekk jogħġbok daħħal kodiċi ta' stedina biex tkompli."
+      checking_existing: "Qed jiċċekkja għal kont eżistenti..."
+      verifying_credentials: "Qed jivverifika l-kredenzjali..."
+      authenticating_existing: "Qed jawtentika bil-kont eżistenti tiegħek..."
+      credentials_verified: "Kredenzjali vverifikati!"
+      enter_target_password: "Jekk jogħġbok daħħal il-password tiegħek għal dan is-server"
+      # Step 4
+      custom_domain_help: "Il-handle tiegħek {handle} huwa dominju personalizzat. Tista' tkompli tużah fuq is-server il-ġdid."
+      enter_handle_short: "Jekk jogħġbok daħħal handle"
+      checking_availability: "Qed jiċċekkja d-disponibbilta..."
+      checking_handle: "Qed jiċċekkja jekk il-handle huwiex disponibbli..."
+      handle_taken: "Dan il-handle diġa meħud. Jekk jogħġbok agħżel ieħor."
+      all_checks_passed: "Il-kontrolli kollha għaddew!"
+      using_existing_handle: "Qed tuża l-handle eżistenti tiegħek fuq is-server fil-mira."
+      keeping_custom_handle: "Qed iżżomm il-handle tad-dominju personalizzat tiegħek!"
+      handle_available_checking: "Handle disponibbli, qed jiċċekkja għal kontijiet eżistenti..."
+      checking_existing_accounts: "Qed jiċċekkja għal kontijiet eżistenti..."
+      failed_check_availability: "Ma rnexxiex tiċċekkja d-disponibbilta. Jekk jogħġbok erġa' pprova."
+      failed_check_existing: "Ma rnexxiex tiċċekkja għal kontijiet eżistenti: "
+      account_exists_title: "Kont Diġa Jeżisti fuq is-Server fil-Mira"
+      account_exists_what: "Kont bid-DID tiegħek diġa jeżisti fuq is-Server fil-mira (%{pds}). Dan jista' jkun minn tentattiv ta' migrazzjoni preċedenti."
+      account_exists_do: "Mur lura għall-pass ta' qabel u daħħal il-password tiegħek għall-kont eżistenti. Jekk ma tafx il-password:"
+      account_exists_reset: "Ipprova rrisettja l-password tiegħek:"
+      account_exists_contact: "Ikkuntattja l-fornitur tas-Server fuq <strong>%{email}</strong> biex ineħħi l-kont orfni"
+      account_exists_did: "Inkludi d-DID tiegħek:"
+      # Step 5
+      confirm_email_html: "Meta tagħfas <strong>Kompli</strong>, se nibagħtu email ta' konferma lil <strong>{email}</strong>. Il-migrazzjoni tibda biss meta tikkonferma permezz ta' dak l-email."
+      confirm_no_usage: "Jekk jogħġbok ikkonferma li tifhem li m'għandekx tuża l-kont tiegħek waqt il-migrazzjoni."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migrazzjoni %{token}"
+      migration_status: "Stat tal-Migrazzjoni"
+      status_label: "Stat:"
+      retry_info: "Tentattiv %{attempt}/%{max} - %{step}"
+      verify_email: "Ivverifika l-Email Tiegħek"
+      enter_verification: "Daħħal il-Kodiċi ta' Verifika Tiegħek"
+      verification_sent: "Bgħatna kodiċi lil <strong>%{email}</strong>. Daħħlu hawn taħt biex tibda l-migrazzjoni."
+      verification_label: "Kodiċi ta' Verifika"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Ivverifika u Ibda l-Migrazzjoni"
+      didnt_receive: "Ma rċevejtx l-email?"
+      check_spam: "Iċċekkja l-folder tal-ispam jew junk tiegħek"
+      check_email_correct: "Kun żgur li <strong>%{email}</strong> huwa korrett"
+      email_delay: "L-email jista' jieħu ftit minuti biex jasal"
+
+      # Queue
+      in_queue: "Fil-Kju"
+      queue_default: "Qed tistenna biex migrazzjonijiet oħra jlestu t-trasferiment tad-data"
+      queue_auto_start: "Il-migrazzjoni tiegħek tibda awtomatikament meta jinfetaħ slot."
+
+      # Blob conversion
+      converting_blobs: "Qed jikkonverti l-format tal-blobs antik"
+      converting_blobs_detail: "dan jista' jieħu ftit minuti..."
+      blobs_converted: "Il-format tal-blobs antik ġie kkonvertit b'suċċess."
+
+      # Blob progress
+      blobs_uploaded: "Blobs Ittrasferiti"
+      files: "fajls"
+      data_transferred: "Data Ttrasferit"
+      failed: "Fallut"
+      preparing_blobs: "Qed jipprepara biex jittrasferixxi <strong>%{count}</strong> blobs..."
+
+      # Download/backup progress
+      downloading_account: "Qed iniżżel id-data tal-kont"
+      downloading_detail: "qed iniżżel ir-repożitorju + blobs tiegħek għall-backup..."
+      creating_backup: "Qed joħloq il-pakkett tal-backup"
+      creating_backup_detail: "qed jippakkja d-data tal-kont tiegħek..."
+      downloaded_count: "Imniżżla: %{downloaded} / %{total} blobs"
+      backup_expired: "Il-backup skada"
+      backup_expired_detail: "il-pakkett tal-backup tiegħek tħassar mis-servers tagħna."
+
+      # PLC pending
+      updating_identity: "Qed Jaġġorna l-Identita Tiegħek"
+      plc_accepted: "Il-kodiċi ta' konferma tiegħek ġie aċċettat. Issa qed naġġornaw l-entrata tad-direttorju PLC tiegħek biex tipponta lejn <strong>%{pds}</strong>. Dan jista' jieħu ftit."
+      page_auto_update: "Din il-paġna tiġi aġġornata awtomatikament. Jekk jogħġbok tagħlaqx din it-tab."
+      enter_confirmation: "Daħħal il-kodiċi ta' konferma tiegħek"
+      confirmation_hint: "Iċċekkja l-email tiegħek għal kodiċi minn <strong>%{pds}</strong> &mdash; jidher bħal <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Kodiċi ta' Konferma"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Lesti l-Migrazzjoni"
+      complete_confirm: "Dan se jiffinalizza l-migrazzjoni tal-kont tiegħek. Dan il-pass ma jistax jiġi annullat.\n\nInt żgur li trid tkompli?"
+
+      # Completed
+      completed_title: "Il-Migrazzjoni Tlestiet b'Suċċess!"
+      completed_migrated_to: "Il-kont tiegħek ġie mmigrat b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle ġdid tiegħek: <strong>%{handle}</strong>"
+      completed_migrated_back: "Il-kont tiegħek ġie mmigrat lura b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle tiegħek: <strong>%{handle}</strong>"
+      email_sent_html: "Bgħatna email lil %{email} bil-password ġdida tal-kont tiegħek, struzzjonijiet tad-dħul, u link biex tbiddel il-password tiegħek. Jekk jogħġbok iċċekkja l-inbox tiegħek (u l-folder tal-ispam)."
+      save_rotation_key: "ĦAŻEN IR-ROTATION KEY TIEGĦEK!"
+      page_auto_delete: "Din il-paġna titħassar awtomatikament fi żmien jumejn."
+      rotation_key_needed: "Ir-rotation key tiegħek hija meħtieġa għall-irkupru tal-kont. Ikkopjaha issa u aħżinha f'post sigur!"
+      copy_rotation_key: "Ikkopja r-Rotation Key"
+      key_emailed: "Bgħatna wkoll din iċ-ċavetta lil <strong>%{email}</strong>"
+      privacy_notice: "Avviż tal-Privatezza"
+      privacy_detail: "Għall-privatezza tiegħek u l-konformita mal-GDPR, dan ir-rekord tal-migrazzjoni jitħassar awtomatikament fi <strong>jumejn</strong>. Kun żgur li ħażint ir-rotation key tiegħek u niżżilt il-backup tiegħek qabel!"
+      privacy_delete_now: "Ladarba ħażint kollox, tista' tħassar id-data tiegħek immedjatament bil-buttuna hawn taħt."
+      delete_confirm: "Int żgur li trid tħassar b'mod permanenti d-data kollha tal-migrazzjoni?\n\nKun żgur li:\n• Ikkopjajt ir-rotation key tiegħek\n• Niżżilt il-backup tiegħek (jekk applikabbli)\n\nDin l-azzjoni ma tistax tiġi annullata."
+      delete_button: "Ħażint il-backup u r-rotation key tiegħi — ħassar id-data kollha tiegħi"
+      welcome_back: "Il-kredenzjali antiki tal-kont tiegħek tħassru b'mod sigur. Merħba lura!"
+      welcome_new: "Il-kredenzjali antiki tal-kont tiegħek tħassru b'mod sigur. Merħba fid-dar ġdida tiegħek!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Ċavetta tal-Irkupru tal-Kont"
+      recovery_key_important: "IMPORTANTI:"
+      recovery_key_help: "Aħżen din ir-rotation key b'mod sigur. Din tippermettilek tirriverti t-tibdiliet fil-PLC jew tirkupra l-kont tiegħek."
+      copy_clipboard: "Ikkopja fil-Clipboard"
+      revert_title: "Kif tuża din iċ-ċavetta biex tirriverti t-tibdiliet"
+      revert_help: "Jekk teħtieġ tirriverti t-tibdiliet fid-direttorju PLC, tista' tuża din ir-rotation key:"
+      revert_step1: "Installa l-għodda CLI <code>goat</code>"
+      revert_step2: "Ikseb l-istorja PLC tiegħek: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identifika l-istat storiku mixtieq (CID)"
+      revert_step4: "Oħloq operazzjoni ta' riversjoni: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Iffirma bir-rotation key tiegħek: <code>goat plc sign</code>"
+      revert_step6: "Ibgħat l-operazzjoni ffirmata: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Din hija operazzjoni avvanzata. Użaha biss jekk tifhem is-sistema tad-direttorju PLC."
+
+      # PLC help section
+      didnt_receive_plc: "Ma rċevejtx l-email?"
+      plc_check_spam: "Iċċekkja l-folder tal-ispam jew junk tiegħek"
+      plc_from_bluesky: "L-email ġejja minn Bluesky, mhux minna"
+      plc_expires: "Il-kodiċi jiskadi wara siegħa"
+      plc_new_code_help: "Jekk teħtieġ kodiċi ġdid, daħħal il-password tiegħek hawn taħt u nitolbu wieħed:"
+      plc_password_placeholder: "Password għal %{handle}"
+      request_new_code: "Itlob Kodiċi Ġdid"
+      technical_details: "Dettalji tekniċi"
+      plc_explanation: "Il-kodiċi ta' konferma huwa <strong>token ta' operazzjoni PLC</strong> — jawtorizza l-aġġornament tad-dokument DID tiegħek fid-direttorju PLC biex jipponta lejn il-Personal Data Server ġdid tiegħek."
+      plc_irreversible: "<strong>Dan huwa irreversibbli.</strong> Ladarba jiġi sottomess, l-identita tal-kont tiegħek (DID) tipponta b'mod permanenti lejn <strong>%{new_pds}</strong> minflok <strong>%{old_pds}</strong>."
+      plc_expiry_note: "It-tokens PLC jiskadu wara siegħa. Jekk tiegħek skada, tista' titlob wieħed ġdid."
+
+      # Sidebar
+      download_backup: "Niżżel il-Backup Tiegħek"
+      backup_ready: "Backup Lest"
+      backup_download_completed: "Niżżel il-pakkett tal-backup tiegħek qabel ma jiskadi."
+      backup_download_ready: "Il-backup tal-kont tiegħek lest! Niżżlu qabel ma jiskadi."
+      size: "Daqs:"
+      expires: "Jiskadi:"
+      download_button: "Niżżel il-Backup"
+      recovery_key: "Ċavetta tal-Irkupru"
+      recovery_key_sidebar: "Aħżen din iċ-ċavetta b'mod sigur. Din tippermettilek tirkupra l-kont tiegħek."
+      copy_key: "Ikkopja ċ-Ċavetta"
+      cancel_migration: "Ikkanċella l-Migrazzjoni"
+      cancel_help: "Ikkanċella din il-migrazzjoni u żomm il-kont tiegħek fuq is-server attwali."
+      cancel_button: "Ikkanċella l-Migrazzjoni"
+      cancel_confirm: "Int żgur li trid tikkanċella din il-migrazzjoni?\n\nLink ta' konferma se jintbagħat lill-email tiegħek. Il-migrazzjoni tiġi kkanċellata biss wara li tagħfas fuq dak il-link."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Stat Attwali:"
+      retry_attempt: "Tentattiv ta' Ripetizzjoni:"
+      remaining_attempts: "Tentattivi li Fadal:"
+      next_retry: "Tentattiv li jmiss fi"
+      calculating: "qed jikkalkula..."
+      retrying_now: "qed jerġa' jipprova issa..."
+      reauth_safe: "Id-data tal-migrazzjoni tiegħek hija sigura — sempliċement erġa' daħħal il-password tiegħek biex tkompli."
+      reauth_help: "Daħħal il-password tiegħek għal <strong>%{handle}</strong> biex tirrestawra s-sessjoni tiegħek u tkompli l-migrazzjoni."
+      password_for: "Password għal %{handle}"
+      enter_password_placeholder: "Daħħal il-password tal-kont tiegħek"
+      reauth_button: "Erġa' Awtentika u Kompli l-Migrazzjoni"
+      plc_safe: "Id-data tal-migrazzjoni tiegħek hija sigura — teħtieġ biss token PLC ġdid."
+      plc_request_help: "Agħfas il-buttuna hawn taħt biex titlob token PLC ġdid. Se tirċevieh permezz tal-email minn <strong>%{pds}</strong>."
+      request_plc_confirm: "Itlob token PLC ġdid mill-PDS l-antik tiegħek?"
+      request_plc_button: "Itlob Token PLC Ġdid"
+      plc_session_expired: "Is-sessjoni tiegħek ma' <strong>%{pds}</strong> skadiet. Daħħal il-password tiegħek għal <strong>%{handle}</strong> biex terġa' tikkonnettja u titlob token PLC ġdid."
+      reauth_plc_button: "Erġa' Awtentika u Itlob Token PLC"
+      what_happened_title: "X'Ġara u X'Tista' Tagħmel"
+      what_happened: "X'Ġara:"
+      what_to_do: "X'Tista' Tagħmel:"
+      request_plc_action: "Itlob Token PLC Ġdid"
+      retry_migration: "Erġa' Pprova l-Migrazzjoni"
+      retry_confirm: "Erġa' pprova din il-migrazzjoni mill-istadju attwali?"
+      start_new: "Ibda Migrazzjoni Ġdida"
+      check_pds: "Iċċekkja l-Istat tal-PDS"
+      download_report: "Niżżel ir-Rapport tal-Blobs li Fallew"
+      cleanup_title: "Struzzjonijiet tat-Tindif"
+      cleanup_help: "Biex tnaddaf il-kont orfni, mexxi dan il-kmand (jeħtieġ aċċess għas-server):"
+      cleanup_contact: "Inkella kkuntattja l-amministratur tal-PDS fil-mira biex iħassar il-kont orfni manwalment."
+      rotation_key_save: "Ir-Rotation Key Tiegħek (AĦŻEN DIN)"
+      copy_rotation_key: "Ikkopja r-Rotation Key"
+      contact_support: "Ikkuntattja s-Sapport Immedjatament"
+      support_email: "Email tas-Sapport:"
+      migration_token: "Token tal-Migrazzjoni:"
+      include_token: "Inkludi t-token tal-migrazzjoni tiegħek fit-talba tas-sapport għal assistenza aktar mgħaġġla."
+      technical_title: "Dettalji Tekniċi (Għad-Debugging)"
+      error_message: "Messaġġ ta' Żball:"
+      job_step: "Pass tal-Job:"
+      migration_status: "Stat tal-Migrazzjoni:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PUNT TA' EBDA RITORN"
+      subtitle: "L-azzjoni li jmiss se tidderieġi d-DID tiegħek b'mod permanenti lejn il-PDS ġdid"
+      once_submit: "Ladarba tissottometti t-token PLC:"
+      will_point: "Id-DID tiegħek (%{did}) se jipponta lejn %{pds}"
+      all_apps: "L-apps kollha tal-AT Protocol se jirriżolvu l-identita tiegħek lejn il-PDS ġdid"
+      immediate: "Din il-bidla hija immedjata u taffettwa n-network federata kollha"
+      cannot_undo: "Din l-azzjoni MA TISTAX tiġi annullata mingħajr ir-rotation key tiegħek"
+      what_you_need: "X'Teħtieġ Qabel Ma Tkompli:"
+      need_rotation_key: "Ir-rotation key tiegħek maħżuna b'mod sigur (skrollja 'l fuq biex tikkopjaha)"
+      need_data_verified: "Ivverifikajt li d-data kollha tiegħek ġiet immigrata (repożitorju, blobs, preferenzi)"
+      need_plc_token: "It-token ta' operazzjoni PLC (jintbagħat lill-email tiegħek minn %{pds})"
+      need_understanding: "Tifhem li dan huwa irreversibbli mingħajr ir-rotation key"
+      instructions_title: "Struzzjonijiet Pass b'Pass:"
+      step1_title: "Aħżen ir-Rotation Key Tiegħek"
+      step1_help: "Skrollja 'l fuq u ikkopja r-rotation key tiegħek f'post sigur (maniġer tal-passwords, fajl ikriptjat). Din hija l-UNIKA mod kif tirkupra jekk xi ħaġa tmur ħażin."
+      step2_title: "Iċċekkja l-Email Tiegħek"
+      step2_help: "Il-fornitur tal-PDS l-antik tiegħek (<strong>%{pds}</strong>) intbagħat biex jibgħatlek token ta' operazzjoni PLC permezz tal-email. Iċċekkja l-inbox tiegħek għal email bit-token."
+      step3_title: "Ikkopja t-Token PLC"
+      step3_help: "Ikkopja t-token ta' operazzjoni PLC mill-email mibgħut mill-fornitur tal-PDS l-antik tiegħek. It-token se jidher bħal stringa twila ta' karattri."
+      step4_title: "Issottometti t-Token Hawn Taħt"
+      step4_help: "Pejstja t-token PLC fil-formola hawn taħt u issottomettiha biex tlesti l-migrazzjoni tiegħek."
+      final_warning: "Avviż Finali: Int Lest?"
+      check_saved: "Ħażint ir-rotation key tiegħek f'post sigur?"
+      check_understand: "Tifhem li din il-bidla hija permanenti u taffettwa n-network kollha tal-AT Protocol?"
+      check_prepared: "Int ippreparat li titlef l-aċċess jekk ma jkollokx ir-rotation key tiegħek?"
+      check_verified: "Ivverifikajt li d-data kollha tiegħek (posts, midja, preferenzi) ġiet immigrata b'suċċess?"
+      do_not_proceed: "Jekk weġibt LE għal xi waħda minn dawn il-mistoqsijiet, TAGĦMILX dan għalissa."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Bgħatna kodiċi ta' verifika lil %{email}. Daħħlu fil-paġna li jmiss biex tibda l-migrazzjoni tiegħek."
+      # Verify email
+      email_verified: "Email ivverifikat! Il-migrazzjoni tiegħek bdiet."
+      invalid_code: "Kodiċi ta' verifika invalidu. Jekk jogħġbok iċċekkja l-kodiċi fl-email tiegħek u erġa' pprova."
+      enter_code: "Jekk jogħġbok daħħal il-kodiċi ta' verifika mill-email tiegħek."
+      # PLC token
+      plc_submitted: "Token PLC sottomess! Id-DID tiegħek se jiġi aġġornat dalwaqt."
+      plc_blank: "It-token PLC ma jistax ikun vojt"
+      session_expired: "Is-sessjoni tiegħek skadiet. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
+      old_session_expired: "Is-sessjoni tiegħek ma' %{pds} skadiet. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
+      credentials_expired: "Il-kredenzjali tiegħek skadew. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
+      # Cancellation
+      cancellation_sent: "Link ta' konferma tal-kanċellazzjoni ntbagħat lill-email tiegħek. Jekk jogħġbok iċċekkja l-inbox tiegħek."
+      cannot_cancel: "Din il-migrazzjoni ma tistax tiġi kkanċellata fl-istadju attwali tagħha."
+      cancel_email_failed: "Ma rnexxiex jintbagħat l-email ta' kanċellazzjoni. Jekk jogħġbok erġa' pprova."
+      invalid_cancel_link: "Link ta' kanċellazzjoni invalidu. Jekk jogħġbok itlob wieħed ġdid mill-paġna tal-istat tal-migrazzjoni."
+      cancel_too_late: "Din il-migrazzjoni ma tistax tiġi aktar ikkanċellata (setgħet avvanzat lil hinn mill-punt ta' ebda ritorn)."
+      cancelled: "Il-migrazzjoni ġiet ikkanċellata b'suċċess. Il-kont tiegħek jibqa' kif inhu fuq %{pds}. Tista' tibda migrazzjoni ġdida fi kwalunkwe ħin."
+      # Delete
+      only_completed: "Migrazzjonijiet kompluti biss jistgħu jitħassru."
+      deleted: "Id-data kollha tal-migrazzjoni tħassret b'mod permanenti. Grazzi talli użajt %{site_name}!"
+      # Retry
+      retry_started: "It-tentattiv mill-ġdid tal-migrazzjoni beda!"
+      not_failed: "Il-migrazzjoni mhijiex fl-istat ta' falliment u ma tistax tiġi pprovata mill-ġdid"
+      no_failed_blobs: "M'hemm l-ebda blobs falluti biex jiġu pprovati mill-ġdid"
+      retrying_blobs: "Qed jerġa' jipprova %{count} blobs li fallew..."
+      # Backup
+      backup_not_found: "Il-backup ma nstabx jew skada"
+      # API errors
+      did_required: "Id-DID huwa meħtieġ"
+      pds_required: "Il-host tal-PDS huwa meħtieġ"
+      handle_required: "Il-handle huwa meħtieġ"
+      password_required: "Il-password hija meħtieġa"
+      pds_did_password_required: "Il-host tal-PDS, DID, u password huma meħtieġa"
+      two_factor_required: "Awtentikazzjoni b'żewġ fatturi meħtieġa. Iċċekkja l-email tiegħek għal kodiċi tad-dħul."
+      wrong_password: "Password ħażina għall-kont Bluesky tiegħek. Jekk jogħġbok daħħal il-password li użajt fuq bsky.social."
+      auth_failed: "L-awtentikazzjoni falliet: %{error}"
+      invalid_pds_response: "Risposta invalida mill-PDS fil-mira"
+      pds_connect_failed: "Ma rnexxiex tikkonnettja mal-PDS fil-mira. Jekk jogħġbok erġa' pprova."
+      resolve_failed: "Ma stajniex nirriżolvu l-handle. Jekk jogħġbok iċċekkja li l-handle huwa korrett."
+      auth_check_failed: "L-awtentikazzjoni falliet. Jekk jogħġbok iċċekkja l-password tiegħek."
+      unexpected_error: "Seħħ żball mhux mistenni. Jekk jogħġbok erġa' pprova."
+      unexpected_error_detail: "Seħħ żball mhux mistenni: %{error}"
+      tokens_missing: "It-tokens tal-awtentikazzjoni huma neqsin. Jekk jogħġbok mur lura u erġa' awtentika."
+      account_not_found: "L-ebda kont instab fuq %{pds} bid-DID tiegħek (%{did}). Jekk jogħġbok mur lura u agħżel PDS fil-mira differenti, jew ibda migrazzjoni ġdida."
+      account_verify_failed: "Ma rnexxiex tivverifika l-eżistenza tal-kont fuq %{pds}: %{error}. Jekk jogħġbok erġa' pprova."
+      target_tokens_missing: "It-tokens tal-awtentikazzjoni tal-PDS fil-mira huma neqsin. Jekk jogħġbok mur lura u ivverifika l-kredenzjali tiegħek fuq %{pds}."
+      reauth_not_available: "L-awtentikazzjoni mill-ġdid mhijiex disponibbli f'dan l-istadju."
+      reauth_failed: "L-awtentikazzjoni falliet: %{error}. Jekk jogħġbok iċċekkja l-password tiegħek."
+      reauth_error: "Ma rnexxiex terġa' tawtentika: %{error}"
+      plc_not_available: "Ma jistax jintalab token PLC ġdid f'dan l-istadju. L-aġġornament PLC setgħa diġa ġie pprovat."
+      plc_requested: "Token PLC ġdid intalab. Iċċekkja l-email tiegħek minn %{pds}."
+      plc_request_failed: "Ma stajniex nitolbu token PLC ġdid awtomatikament (%{error}). Jekk jogħġbok itolbu manwalment permezz tas-settings tal-fornitur tal-PDS l-antik tiegħek (eż., app Bluesky → Settings → Account → Request PLC Token), imbagħad daħħlu hawn taħt."
+      plc_session_expired: "Is-sessjoni tiegħek ma' %{pds} skadiet. Jekk jogħġbok itlob token PLC ġdid manwalment: idħol fil-kont l-antik tiegħek u mur għal Settings → Account → Request PLC Token, imbagħad daħħal it-token hawn taħt."
+      pds_connect_check: "Ma stajniex nikkonnettjaw mal-PDS. Jekk jogħġbok iċċekkja l-URL."
+      migration_not_found: "Il-migrazzjoni ma nstabietx"
+      password_required_short: "Il-password hija meħtieġa."
+      reauth_success_plc_valid: "Awtentikazzjoni mill-ġdid b'suċċess! It-token PLC tiegħek għadu validu — qed jerġa' jipprova l-aġġornament PLC issa."
+      reauth_success_plc_requested: "Awtentikazzjoni mill-ġdid b'suċċess! Token PLC ġdid intalab — iċċekkja l-email tiegħek minn %{pds}."
+      reauth_success_plc_failed: "Awtentikazzjoni mill-ġdid b'suċċess, imma ma stajniex nitolbu token PLC awtomatikament (%{error}). Tista' titolbu manwalment permezz tas-settings tal-fornitur tal-PDS l-antik tiegħek, imbagħad daħħlu hawn taħt."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Servizz ta' Migrazzjoni Eurosky"
+
+    email_verification:
+      subject: "Il-kodiċi ta' verifika tiegħek: %{code} (%{token})"
+      heading: "IVVERIFIKA L-EMAIL TIEGĦEK - IBDA L-MIGRAZZJONI TAL-KONT"
+      migration_token: "Token tal-Migrazzjoni: %{token}"
+      initiated: "Bdejt migrazzjoni għal %{handle} lejn %{pds}."
+      enter_code: "Daħħal il-kodiċi ta' verifika li ġej fil-paġna tal-migrazzjoni biex tibda l-proċess:"
+      go_to_page: "Mur għall-paġna tal-migrazzjoni:"
+      what_next: "X'JIĠRI WARA?"
+      next_step1: "Daħħal il-kodiċi ta' verifika ta' hawn fuq fil-paġna tal-migrazzjoni"
+      next_step2: "Il-migrazzjoni tiegħek tibda awtomatikament"
+      next_step3: "Se tirċievi aġġornamenti tal-istat permezz tal-email"
+      next_step4: "Il-proċess kollu jieħu madwar 20-30 minuta"
+      important: "TFAKKIRIET IMPORTANTI"
+      reminder1: "Tużax il-kont tiegħek waqt il-migrazzjoni"
+      reminder2: "Kwalunkwe attivita waqt il-migrazzjoni mhux se tiġi trasferita"
+      reminder3: "Agħlaq l-apps u t-tabs tal-browser kollha bil-kont tiegħek"
+      reminder4: "Stenna l-email ta' kompletament qabel ma terġa' tidħol"
+      not_you: "Jekk ma bdejt din il-migrazzjoni int, jekk jogħġbok injora dan l-email."
+
+    account_password:
+      subject: "Il-Password Ġdida tal-Kont Tiegħek għal %{handle} (%{token})"
+      heading: "IL-PASSWORD ĠDIDA TAL-KONT TIEGĦEK"
+      intro: "Il-migrazzjoni tiegħek bdiet! Ħloqna password sigura għall-kont ġdid tiegħek."
+      security_notice: "AVVIŻ TA' SIGURTA"
+      save_password: "AĦŻEN DIN IL-PASSWORD IMMEDJATAMENT! Se jkollok bżonnha biex tidħol fil-kont ġdid tiegħek."
+      tip1: "Aħżinha f'maniġer tal-passwords sigur"
+      tip2: "Taqsamhiex ma' ħadd"
+      tip3: "Tista' tbiddilha wara li tidħol għall-ewwel darba"
+      account_details: "DETTALJI TAL-KONT"
+      new_handle: "Handle Ġdid: @%{handle}"
+      new_pds: "PDS Ġdid: %{pds}"
+      email: "Email: %{email}"
+      whats_happening: "X'QED JIĠRI ISSA?"
+      backup_step1: "Qed noħolqu backup tad-data tal-kont tiegħek"
+      backup_step2: "Se tirċievi email ieħor meta l-backup ikun lest biex tniżżlu"
+      backup_step3: "Il-kont tiegħek jinħoloq u d-data tiegħek tiġi mmigrata"
+      no_backup_step1: "Il-kont tiegħek qed jinħoloq fuq il-PDS il-ġdid"
+      no_backup_step2: "Id-data tiegħek qed tiġi mmigrata (mingħajr backup)"
+      no_backup_step3: "Se tiġi notifikat meta l-migrazzjoni tlesti"
+      track_progress: "Segwi l-progress tal-migrazzjoni tiegħek fuq:"
+
+    migration_completed:
+      subject: "Migrazzjoni Kompluta! (%{token})"
+      heading: "MIGRAZZJONI KOMPLUTA!"
+      success: "Il-kont Bluesky/ATProto tiegħek ġie mmigrat b'suċċess lejn il-PDS ġdid."
+      password_heading: "IL-PASSWORD ĠDIDA TAL-KONT TIEGĦEK"
+      password_help: "Uża din il-password biex tidħol fil-kont ġdid tiegħek:"
+      save_password: "Aħżen din il-password issa — aħżinha f'maniġer tal-passwords."
+      change_password: "Tista' tbiddilha wara li tidħol għall-ewwel darba."
+      backup_heading: "PAKKETT TAL-BACKUP DISPONIBBLI"
+      backup_help: "Il-backup tad-data tal-kont tiegħek huwa disponibbli għat-tniżżil għall-10 minuti li ġejjin:"
+      backup_expiry: "Wara 10 minuti, dan il-link jiskadi u l-backup jitħassar b'mod permanenti."
+      summary: "SOMMARJU TAL-MIGRAZZJONI"
+      migration_token: "Token tal-Migrazzjoni: %{token}"
+      did: "DID: %{did}"
+      old_account: "Kont Antik: %{handle} @ %{pds}"
+      new_account: "Kont Ġdid: %{handle} @ %{pds}"
+      completed_at: "Komplutat Nhar: %{time}"
+      status_page: "Ara l-Paġna tal-Istat (disponibbli għal 10 minuti):"
+      login_heading: "KIF TIDĦOL FIL-KONT ĠDID TIEGĦEK"
+      login_help: "Jekk għadek ma għamiltx hekk, oħroġ mill-kont l-antik tiegħek fi kwalunkwe app ta' Bluesky, imbagħad idħol bil-handle ġdid tiegħek:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "IMPORTANTI: Kun żgur li ddaħħal \"%{pds}\" bħala l-fornitur tal-hosting fil-quċċata tal-formola tad-dħul!"
+      hosting_miss: "Ħafna utenti jaqbżu dan il-pass — mingħajr il-fornitur tal-hosting korrett, mhux se tkun tista' tidħol."
+      change_password_heading: "BIDDEL IL-PASSWORD TIEGĦEK"
+      change_password_help: "Għas-sigurta tiegħek, nirrakkomandaw bis-sħiħ li tbiddel il-password tiegħek immedjatament:"
+      change_password_later: "Tista' wkoll tbiddilha aktar tard fis-settings tal-kont tiegħek."
+      whats_next: "X'JIĠRI WARA?"
+      next1: "Il-kont tiegħek issa huwa attiv fuq %{pds}"
+      next2: "Il-kont l-antik tiegħek fuq %{old_pds} ġie diżattivat"
+      next3: "Il-posts, follows, u data kollha tiegħek ġew trasferiti"
+      next4: "Il-followers tiegħek għandhom jaraw awtomatikament il-post ġdid tiegħek (ibbażat fuq id-DID)"
+      privacy_heading: "PRIVATEZZA U SIGURTA"
+      privacy1: "Dan ir-rekord tal-migrazzjoni jitħassar awtomatikament fi 10 minuti għall-konformita mal-GDPR"
+      privacy2: "Il-kredenzjali ikriptjati kollha tħassru b'mod sigur mis-servers tagħna"
+      support: "Jekk għandek mistoqsijiet jew problemi, jekk jogħġbok ikkuntattja s-sapport bit-token tal-migrazzjoni tiegħek:"
+      email_footer: "Dan l-email intbagħat lil %{email} għax bdejt migrazzjoni ta' kont."
+
+    migration_failed:
+      subject: "Il-Migrazzjoni Falliet - Azzjoni Meħtieġa (%{token})"
+      heading: "Migrazzjoni Eurosky Falliet - Azzjoni Meħtieġa"
+      intro: "Il-migrazzjoni tal-kont tiegħek %{token} iltaqgħet ma' żball u teħtieġ l-attenzjoni tiegħek."
+      account_details: "Dettalji tal-Kont:"
+      did: "DID: %{did}"
+      old_handle: "Handle Antik: @%{handle}"
+      new_handle: "Handle Ġdid: @%{handle}"
+      failure_info: "Informazzjoni dwar il-Falliment:"
+      failed_step: "Pass li Falla: %{step}"
+      error: "Żball: %{error}"
+      previous_retries: "Tentattivi Preċedenti: %{count}"
+      what_to_do: "X'Tista' Tagħmel:"
+      do_step1: "Irrevedi l-Istat tal-Migrazzjoni:"
+      do_step2: "Agħfas il-buttuna \"Erġa' Pprova l-Migrazzjoni\" biex terġa' tipprova l-migrazzjoni"
+      do_step3: "Jekk il-problema tibqa' wara diversi tentattivi, jekk jogħġbok ikkuntattja s-sapport bit-token tal-migrazzjoni tiegħek: %{token}"
+      common_issues: "Problemi Komuni u Soluzzjonijiet:"
+      issue1: "Timeouts tan-network: Normalment jirriżolvu meta terġa' tipprova"
+      issue2: "Limitazzjoni tar-rata: Stenna ftit minuti qabel ma terġa' tipprova"
+      issue3: "Data nieqsa: Iċċekkja jekk id-data kollha hijiex aċċessibbli fuq il-PDS l-antik"
+      important: "IMPORTANTI:"
+      note1: "Id-data tiegħek fuq il-PDS l-antik tibqa' intatta"
+      note2: "Tista' terġa' tipprova l-migrazzjoni b'mod sigur"
+      note3: "Jekk teħtieġ għajnuna, irreferi għat-token tal-migrazzjoni tiegħek: %{token}"
+
+    backup_ready:
+      subject: "Il-Backup tal-Migrazzjoni Eurosky Tiegħek Lest (%{token})"
+      heading: "IL-BACKUP TIEGĦEK LEST"
+      intro: "Il-backup tad-data tal-kont tiegħek għall-migrazzjoni %{token} huwa lest biex tniżżlu."
+      download: "Niżżel il-backup tiegħek:"
+      size: "Daqs tal-backup: %{size}"
+      expires: "Dan il-link tat-tniżżil jiskadi nhar %{time}."
+      expiry_warning: "Wara li jiskadi, il-backup jitħassar b'mod permanenti mis-servers tagħna."
+      whats_next: "Il-migrazzjoni tiegħek qed tkompli fl-isfond. Se tirċievi email ieħor meta tlesti."
+
+    rotation_key_notice:
+      subject: "Azzjoni Meħtieġa: Ikkonferma l-Migrazzjoni Tiegħek bil-Kodiċi PLC (%{token})"
+      heading: "IKKONFERMA L-MIGRAZZJONI TIEGĦEK"
+      intro: "Id-data tal-kont tiegħek ġiet trasferita. Biex tlesti l-migrazzjoni, trid tissottometti kodiċi ta' konferma PLC."
+      key_heading: "IR-ROTATION KEY TIEGĦEK (AĦŻEN DIN L-EWWEL!)"
+      key_help: "Qabel ma tkompli, aħżen din ir-rotation key b'mod sigur. Hija l-unika mod kif tirkupra l-kont tiegħek jekk xi ħaġa tmur ħażin:"
+      key_warning: "Aħżen din iċ-ċavetta f'maniġer tal-passwords jew post sigur ieħor. MHUX se tkun tista' tirkupraha aktar tard."
+      next_step: "Mur għall-paġna tal-migrazzjoni biex iddaħħal il-kodiċi ta' konferma PLC tiegħek:"
+      check_email: "Iċċekkja l-email tiegħek għal kodiċi mill-fornitur tal-PDS l-antik tiegħek — jidher bħal XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Azzjoni Meħtieġa: Itlob Kodiċi ta' Konferma PLC Ġdid (%{token})"
+      heading: "TOKEN PLC SKADUT JEW INVALIDU"
+      intro: "Il-kodiċi ta' konferma PLC għall-migrazzjoni tiegħek %{token} skada jew kien invalidu."
+      what_to_do: "X'Għandek Bżonn Tagħmel:"
+      step1: "Mur għall-paġna tal-migrazzjoni:"
+      step2: "Itlob token PLC ġdid (jista' jkollok terġa' ddaħħal il-password tiegħek)"
+      step3: "Daħħal it-token ġdid meta tirċevieh permezz tal-email"
+      error_detail: "Żball: %{error}"
+
+    critical_plc_failure:
+      subject: "URĠENTI: Falliment Kritiku tal-Migrazzjoni - TIBDIEX MIGRAZZJONI ĠDIDA (%{token})"
+      heading: "FALLIMENT KRITIKU TAL-MIGRAZZJONI"
+      warning: "TIBDIEX migrazzjoni ġdida. Il-kont tiegħek jista' jkun fi stat inkonsistenti."
+      intro: "L-aġġornament tad-direttorju PLC għall-migrazzjoni %{token} falla wara l-punt ta' ebda ritorn."
+      key_heading: "IR-ROTATION KEY TIEGĦEK"
+      key_help: "Se jkollok bżonn din iċ-ċavetta biex tirkupra l-kont tiegħek:"
+      contact: "Ikkuntattja s-sapport immedjatament:"
+      error_detail: "Żball: %{error}"
+
+    invalid_invite_code:
+      subject: "Il-Migrazzjoni Falliet - Kodiċi ta' Stedina Invalidu (%{token})"
+      heading: "KODIĊI TA' STEDINA INVALIDU"
+      intro: "Il-migrazzjoni tiegħek %{token} ma setgħetx tkompli għax il-kodiċi ta' stedina kien invalidu jew diġa ntużat."
+      what_to_do: "Biex tibda migrazzjoni ġdida b'kodiċi ta' stedina validu:"
+
+    orphaned_account_error:
+      subject: "Migrazzjoni Sospiża - Kont Orfni fuq il-PDS fil-Mira (%{token})"
+      heading: "KONT ORFNI MISJUB"
+      intro: "Il-migrazzjoni tiegħek %{token} ġiet sospiża għax instab kont orfni fuq il-PDS fil-mira."
+      explanation: "Dan normalment jiġri meta tentattiv ta' migrazzjoni preċedenti jiġi interrott. Il-kont l-antik għadu jeżisti fuq is-server fil-mira u jeħtieġ jitneħħa qabel ma nistgħu nkomplu."
+      what_to_do: "X'Tista' Tagħmel:"
+      option1: "Ikkuntattja l-amministratur tal-PDS fil-mira fuq %{email} biex ineħħi l-kont orfni"
+      option2: "Inkludi d-DID tiegħek: %{did}"
+      option3: "Ladarba jitneħħa, erġa' pprova l-migrazzjoni mill-paġna tal-istat:"
+
+    reauthentication_required:
+      subject: "Azzjoni Meħtieġa: Awtentikazzjoni mill-Ġdid Meħtieġa (%{token})"
+      heading: "AWTENTIKAZZJONI MILL-ĠDID MEĦTIEĠA"
+      intro: "Il-migrazzjoni tiegħek %{token} teħtieġ li terġa' ddaħħal il-password tiegħek biex tkompli."
+      reason: "Is-sessjoni tiegħek mal-PDS l-antik skadiet waqt il-proċess tal-migrazzjoni."
+      what_to_do: "Mur għall-paġna tal-migrazzjoni u erġa' daħħal il-password tiegħek:"
+      error_detail: "Żball: %{error}"
+      step: "Pass li Falla: %{step}"
+
+    cancellation_confirmation:
+      subject: "Ikkonferma l-Kanċellazzjoni tal-Migrazzjoni (%{token})"
+      heading: "IKKONFERMA L-KANĊELLAZZJONI"
+      intro: "Tlabt li tikkanċella l-migrazzjoni %{token}."
+      confirm_help: "Agħfas il-link hawn taħt biex tikkonferma l-kanċellazzjoni:"
+      confirm_link: "Ikkonferma l-Kanċellazzjoni"
+      not_you: "Jekk ma tlabtx din il-kanċellazzjoni, tista' tinjora dan l-email b'mod sigur. Il-migrazzjoni tiegħek tkompli bħas-soltu."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "għandu jkun handle ATProto validu (eż., user.bsky.social)"

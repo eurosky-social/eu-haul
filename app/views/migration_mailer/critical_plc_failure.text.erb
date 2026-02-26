@@ -1,19 +1,18 @@
-🚨 CRITICAL MIGRATION FAILURE - URGENT ACTION REQUIRED 🚨
+<%= t('mailers.critical_plc_failure.heading') %>
 ==============================================================
 
-Your AT Protocol account migration has encountered a CRITICAL ERROR
-during the PLC directory update (Point of No Return).
+<%= t('mailers.critical_plc_failure.intro', token: @migration.token) %>
 
-⚠️ YOUR ACCOUNT MAY BE IN AN UNCERTAIN STATE ⚠️
+<%= t('mailers.critical_plc_failure.warning') %>
 
 
-🚨 IMPORTANT - DO NOT:
+IMPORTANT - DO NOT:
 =======================
 
-❌ Start a new migration
-❌ Delete this email
-❌ Attempt manual recovery without support
-❌ Change your account settings on either PDS
+- Start a new migration
+- Delete this email
+- Attempt manual recovery without support
+- Change your account settings on either PDS
 
 Your account data is safe, but the PLC directory state needs to be
 verified by our support team before you take any action.
@@ -28,15 +27,13 @@ WHAT TO DO RIGHT NOW:
    <%= @migration.token %>
 
 <% if @rotation_key.present? %>
-3. Save your rotation key (account recovery mechanism):
+3. <%= t('mailers.critical_plc_failure.key_heading') %>
    <%= @rotation_key %>
 
-   If you need to recover your account, go to:
-   https://pdsmoover.com/restore
-   and use this key. Store it securely!
+   <%= t('mailers.critical_plc_failure.key_help') %>
 <% end %>
 
-4. Contact support IMMEDIATELY:
+4. <%= t('mailers.critical_plc_failure.contact') %>
    <%= @support_email %>
 
 5. Include this migration token in your support request:
@@ -49,9 +46,7 @@ WHAT HAPPENED?
 The migration failed during the PLC directory update, which is the
 critical step that redirects your DID to the new PDS.
 
-Error Details:
---------------
-<%= @error_message %>
+<%= t('mailers.critical_plc_failure.error_detail', error: @error_message) %>
 
 Migration Information:
 ----------------------
@@ -66,10 +61,10 @@ WHAT HAPPENS NEXT?
 
 Our support team will:
 
-• Investigate the PLC directory state for your DID
-• Determine whether the PLC operation succeeded or failed
-• Provide you with specific recovery instructions
-• Contact you within 24 hours via email
+- Investigate the PLC directory state for your DID
+- Determine whether the PLC operation succeeded or failed
+- Provide you with specific recovery instructions
+- Contact you within 24 hours via email
 
 DO NOT TAKE ANY ACTION until you hear from support.
 We will guide you through the recovery process.

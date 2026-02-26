@@ -1,0 +1,652 @@
+hu:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Fiok atkoltoztetesenek inditasa"
+    privacy_policy: "Adatvedelmi szabalyzat"
+    terms_of_service: "Felhasznalasi feltetelek"
+    background_attribution: "Hatterkep:"
+    background_attribution_by: "keszitette"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Nyelv"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Fiok atkoltoztetesenek inditasa"
+      errors_heading: "Kerem, javitsa ki a kovetkezo hibakat:"
+
+      # Progress bar labels
+      progress:
+        account: "Fiok"
+        email: "E-mail"
+        destination: "Celszerver"
+        handle: "Handle"
+        review: "Attekintes"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "1. lepes: Fiokazonosito adatok"
+        handle_label: "Az On handleje"
+        handle_placeholder: "felhasznalonev.bsky.social"
+        handle_help: "Adja meg jelenlegi AT Protocol handlejet"
+        password_label: "Fiok jelszava"
+        password_help: "Az On jelenlegi fiokjelszava"
+        two_factor_title: "Ketfaktoros hitelesites"
+        two_factor_help: "Bejelentkezesi kodot kuldtunk az e-mail cimere. Adja meg alabb."
+        two_factor_placeholder: "Adja meg a bejelentkezesi kodot"
+        continue: "Tovabb"
+
+      # Step 2: Email
+      step2:
+        title: "2. lepes: E-mail cim"
+        email_label: "E-mail cim"
+        email_help: "Erre a cimre kuldjuk a migracios allapotfrissiteseket"
+        email_readonly_help: "A fiokjabol lekert e-mail cim"
+        email_manual_help: "Nem sikerult lekerni az e-mail cimet. Kerem, adja meg kezzel."
+        confirm_access: "Hozzaferek ehhez az e-mail cimhez, es le tudom kerni a ra kuldott megerosito kodot."
+        back: "Vissza"
+        continue: "Tovabb"
+
+      # Step 3: Destination Server
+      step3:
+        title: "3. lepes: Celszerver"
+        server_label: "Celszerver"
+        server_placeholder: "Valasszon szervert..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Egyeni szerver..."
+        server_help: "Valassza ki, hova szeretne atkoltoztetni a fiokjat"
+        custom_url_label: "Egyeni szerver URL-je"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Adja meg az egyeni szerver teljes URL-jet"
+        invite_code_label: "Meghivokod"
+        invite_code_placeholder: "Adja meg a meghivokodot"
+        invite_code_help: "Ez a szerver meghivokodot igenyel"
+        existing_account_title: "Letezo fiok talalva"
+        existing_account_help: "Az On fiokja mar letezik a celszerveren. Kerem, erositse meg jelszavat a migracio folytatasahoz."
+        target_password_label: "Jelszava a celszerveren"
+        target_password_placeholder: "Adja meg a letezo fiok jelszavat"
+        target_2fa_label: "Bejelentkezesi kod (2FA)"
+        target_2fa_help: "Ellenorizze e-mailjeit a ketfaktoros hitelesitesi kodert"
+        deactivated_notice: "Ez a fiok deaktivaltnak tunik"
+        deactivated_reason: "(valoszinuleg egy korabbi migracios kiserlettol)."
+        deactivated_help: "Ha nem emlekszik a jelszavara, probalkozhat a kovetkezokkel:"
+        deactivated_reset: "Jelszo visszaallitasa:"
+        deactivated_contact: "Forduljon a PDS rendszergazdajahoz a(z) %{email} cimen az inaktiv fiok eltavolitas es a migracio ujrainditasa erdekeben. Mellekelје a DID-jet:"
+        back: "Vissza"
+        continue: "Tovabb"
+
+      # Step 4: New Handle
+      step4:
+        title: "4. lepes: Uj handle"
+        custom_domain_title: "Egyeni domain eszlelve"
+        custom_domain_help: "Az On handleje (%{handle}) egyeni domain. Tovabbra is hasznalhatja az uj szerveren."
+        keep_handle: "Jelenlegi handle megtartasa"
+        new_handle_label: "Az On uj handlеje"
+        new_handle_placeholder: "felhasznalonev"
+        new_handle_help: "Valassza ki uj handlejet (lehet a regi is) a celszerveren"
+        back: "Vissza"
+        continue: "Tovabb"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "5. lepes: Attekintes es megerosites"
+        current_handle: "Jelenlegi handle:"
+        email: "E-mail:"
+        destination_server: "Celszerver:"
+        new_handle: "Uj handle:"
+        invite_code: "Meghivokod:"
+        create_backup: "Biztonsagi mentes letrehozasa migracio elott"
+        backup_help: "Letolti a fiokadatok teljes masolatat. 24 oraig elerheto."
+        confirm_email_html: "Amikor a <strong>Tovabb</strong> gombra kattint, megerosito e-mailt kuldunk a(z) <strong>%{email}</strong> cimre. A migracio csak az e-mailben torteno megerosites utan indul el."
+        no_usage_title: "Ne hasznalja fiokjat a migracio soran"
+        no_usage_help: "A migracio elinditasa utan zarja be az osszes alkalmazast es bongeszolapat a fiokjaval. A migracio soran letrehozott bejegyzesek, kedvelesek es kovetesek nem kerulnek atvitelre. E-mailt kap, amikor befejezodott (~20-30 perc)."
+        acknowledge: "Megértem, hogy nem szabad hasznalnom a fiokomat a migracio soran"
+        back: "Vissza"
+        continue: "Tovabb"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Kerem, adjon meg egy handlet"
+      enter_password: "Kerem, adja meg a jelszavat"
+      handle_needs_domain: "A handlenek tartalmaznia kell egy domaint (pl. felhasznalo.bsky.social)"
+      authenticating: "Hitelesites..."
+      authenticating_details: "Hitelesites es fiokadatok lekerese..."
+      two_factor_sent: "Bejelentkezesi kodot kuldtunk az e-mail cimere. Adja meg fent, es kattintson ujra a Tovabb gombra."
+      auth_success: "Hitelesites sikeres!"
+      network_error: "Halozati hiba. Kerem, probalja ujra."
+      continue: "Tovabb"
+      # Step 2
+      email_readonly_help: "A fiokjabol lekert e-mail cim"
+      email_manual_help: "Nem sikerult lekerni az e-mail cimet. Kerem, adja meg kezzel."
+      enter_email: "Kerem, adja meg az e-mail cimet"
+      invalid_email: "Kerem, adjon meg ervenyes e-mail cimet"
+      confirm_email_access: "Kerem, erositse meg, hogy hozzafer ehhez az e-mail cimhez."
+      # Step 3
+      select_server: "Valasszon szervert, vagy adja meg egy egyeni szerver URL-jet"
+      checking_server: "Szerver ellenorzese..."
+      checking_requirements: "Szerverk kovetelmenyek ellenorzese..."
+      server_verified: "Szerver ellenorizve!"
+      failed_verify_pds: "A PDS ellenorzese nem sikerult. Kerem, ellenorizze az URL-t."
+      invite_code_required: "Ez a szerver meghivokodot igenyel. Adja meg alabb, majd kattintson a Tovabb gombra."
+      enter_invite_code: "Kerem, adjon meg egy meghivokodot a folytatashoz."
+      checking_existing: "Letezo fiok keresese..."
+      verifying_credentials: "Hitelesito adatok ellenorzese..."
+      authenticating_existing: "Hitelesites a letezo fiokkal..."
+      credentials_verified: "Hitelesito adatok ellenorizve!"
+      enter_target_password: "Kerem, adja meg a jelszavat ehhez a szerverhez"
+      # Step 4
+      custom_domain_help: "Az On handleje ({handle}) egyeni domain. Tovabbra is hasznalhatja az uj szerveren."
+      enter_handle_short: "Kerem, adjon meg egy handlet"
+      checking_availability: "Elerhetoseg ellenorzese..."
+      checking_handle: "Handle elerhetosegenek ellenorzese..."
+      handle_taken: "Ez a handle mar foglalt. Kerem, valasszon masikat."
+      all_checks_passed: "Minden ellenorzes sikeres!"
+      using_existing_handle: "A letezo handle hasznalata a celszerveren."
+      keeping_custom_handle: "Egyeni domain handle megtartasa!"
+      handle_available_checking: "Handle elerheto, letezo fiokok keresese..."
+      checking_existing_accounts: "Letezo fiokok keresese..."
+      failed_check_availability: "Az elerhetoseg ellenorzese nem sikerult. Kerem, probalja ujra."
+      failed_check_existing: "A letezo fiokok ellenorzese nem sikerult: "
+      account_exists_title: "Fiok mar letezik a celszerveren"
+      account_exists_what: "Egy fiok az On DID-jevel mar letezik a celszerveren (%{pds}). Ez egy korabbi migracios kiserlettol szarmazhat."
+      account_exists_do: "Menjen vissza az elozo lepesre, es adja meg a letezo fiok jelszavat. Ha nem tudja a jelszot:"
+      account_exists_reset: "Probalja meg visszaallitani a jelszavat:"
+      account_exists_contact: "Forduljon a szerver uzemeltetojehez a(z) <strong>%{email}</strong> cimen az arva fiok eltavolitasaert"
+      account_exists_did: "Mellekelje a DID-jet:"
+      # Step 5
+      confirm_email_html: "Amikor a <strong>Tovabb</strong> gombra kattint, megerosito e-mailt kuldunk a(z) <strong>{email}</strong> cimre. A migracio csak az e-mailben torteno megerosites utan indul el."
+      confirm_no_usage: "Kerem, erositse meg, hogy megertette: nem szabad hasznalnia a fiokjat a migracio soran."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migracio %{token}"
+      migration_status: "Migracios allapot"
+      status_label: "Allapot:"
+      retry_info: "Ujraprobalas %{attempt}/%{max} - %{step}"
+      verify_email: "E-mail cim megerositese"
+      enter_verification: "Adja meg az ellenorzo kodot"
+      verification_sent: "Kodot kuldtunk a(z) <strong>%{email}</strong> cimre. Adja meg alabb a migracio inditasahoz."
+      verification_label: "Ellenorzo kod"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Megerosites es migracio inditasa"
+      didnt_receive: "Nem kapta meg az e-mailt?"
+      check_spam: "Ellenorizze a spam vagy levelszemetmappat"
+      check_email_correct: "Gyozodjon meg rola, hogy a(z) <strong>%{email}</strong> helyes"
+      email_delay: "Az e-mail megérkezese nehany percet igenybevehet"
+
+      # Queue
+      in_queue: "Varakozasi sorban"
+      queue_default: "Varakozas mas migraciok adatatvitelnek befejezesere"
+      queue_auto_start: "A migracioja automatikusan elindul, amint felszabadul egy hely."
+
+      # Blob conversion
+      converting_blobs: "Regi blob-formatum konvertalasa"
+      converting_blobs_detail: "ez nehany percig tarthat..."
+      blobs_converted: "A regi blob-formatum sikeresen konvertalva."
+
+      # Blob progress
+      blobs_uploaded: "Feltoltott blobok"
+      files: "fajl"
+      data_transferred: "Atvitt adatok"
+      failed: "Sikertelen"
+      preparing_blobs: "<strong>%{count}</strong> blob atvitelnek elokeszitese..."
+
+      # Download/backup progress
+      downloading_account: "Fiokadatok letoltese"
+      downloading_detail: "tarolo es blobok letoltese biztonsagi menteshez..."
+      creating_backup: "Biztonsagi mentes letrehozasa"
+      creating_backup_detail: "fiokadatok csomagolasa..."
+      downloaded_count: "Letoltve: %{downloaded} / %{total} blob"
+      backup_expired: "Biztonsagi mentes lejart"
+      backup_expired_detail: "a biztonsagi mentese torolve lett a szervereinkrol."
+
+      # PLC pending
+      updating_identity: "Szemelyazonossag frissitese"
+      plc_accepted: "A megerosito kodja elfogadva. Most frissitjuk a PLC konyvtarbejegyzeset, hogy a(z) <strong>%{pds}</strong> cimre mutasson. Ez egy pillanatot igenybevehet."
+      page_auto_update: "Ez az oldal automatikusan frissul. Kerem, ne zarja be ezt a lapot."
+      enter_confirmation: "Adja meg a megerosito kodot"
+      confirmation_hint: "Ellenorizze e-mailjeit a(z) <strong>%{pds}</strong> altal kuldott kodert &mdash; igy nez ki: <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Megerosito kod"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Migracio befejezese"
+      complete_confirm: "Ezzel veglegesiti a fiokja migracioját. Ez a lepes nem vonhato vissza.\n\nBiztos, hogy folytatni szeretne?"
+
+      # Completed
+      completed_title: "Migracio sikeresen befejezve!"
+      completed_migrated_to: "Fiokja sikeresen atkoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet az uj handlevel: <strong>%{handle}</strong>"
+      completed_migrated_back: "Fiokja sikeresen visszakoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet a handlevel: <strong>%{handle}</strong>"
+      email_sent_html: "E-mailt kuldtunk a(z) %{email} cimre az uj fiokjelszavval, bejelentkezesi utmutatoval es jelszomodoitasi hivatkozassal. Kerem, ellenorizze a beerkezett leveleket (es a spam mappat)."
+      save_rotation_key: "MENTSE EL A ROTACIOS KULCSOT!"
+      page_auto_delete: "Ez az oldal automatikusan torlodik 2 nap mulva."
+      rotation_key_needed: "A rotacios kulcs szukseges a fiok helyreallitasahoz. Masolja ki most, es tarolja biztonsagosan!"
+      copy_rotation_key: "Rotacios kulcs masolasa"
+      key_emailed: "Ezt a kulcsot elkuldtuk a(z) <strong>%{email}</strong> cimre is"
+      privacy_notice: "Adatvedelmi kozlemeny"
+      privacy_detail: "Az On adatvedelme es a GDPR-megfeleles erdekeben ez a migracios bejegyzes automatikusan torolve lesz <strong>2 nap</strong> mulva. Gyozodjon meg rola, hogy elmentette a rotacios kulcsot es letoltotte a biztonsagi mentest addig!"
+      privacy_delete_now: "Miutan mindent elmentett, azonnal torolheti adatait az alanti gombbal."
+      delete_confirm: "Biztos, hogy veglegesen torolni szeretne az osszes migracios adatot?\n\nGyozodjon meg rola, hogy:\n• Kimasolta a rotacios kulcsot\n• Letoltotte a biztonsagi mentest (ha alkalmazhato)\n\nEz a muvelet nem vonhato vissza."
+      delete_button: "Elmentettem a biztonsagi mentest es a rotacios kulcsot — torold az osszes adatomat"
+      welcome_back: "Regi fiokadatai biztonsagosan torolve lettek. Udvozoljuk ujra!"
+      welcome_new: "Regi fiokadatai biztonsagosan torolve lettek. Udvozoljuk uj otthonaban!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Fiok-helyreallitasi kulcs"
+      recovery_key_important: "FONTOS:"
+      recovery_key_help: "Mentse el biztonsagosan ezt a rotacios kulcsot. Lehetove teszi a PLC valtozasok visszavonast vagy a fiok helyreallitasat."
+      copy_clipboard: "Masolas a vagolapra"
+      revert_title: "Hogyan hasznalhatja ezt a kulcsot a valtozasok visszavonasahoz"
+      revert_help: "Ha vissza kell allitania a PLC konyvtar valtozasait, hasznalhatja ezt a rotacios kulcsot:"
+      revert_step1: "Telepitse a <code>goat</code> CLI eszkozt"
+      revert_step2: "Kerje le a PLC tortenetet: <code>goat plc history &lt;az-on-did-je&gt;</code>"
+      revert_step3: "Azonositsa a kivant torteneti allapotot (CID)"
+      revert_step4: "Hozza letre a visszaallitasi muveletet: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Irja ala a rotacios kulcssal: <code>goat plc sign</code>"
+      revert_step6: "Kuldje be az alairt muveletet: <code>goat plc submit --did &lt;az-on-did-je&gt;</code>"
+      revert_warning: "Ez egy halado szintu muvelet. Csak akkor hasznalja, ha erti a PLC konyvtar rendszert."
+
+      # PLC help section
+      didnt_receive_plc: "Nem kapta meg az e-mailt?"
+      plc_check_spam: "Ellenorizze a spam vagy levelszemetmappat"
+      plc_from_bluesky: "Az e-mailt a Bluesky kuldi, nem mi"
+      plc_expires: "A kod 1 ora utan lejar"
+      plc_new_code_help: "Ha uj kodra van szuksege, adja meg jelszavat alabb, es kerunket:"
+      plc_password_placeholder: "Jelszo a(z) %{handle} fiokhoz"
+      request_new_code: "Uj kod kerese"
+      technical_details: "Technikai reszletek"
+      plc_explanation: "A megerosito kod egy <strong>PLC muveleti token</strong> — felhatalmazza a DID-dokumentum frissiteset a PLC konyvtarban, hogy az uj Personal Data Serverre mutasson."
+      plc_irreversible: "<strong>Ez visszafordithatatlan.</strong> A benyujtas utan a fiokja azonositoja (DID) veglegesen a(z) <strong>%{new_pds}</strong> szerverre fog mutatni a(z) <strong>%{old_pds}</strong> helyett."
+      plc_expiry_note: "A PLC tokenek 1 ora utan lejarnak. Ha az One lejart, kerhet ujat."
+
+      # Sidebar
+      download_backup: "Biztonsagi mentes letoltese"
+      backup_ready: "Biztonsagi mentes kesz"
+      backup_download_completed: "Toltse le a biztonsagi mentest, mielott lejar."
+      backup_download_ready: "A fiokja biztonsagi mentese kesz! Toltse le, mielott lejar."
+      size: "Meret:"
+      expires: "Lejar:"
+      download_button: "Biztonsagi mentes letoltese"
+      recovery_key: "Helyreallitasi kulcs"
+      recovery_key_sidebar: "Mentse el biztonsagosan ezt a kulcsot. Lehetove teszi a fiok helyreallitasat."
+      copy_key: "Kulcs masolasa"
+      cancel_migration: "Migracio megszakitasa"
+      cancel_help: "Szakitsa meg ezt a migraciot, es tartsa meg fiokjat a jelenlegi szerveren."
+      cancel_button: "Migracio megszakitasa"
+      cancel_confirm: "Biztos, hogy meg szeretne szakitani ezt a migraciot?\n\nMegerosito hivatkozast kuldunk az e-mail cimere. A migracio csak a hivatkozasra kattintas utan kerul megszakitasra."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Jelenlegi allapot:"
+      retry_attempt: "Ujraprobalasi kiserlеt:"
+      remaining_attempts: "Hatralevo kislerletek:"
+      next_retry: "Kovetkezo ujraprobalas"
+      calculating: "szamitas..."
+      retrying_now: "ujraprobalas most..."
+      reauth_safe: "A migracios adatai biztonsagban vannak — csak adja meg ujra a jelszavat a folytatashoz."
+      reauth_help: "Adja meg a jelszavat a(z) <strong>%{handle}</strong> fiokhoz a munkamenet helyreallitasahoz es a migracio folytatasahoz."
+      password_for: "Jelszo a(z) %{handle} fiokhoz"
+      enter_password_placeholder: "Adja meg a fiok jelszavat"
+      reauth_button: "Ujrahitelesites es migracio folytatas"
+      plc_safe: "A migracios adatai biztonsagban vannak — csak egy uj PLC tokenre van szukseg."
+      plc_request_help: "Kattintson az alanti gombra uj PLC token keresere. E-mailben kapja meg a(z) <strong>%{pds}</strong> szervertol."
+      request_plc_confirm: "Uj PLC tokent ker a regi PDS-etol?"
+      request_plc_button: "Uj PLC token kerese"
+      plc_session_expired: "A munkamenete a(z) <strong>%{pds}</strong> szerverrel lejart. Adja meg a jelszavat a(z) <strong>%{handle}</strong> fiokhoz az ujracsatlakozshoz es uj PLC token keresehez."
+      reauth_plc_button: "Ujrahitelesites es PLC token kerese"
+      what_happened_title: "Mi tortent es mit tehet"
+      what_happened: "Mi tortent:"
+      what_to_do: "Mit tehet:"
+      request_plc_action: "Uj PLC token kerese"
+      retry_migration: "Migracio ujraprobalasa"
+      retry_confirm: "Ujraprobalja ezt a migraciot a jelenlegi fazistol?"
+      start_new: "Uj migracio inditasa"
+      check_pds: "PDS allapot ellenorzese"
+      download_report: "Sikertelen blobok jelentes letoltese"
+      cleanup_title: "Takaritasi utmutato"
+      cleanup_help: "Az arva fiok eltavolitasahoz futtassa az alabbi parancsot (szerverhozzaferes szukseges):"
+      cleanup_contact: "Vagy forduljon a celszerver PDS rendszergazdajahoz az arva fiok kezzel torteno torleseert."
+      rotation_key_save: "Az On rotacios kulcsa (MENTSE EL EZT)"
+      copy_rotation_key: "Rotacios kulcs masolasa"
+      contact_support: "Azonnal forduljon a tamogatashoz"
+      support_email: "Tamogatasi e-mail:"
+      migration_token: "Migracios token:"
+      include_token: "Mellekelje a migracios tokent a tamogatasi kerelmeben a gyorsabb segitsegert."
+      technical_title: "Technikai reszletek (hibakereseshez)"
+      error_message: "Hibauzenet:"
+      job_step: "Feladat lepes:"
+      migration_status: "Migracios allapot:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "VISSZAFORDITHATATLAN PONT"
+      subtitle: "A kovetkezo muvelet veglegesen atiranyitja a DID-jet az uj PDS-re"
+      once_submit: "A PLC token benyujtasa utan:"
+      will_point: "Az On DID-je (%{did}) a(z) %{pds} szerverre fog mutatni"
+      all_apps: "Minden AT Protocol alkalmazas az uj PDS-re fogja feloldani az On azonossagat"
+      immediate: "Ez a valtozas azonnali, es az egesz foderatalt halozatot erinti"
+      cannot_undo: "Ez a muvelet NEM vonhato vissza a rotacios kulcs nelkul"
+      what_you_need: "Amire szuksege van a folytatas elott:"
+      need_rotation_key: "Rotacios kulcsa biztonsagosan elmentve (gorgetsen fel a masolashoz)"
+      need_data_verified: "Ellenorizte, hogy minden adat atkerult (tarolo, blobok, beallitasok)"
+      need_plc_token: "A PLC muveleti token (e-mailben kapja a(z) %{pds} szervertol)"
+      need_understanding: "Megertette, hogy ez visszafordithatatlan a rotacios kulcs nelkul"
+      instructions_title: "Lepesrol lepesre utmutato:"
+      step1_title: "Mentse el a rotacios kulcsot"
+      step1_help: "Gorgetsen fel, es masolja a rotacios kulcsot biztonsagos helyre (jelszkezelo, titkositott fajl). Ez az EGYETLEN modja a helyreallitasnak, ha valami balul ut ki."
+      step2_title: "Ellenorizze az e-mailjeit"
+      step2_help: "A regi PDS-szolgaltatoja (<strong>%{pds}</strong>) felkerest, hogy PLC muveleti tokent kuldjon e-mailben. Ellenorizze a bejovo uzeneteit a tokent tartalmazo e-mailert."
+      step3_title: "Masolja ki a PLC tokent"
+      step3_help: "Masolja ki a PLC muveleti tokent a regi PDS-szolgaltatoja altal kuldott e-mailbol. A token egy hosszu karakterlanc."
+      step4_title: "Nyujtsa be a tokent alabb"
+      step4_help: "Illessze be a PLC tokent az alanti urlapba, es nyujtsa be a migracio befejezésehez."
+      final_warning: "Utolso figyelmeztetés: Keszen all?"
+      check_saved: "Elmentette a rotacios kulcsot biztonsagos helyre?"
+      check_understand: "Megertette, hogy ez a valtozas vegleges, es az egesz AT Protocol halozatot erinti?"
+      check_prepared: "Felkeszult arra, hogy elveszitheti a hozzaferest, ha nincs meg a rotacios kulcsa?"
+      check_verified: "Ellenorizte, hogy minden adata (bejegyzesek, media, beallitasok) sikeresen atkerult?"
+      do_not_proceed: "Ha barmelyik kerdesre NEMMEL valaszolt, MEG NE folytassa."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Ellenorzo kodot kuldtunk a(z) %{email} cimre. Adja meg a kovetkezo oldalon a migracio inditasahoz."
+      # Verify email
+      email_verified: "E-mail megerositeve! A migracio elkezdodott."
+      invalid_code: "Ervenytelen ellenorzo kod. Kerem, ellenorizze a kodot az e-mailben, es probalja ujra."
+      enter_code: "Kerem, adja meg az ellenorzo kodot az e-mailbol."
+      # PLC token
+      plc_submitted: "PLC token benyujtva! A DID-je hamarosan frissul."
+      plc_blank: "A PLC token nem lehet ures"
+      session_expired: "A munkamenete lejart. Kerem, adja meg ujra a jelszavat a folytatashoz."
+      old_session_expired: "A munkamenete a(z) %{pds} szerverrel lejart. Kerem, adja meg ujra a jelszavat a folytatashoz."
+      credentials_expired: "A hitelesito adatai lejartak. Kerem, adja meg ujra a jelszavat a folytatashoz."
+      # Cancellation
+      cancellation_sent: "Megszakitas-megerosito hivatkozast kuldtunk az e-mail cimere. Kerem, ellenorizze a bejovo leveleit."
+      cannot_cancel: "Ez a migracio a jelenlegi fazisban nem szakithato meg."
+      cancel_email_failed: "A megszakitasi e-mail kuldese nem sikerult. Kerem, probalja ujra."
+      invalid_cancel_link: "Ervenytelen megszakitasi hivatkozas. Kerem, kerjen ujat a migracio allapotoldalarol."
+      cancel_too_late: "Ez a migracio mar nem szakithato meg (lehetseges, hogy tullepte a visszafordithatatlan pontot)."
+      cancelled: "Migracio sikeresen megszakitva. Fiokja valtozatlan marad a(z) %{pds} szerveren. Barmikor indithat uj migraciot."
+      # Delete
+      only_completed: "Csak befejezett migraciok torolhetok."
+      deleted: "Minden migracios adat veglegesen torolve. Koszonjuk, hogy a(z) %{site_name} szolgaltatast valasztotta!"
+      # Retry
+      retry_started: "Migracio ujraprobalasa elindult!"
+      not_failed: "A migracio nem sikertelen allapotu, igy nem probalhat ujra"
+      no_failed_blobs: "Nincsenek sikertelen blobok az ujraprobalashoz"
+      retrying_blobs: "%{count} sikertelen blob ujraprobalasa..."
+      # Backup
+      backup_not_found: "Biztonsagi mentes nem talalhato vagy lejart"
+      # API errors
+      did_required: "A DID megadasa kotelezo"
+      pds_required: "A PDS cim megadasa kotelezo"
+      handle_required: "A handle megadasa kotelezo"
+      password_required: "A jelszo megadasa kotelezo"
+      pds_did_password_required: "A PDS cim, a DID es a jelszo megadasa kotelezo"
+      two_factor_required: "Ketfaktoros hitelesites szukseges. Ellenorizze e-mailjeit a bejelentkezesi kodert."
+      wrong_password: "Helytelen jelszo a Bluesky fiokjahoz. Kerem, adja meg a bsky.social-on hasznalt jelszavat."
+      auth_failed: "A hitelesites nem sikerult: %{error}"
+      invalid_pds_response: "Ervenytelen valasz a cel-PDS-tol"
+      pds_connect_failed: "Nem sikerult csatlakozni a cel-PDS-hez. Kerem, probalja ujra."
+      resolve_failed: "A handle nem oldható fel. Kerem, ellenorizze a handle helyesseget."
+      auth_check_failed: "A hitelesites nem sikerult. Kerem, ellenorizze a jelszavat."
+      unexpected_error: "Varatlan hiba tortent. Kerem, probalja ujra."
+      unexpected_error_detail: "Varatlan hiba tortent: %{error}"
+      tokens_missing: "A hitelesitesi tokenek hianyoznak. Kerem, menjen vissza, es hitelesitse ujra magat."
+      account_not_found: "Nem talalhato fiok a(z) %{pds} szerveren az On DID-jevel (%{did}). Kerem, menjen vissza, es valasszon masik cel-PDS-t, vagy inditson uj migraciot."
+      account_verify_failed: "A fiok letezésenek ellenorzese a(z) %{pds} szerveren nem sikerult: %{error}. Kerem, probalja ujra."
+      target_tokens_missing: "A cel-PDS hitelesitesi tokenjei hianyoznak. Kerem, menjen vissza, es erositse meg hitelesito adatait a(z) %{pds} szerveren."
+      reauth_not_available: "Az ujrahitelesites ebben a fazisban nem elerheto."
+      reauth_failed: "A hitelesites nem sikerult: %{error}. Kerem, ellenorizze a jelszavat."
+      reauth_error: "Az ujrahitelesites nem sikerult: %{error}"
+      plc_not_available: "Ebben a fazisban nem kerheto uj PLC token. A PLC frissites mar megkiserlhette."
+      plc_requested: "Uj PLC tokent kertunk. Ellenorizze e-mailjeit a(z) %{pds} szervertol."
+      plc_request_failed: "Az uj PLC token automatikus kerese nem sikerult (%{error}). Kerem, kerje kezzel a regi PDS-szolgaltato beallitasain keresztul (pl. Bluesky alkalmazas → Beallitasok → Fiok → PLC token kerese), majd adja meg alabb."
+      plc_session_expired: "A munkamenete a(z) %{pds} szerverrel lejart. Kerem, kerjen uj PLC tokent kezzel: jelentkezzen be a regi fiokjaba, es navigaljon a Beallitasok → Fiok → PLC token kerese menupontra, majd adja meg a tokent alabb."
+      pds_connect_check: "Nem sikerult csatlakozni a PDS-hez. Kerem, ellenorizze az URL-t."
+      migration_not_found: "Migracio nem talalhato"
+      password_required_short: "A jelszo megadasa kotelezo."
+      reauth_success_plc_valid: "Ujrahitelesites sikeres! A PLC tokenje meg ervenyes — a PLC frissites ujraprobalasa most."
+      reauth_success_plc_requested: "Ujrahitelesites sikeres! Uj PLC tokent kertunk — ellenorizze e-mailjeit a(z) %{pds} szervertol."
+      reauth_success_plc_failed: "Ujrahitelesites sikeres, de az automatikus PLC token keres nem sikerult (%{error}). Kerheti kezzel a regi PDS-szolgaltato beallitasain keresztul, majd adja meg alabb."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky migracios szolgaltatas"
+
+    email_verification:
+      subject: "Az On ellenorzo kodja: %{code} (%{token})"
+      heading: "E-MAIL MEGEROSITESE - FIOK ATKOLTEZTESTENEK INDITASA"
+      migration_token: "Migracios token: %{token}"
+      initiated: "On elindította a(z) %{handle} migraciojat a(z) %{pds} szerverre."
+      enter_code: "Adja meg a kovetkezo ellenorzo kodot a migracios oldalon a folyamat inditasahoz:"
+      go_to_page: "Menjen a migracios oldalra:"
+      what_next: "MI TORTENIK EZUTAN?"
+      next_step1: "Adja meg a fenti ellenorzo kodot a migracios oldalon"
+      next_step2: "A migracio automatikusan elindul"
+      next_step3: "Allapotfrissiteseket kap e-mailben"
+      next_step4: "A teljes folyamat megkozelitőleg 20-30 percet vesz igenybe"
+      important: "FONTOS EMLEKEZTETOK"
+      reminder1: "Ne hasznalja a fiokjat a migracio soran"
+      reminder2: "A migracio soran vegzett tevekenysegek nem kerulnek atvitelre"
+      reminder3: "Zarja be az osszes alkalmazast es bongeszolapat a fiokjaval"
+      reminder4: "Varja meg a befejezesi e-mailt, mielott ujra bejelentkezne"
+      not_you: "Ha nem On inditotta el ezt a migraciot, kerem, hagyja figyelmen kivul ezt az e-mailt."
+
+    account_password:
+      subject: "Az On uj fiokjelszava a(z) %{handle} fiokhoz (%{token})"
+      heading: "AZ ON UJ FIOKJELSZAVA"
+      intro: "A migracio elkezdodott! Biztonsagos jelszot hoztunk letre az uj fiokjahoz."
+      security_notice: "BIZTONSAGI KOZLEMENY"
+      save_password: "AZONNAL MENTSE EL EZT A JELSZOT! Szuksege lesz ra az uj fiokba valo bejelentkezeshez."
+      tip1: "Tarolja biztonsagos jelszokezeloben"
+      tip2: "Ne ossza meg senkivel"
+      tip3: "Az elso bejelentkezes utan megvaltoztathatja"
+      account_details: "FIOK RESZLETEI"
+      new_handle: "Uj handle: @%{handle}"
+      new_pds: "Uj PDS: %{pds}"
+      email: "E-mail: %{email}"
+      whats_happening: "MI TORTENIK MOST?"
+      backup_step1: "Biztonsagi mentest keszitunk a fiokadatairol"
+      backup_step2: "Ujabb e-mailt kap, amikor a biztonsagi mentes letoltheto"
+      backup_step3: "Fiokja letrejon, es az adatok atkerulnek"
+      no_backup_step1: "Fiokja letrehozas alatt az uj PDS-en"
+      no_backup_step2: "Adatai migralasa folyamatban (biztonsagi mentes nelkul)"
+      no_backup_step3: "Ertesitest kap, amikor a migracio befejezodott"
+      track_progress: "Kovesse nyomon a migracio elorehaladtasat itt:"
+
+    migration_completed:
+      subject: "Migracio befejezve! (%{token})"
+      heading: "MIGRACIO BEFEJEZVE!"
+      success: "Bluesky/ATProto fiokja sikeresen atkerult az uj PDS-re."
+      password_heading: "AZ ON UJ FIOKJELSZAVA"
+      password_help: "Hasznalja ezt a jelszot az uj fiokba torteno bejelentkezeshez:"
+      save_password: "Mentse el ezt a jelszot most — tarolja jelszokezeloben."
+      change_password: "Az elso bejelentkezes utan megvaltoztathatja."
+      backup_heading: "BIZTONSAGI MENTES ELERHETO"
+      backup_help: "A fiokadatok biztonsagi mentese a kovetkezo 10 percben letoltheto:"
+      backup_expiry: "10 perc mulva ez a hivatkozas lejar, es a biztonsagi mentes veglegesen torolve lesz."
+      summary: "MIGRACIOS OSSZEFOGLALO"
+      migration_token: "Migracios token: %{token}"
+      did: "DID: %{did}"
+      old_account: "Regi fiok: %{handle} @ %{pds}"
+      new_account: "Uj fiok: %{handle} @ %{pds}"
+      completed_at: "Befejezve: %{time}"
+      status_page: "Allapotoldal megtekintese (10 percig elerheto):"
+      login_heading: "HOGYAN JELENTKEZZEN BE AZ UJ FIOKJABA"
+      login_help: "Ha meg nem tette, jelentkezzen ki a regi fiokjabol minden Bluesky alkalmazasban, majd jelentkezzen be az uj handlevel:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "FONTOS: Feltetlen adja meg a(z) \"%{pds}\" cimet tarhelyszolgaltatokent a bejelentkezesi urlap tetejen!"
+      hosting_miss: "Sok felhasznalo kihagyja ezt a lepest — a helyes tarhelyszolgaltato nelkul nem tud bejelentkezni."
+      change_password_heading: "VALTOZTASSA MEG A JELSZAVAT"
+      change_password_help: "Biztonsaga erdekeben nyomatekosan javasoljuk a jelszo azonnali megvaltoztatasat:"
+      change_password_later: "Kesobb a fiokbeallitasokban is megvaltoztathatja."
+      whats_next: "MI TORTENIK EZUTAN?"
+      next1: "Fiokja most aktiv a(z) %{pds} szerveren"
+      next2: "Regi fiokja a(z) %{old_pds} szerveren deaktivalva lett"
+      next3: "Minden bejegyzese, kovetese es adata atkerult"
+      next4: "Kovetoi automatikusan latjak az uj helyet (DID-alapu)"
+      privacy_heading: "ADATVEDELEM ES BIZTONSAG"
+      privacy1: "Ez a migracios bejegyzes a GDPR-megfeleles erdekeben automatikusan torlodik 10 perc mulva"
+      privacy2: "Minden titkositott hitelesito adat biztonsagosan torolve lett a szerverinkrol"
+      support: "Ha kerdese vagy problemaja van, kerem, forduljon a tamogatashoz a migracios tokenjevel:"
+      email_footer: "Ez az e-mail a(z) %{email} cimre lett kuldve, mert On fiokmigracioot inditott."
+
+    migration_failed:
+      subject: "Migracio sikertelen - beavatkozas szukseges (%{token})"
+      heading: "Eurosky migracio sikertelen - beavatkozas szukseges"
+      intro: "A(z) %{token} fiokmigracioja hibat eszlelt, es az On figyelmet igényli."
+      account_details: "Fiok reszletei:"
+      did: "DID: %{did}"
+      old_handle: "Regi handle: @%{handle}"
+      new_handle: "Uj handle: @%{handle}"
+      failure_info: "Hiba informaciok:"
+      failed_step: "Sikertelen lepes: %{step}"
+      error: "Hiba: %{error}"
+      previous_retries: "Korabbi ujraprobalasi kiserletek: %{count}"
+      what_to_do: "Mit tehet:"
+      do_step1: "Tekintse at a migracio allapotat:"
+      do_step2: "Kattintson a \"Migracio ujraprobalasa\" gombra az ujabb kiserlethez"
+      do_step3: "Ha a problema tobbszori ujraprobalas utan is fennall, kerem, forduljon a tamogatashoz a migracios tokenjevel: %{token}"
+      common_issues: "Gyakori probllemak es megoldasok:"
+      issue1: "Halozati idotullepes: Altalaban ujraprobalassal megoldodik"
+      issue2: "Kéréskorlat: Varjon nehany percet az ujraprobalas elott"
+      issue3: "Hianyzó adatok: Ellenorizze, hogy minden adat elerheto-e a regi PDS-en"
+      important: "FONTOS:"
+      note1: "Az adatai a regi PDS-en erintetlenek maradnak"
+      note2: "Biztonsagosan ujraprobalhato a migracio"
+      note3: "Ha segitsegre van szuksege, hivatkozzon a migracios tokenjere: %{token}"
+
+    backup_ready:
+      subject: "Az Eurosky migracios biztonsagi mentese kesz (%{token})"
+      heading: "A BIZTONSAGI MENTESE KESZ"
+      intro: "A(z) %{token} migracio fiokadatainak biztonsagi mentese letoltheto."
+      download: "Toltse le a biztonsagi mentest:"
+      size: "Biztonsagi mentes merete: %{size}"
+      expires: "Ez a letoltesi hivatkozas %{time}-kor jar le."
+      expiry_warning: "A lejaras utan a biztonsagi mentes veglegesen torolve lesz a szerverinkrol."
+      whats_next: "A migracioja a hatterben folytatodik. Ujabb e-mailt kap, amikor befejezodott."
+
+    rotation_key_notice:
+      subject: "Beavatkozas szukseges: Erositse meg a migraciot a PLC koddal (%{token})"
+      heading: "EROSITSE MEG A MIGRACIOJAT"
+      intro: "A fiokadatai atkerultek. A migracio befejezésehez be kell nyujtania egy PLC megerosito kodot."
+      key_heading: "AZ ON ROTACIOS KULCSA (ELOSZOR MENTSE EL EZT!)"
+      key_help: "A folytatas elott mentse el biztonsagosan ezt a rotacios kulcsot. Ez az egyetlen modja a fiok helyreallitasanak, ha valami balul ut ki:"
+      key_warning: "Tarolja ezt a kulcsot jelszokezeloben vagy mas biztonsagos helyen. Kesobb NEM fogja tudni lekerni."
+      next_step: "Menjen a migracios oldalra a PLC megerosito kod megadasahoz:"
+      check_email: "Ellenorizze e-mailjeit a regi PDS-szolgaltatojatol kapott kodert — igy nez ki: XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Beavatkozas szukseges: Kerjen uj PLC megerosito kodot (%{token})"
+      heading: "PLC TOKEN LEJART VAGY ERVENYTELEN"
+      intro: "A(z) %{token} migracio PLC megerosito kodja lejart vagy ervenytelen volt."
+      what_to_do: "Amit tennie kell:"
+      step1: "Menjen a migracios oldalra:"
+      step2: "Kerjen uj PLC tokent (lehetseges, hogy ujra meg kell adnia a jelszavat)"
+      step3: "Adja meg az uj tokent, amikor e-mailben megkapja"
+      error_detail: "Hiba: %{error}"
+
+    critical_plc_failure:
+      subject: "SURGOS: Kritikus migracios hiba - NE INDITSON UJ MIGRACIOT (%{token})"
+      heading: "KRITIKUS MIGRACIOS HIBA"
+      warning: "NE inditson uj migraciot. Fiokja inkonzisztens allapotban lehet."
+      intro: "A(z) %{token} migracio PLC konyvtar frissitese a visszafordithatatlan pont utan megbiusult."
+      key_heading: "AZ ON ROTACIOS KULCSA"
+      key_help: "Szuksege lesz erre a kulcsra a fiokja helyreallitasahoz:"
+      contact: "Azonnal forduljon a tamogatashoz:"
+      error_detail: "Hiba: %{error}"
+
+    invalid_invite_code:
+      subject: "Migracio sikertelen - ervenytelen meghivokod (%{token})"
+      heading: "ERVENYTELEN MEGHIVOKOD"
+      intro: "A(z) %{token} migracio nem tudott tovabblepni, mert a meghivokod ervenytelen vagy mar felhasznalt."
+      what_to_do: "Uj migracio inditasahoz ervenyes meghivokoddal:"
+
+    orphaned_account_error:
+      subject: "Migracio szüneteltetve - arva fiok a celszerveren (%{token})"
+      heading: "ARVA FIOK ESZLELVE"
+      intro: "A(z) %{token} migracio szuneteltetett, mert arva fiokot talaltunk a cel-PDS-en."
+      explanation: "Ez altalaban akkor fordul elo, amikor egy korabbi migracios kiserletet megszakitottak. A regi fiok meg letezik a celszerveren, es el kell tavolitani, mielott folytathatnank."
+      what_to_do: "Mit tehet:"
+      option1: "Forduljon a cel-PDS rendszergazdajahoz a(z) %{email} cimen az arva fiok eltavolitasaert"
+      option2: "Mellekelј a DID-jet: %{did}"
+      option3: "Az eltavolitas utan probalja ujra a migraciot az allapotoldalrol:"
+
+    reauthentication_required:
+      subject: "Beavatkozas szukseges: Ujrahitelesites szukseges (%{token})"
+      heading: "UJRAHITELESITES SZUKSEGES"
+      intro: "A(z) %{token} migraciojanak folytatasahoz ujra meg kell adnia a jelszavat."
+      reason: "A regi PDS-szel fenntartott munkamenete lejart a migracio soran."
+      what_to_do: "Menjen a migracios oldalra, es adja meg ujra a jelszavat:"
+      error_detail: "Hiba: %{error}"
+      step: "Sikertelen lepes: %{step}"
+
+    cancellation_confirmation:
+      subject: "Migracio megszakitasanak megerositese (%{token})"
+      heading: "MEGSZAKITAS MEGEROSITESE"
+      intro: "On kerelmezte a(z) %{token} migracio megszakitasat."
+      confirm_help: "Kattintson az alanti hivatkozasra a megszakitas megerositésehez:"
+      confirm_link: "Megszakitas megerositese"
+      not_you: "Ha nem On kerelmzte ezt a megszakitast, nyugodtan hagyja figyelmen kivul ezt az e-mailt. A migracioja normalis modon folytatodik."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "ervenyes ATProto handlenek kell lennie (pl. felhasznalo.bsky.social)"

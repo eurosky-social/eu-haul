@@ -1,40 +1,36 @@
-⚠️ MIGRATION ISSUE - ORPHANED ACCOUNT FOUND
+<%= t('mailers.orphaned_account_error.heading') %>
 ==========================================
 
 Migration Token: <%= @migration.token %>
 
 Hello,
 
-Your migration from <%= @migration.old_handle %> to <%= @migration.new_pds_host %> encountered an issue.
+<%= t('mailers.orphaned_account_error.intro', token: @migration.token) %>
 
 
-🚫 WHAT HAPPENED
+WHAT HAPPENED
 ----------------
-An account with your DID (<%= @migration.did %>) already exists on the target PDS <%= @migration.new_pds_host %>.
-
-This orphaned account is likely from a previous failed migration attempt and must be removed before your migration can proceed.
+<%= t('mailers.orphaned_account_error.explanation') %>
 
 
-📋 WHAT THIS MEANS
-------------------
-• Your migration has been PAUSED (not failed permanently)
-• No data has been lost or damaged
-• The target PDS provider needs to remove the orphaned account
-• Once removed, you can retry your migration
+<%= t('mailers.orphaned_account_error.what_to_do') %>
+------------------------------------
+- <%= t('mailers.orphaned_account_error.option1', email: @target_pds_support_email) %>
+- <%= t('mailers.orphaned_account_error.option2', did: @migration.did) %>
 
 
-📧 NEXT STEPS: CONTACT PDS PROVIDER
+NEXT STEPS: CONTACT PDS PROVIDER
 ------------------------------------
 Please contact the support team for <%= @migration.new_pds_host %> to request removal of the orphaned account:
 
 Email: <%= @target_pds_support_email %>
 
 Include in your message:
-• Migration Token: <%= @migration.token %>
-• DID: <%= @migration.did %>
+- Migration Token: <%= @migration.token %>
+- DID: <%= @migration.did %>
 
 
-⏳ AFTER SUPPORT RESPONDS
+AFTER SUPPORT RESPONDS
 --------------------------
 Once the orphaned account has been removed:
 1. Return to your migration status page: <%= @migration_url %>
@@ -50,4 +46,4 @@ Migration Details:
 - Target PDS: <%= @migration.new_pds_host %>
 - Support Contact: <%= @target_pds_support_email %>
 
-Eurosky Migration Service
+<%= t('mailers.common.eurosky_migration') %>

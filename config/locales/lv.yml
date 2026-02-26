@@ -1,0 +1,652 @@
+lv:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Konta migrācijas uzsākšana"
+    privacy_policy: "Privātuma politika"
+    terms_of_service: "Lietošanas noteikumi"
+    background_attribution: "Fona attēls:"
+    background_attribution_by: "autors"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Valoda"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Konta migrācijas uzsākšana"
+      errors_heading: "Lūdzu, labojiet šādas kļūdas:"
+
+      # Progress bar labels
+      progress:
+        account: "Konts"
+        email: "E-pasts"
+        destination: "Galamērķis"
+        handle: "Handle"
+        review: "Pārskats"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "1. solis: Konta pieteikšanās dati"
+        handle_label: "Jūsu handle"
+        handle_placeholder: "jusuhandle.bsky.social"
+        handle_help: "Ievadiet savu pašreizējo AT Protocol handle"
+        password_label: "Konta parole"
+        password_help: "Jūsu pašreizējā konta parole"
+        two_factor_title: "Divfaktoru autentifikācija"
+        two_factor_help: "Pieteikšanās kods ir nosūtīts uz jūsu e-pastu. Ievadiet to zemāk."
+        two_factor_placeholder: "Ievadiet pieteikšanās kodu"
+        continue: "Turpināt"
+
+      # Step 2: Email
+      step2:
+        title: "2. solis: E-pasta adrese"
+        email_label: "E-pasta adrese"
+        email_help: "Uz šo adresi nosūtīsim migrācijas statusa atjauninājumus"
+        email_readonly_help: "E-pasts iegūts no jūsu konta"
+        email_manual_help: "Neizdevās iegūt jūsu e-pastu. Lūdzu, ievadiet to manuāli."
+        confirm_access: "Man ir piekļuve šai e-pasta adresei, un es varu saņemt uz to nosūtīto apstiprinājuma kodu."
+        back: "Atpakaļ"
+        continue: "Turpināt"
+
+      # Step 3: Destination Server
+      step3:
+        title: "3. solis: Galamērķa serveris"
+        server_label: "Galamērķa serveris"
+        server_placeholder: "Izvēlieties serveri..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Pielāgots serveris..."
+        server_help: "Izvēlieties, uz kurieni vēlaties migrēt savu kontu"
+        custom_url_label: "Pielāgota servera URL"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Ievadiet pilnu pielāgotā servera URL"
+        invite_code_label: "Ielūguma kods"
+        invite_code_placeholder: "Ievadiet ielūguma kodu"
+        invite_code_help: "Šim serverim nepieciešams ielūguma kods"
+        existing_account_title: "Atrasts esošs konts"
+        existing_account_help: "Jūsu konts jau pastāv galamērķa serverī. Lūdzu, apstipriniet paroli, lai turpinātu migrāciju."
+        target_password_label: "Jūsu parole galamērķa serverī"
+        target_password_placeholder: "Ievadiet esošā konta paroli"
+        target_2fa_label: "Pieteikšanās kods (2FA)"
+        target_2fa_help: "Pārbaudiet e-pastu, lai iegūtu divfaktoru autentifikācijas kodu"
+        deactivated_notice: "Šis konts šķiet deaktivizēts"
+        deactivated_reason: "(iespējams, iepriekšēja migrācijas mēģinājuma dēļ)."
+        deactivated_help: "Ja neatceraties paroli, varat mēģināt:"
+        deactivated_reset: "Paroles atiestatīšana:"
+        deactivated_contact: "Sazinieties ar PDS administratoru uz %{email}, lai noņemtu šo neaktīvo kontu un atsāktu migrāciju. Iekļaujiet savu DID:"
+        back: "Atpakaļ"
+        continue: "Turpināt"
+
+      # Step 4: New Handle
+      step4:
+        title: "4. solis: Jauns handle"
+        custom_domain_title: "Konstatēts pielāgots domēns"
+        custom_domain_help: "Jūsu handle %{handle} ir pielāgots domēns. Varat turpināt to izmantot jaunajā serverī."
+        keep_handle: "Paturēt pašreizējo handle"
+        new_handle_label: "Jūsu jaunais handle"
+        new_handle_placeholder: "lietotājvārds"
+        new_handle_help: "Izvēlieties jauno handle (var būt arī vecais) galamērķa serverī"
+        back: "Atpakaļ"
+        continue: "Turpināt"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "5. solis: Pārskats un apstiprināšana"
+        current_handle: "Pašreizējais handle:"
+        email: "E-pasts:"
+        destination_server: "Galamērķa serveris:"
+        new_handle: "Jaunais handle:"
+        invite_code: "Ielūguma kods:"
+        create_backup: "Izveidot rezerves kopiju pirms migrācijas"
+        backup_help: "Lejupielādē pilnu jūsu konta datu kopiju. Pieejama 24 stundas."
+        confirm_email_html: "Kad noklikšķināsiet <strong>Turpināt</strong>, mēs nosūtīsim apstiprinājuma e-pastu uz <strong>%{email}</strong>. Migrācija sāksies tikai pēc apstiprināšanas ar šo e-pastu."
+        no_usage_title: "Neizmantojiet kontu migrācijas laikā"
+        no_usage_help: "Pēc migrācijas uzsākšanas aizveriet visas lietotnes un pārlūkprogrammas cilnes ar jūsu kontu. Migrācijas laikā veiktie ieraksti, atzīmes un sekošanas netiks pārnesti. Jūs saņemsiet e-pastu, kad process būs pabeigts (~20-30 minūtes)."
+        acknowledge: "Es saprotu, ka migrācijas laikā nedrīkstu izmantot savu kontu"
+        back: "Atpakaļ"
+        continue: "Turpināt"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Lūdzu, ievadiet handle"
+      enter_password: "Lūdzu, ievadiet paroli"
+      handle_needs_domain: "Handle jāsatur domēns (piem., lietotājs.bsky.social)"
+      authenticating: "Autentifikācija..."
+      authenticating_details: "Autentifikācija un konta datu iegūšana..."
+      two_factor_sent: "Pieteikšanās kods nosūtīts uz jūsu e-pastu. Ievadiet to augšā un vēlreiz noklikšķiniet Turpināt."
+      auth_success: "Autentifikācija veiksmīga!"
+      network_error: "Tīkla kļūda. Lūdzu, mēģiniet vēlreiz."
+      continue: "Turpināt"
+      # Step 2
+      email_readonly_help: "E-pasts iegūts no jūsu konta"
+      email_manual_help: "Neizdevās iegūt jūsu e-pastu. Lūdzu, ievadiet to manuāli."
+      enter_email: "Lūdzu, ievadiet savu e-pasta adresi"
+      invalid_email: "Lūdzu, ievadiet derīgu e-pasta adresi"
+      confirm_email_access: "Lūdzu, apstipriniet, ka jums ir piekļuve šai e-pasta adresei."
+      # Step 3
+      select_server: "Izvēlieties serveri vai ievadiet pielāgota servera URL"
+      checking_server: "Servera pārbaude..."
+      checking_requirements: "Servera prasību pārbaude..."
+      server_verified: "Serveris verificēts!"
+      failed_verify_pds: "PDS verifikācija neizdevās. Lūdzu, pārbaudiet URL."
+      invite_code_required: "Šim serverim nepieciešams ielūguma kods. Ievadiet to zemāk, pēc tam noklikšķiniet Turpināt."
+      enter_invite_code: "Lūdzu, ievadiet ielūguma kodu, lai turpinātu."
+      checking_existing: "Esošā konta meklēšana..."
+      verifying_credentials: "Pieteikšanās datu pārbaude..."
+      authenticating_existing: "Autentifikācija ar esošo kontu..."
+      credentials_verified: "Pieteikšanās dati apstiprināti!"
+      enter_target_password: "Lūdzu, ievadiet paroli šim serverim"
+      # Step 4
+      custom_domain_help: "Jūsu handle {handle} ir pielāgots domēns. Varat turpināt to izmantot jaunajā serverī."
+      enter_handle_short: "Lūdzu, ievadiet handle"
+      checking_availability: "Pieejamības pārbaude..."
+      checking_handle: "Handle pieejamības pārbaude..."
+      handle_taken: "Šis handle jau ir aizņemts. Lūdzu, izvēlieties citu."
+      all_checks_passed: "Visas pārbaudes izturētas!"
+      using_existing_handle: "Tiek izmantots jūsu esošais handle galamērķa serverī."
+      keeping_custom_handle: "Pielāgotā domēna handle tiek saglabāts!"
+      handle_available_checking: "Handle ir pieejams, esošo kontu meklēšana..."
+      checking_existing_accounts: "Esošo kontu meklēšana..."
+      failed_check_availability: "Pieejamības pārbaude neizdevās. Lūdzu, mēģiniet vēlreiz."
+      failed_check_existing: "Esošo kontu pārbaude neizdevās: "
+      account_exists_title: "Konts jau pastāv galamērķa serverī"
+      account_exists_what: "Konts ar jūsu DID jau pastāv galamērķa serverī (%{pds}). Tas var būt iepriekšēja migrācijas mēģinājuma rezultāts."
+      account_exists_do: "Atgriezieties iepriekšējā solī un ievadiet esošā konta paroli. Ja nezināt paroli:"
+      account_exists_reset: "Mēģiniet atiestatīt paroli:"
+      account_exists_contact: "Sazinieties ar servera nodrošinātāju uz <strong>%{email}</strong>, lai noņemtu pamestu kontu"
+      account_exists_did: "Iekļaujiet savu DID:"
+      # Step 5
+      confirm_email_html: "Kad noklikšķināsiet <strong>Turpināt</strong>, mēs nosūtīsim apstiprinājuma e-pastu uz <strong>{email}</strong>. Migrācija sāksies tikai pēc apstiprināšanas ar šo e-pastu."
+      confirm_no_usage: "Lūdzu, apstipriniet, ka saprotat, ka migrācijas laikā nedrīkstat izmantot savu kontu."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migrācija %{token}"
+      migration_status: "Migrācijas statuss"
+      status_label: "Statuss:"
+      retry_info: "Mēģinājums %{attempt}/%{max} - %{step}"
+      verify_email: "Apstipriniet savu e-pastu"
+      enter_verification: "Ievadiet verifikācijas kodu"
+      verification_sent: "Mēs nosūtījām kodu uz <strong>%{email}</strong>. Ievadiet to zemāk, lai uzsāktu migrāciju."
+      verification_label: "Verifikācijas kods"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Verificēt un uzsākt migrāciju"
+      didnt_receive: "Nesaņēmāt e-pastu?"
+      check_spam: "Pārbaudiet surogātpasta vai nevēlamā pasta mapi"
+      check_email_correct: "Pārliecinieties, ka <strong>%{email}</strong> ir pareiza"
+      email_delay: "E-pasta piegāde var aizņemt dažas minūtes"
+
+      # Queue
+      in_queue: "Rindā"
+      queue_default: "Gaida, kamēr citas migrācijas pabeidz datu pārsūtīšanu"
+      queue_auto_start: "Jūsu migrācija automātiski sāksies, kad atbrīvosies vieta."
+
+      # Blob conversion
+      converting_blobs: "Vecā blob formāta konvertēšana"
+      converting_blobs_detail: "tas var aizņemt dažas minūtes..."
+      blobs_converted: "Vecais blob formāts veiksmīgi konvertēts."
+
+      # Blob progress
+      blobs_uploaded: "Augšupielādēti blob"
+      files: "faili"
+      data_transferred: "Pārsūtīti dati"
+      failed: "Neizdevās"
+      preparing_blobs: "Gatavošanās <strong>%{count}</strong> blob pārsūtīšanai..."
+
+      # Download/backup progress
+      downloading_account: "Konta datu lejupielāde"
+      downloading_detail: "jūsu repozitorija un blob lejupielāde rezerves kopijai..."
+      creating_backup: "Rezerves kopijas izveide"
+      creating_backup_detail: "konta datu iepakošana..."
+      downloaded_count: "Lejupielādēts: %{downloaded} / %{total} blob"
+      backup_expired: "Rezerves kopija ir beigusies"
+      backup_expired_detail: "jūsu rezerves kopija ir dzēsta no mūsu serveriem."
+
+      # PLC pending
+      updating_identity: "Jūsu identitātes atjaunināšana"
+      plc_accepted: "Jūsu apstiprinājuma kods ir pieņemts. Mēs atjauninām jūsu PLC kataloga ierakstu, lai norādītu uz <strong>%{pds}</strong>. Tas var aizņemt brīdi."
+      page_auto_update: "Šī lapa tiks automātiski atjaunināta. Lūdzu, neaizveriet šo cilni."
+      enter_confirmation: "Ievadiet apstiprinājuma kodu"
+      confirmation_hint: "Pārbaudiet e-pastu, lai iegūtu kodu no <strong>%{pds}</strong> &mdash; tas izskatās šādi: <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Apstiprinājuma kods"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Pabeigt migrāciju"
+      complete_confirm: "Ar šo tiks pabeigta jūsu konta migrācija. Šo darbību nevar atsaukt.\n\nVai tiešām vēlaties turpināt?"
+
+      # Completed
+      completed_title: "Migrācija veiksmīgi pabeigta!"
+      completed_migrated_to: "Jūsu konts ir veiksmīgi migrēts uz <strong>%{pds}</strong>. Tagad varat pieteikties ar jauno handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Jūsu konts ir veiksmīgi migrēts atpakaļ uz <strong>%{pds}</strong>. Tagad varat pieteikties ar savu handle: <strong>%{handle}</strong>"
+      email_sent_html: "Mēs nosūtījām e-pastu uz %{email} ar jauno konta paroli, pieteikšanās instrukcijām un saiti paroles maiņai. Lūdzu, pārbaudiet iesūtni (un surogātpasta mapi)."
+      save_rotation_key: "SAGLABĀJIET SAVU ROTĀCIJAS ATSLĒGU!"
+      page_auto_delete: "Šī lapa tiks automātiski dzēsta pēc 2 dienām."
+      rotation_key_needed: "Rotācijas atslēga ir nepieciešama konta atjaunošanai. Nokopējiet to tagad un glabājiet drošā vietā!"
+      copy_rotation_key: "Kopēt rotācijas atslēgu"
+      key_emailed: "Mēs šo atslēgu nosūtījām arī uz <strong>%{email}</strong>"
+      privacy_notice: "Privātuma paziņojums"
+      privacy_detail: "Jūsu privātuma un VDAR atbilstības nolūkā šis migrācijas ieraksts tiks automātiski dzēsts pēc <strong>2 dienām</strong>. Pārliecinieties, ka esat saglabājuši rotācijas atslēgu un lejupielādējuši rezerves kopiju līdz tam!"
+      privacy_delete_now: "Kad viss ir saglabāts, varat nekavējoties dzēst savus datus ar zemāk esošo pogu."
+      delete_confirm: "Vai tiešām vēlaties neatgriezeniski dzēst visus migrācijas datus?\n\nPārliecinieties, ka esat:\n• Nokopējuši rotācijas atslēgu\n• Lejupielādējuši rezerves kopiju (ja attiecas)\n\nŠo darbību nevar atsaukt."
+      delete_button: "Esmu saglabājis rezerves kopiju un rotācijas atslēgu — dzēst visus manus datus"
+      welcome_back: "Jūsu vecie pieteikšanās dati ir droši dzēsti. Laipni lūdzam atpakaļ!"
+      welcome_new: "Jūsu vecie pieteikšanās dati ir droši dzēsti. Laipni lūdzam jaunajās mājās!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Konta atjaunošanas atslēga"
+      recovery_key_important: "SVARĪGI:"
+      recovery_key_help: "Droši saglabājiet šo rotācijas atslēgu. Tā ļauj atsaukt PLC izmaiņas vai atjaunot kontu."
+      copy_clipboard: "Kopēt starpliktuvē"
+      revert_title: "Kā izmantot šo atslēgu izmaiņu atsaukšanai"
+      revert_help: "Ja nepieciešams atsaukt PLC kataloga izmaiņas, varat izmantot šo rotācijas atslēgu:"
+      revert_step1: "Instalējiet <code>goat</code> CLI rīku"
+      revert_step2: "Iegūstiet PLC vēsturi: <code>goat plc history &lt;jūsu-did&gt;</code>"
+      revert_step3: "Identificējiet vēlamo vēsturisko stāvokli (CID)"
+      revert_step4: "Izveidojiet atsaukšanas operāciju: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Parakstiet ar rotācijas atslēgu: <code>goat plc sign</code>"
+      revert_step6: "Iesniedziet parakstīto operāciju: <code>goat plc submit --did &lt;jūsu-did&gt;</code>"
+      revert_warning: "Šī ir sarežģīta operācija. Izmantojiet tikai tad, ja saprotat PLC kataloga sistēmu."
+
+      # PLC help section
+      didnt_receive_plc: "Nesaņēmāt e-pastu?"
+      plc_check_spam: "Pārbaudiet surogātpasta vai nevēlamā pasta mapi"
+      plc_from_bluesky: "E-pastu sūta Bluesky, nevis mēs"
+      plc_expires: "Koda derīguma termiņš beidzas pēc 1 stundas"
+      plc_new_code_help: "Ja nepieciešams jauns kods, ievadiet paroli zemāk un mēs to pieprasīsim:"
+      plc_password_placeholder: "Parole %{handle}"
+      request_new_code: "Pieprasīt jaunu kodu"
+      technical_details: "Tehniskie dati"
+      plc_explanation: "Apstiprinājuma kods ir <strong>PLC operācijas žetons</strong> — tas autorizē jūsu DID dokumenta atjaunināšanu PLC katalogā, lai norādītu uz jauno Personal Data Server."
+      plc_irreversible: "<strong>Šī darbība ir neatgriezeniska.</strong> Pēc iesniegšanas jūsu konta identitāte (DID) pastāvīgi norādīs uz <strong>%{new_pds}</strong> nevis <strong>%{old_pds}</strong>."
+      plc_expiry_note: "PLC žetonu derīguma termiņš beidzas pēc 1 stundas. Ja jūsējais ir beidzies, varat pieprasīt jaunu."
+
+      # Sidebar
+      download_backup: "Lejupielādēt rezerves kopiju"
+      backup_ready: "Rezerves kopija gatava"
+      backup_download_completed: "Lejupielādējiet rezerves kopiju, pirms tā beidzas."
+      backup_download_ready: "Jūsu konta rezerves kopija ir gatava! Lejupielādējiet to, pirms tā beidzas."
+      size: "Izmērs:"
+      expires: "Derīga līdz:"
+      download_button: "Lejupielādēt rezerves kopiju"
+      recovery_key: "Atjaunošanas atslēga"
+      recovery_key_sidebar: "Droši saglabājiet šo atslēgu. Tā ļauj atjaunot jūsu kontu."
+      copy_key: "Kopēt atslēgu"
+      cancel_migration: "Atcelt migrāciju"
+      cancel_help: "Atceliet šo migrāciju un paturiet kontu pašreizējā serverī."
+      cancel_button: "Atcelt migrāciju"
+      cancel_confirm: "Vai tiešām vēlaties atcelt šo migrāciju?\n\nApstiprināšanas saite tiks nosūtīta uz jūsu e-pastu. Migrācija tiks atcelta tikai pēc šīs saites noklikšķināšanas."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Pašreizējais statuss:"
+      retry_attempt: "Atkārtots mēģinājums:"
+      remaining_attempts: "Atlikušie mēģinājumi:"
+      next_retry: "Nākamais mēģinājums pēc"
+      calculating: "aprēķina..."
+      retrying_now: "mēģina tagad..."
+      reauth_safe: "Jūsu migrācijas dati ir drošībā — vienkārši atkārtoti ievadiet paroli, lai turpinātu."
+      reauth_help: "Ievadiet paroli <strong>%{handle}</strong>, lai atjaunotu sesiju un turpinātu migrāciju."
+      password_for: "Parole %{handle}"
+      enter_password_placeholder: "Ievadiet konta paroli"
+      reauth_button: "Atkārtoti autentificēties un turpināt migrāciju"
+      plc_safe: "Jūsu migrācijas dati ir drošībā — vienkārši nepieciešams jauns PLC žetons."
+      plc_request_help: "Noklikšķiniet zemāk esošo pogu, lai pieprasītu jaunu PLC žetonu. Jūs to saņemsiet e-pastā no <strong>%{pds}</strong>."
+      request_plc_confirm: "Pieprasīt jaunu PLC žetonu no jūsu vecā PDS?"
+      request_plc_button: "Pieprasīt jaunu PLC žetonu"
+      plc_session_expired: "Jūsu sesija ar <strong>%{pds}</strong> ir beigusies. Ievadiet paroli <strong>%{handle}</strong>, lai atkārtoti pieslēgtos un pieprasītu jaunu PLC žetonu."
+      reauth_plc_button: "Atkārtoti autentificēties un pieprasīt PLC žetonu"
+      what_happened_title: "Kas notika un ko darīt"
+      what_happened: "Kas notika:"
+      what_to_do: "Ko jūs varat darīt:"
+      request_plc_action: "Pieprasīt jaunu PLC žetonu"
+      retry_migration: "Atkārtot migrāciju"
+      retry_confirm: "Atkārtot šo migrāciju no pašreizējā posma?"
+      start_new: "Sākt jaunu migrāciju"
+      check_pds: "Pārbaudīt PDS statusu"
+      download_report: "Lejupielādēt neveiksmīgo blob atskaiti"
+      cleanup_title: "Tīrīšanas instrukcijas"
+      cleanup_help: "Lai noņemtu pamestu kontu, izpildiet šo komandu (nepieciešama piekļuve serverim):"
+      cleanup_contact: "Vai sazinieties ar galamērķa PDS administratoru, lai manuāli dzēstu pamestu kontu."
+      rotation_key_save: "Jūsu rotācijas atslēga (SAGLABĀJIET TO)"
+      copy_rotation_key: "Kopēt rotācijas atslēgu"
+      contact_support: "Nekavējoties sazinieties ar atbalsta dienestu"
+      support_email: "Atbalsta e-pasts:"
+      migration_token: "Migrācijas žetons:"
+      include_token: "Iekļaujiet migrācijas žetonu savā atbalsta pieprasījumā ātrākai palīdzībai."
+      technical_title: "Tehniskie dati (atkļūdošanai)"
+      error_message: "Kļūdas ziņojums:"
+      job_step: "Uzdevuma solis:"
+      migration_status: "Migrācijas statuss:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "NEATGRIEŠANĀS PUNKTS"
+      subtitle: "Nākamā darbība pastāvīgi novirzīs jūsu DID uz jauno PDS"
+      once_submit: "Pēc PLC žetona iesniegšanas:"
+      will_point: "Jūsu DID (%{did}) norādīs uz %{pds}"
+      all_apps: "Visas AT Protocol lietotnes identificēs jūsu identitāti uz jauno PDS"
+      immediate: "Šīs izmaiņas stājas spēkā nekavējoties un ietekmē visu federēto tīklu"
+      cannot_undo: "Šo darbību NEVAR atsaukt bez rotācijas atslēgas"
+      what_you_need: "Kas jums nepieciešams pirms turpināšanas:"
+      need_rotation_key: "Rotācijas atslēga droši saglabāta (ritiniet uz augšu, lai kopētu)"
+      need_data_verified: "Pārbaudīts, ka visi dati ir migrēti (repozitorijs, blob, iestatījumi)"
+      need_plc_token: "PLC operācijas žetons (tiks nosūtīts uz jūsu e-pastu no %{pds})"
+      need_understanding: "Izpratne, ka šī darbība ir neatgriezeniska bez rotācijas atslēgas"
+      instructions_title: "Soli pa solim instrukcijas:"
+      step1_title: "Saglabājiet rotācijas atslēgu"
+      step1_help: "Ritiniet uz augšu un kopējiet rotācijas atslēgu drošā vietā (paroļu pārvaldnieks, šifrēts fails). Tas ir jūsu VIENĪGAIS veids, kā atgūt piekļuvi, ja kaut kas noiet greizi."
+      step2_title: "Pārbaudiet e-pastu"
+      step2_help: "Jūsu vecais PDS nodrošinātājs (<strong>%{pds}</strong>) ir lūgts nosūtīt jums PLC operācijas žetonu pa e-pastu. Pārbaudiet iesūtni, vai nav e-pasta ar žetonu."
+      step3_title: "Nokopējiet PLC žetonu"
+      step3_help: "Nokopējiet PLC operācijas žetonu no jūsu vecā PDS nodrošinātāja e-pasta. Žetons izskatīsies kā gara rakstzīmju virkne."
+      step4_title: "Iesniedziet žetonu zemāk"
+      step4_help: "Ielīmējiet PLC žetonu zemāk esošajā formā un iesniedziet, lai pabeigtu migrāciju."
+      final_warning: "Pēdējais brīdinājums: vai esat gatavi?"
+      check_saved: "Vai esat saglabājuši rotācijas atslēgu drošā vietā?"
+      check_understand: "Vai saprotat, ka šīs izmaiņas ir pastāvīgas un ietekmē visu AT Protocol tīklu?"
+      check_prepared: "Vai esat gatavi zaudēt piekļuvi, ja jums nav rotācijas atslēgas?"
+      check_verified: "Vai esat pārbaudījuši, ka visi jūsu dati (ieraksti, mediji, iestatījumi) ir veiksmīgi migrēti?"
+      do_not_proceed: "Ja uz kādu no šiem jautājumiem atbildējāt NĒ, VĒLNETURPINIET."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Mēs nosūtījām verifikācijas kodu uz %{email}. Ievadiet to nākamajā lapā, lai uzsāktu migrāciju."
+      # Verify email
+      email_verified: "E-pasts verificēts! Jūsu migrācija ir sākusies."
+      invalid_code: "Nederīgs verifikācijas kods. Lūdzu, pārbaudiet kodu e-pastā un mēģiniet vēlreiz."
+      enter_code: "Lūdzu, ievadiet verifikācijas kodu no e-pasta."
+      # PLC token
+      plc_submitted: "PLC žetons iesniegts! Jūsu DID drīz tiks atjaunināts."
+      plc_blank: "PLC žetons nedrīkst būt tukšs"
+      session_expired: "Jūsu sesija ir beigusies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
+      old_session_expired: "Jūsu sesija ar %{pds} ir beigusies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
+      credentials_expired: "Jūsu pieteikšanās dati ir beigušies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
+      # Cancellation
+      cancellation_sent: "Atcelšanas apstiprināšanas saite nosūtīta uz jūsu e-pastu. Lūdzu, pārbaudiet iesūtni."
+      cannot_cancel: "Šo migrāciju nevar atcelt pašreizējā posmā."
+      cancel_email_failed: "Neizdevās nosūtīt atcelšanas e-pastu. Lūdzu, mēģiniet vēlreiz."
+      invalid_cancel_link: "Nederīga atcelšanas saite. Lūdzu, pieprasiet jaunu migrācijas statusa lapā."
+      cancel_too_late: "Šo migrāciju vairs nevar atcelt (iespējams, tā ir pārsniegusi neatgriešanās punktu)."
+      cancelled: "Migrācija veiksmīgi atcelta. Jūsu konts paliek nemainīts %{pds}. Jūs varat sākt jaunu migrāciju jebkurā laikā."
+      # Delete
+      only_completed: "Tikai pabeigtas migrācijas var dzēst."
+      deleted: "Visi migrācijas dati ir neatgriezeniski dzēsti. Paldies, ka izmantojāt %{site_name}!"
+      # Retry
+      retry_started: "Atkārtots migrācijas mēģinājums uzsākts!"
+      not_failed: "Migrācija nav neveiksmīgā statusā un to nevar atkārtot"
+      no_failed_blobs: "Nav neveiksmīgu blob atkārtošanai"
+      retrying_blobs: "Atkārto %{count} neveiksmīgus blob..."
+      # Backup
+      backup_not_found: "Rezerves kopija nav atrasta vai ir beigusies"
+      # API errors
+      did_required: "DID ir obligāts"
+      pds_required: "PDS adrese ir obligāta"
+      handle_required: "Handle ir obligāts"
+      password_required: "Parole ir obligāta"
+      pds_did_password_required: "PDS adrese, DID un parole ir obligāti"
+      two_factor_required: "Nepieciešama divfaktoru autentifikācija. Pārbaudiet e-pastu, lai iegūtu pieteikšanās kodu."
+      wrong_password: "Nepareiza Bluesky konta parole. Lūdzu, ievadiet paroli, ko izmantojāt bsky.social."
+      auth_failed: "Autentifikācija neizdevās: %{error}"
+      invalid_pds_response: "Nederīga atbilde no galamērķa PDS"
+      pds_connect_failed: "Neizdevās pieslēgties galamērķa PDS. Lūdzu, mēģiniet vēlreiz."
+      resolve_failed: "Neizdevās atrisināt handle. Lūdzu, pārbaudiet, vai handle ir pareizs."
+      auth_check_failed: "Autentifikācija neizdevās. Lūdzu, pārbaudiet paroli."
+      unexpected_error: "Radās neparedzēta kļūda. Lūdzu, mēģiniet vēlreiz."
+      unexpected_error_detail: "Radās neparedzēta kļūda: %{error}"
+      tokens_missing: "Trūkst autentifikācijas žetonu. Lūdzu, atgriezieties un atkārtoti autentificējieties."
+      account_not_found: "Konts ar jūsu DID (%{did}) nav atrasts %{pds}. Lūdzu, atgriezieties un izvēlieties citu galamērķa PDS vai sāciet jaunu migrāciju."
+      account_verify_failed: "Neizdevās pārbaudīt konta esamību %{pds}: %{error}. Lūdzu, mēģiniet vēlreiz."
+      target_tokens_missing: "Trūkst galamērķa PDS autentifikācijas žetonu. Lūdzu, atgriezieties un apstipriniet savus pieteikšanās datus %{pds}."
+      reauth_not_available: "Atkārtota autentifikācija šajā posmā nav pieejama."
+      reauth_failed: "Autentifikācija neizdevās: %{error}. Lūdzu, pārbaudiet paroli."
+      reauth_error: "Atkārtota autentifikācija neizdevās: %{error}"
+      plc_not_available: "Šajā posmā nevar pieprasīt jaunu PLC žetonu. PLC atjaunināšana, iespējams, jau ir mēģināta."
+      plc_requested: "Jauns PLC žetons ir pieprasīts. Pārbaudiet e-pastu no %{pds}."
+      plc_request_failed: "Automātisks jauna PLC žetona pieprasījums neizdevās (%{error}). Lūdzu, pieprasiet to manuāli caur vecā PDS nodrošinātāja iestatījumiem (piem., Bluesky lietotne → Iestatījumi → Konts → Pieprasīt PLC žetonu), pēc tam ievadiet to zemāk."
+      plc_session_expired: "Jūsu sesija ar %{pds} ir beigusies. Lūdzu, pieprasiet jaunu PLC žetonu manuāli: piesakieties vecajā kontā un dodieties uz Iestatījumi → Konts → Pieprasīt PLC žetonu, pēc tam ievadiet žetonu zemāk."
+      pds_connect_check: "Neizdevās pieslēgties PDS. Lūdzu, pārbaudiet URL."
+      migration_not_found: "Migrācija nav atrasta"
+      password_required_short: "Parole ir obligāta."
+      reauth_success_plc_valid: "Atkārtota autentifikācija veiksmīga! Jūsu PLC žetons vēl ir derīgs — PLC atjaunināšanas atkārtošana tagad."
+      reauth_success_plc_requested: "Atkārtota autentifikācija veiksmīga! Jauns PLC žetons ir pieprasīts — pārbaudiet e-pastu no %{pds}."
+      reauth_success_plc_failed: "Atkārtota autentifikācija veiksmīga, bet automātisks PLC žetona pieprasījums neizdevās (%{error}). Varat to pieprasīt manuāli caur vecā PDS nodrošinātāja iestatījumiem, pēc tam ievadiet to zemāk."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky migrācijas pakalpojums"
+
+    email_verification:
+      subject: "Jūsu verifikācijas kods: %{code} (%{token})"
+      heading: "APSTIPRINIET E-PASTU - KONTA MIGRĀCIJAS UZSĀKŠANA"
+      migration_token: "Migrācijas žetons: %{token}"
+      initiated: "Jūs uzsākāt %{handle} migrāciju uz %{pds}."
+      enter_code: "Ievadiet šo verifikācijas kodu migrācijas lapā, lai uzsāktu procesu:"
+      go_to_page: "Dodieties uz migrācijas lapu:"
+      what_next: "KAS NOTIKS TĀLĀK?"
+      next_step1: "Ievadiet iepriekš norādīto verifikācijas kodu migrācijas lapā"
+      next_step2: "Migrācija sāksies automātiski"
+      next_step3: "Jūs saņemsiet statusa atjauninājumus pa e-pastu"
+      next_step4: "Viss process aizņem aptuveni 20-30 minūtes"
+      important: "SVARĪGI ATGĀDINĀJUMI"
+      reminder1: "Neizmantojiet kontu migrācijas laikā"
+      reminder2: "Jebkura darbība migrācijas laikā netiks pārnesta"
+      reminder3: "Aizveriet visas lietotnes un pārlūkprogrammas cilnes ar jūsu kontu"
+      reminder4: "Gaidiet pabeigšanas e-pastu, pirms atkārtoti pieteikties"
+      not_you: "Ja jūs neuzsākāt šo migrāciju, lūdzu, ignorējiet šo e-pastu."
+
+    account_password:
+      subject: "Jūsu jaunā konta parole %{handle} (%{token})"
+      heading: "JŪSU JAUNĀ KONTA PAROLE"
+      intro: "Migrācija ir sākusies! Mēs izveidojām drošu paroli jūsu jaunajam kontam."
+      security_notice: "DROŠĪBAS PAZIŅOJUMS"
+      save_password: "NEKAVĒJOTIES SAGLABĀJIET ŠO PAROLI! Tā būs nepieciešama, lai pieteiktos jaunajā kontā."
+      tip1: "Glabājiet to drošā paroļu pārvaldniekā"
+      tip2: "Nedalieties ar to ne ar vienu"
+      tip3: "Varat to nomainīt pēc pirmās pieteikšanās"
+      account_details: "KONTA DATI"
+      new_handle: "Jaunais handle: @%{handle}"
+      new_pds: "Jaunais PDS: %{pds}"
+      email: "E-pasts: %{email}"
+      whats_happening: "KAS NOTIEK TAGAD?"
+      backup_step1: "Mēs veidojam jūsu konta datu rezerves kopiju"
+      backup_step2: "Jūs saņemsiet vēl vienu e-pastu, kad rezerves kopija būs gatava lejupielādei"
+      backup_step3: "Jūsu konts tiks izveidots un dati migrēti"
+      no_backup_step1: "Jūsu konts tiek veidots jaunajā PDS"
+      no_backup_step2: "Jūsu dati tiek migrēti (bez rezerves kopijas)"
+      no_backup_step3: "Jūs tiksiet informēti, kad migrācija būs pabeigta"
+      track_progress: "Sekojiet migrācijas progresam šeit:"
+
+    migration_completed:
+      subject: "Migrācija pabeigta! (%{token})"
+      heading: "MIGRĀCIJA PABEIGTA!"
+      success: "Jūsu Bluesky/ATProto konts ir veiksmīgi migrēts uz jauno PDS."
+      password_heading: "JŪSU JAUNĀ KONTA PAROLE"
+      password_help: "Izmantojiet šo paroli, lai pieteiktos jaunajā kontā:"
+      save_password: "Saglabājiet šo paroli tagad — glabājiet to paroļu pārvaldniekā."
+      change_password: "Varat to nomainīt pēc pirmās pieteikšanās."
+      backup_heading: "REZERVES KOPIJA PIEEJAMA"
+      backup_help: "Jūsu konta datu rezerves kopija ir pieejama lejupielādei nākamās 10 minūtes:"
+      backup_expiry: "Pēc 10 minūtēm šī saite beigsies un rezerves kopija tiks neatgriezeniski dzēsta."
+      summary: "MIGRĀCIJAS KOPSAVILKUMS"
+      migration_token: "Migrācijas žetons: %{token}"
+      did: "DID: %{did}"
+      old_account: "Vecais konts: %{handle} @ %{pds}"
+      new_account: "Jaunais konts: %{handle} @ %{pds}"
+      completed_at: "Pabeigts: %{time}"
+      status_page: "Skatīt statusa lapu (pieejama 10 minūtes):"
+      login_heading: "KĀ PIETEIKTIES JAUNAJĀ KONTĀ"
+      login_help: "Ja vēl neesat to izdarījuši, izrakstieties no vecā konta visās Bluesky lietotnēs, pēc tam piesakieties ar jauno handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "SVARĪGI: Noteikti pieteikšanās formas augšdaļā ievadiet \"%{pds}\" kā hostinga nodrošinātāju!"
+      hosting_miss: "Daudzi lietotāji izlaiž šo soli — bez pareizā hostinga nodrošinātāja jūs nevarēsiet pieteikties."
+      change_password_heading: "NOMAINIET PAROLI"
+      change_password_help: "Jūsu drošībai mēs stingri iesakām nekavējoties nomainīt paroli:"
+      change_password_later: "Varat to nomainīt arī vēlāk konta iestatījumos."
+      whats_next: "KAS NOTIKS TĀLĀK?"
+      next1: "Jūsu konts tagad ir aktīvs %{pds}"
+      next2: "Jūsu vecais konts %{old_pds} ir deaktivizēts"
+      next3: "Visi jūsu ieraksti, sekošanas un dati ir pārnesti"
+      next4: "Jūsu sekotājiem automātiski vajadzētu redzēt jauno atrašanās vietu (balstīts uz DID)"
+      privacy_heading: "PRIVĀTUMS UN DROŠĪBA"
+      privacy1: "Šis migrācijas ieraksts tiks automātiski dzēsts pēc 10 minūtēm VDAR atbilstības nolūkā"
+      privacy2: "Visi šifrētie pieteikšanās dati ir droši dzēsti no mūsu serveriem"
+      support: "Ja jums ir jautājumi vai problēmas, lūdzu, sazinieties ar atbalsta dienestu, norādot migrācijas žetonu:"
+      email_footer: "Šis e-pasts tika nosūtīts uz %{email}, jo jūs uzsākāt konta migrāciju."
+
+    migration_failed:
+      subject: "Migrācija neizdevās - nepieciešama darbība (%{token})"
+      heading: "Eurosky migrācija neizdevās - nepieciešama darbība"
+      intro: "Jūsu konta migrācijai %{token} radās kļūda, un tā prasa jūsu uzmanību."
+      account_details: "Konta dati:"
+      did: "DID: %{did}"
+      old_handle: "Vecais handle: @%{handle}"
+      new_handle: "Jaunais handle: @%{handle}"
+      failure_info: "Kļūdas informācija:"
+      failed_step: "Neizdevies solis: %{step}"
+      error: "Kļūda: %{error}"
+      previous_retries: "Iepriekšējie atkārtotie mēģinājumi: %{count}"
+      what_to_do: "Ko jūs varat darīt:"
+      do_step1: "Pārskatiet migrācijas statusu:"
+      do_step2: "Noklikšķiniet pogu \"Atkārtot migrāciju\", lai mēģinātu vēlreiz"
+      do_step3: "Ja problēma saglabājas pēc vairākiem mēģinājumiem, sazinieties ar atbalsta dienestu, norādot migrācijas žetonu: %{token}"
+      common_issues: "Biežākās problēmas un risinājumi:"
+      issue1: "Tīkla noildze: Parasti atrisinās atkārtojot"
+      issue2: "Pieprasījumu ierobežojums: Pagaidiet dažas minūtes pirms atkārtošanas"
+      issue3: "Trūkstoši dati: Pārbaudiet, vai visi dati ir pieejami vecajā PDS"
+      important: "SVARĪGI:"
+      note1: "Jūsu dati vecajā PDS paliek neskarti"
+      note2: "Jūs droši varat atkārtot migrāciju"
+      note3: "Ja nepieciešama palīdzība, norādiet migrācijas žetonu: %{token}"
+
+    backup_ready:
+      subject: "Jūsu Eurosky migrācijas rezerves kopija ir gatava (%{token})"
+      heading: "JŪSU REZERVES KOPIJA IR GATAVA"
+      intro: "Jūsu konta datu rezerves kopija migrācijai %{token} ir gatava lejupielādei."
+      download: "Lejupielādējiet rezerves kopiju:"
+      size: "Rezerves kopijas izmērs: %{size}"
+      expires: "Šī lejupielādes saite beidzas %{time}."
+      expiry_warning: "Pēc derīguma termiņa beigām rezerves kopija tiks neatgriezeniski dzēsta no mūsu serveriem."
+      whats_next: "Jūsu migrācija turpinās fonā. Jūs saņemsiet vēl vienu e-pastu, kad tā būs pabeigta."
+
+    rotation_key_notice:
+      subject: "Nepieciešama darbība: Apstipriniet migrāciju ar PLC kodu (%{token})"
+      heading: "APSTIPRINIET SAVU MIGRĀCIJU"
+      intro: "Jūsu konta dati ir pārnesti. Lai pabeigtu migrāciju, jums jāiesniedz PLC apstiprinājuma kods."
+      key_heading: "JŪSU ROTĀCIJAS ATSLĒGA (VISPIRMS SAGLABĀJIET TO!)"
+      key_help: "Pirms turpināšanas droši saglabājiet šo rotācijas atslēgu. Tā ir jūsu vienīgais veids, kā atgūt kontu, ja kaut kas noiet greizi:"
+      key_warning: "Glabājiet šo atslēgu paroļu pārvaldniekā vai citā drošā vietā. Jūs NEVARĒSIET to iegūt vēlāk."
+      next_step: "Dodieties uz migrācijas lapu, lai ievadītu PLC apstiprinājuma kodu:"
+      check_email: "Pārbaudiet e-pastu, lai iegūtu kodu no vecā PDS nodrošinātāja — tas izskatās šādi: XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Nepieciešama darbība: Pieprasiet jaunu PLC apstiprinājuma kodu (%{token})"
+      heading: "PLC ŽETONS BEIDZIES VAI NEDERĪGS"
+      intro: "PLC apstiprinājuma kods jūsu migrācijai %{token} ir beidzies vai bija nederīgs."
+      what_to_do: "Kas jums jādara:"
+      step1: "Dodieties uz migrācijas lapu:"
+      step2: "Pieprasiet jaunu PLC žetonu (iespējams, būs atkārtoti jāievada parole)"
+      step3: "Ievadiet jauno žetonu, kad to saņemsiet pa e-pastu"
+      error_detail: "Kļūda: %{error}"
+
+    critical_plc_failure:
+      subject: "STEIDZAMI: Kritiska migrācijas kļūda - NEUZSĀCIET JAUNU MIGRĀCIJU (%{token})"
+      heading: "KRITISKA MIGRĀCIJAS KĻŪDA"
+      warning: "NEUZSĀCIET jaunu migrāciju. Jūsu konts var būt nekonsekventā stāvoklī."
+      intro: "PLC kataloga atjaunināšana migrācijai %{token} ir neizdevusies pēc neatgriešanās punkta."
+      key_heading: "JŪSU ROTĀCIJAS ATSLĒGA"
+      key_help: "Jums būs nepieciešama šī atslēga konta atjaunošanai:"
+      contact: "Nekavējoties sazinieties ar atbalsta dienestu:"
+      error_detail: "Kļūda: %{error}"
+
+    invalid_invite_code:
+      subject: "Migrācija neizdevās - nederīgs ielūguma kods (%{token})"
+      heading: "NEDERĪGS IELŪGUMA KODS"
+      intro: "Migrācija %{token} nevarēja turpināties, jo ielūguma kods ir nederīgs vai jau izmantots."
+      what_to_do: "Lai uzsāktu jaunu migrāciju ar derīgu ielūguma kodu:"
+
+    orphaned_account_error:
+      subject: "Migrācija apturēta - pamests konts galamērķa PDS (%{token})"
+      heading: "KONSTATĒTS PAMESTS KONTS"
+      intro: "Migrācija %{token} ir apturēta, jo galamērķa PDS tika atrasts pamests konts."
+      explanation: "Tas parasti notiek, ja iepriekšējs migrācijas mēģinājums tika pārtraukts. Vecais konts vēl pastāv galamērķa serverī un ir jānoņem, pirms varam turpināt."
+      what_to_do: "Ko jūs varat darīt:"
+      option1: "Sazinieties ar galamērķa PDS administratoru uz %{email}, lai noņemtu pamestu kontu"
+      option2: "Iekļaujiet savu DID: %{did}"
+      option3: "Pēc noņemšanas atkārtojiet migrāciju no statusa lapas:"
+
+    reauthentication_required:
+      subject: "Nepieciešama darbība: Nepieciešama atkārtota autentifikācija (%{token})"
+      heading: "NEPIECIEŠAMA ATKĀRTOTA AUTENTIFIKĀCIJA"
+      intro: "Migrācijai %{token} turpināšanai nepieciešams atkārtoti ievadīt paroli."
+      reason: "Jūsu sesija ar veco PDS ir beigusies migrācijas procesa laikā."
+      what_to_do: "Dodieties uz migrācijas lapu un atkārtoti ievadiet paroli:"
+      error_detail: "Kļūda: %{error}"
+      step: "Neizdevies solis: %{step}"
+
+    cancellation_confirmation:
+      subject: "Migrācijas atcelšanas apstiprināšana (%{token})"
+      heading: "APSTIPRINIET ATCELŠANU"
+      intro: "Jūs pieprasījāt atcelt migrāciju %{token}."
+      confirm_help: "Noklikšķiniet zemāk esošo saiti, lai apstiprinātu atcelšanu:"
+      confirm_link: "Apstiprināt atcelšanu"
+      not_you: "Ja jūs nepieprasījāt šo atcelšanu, varat droši ignorēt šo e-pastu. Jūsu migrācija turpināsies normāli."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "jābūt derīgam ATProto handle (piem., lietotājs.bsky.social)"

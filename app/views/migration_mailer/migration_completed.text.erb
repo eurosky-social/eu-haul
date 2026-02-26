@@ -1,105 +1,102 @@
 ================================================================================
-✅ MIGRATION COMPLETE!
+<%= t('mailers.migration_completed.heading') %>
 ================================================================================
 
-Your Bluesky/ATProto account has been successfully migrated to the new PDS.
+<%= t('mailers.migration_completed.success') %>
 
 <% if @password.present? %>
 ================================================================================
-🔐 YOUR NEW ACCOUNT PASSWORD
+<%= t('mailers.migration_completed.password_heading') %>
 ================================================================================
 
-Use this password to log in to your new account:
+<%= t('mailers.migration_completed.password_help') %>
 
 ----------------------------------------
 <%= @password %>
 ----------------------------------------
 
-Save this password now — store it in a password manager.
-You can change it after logging in for the first time.
+<%= t('mailers.migration_completed.save_password') %>
+<%= t('mailers.migration_completed.change_password') %>
 
 
 <% end %>
 <% if @backup_available %>
 ================================================================================
-📦 BACKUP BUNDLE AVAILABLE
+<%= t('mailers.migration_completed.backup_heading') %>
 ================================================================================
 
-Your account data backup is available for download for the next 10 minutes:
+<%= t('mailers.migration_completed.backup_help') %>
 
 <%= @download_url %>
 
-After 10 minutes, this link will expire and the backup will be permanently deleted.
+<%= t('mailers.migration_completed.backup_expiry') %>
 
 
 <% end %>
 ================================================================================
-MIGRATION SUMMARY
+<%= t('mailers.migration_completed.summary') %>
 ================================================================================
 
-Migration Token:    <%= @migration.token %>
-DID:                <%= @migration.did %>
+<%= t('mailers.migration_completed.migration_token', token: @migration.token) %>
+<%= t('mailers.migration_completed.did', did: @migration.did) %>
 
-Old Account:        <%= @migration.old_handle %> @ <%= @migration.old_pds_host %>
-New Account:        <%= @migration.new_handle %> @ <%= @migration.new_pds_host %>
+<%= t('mailers.migration_completed.old_account', handle: @migration.old_handle, pds: @migration.old_pds_host) %>
+<%= t('mailers.migration_completed.new_account', handle: @migration.new_handle, pds: @migration.new_pds_host) %>
 
-Completed At:       <%= Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at %>
+<%= t('mailers.migration_completed.completed_at', time: (Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at)) %>
 
 
-View Status Page (available for 10 minutes):
+<%= t('mailers.migration_completed.status_page') %>
 <%= @migration_url %>
 
 
 ================================================================================
-🔑 HOW TO LOG IN TO YOUR NEW ACCOUNT
+<%= t('mailers.migration_completed.login_heading') %>
 ================================================================================
 
-If you haven't done so already, log out of your old account in any
-Bluesky app, then log in with your new handle:
+<%= t('mailers.migration_completed.login_help') %>
 
-  Handle: <%= @migration.new_handle %>
+  <%= t('mailers.migration_completed.login_handle', handle: @migration.new_handle) %>
 
-  ⚠️  IMPORTANT: Make sure to enter "<%= @migration.new_pds_host %>" as your
-  hosting provider at the top of the sign-in form!
+  <%= t('mailers.migration_completed.hosting_warning', pds: @migration.new_pds_host) %>
 
-Many users miss this step — without the correct hosting provider,
-you won't be able to sign in.
+<%= t('mailers.migration_completed.hosting_miss') %>
 
 
 ================================================================================
-🔒 CHANGE YOUR PASSWORD
+<%= t('mailers.migration_completed.change_password_heading') %>
 ================================================================================
 
-For your security, we strongly recommend changing your password immediately:
+<%= t('mailers.migration_completed.change_password_help') %>
 
   <%= @migration.new_pds_host %>/.well-known/change-password
 
-You can also change it later in your account settings.
+<%= t('mailers.migration_completed.change_password_later') %>
 
 
 ================================================================================
-WHAT HAPPENS NEXT?
+<%= t('mailers.migration_completed.whats_next') %>
 ================================================================================
 
-✅ Your account is now live on <%= @migration.new_pds_host %>
-✅ Your old account on <%= @migration.old_pds_host %> has been deactivated
-✅ All your posts, follows, and data have been transferred
-✅ Your followers should automatically see your new location (DID-based)
-
-
-================================================================================
-PRIVACY & SECURITY
-================================================================================
-
-• This migration record will be automatically deleted in 10 minutes for GDPR compliance
-• All encrypted credentials have been securely erased from our servers
+<%= t('mailers.migration_completed.next1', pds: @migration.new_pds_host) %>
+<%= t('mailers.migration_completed.next2', old_pds: @migration.old_pds_host) %>
+<%= t('mailers.migration_completed.next3') %>
+<%= t('mailers.migration_completed.next4') %>
 
 
 ================================================================================
+<%= t('mailers.migration_completed.privacy_heading') %>
+================================================================================
 
-If you have questions or issues, please contact support with your migration token:
+<%= t('mailers.migration_completed.privacy1') %>
+<%= t('mailers.migration_completed.privacy2') %>
+
+
+================================================================================
+
+<%= t('mailers.migration_completed.support') %>
 <%= @migration.token %>
 
-This email was sent to <%= @migration.email %> because you initiated an account migration.
+<%= t('mailers.migration_completed.email_footer', email: @migration.email) %>
 
 ================================================================================

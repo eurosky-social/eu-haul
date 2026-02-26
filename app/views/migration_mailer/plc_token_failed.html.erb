@@ -18,9 +18,9 @@
 </head>
 <body>
   <div class="header">
-    <h1 style="margin: 0; font-size: 24px;">PLC Confirmation Code Expired</h1>
+    <h1 style="margin: 0; font-size: 24px;"><%= t('mailers.plc_token_failed.heading') %></h1>
     <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-      Your migration needs a fresh confirmation code to continue
+      <%= t('mailers.plc_token_failed.intro', token: @migration.token) %>
     </p>
   </div>
 
@@ -42,18 +42,17 @@
       </p>
       <% if @error_message.present? %>
       <p style="font-size: 13px; color: #92400e; margin-bottom: 0;">
-        <strong>Details:</strong> <%= @error_message %>
+        <strong><%= t('mailers.plc_token_failed.error_detail', error: @error_message) %></strong>
       </p>
       <% end %>
     </div>
 
     <div style="background: #dbeafe; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #3b82f6;">
-      <h2 style="color: #1e40af; margin-top: 0;">What To Do</h2>
+      <h2 style="color: #1e40af; margin-top: 0;"><%= t('mailers.plc_token_failed.what_to_do') %></h2>
       <ol style="font-size: 15px; color: #1e3a8a;">
-        <li>Go to your migration status page (link below)</li>
-        <li>Click <strong>"Request New PLC Token"</strong> to get a fresh confirmation code</li>
-        <li>Check your email from <strong><%= @migration.old_pds_host %></strong> for the new code</li>
-        <li>Enter the code within 1 hour of receiving it</li>
+        <li><%= t('mailers.plc_token_failed.step1') %></li>
+        <li><%= t('mailers.plc_token_failed.step2') %></li>
+        <li><%= t('mailers.plc_token_failed.step3') %></li>
       </ol>
     </div>
 

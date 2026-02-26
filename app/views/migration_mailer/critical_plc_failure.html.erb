@@ -19,7 +19,7 @@
 </head>
 <body>
   <div class="header">
-    <h1 style="margin: 0; font-size: 28px;">🚨 CRITICAL MIGRATION FAILURE</h1>
+    <h1 style="margin: 0; font-size: 28px;"><%= t('mailers.critical_plc_failure.heading') %></h1>
     <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
       Your AT Protocol account migration has encountered a critical error
     </p>
@@ -27,20 +27,20 @@
 
   <div class="content">
     <div class="critical-warning">
-      <h2 style="margin-top: 0;">⚠️ CRITICAL: PLC Directory Update Failed</h2>
+      <h2 style="margin-top: 0;"><%= t('mailers.critical_plc_failure.heading') %></h2>
       <p style="font-size: 16px; margin-bottom: 0;">
-        Your migration encountered a failure during the PLC directory update (Point of No Return).
+        <%= t('mailers.critical_plc_failure.intro', token: @migration.token) %>
         <strong>Your account may be in an uncertain state.</strong>
       </p>
     </div>
 
     <div class="do-not">
-      <h2 style="color: #dc2626; margin-top: 0;">🚨 IMPORTANT - DO NOT:</h2>
+      <h2 style="color: #dc2626; margin-top: 0;"><%= t('mailers.critical_plc_failure.warning') %></h2>
       <ul style="color: #991b1b; font-weight: 600; font-size: 15px;">
-        <li>❌ Start a new migration</li>
-        <li>❌ Delete this email</li>
-        <li>❌ Attempt manual recovery without support</li>
-        <li>❌ Change your account settings on either PDS</li>
+        <li>Start a new migration</li>
+        <li>Delete this email</li>
+        <li>Attempt manual recovery without support</li>
+        <li>Change your account settings on either PDS</li>
       </ul>
       <p style="color: #991b1b; font-size: 14px;">
         Your account data is safe, but the PLC directory state needs to be verified by our support team before you take any action.
@@ -55,14 +55,14 @@
           <div class="code"><%= @migration.token %></div>
         </li>
         <% if @rotation_key.present? %>
-        <li><strong>Save your rotation key</strong> (account recovery mechanism):
+        <li><strong><%= t('mailers.critical_plc_failure.key_heading') %></strong>
           <div class="code" style="word-break: break-all;"><%= @rotation_key %></div>
           <p style="font-size: 13px; color: #92400e; margin: 5px 0 0 0;">
-            If you need to recover your account, go to <strong><a href="https://pdsmoover.com/restore">pdsmoover.com/restore</a></strong> and use this key. Store it securely!
+            <%= t('mailers.critical_plc_failure.key_help') %>
           </p>
         </li>
         <% end %>
-        <li><strong>Contact support IMMEDIATELY:</strong>
+        <li><strong><%= t('mailers.critical_plc_failure.contact') %></strong>
           <div class="code"><%= @support_email %></div>
         </li>
         <li><strong>Reference your migration token</strong> in your support request:
@@ -77,7 +77,7 @@
         The migration failed during the PLC directory update, which is the critical step that redirects your DID to the new PDS.
       </p>
       <p style="font-size: 14px; color: #4b5563; margin-bottom: 10px;">
-        <strong>Error Details:</strong>
+        <strong><%= t('mailers.critical_plc_failure.error_detail', error: '') %></strong>
       </p>
       <div class="code" style="background: white; color: #dc2626; font-size: 13px;">
         <%= @error_message %>

@@ -17,28 +17,28 @@
 </head>
 <body>
   <div class="header">
-    <h1 style="margin: 0;">Migration Failed - Action Required</h1>
+    <h1 style="margin: 0;"><%= t('mailers.migration_failed.heading') %></h1>
   </div>
 
   <p>Hello,</p>
 
-  <p>Your account migration <strong><%= @migration.token %></strong> has encountered an error and needs your attention.</p>
+  <p><%= t('mailers.migration_failed.intro', token: @migration.token).html_safe %></p>
 
   <div class="details">
-    <h3 style="margin-top: 0;">Account Details</h3>
+    <h3 style="margin-top: 0;"><%= t('mailers.migration_failed.account_details') %></h3>
     <ul class="info-list">
-      <li><strong>DID:</strong> <%= @migration.did %></li>
-      <li><strong>Old Handle:</strong> @<%= @migration.old_handle %></li>
-      <li><strong>New Handle:</strong> @<%= @migration.new_handle %></li>
+      <li><%= t('mailers.migration_failed.did', did: @migration.did).html_safe %></li>
+      <li><%= t('mailers.migration_failed.old_handle', handle: @migration.old_handle) %></li>
+      <li><%= t('mailers.migration_failed.new_handle', handle: @migration.new_handle) %></li>
     </ul>
   </div>
 
   <div class="error">
-    <h3 style="margin-top: 0;">Failure Information</h3>
+    <h3 style="margin-top: 0;"><%= t('mailers.migration_failed.failure_info') %></h3>
     <ul class="info-list">
-      <li><strong>Failed Step:</strong> <%= @failed_step.to_s.humanize %></li>
-      <li><strong>Error:</strong> <%= @error_message %></li>
-      <li><strong>Previous Retries:</strong> <%= @retry_count %></li>
+      <li><%= t('mailers.migration_failed.failed_step', step: @failed_step.to_s.humanize) %></li>
+      <li><%= t('mailers.migration_failed.error', error: @error_message) %></li>
+      <li><%= t('mailers.migration_failed.previous_retries', count: @retry_count) %></li>
     </ul>
   </div>
 
@@ -61,32 +61,32 @@
       <p style="margin: 5px 0 0 0;">Your migration data is safe and ready. You just need a fresh PLC token to complete the final step.</p>
     </div>
   <% else %>
-    <h3>What You Can Do:</h3>
+    <h3><%= t('mailers.migration_failed.what_to_do') %></h3>
     <ol>
-      <li>Review the migration status and click the "Retry Migration" button:</li>
+      <li><%= t('mailers.migration_failed.do_step1') %></li>
     </ol>
 
     <a href="<%= @migration_url %>" class="button">View Migration & Retry</a>
 
-    <p><strong>Common Issues and Solutions:</strong></p>
+    <p><strong><%= t('mailers.migration_failed.common_issues') %></strong></p>
     <ul>
-      <li><strong>Network timeouts:</strong> Usually resolve on retry</li>
-      <li><strong>Rate limiting:</strong> Wait a few minutes before retrying</li>
-      <li><strong>Missing data:</strong> Check if all data is accessible on the old PDS</li>
+      <li><%= t('mailers.migration_failed.issue1') %></li>
+      <li><%= t('mailers.migration_failed.issue2') %></li>
+      <li><%= t('mailers.migration_failed.issue3') %></li>
     </ul>
   <% end %>
 
   <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0;">
-    <p style="margin: 0;"><strong>Important:</strong></p>
+    <p style="margin: 0;"><strong><%= t('mailers.migration_failed.important') %></strong></p>
     <ul style="margin: 10px 0 0 0;">
-      <li>Your data on the old PDS remains intact</li>
-      <li>You can safely retry the migration</li>
-      <li>If the problem persists, please contact support with your migration token: <strong><%= @migration.token %></strong></li>
+      <li><%= t('mailers.migration_failed.note1') %></li>
+      <li><%= t('mailers.migration_failed.note2') %></li>
+      <li><%= t('mailers.migration_failed.note3', token: @migration.token).html_safe %></li>
     </ul>
   </div>
 
   <div class="footer">
-    <p>Eurosky Migration Service</p>
+    <p><%= t('mailers.common.eurosky_migration') %></p>
   </div>
 </body>
 </html>

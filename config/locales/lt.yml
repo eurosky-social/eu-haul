@@ -1,0 +1,652 @@
+lt:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Paskyros perkėlimo pradžia"
+    privacy_policy: "Privatumo politika"
+    terms_of_service: "Paslaugų teikimo sąlygos"
+    background_attribution: "Fono nuotrauka:"
+    background_attribution_by: "autorius"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Kalba"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Paskyros perkėlimo pradžia"
+      errors_heading: "Ištaisykite šias klaidas:"
+
+      # Progress bar labels
+      progress:
+        account: "Paskyra"
+        email: "El. paštas"
+        destination: "Paskirtis"
+        handle: "Handle"
+        review: "Peržiūra"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "1 žingsnis: Paskyros prisijungimo duomenys"
+        handle_label: "Jūsų handle"
+        handle_placeholder: "jusuhandle.bsky.social"
+        handle_help: "Įveskite dabartinį AT Protocol handle"
+        password_label: "Paskyros slaptažodis"
+        password_help: "Jūsų dabartinis paskyros slaptažodis"
+        two_factor_title: "Dviejų veiksnių autentifikacija"
+        two_factor_help: "Prisijungimo kodas išsiųstas jūsų el. paštu. Įveskite jį žemiau."
+        two_factor_placeholder: "Įveskite prisijungimo kodą"
+        continue: "Tęsti"
+
+      # Step 2: Email
+      step2:
+        title: "2 žingsnis: El. pašto adresas"
+        email_label: "El. pašto adresas"
+        email_help: "Šiuo adresu siųsime perkėlimo būsenos atnaujinimus"
+        email_readonly_help: "El. paštas gautas iš jūsų paskyros"
+        email_manual_help: "Nepavyko gauti jūsų el. pašto. Įveskite jį rankiniu būdu."
+        confirm_access: "Turiu prieigą prie šio el. pašto adreso ir galiu gauti jam atsiųstą patvirtinimo kodą."
+        back: "Atgal"
+        continue: "Tęsti"
+
+      # Step 3: Destination Server
+      step3:
+        title: "3 žingsnis: Paskirties serveris"
+        server_label: "Paskirties serveris"
+        server_placeholder: "Pasirinkite serverį..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Pasirinktinis serveris..."
+        server_help: "Pasirinkite, kur norite perkelti savo paskyrą"
+        custom_url_label: "Pasirinktinio serverio URL"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Įveskite pilną pasirinktinio serverio URL"
+        invite_code_label: "Kvietimo kodas"
+        invite_code_placeholder: "Įveskite kvietimo kodą"
+        invite_code_help: "Šis serveris reikalauja kvietimo kodo"
+        existing_account_title: "Rasta esama paskyra"
+        existing_account_help: "Jūsų paskyra jau egzistuoja paskirties serveryje. Patvirtinkite slaptažodį, kad galėtumėte tęsti perkėlimą."
+        target_password_label: "Jūsų slaptažodis paskirties serveryje"
+        target_password_placeholder: "Įveskite esamos paskyros slaptažodį"
+        target_2fa_label: "Prisijungimo kodas (2FA)"
+        target_2fa_help: "Patikrinkite el. paštą dėl dviejų veiksnių autentifikacijos kodo"
+        deactivated_notice: "Ši paskyra atrodo deaktyvuota"
+        deactivated_reason: "(galimai dėl ankstesnio perkėlimo bandymo)."
+        deactivated_help: "Jei neprisimenate slaptažodžio, galite pabandyti:"
+        deactivated_reset: "Slaptažodžio atkūrimas:"
+        deactivated_contact: "Susisiekite su PDS administratoriumi adresu %{email}, kad pašalintų šią neaktyvią paskyrą ir iš naujo pradėtų perkėlimą. Nurodykite savo DID:"
+        back: "Atgal"
+        continue: "Tęsti"
+
+      # Step 4: New Handle
+      step4:
+        title: "4 žingsnis: Naujas handle"
+        custom_domain_title: "Aptiktas pasirinktinis domenas"
+        custom_domain_help: "Jūsų handle %{handle} yra pasirinktinis domenas. Galite toliau jį naudoti naujame serveryje."
+        keep_handle: "Palikti dabartinį handle"
+        new_handle_label: "Jūsų naujas handle"
+        new_handle_placeholder: "vartotojas"
+        new_handle_help: "Pasirinkite naują handle (gali būti senas) paskirties serveryje"
+        back: "Atgal"
+        continue: "Tęsti"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "5 žingsnis: Peržiūra ir patvirtinimas"
+        current_handle: "Dabartinis handle:"
+        email: "El. paštas:"
+        destination_server: "Paskirties serveris:"
+        new_handle: "Naujas handle:"
+        invite_code: "Kvietimo kodas:"
+        create_backup: "Sukurti atsarginę kopiją prieš perkėlimą"
+        backup_help: "Atsisiunčia pilną jūsų paskyros duomenų kopiją. Prieinama 24 valandas."
+        confirm_email_html: "Kai paspausite <strong>Tęsti</strong>, išsiųsime patvirtinimo el. laišką adresu <strong>%{email}</strong>. Perkėlimas prasidės tik po patvirtinimo tuo el. laišku."
+        no_usage_title: "Nenaudokite paskyros perkėlimo metu"
+        no_usage_help: "Pradėjus perkėlimą, uždarykite visas programėles ir naršyklės skirtukus su jūsų paskyra. Perkėlimo metu sukurti įrašai, patiktukai ir sekimai nebus perkelti. Gausite el. laišką, kai procesas bus baigtas (~20-30 min.)."
+        acknowledge: "Suprantu, kad perkėlimo metu neturėčiau naudoti savo paskyros"
+        back: "Atgal"
+        continue: "Tęsti"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Įveskite handle"
+      enter_password: "Įveskite slaptažodį"
+      handle_needs_domain: "Handle turi turėti domeną (pvz., vartotojas.bsky.social)"
+      authenticating: "Autentifikuojama..."
+      authenticating_details: "Autentifikuojama ir gaunami paskyros duomenys..."
+      two_factor_sent: "Prisijungimo kodas išsiųstas jūsų el. paštu. Įveskite jį viršuje ir dar kartą spauskite Tęsti."
+      auth_success: "Autentifikacija sėkminga!"
+      network_error: "Tinklo klaida. Bandykite dar kartą."
+      continue: "Tęsti"
+      # Step 2
+      email_readonly_help: "El. paštas gautas iš jūsų paskyros"
+      email_manual_help: "Nepavyko gauti jūsų el. pašto. Įveskite jį rankiniu būdu."
+      enter_email: "Įveskite savo el. pašto adresą"
+      invalid_email: "Įveskite teisingą el. pašto adresą"
+      confirm_email_access: "Patvirtinkite, kad turite prieigą prie šio el. pašto adreso."
+      # Step 3
+      select_server: "Pasirinkite serverį arba įveskite pasirinktinio serverio URL"
+      checking_server: "Tikrinamas serveris..."
+      checking_requirements: "Tikrinami serverio reikalavimai..."
+      server_verified: "Serveris patvirtintas!"
+      failed_verify_pds: "Nepavyko patikrinti PDS. Patikrinkite URL."
+      invite_code_required: "Šis serveris reikalauja kvietimo kodo. Įveskite jį žemiau, tada spauskite Tęsti."
+      enter_invite_code: "Įveskite kvietimo kodą, kad tęstumėte."
+      checking_existing: "Ieškoma esamos paskyros..."
+      verifying_credentials: "Tikrinami prisijungimo duomenys..."
+      authenticating_existing: "Autentifikuojama su jūsų esama paskyra..."
+      credentials_verified: "Prisijungimo duomenys patvirtinti!"
+      enter_target_password: "Įveskite slaptažodį šiam serveriui"
+      # Step 4
+      custom_domain_help: "Jūsų handle {handle} yra pasirinktinis domenas. Galite toliau jį naudoti naujame serveryje."
+      enter_handle_short: "Įveskite handle"
+      checking_availability: "Tikrinamas prieinamumas..."
+      checking_handle: "Tikrinamas handle prieinamumas..."
+      handle_taken: "Šis handle jau užimtas. Pasirinkite kitą."
+      all_checks_passed: "Visi patikrinimai sėkmingi!"
+      using_existing_handle: "Naudojamas jūsų esamas handle paskirties serveryje."
+      keeping_custom_handle: "Paliekamas jūsų pasirinktinio domeno handle!"
+      handle_available_checking: "Handle prieinamas, ieškoma esamų paskyrų..."
+      checking_existing_accounts: "Ieškoma esamų paskyrų..."
+      failed_check_availability: "Nepavyko patikrinti prieinamumo. Bandykite dar kartą."
+      failed_check_existing: "Nepavyko patikrinti esamų paskyrų: "
+      account_exists_title: "Paskyra jau egzistuoja paskirties serveryje"
+      account_exists_what: "Paskyra su jūsų DID jau egzistuoja paskirties serveryje (%{pds}). Tai gali būti dėl ankstesnio perkėlimo bandymo."
+      account_exists_do: "Grįžkite į ankstesnį žingsnį ir įveskite esamos paskyros slaptažodį. Jei nežinote slaptažodžio:"
+      account_exists_reset: "Pabandykite atkurti slaptažodį:"
+      account_exists_contact: "Susisiekite su serverio teikėju adresu <strong>%{email}</strong>, kad pašalintų apleistą paskyrą"
+      account_exists_did: "Nurodykite savo DID:"
+      # Step 5
+      confirm_email_html: "Kai paspausite <strong>Tęsti</strong>, išsiųsime patvirtinimo el. laišką adresu <strong>{email}</strong>. Perkėlimas prasidės tik po patvirtinimo tuo el. laišku."
+      confirm_no_usage: "Patvirtinkite, kad suprantate, jog perkėlimo metu negalite naudoti savo paskyros."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Perkėlimas %{token}"
+      migration_status: "Perkėlimo būsena"
+      status_label: "Būsena:"
+      retry_info: "Bandymas %{attempt}/%{max} - %{step}"
+      verify_email: "Patvirtinkite savo el. paštą"
+      enter_verification: "Įveskite patvirtinimo kodą"
+      verification_sent: "Išsiuntėme kodą adresu <strong>%{email}</strong>. Įveskite jį žemiau, kad pradėtumėte perkėlimą."
+      verification_label: "Patvirtinimo kodas"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Patvirtinti ir pradėti perkėlimą"
+      didnt_receive: "Negavote el. laiško?"
+      check_spam: "Patikrinkite brukalų ar nepageidaujamo pašto aplanką"
+      check_email_correct: "Įsitikinkite, kad <strong>%{email}</strong> yra teisingas"
+      email_delay: "El. laiškas gali užtrukti kelias minutes"
+
+      # Queue
+      in_queue: "Eilėje"
+      queue_default: "Laukiama, kol kiti perkėlimai baigs duomenų perdavimą"
+      queue_auto_start: "Jūsų perkėlimas prasidės automatiškai, kai atsilaisvins vieta."
+
+      # Blob conversion
+      converting_blobs: "Senojo blob formato konvertavimas"
+      converting_blobs_detail: "tai gali užtrukti kelias minutes..."
+      blobs_converted: "Senasis blob formatas sėkmingai konvertuotas."
+
+      # Blob progress
+      blobs_uploaded: "Įkeltа blob"
+      files: "failai"
+      data_transferred: "Perduota duomenų"
+      failed: "Nepavyko"
+      preparing_blobs: "Ruošiamasi perkelti <strong>%{count}</strong> blob..."
+
+      # Download/backup progress
+      downloading_account: "Atsisiunčiami paskyros duomenys"
+      downloading_detail: "atsisiunčiama saugykla ir blob atsarginei kopijai..."
+      creating_backup: "Kuriama atsarginė kopija"
+      creating_backup_detail: "pakuojami paskyros duomenys..."
+      downloaded_count: "Atsisiųsta: %{downloaded} / %{total} blob"
+      backup_expired: "Atsarginė kopija nebegalioja"
+      backup_expired_detail: "jūsų atsarginė kopija pašalinta iš mūsų serverių."
+
+      # PLC pending
+      updating_identity: "Atnaujinamas jūsų identitetas"
+      plc_accepted: "Jūsų patvirtinimo kodas priimtas. Atnaujiname PLC katalogo įrašą, kad rodytų į <strong>%{pds}</strong>. Tai gali užtrukti akimirką."
+      page_auto_update: "Šis puslapis atsinaujins automatiškai. Neuždarykite šio skirtuko."
+      enter_confirmation: "Įveskite patvirtinimo kodą"
+      confirmation_hint: "Patikrinkite el. paštą dėl kodo nuo <strong>%{pds}</strong> &mdash; jis atrodo taip: <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Patvirtinimo kodas"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Užbaigti perkėlimą"
+      complete_confirm: "Tai užbaigs jūsų paskyros perkėlimą. Šis žingsnis negali būti atšauktas.\n\nAr tikrai norite tęsti?"
+
+      # Completed
+      completed_title: "Perkėlimas sėkmingai užbaigtas!"
+      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Jūsų paskyra sėkmingai perkelta atgal į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami savo handle: <strong>%{handle}</strong>"
+      email_sent_html: "Išsiuntėme el. laišką adresu %{email} su nauju paskyros slaptažodžiu, prisijungimo instrukcijomis ir nuoroda slaptažodžiui pakeisti. Patikrinkite gautus laiškus (ir brukalų aplanką)."
+      save_rotation_key: "IŠSAUGOKITE SAVO ROTACIJOS RAKTĄ!"
+      page_auto_delete: "Šis puslapis bus automatiškai ištrintas po 2 dienų."
+      rotation_key_needed: "Rotacijos raktas reikalingas paskyros atkūrimui. Nukopijuokite jį dabar ir saugiai išsaugokite!"
+      copy_rotation_key: "Kopijuoti rotacijos raktą"
+      key_emailed: "Šį raktą taip pat išsiuntėme adresu <strong>%{email}</strong>"
+      privacy_notice: "Privatumo pranešimas"
+      privacy_detail: "Dėl jūsų privatumo ir BDAR atitikties šis perkėlimo įrašas bus automatiškai ištrintas po <strong>2 dienų</strong>. Įsitikinkite, kad iki tol išsaugojote rotacijos raktą ir atsisiuntėte atsarginę kopiją!"
+      privacy_delete_now: "Kai viską išsaugosite, galite iš karto ištrinti duomenis naudodami žemiau esantį mygtuką."
+      delete_confirm: "Ar tikrai norite negrįžtamai ištrinti visus perkėlimo duomenis?\n\nĮsitikinkite, kad:\n• Nukopijavote rotacijos raktą\n• Atsisiuntėte atsarginę kopiją (jei taikoma)\n\nŠis veiksmas negali būti atšauktas."
+      delete_button: "Išsaugojau atsarginę kopiją ir rotacijos raktą — ištrinkite visus mano duomenis"
+      welcome_back: "Jūsų seni prisijungimo duomenys saugiai ištrinti. Sveiki sugrįžę!"
+      welcome_new: "Jūsų seni prisijungimo duomenys saugiai ištrinti. Sveiki atvykę į naujus namus!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Paskyros atkūrimo raktas"
+      recovery_key_important: "SVARBU:"
+      recovery_key_help: "Saugiai išsaugokite šį rotacijos raktą. Jis leidžia atšaukti PLC pakeitimus arba atkurti paskyrą."
+      copy_clipboard: "Kopijuoti į iškarpinę"
+      revert_title: "Kaip naudoti šį raktą pakeitimams atšaukti"
+      revert_help: "Jei reikia atšaukti PLC katalogo pakeitimus, galite naudoti šį rotacijos raktą:"
+      revert_step1: "Įdiekite <code>goat</code> CLI įrankį"
+      revert_step2: "Gaukite PLC istoriją: <code>goat plc history &lt;jūsų-did&gt;</code>"
+      revert_step3: "Identifikuokite norimą istorinę būseną (CID)"
+      revert_step4: "Sukurkite atšaukimo operaciją: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Pasirašykite rotacijos raktu: <code>goat plc sign</code>"
+      revert_step6: "Pateikite pasirašytą operaciją: <code>goat plc submit --did &lt;jūsų-did&gt;</code>"
+      revert_warning: "Tai pažangi operacija. Naudokite tik jei suprantate PLC katalogo sistemą."
+
+      # PLC help section
+      didnt_receive_plc: "Negavote el. laiško?"
+      plc_check_spam: "Patikrinkite brukalų ar nepageidaujamo pašto aplanką"
+      plc_from_bluesky: "El. laišką siunčia Bluesky, ne mes"
+      plc_expires: "Kodas nebegalioja po 1 valandos"
+      plc_new_code_help: "Jei reikia naujo kodo, įveskite slaptažodį žemiau ir mes paprašysime:"
+      plc_password_placeholder: "Slaptažodis %{handle}"
+      request_new_code: "Prašyti naujo kodo"
+      technical_details: "Techniniai duomenys"
+      plc_explanation: "Patvirtinimo kodas yra <strong>PLC operacijos žetonas</strong> — jis suteikia teisę atnaujinti jūsų DID dokumentą PLC kataloge, kad rodytų į naują Personal Data Server."
+      plc_irreversible: "<strong>Tai negrįžtama.</strong> Pateikus, jūsų paskyros tapatybė (DID) visam laikui rodys į <strong>%{new_pds}</strong> vietoj <strong>%{old_pds}</strong>."
+      plc_expiry_note: "PLC žetonai nebegalioja po 1 valandos. Jei jūsų nebegalioja, galite prašyti naujo."
+
+      # Sidebar
+      download_backup: "Atsisiųskite atsarginę kopiją"
+      backup_ready: "Atsarginė kopija paruošta"
+      backup_download_completed: "Atsisiųskite atsarginę kopiją, kol ji dar galioja."
+      backup_download_ready: "Jūsų paskyros atsarginė kopija paruošta! Atsisiųskite ją, kol dar galioja."
+      size: "Dydis:"
+      expires: "Galioja iki:"
+      download_button: "Atsisiųsti atsarginę kopiją"
+      recovery_key: "Atkūrimo raktas"
+      recovery_key_sidebar: "Saugiai išsaugokite šį raktą. Jis leidžia atkurti paskyrą."
+      copy_key: "Kopijuoti raktą"
+      cancel_migration: "Atšaukti perkėlimą"
+      cancel_help: "Atšaukite šį perkėlimą ir palikite paskyrą dabartiniame serveryje."
+      cancel_button: "Atšaukti perkėlimą"
+      cancel_confirm: "Ar tikrai norite atšaukti šį perkėlimą?\n\nPatvirtinimo nuoroda bus išsiųsta jūsų el. paštu. Perkėlimas bus atšauktas tik paspaudus tą nuorodą."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Dabartinė būsena:"
+      retry_attempt: "Pakartotinis bandymas:"
+      remaining_attempts: "Likę bandymai:"
+      next_retry: "Kitas bandymas po"
+      calculating: "skaičiuojama..."
+      retrying_now: "bandoma dabar..."
+      reauth_safe: "Jūsų perkėlimo duomenys saugūs — tiesiog iš naujo įveskite slaptažodį, kad tęstumėte."
+      reauth_help: "Įveskite slaptažodį <strong>%{handle}</strong>, kad atkurtumėte sesiją ir tęstumėte perkėlimą."
+      password_for: "Slaptažodis %{handle}"
+      enter_password_placeholder: "Įveskite paskyros slaptažodį"
+      reauth_button: "Pakartotinai autentifikuotis ir tęsti perkėlimą"
+      plc_safe: "Jūsų perkėlimo duomenys saugūs — tiesiog reikia naujo PLC žetono."
+      plc_request_help: "Spustelėkite žemiau esantį mygtuką, kad paprašytumėte naujo PLC žetono. Jį gausite el. paštu nuo <strong>%{pds}</strong>."
+      request_plc_confirm: "Prašyti naujo PLC žetono iš jūsų senojo PDS?"
+      request_plc_button: "Prašyti naujo PLC žetono"
+      plc_session_expired: "Jūsų sesija su <strong>%{pds}</strong> baigėsi. Įveskite slaptažodį <strong>%{handle}</strong>, kad prisijungtumėte iš naujo ir paprašytumėte naujo PLC žetono."
+      reauth_plc_button: "Pakartotinai autentifikuotis ir prašyti PLC žetono"
+      what_happened_title: "Kas nutiko ir ką daryti"
+      what_happened: "Kas nutiko:"
+      what_to_do: "Ką galite padaryti:"
+      request_plc_action: "Prašyti naujo PLC žetono"
+      retry_migration: "Pakartoti perkėlimą"
+      retry_confirm: "Pakartoti šį perkėlimą nuo dabartinės stadijos?"
+      start_new: "Pradėti naują perkėlimą"
+      check_pds: "Tikrinti PDS būseną"
+      download_report: "Atsisiųsti nepavykusių blob ataskaitą"
+      cleanup_title: "Valymo instrukcijos"
+      cleanup_help: "Norėdami pašalinti apleistą paskyrą, paleiskite šią komandą (reikia prieigos prie serverio):"
+      cleanup_contact: "Arba susisiekite su paskirties PDS administratoriumi, kad rankiniu būdu pašalintų apleistą paskyrą."
+      rotation_key_save: "Jūsų rotacijos raktas (IŠSAUGOKITE TAI)"
+      copy_rotation_key: "Kopijuoti rotacijos raktą"
+      contact_support: "Nedelsdami susisiekite su palaikymo tarnyba"
+      support_email: "Palaikymo el. paštas:"
+      migration_token: "Perkėlimo žetonas:"
+      include_token: "Nurodykite perkėlimo žetoną savo pagalbos užklausoje greitesniam aptarnavimui."
+      technical_title: "Techniniai duomenys (klaidų diagnostikai)"
+      error_message: "Klaidos pranešimas:"
+      job_step: "Užduoties žingsnis:"
+      migration_status: "Perkėlimo būsena:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "NEGRĮŽTAMUMO TAŠKAS"
+      subtitle: "Kitas veiksmas visam laikui nukreips jūsų DID į naują PDS"
+      once_submit: "Pateikus PLC žetoną:"
+      will_point: "Jūsų DID (%{did}) rodys į %{pds}"
+      all_apps: "Visos AT Protocol programėlės nukreips jūsų tapatybę į naują PDS"
+      immediate: "Šis pakeitimas įsigalioja nedelsiant ir veikia visą federuotą tinklą"
+      cannot_undo: "Šis veiksmas NEGALI būti atšauktas be rotacijos rakto"
+      what_you_need: "Ko jums reikia prieš tęsiant:"
+      need_rotation_key: "Rotacijos raktas saugiai išsaugotas (slinkite aukštyn, kad nukopijuotumėte)"
+      need_data_verified: "Patikrinta, kad visi duomenys perkelti (saugykla, blob, nustatymai)"
+      need_plc_token: "PLC operacijos žetonas (bus atsiųstas el. paštu nuo %{pds})"
+      need_understanding: "Supratimas, kad tai negrįžtama be rotacijos rakto"
+      instructions_title: "Instrukcijos žingsnis po žingsnio:"
+      step1_title: "Išsaugokite rotacijos raktą"
+      step1_help: "Slinkite aukštyn ir nukopijuokite rotacijos raktą į saugią vietą (slaptažodžių tvarkyklė, šifruotas failas). Tai jūsų VIENINTELIS būdas atkurti, jei kas nors nutiktų."
+      step2_title: "Patikrinkite el. paštą"
+      step2_help: "Jūsų senasis PDS teikėjas (<strong>%{pds}</strong>) buvo paprašytas atsiųsti PLC operacijos žetoną el. paštu. Patikrinkite gautus laiškus dėl el. laiško su žetonu."
+      step3_title: "Nukopijuokite PLC žetoną"
+      step3_help: "Nukopijuokite PLC operacijos žetoną iš jūsų senojo PDS teikėjo el. laiško. Žetonas atrodys kaip ilga simbolių eilutė."
+      step4_title: "Pateikite žetoną žemiau"
+      step4_help: "Įklijuokite PLC žetoną į žemiau esančią formą ir pateikite, kad užbaigtumėte perkėlimą."
+      final_warning: "Paskutinis perspėjimas: ar esate pasiruošę?"
+      check_saved: "Ar išsaugojote rotacijos raktą saugioje vietoje?"
+      check_understand: "Ar suprantate, kad šis pakeitimas yra negrįžtamas ir veikia visą AT Protocol tinklą?"
+      check_prepared: "Ar esate pasiruošę prarasti prieigą, jei neturėsite rotacijos rakto?"
+      check_verified: "Ar patikrinote, kad visi jūsų duomenys (įrašai, medija, nustatymai) sėkmingai perkelti?"
+      do_not_proceed: "Jei į bet kurį iš šių klausimų atsakėte NE, DAR netęskite."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Išsiuntėme patvirtinimo kodą adresu %{email}. Įveskite jį kitame puslapyje, kad pradėtumėte perkėlimą."
+      # Verify email
+      email_verified: "El. paštas patvirtintas! Perkėlimas prasidėjo."
+      invalid_code: "Neteisingas patvirtinimo kodas. Patikrinkite kodą el. laiške ir bandykite dar kartą."
+      enter_code: "Įveskite patvirtinimo kodą iš el. laiško."
+      # PLC token
+      plc_submitted: "PLC žetonas pateiktas! Jūsų DID bus netrukus atnaujintas."
+      plc_blank: "PLC žetonas negali būti tuščias"
+      session_expired: "Jūsų sesija baigėsi. Iš naujo įveskite slaptažodį, kad tęstumėte."
+      old_session_expired: "Jūsų sesija su %{pds} baigėsi. Iš naujo įveskite slaptažodį, kad tęstumėte."
+      credentials_expired: "Jūsų prisijungimo duomenys nebegalioja. Iš naujo įveskite slaptažodį, kad tęstumėte."
+      # Cancellation
+      cancellation_sent: "Atšaukimo patvirtinimo nuoroda išsiųsta jūsų el. paštu. Patikrinkite gautus laiškus."
+      cannot_cancel: "Šis perkėlimas negali būti atšauktas dabartinėje stadijoje."
+      cancel_email_failed: "Nepavyko išsiųsti atšaukimo el. laiško. Bandykite dar kartą."
+      invalid_cancel_link: "Netinkama atšaukimo nuoroda. Paprašykite naujos iš perkėlimo būsenos puslapio."
+      cancel_too_late: "Šis perkėlimas nebegali būti atšauktas (galbūt pasiektas negrįžtamumo taškas)."
+      cancelled: "Perkėlimas sėkmingai atšauktas. Jūsų paskyra lieka nepakeista %{pds}. Galite bet kada pradėti naują perkėlimą."
+      # Delete
+      only_completed: "Galima ištrinti tik užbaigtus perkėlimus."
+      deleted: "Visi perkėlimo duomenys negrįžtamai ištrinti. Dėkojame, kad naudojatės %{site_name}!"
+      # Retry
+      retry_started: "Pakartotinis perkėlimo bandymas pradėtas!"
+      not_failed: "Perkėlimas nėra nesėkmingos būsenos ir negali būti pakartotinai bandomas"
+      no_failed_blobs: "Nėra nepavykusių blob pakartotiniam bandymui"
+      retrying_blobs: "Pakartotinai bandoma %{count} nepavykusių blob..."
+      # Backup
+      backup_not_found: "Atsarginė kopija nerasta arba nebegalioja"
+      # API errors
+      did_required: "DID yra privalomas"
+      pds_required: "PDS adresas yra privalomas"
+      handle_required: "Handle yra privalomas"
+      password_required: "Slaptažodis yra privalomas"
+      pds_did_password_required: "PDS adresas, DID ir slaptažodis yra privalomi"
+      two_factor_required: "Reikalinga dviejų veiksnių autentifikacija. Patikrinkite el. paštą dėl prisijungimo kodo."
+      wrong_password: "Neteisingas Bluesky paskyros slaptažodis. Įveskite slaptažodį, kurį naudojote bsky.social."
+      auth_failed: "Autentifikacija nepavyko: %{error}"
+      invalid_pds_response: "Netinkamas atsakymas iš paskirties PDS"
+      pds_connect_failed: "Nepavyko prisijungti prie paskirties PDS. Bandykite dar kartą."
+      resolve_failed: "Nepavyko nustatyti handle. Patikrinkite, ar handle yra teisingas."
+      auth_check_failed: "Autentifikacija nepavyko. Patikrinkite slaptažodį."
+      unexpected_error: "Įvyko netikėta klaida. Bandykite dar kartą."
+      unexpected_error_detail: "Įvyko netikėta klaida: %{error}"
+      tokens_missing: "Trūksta autentifikacijos žetonų. Grįžkite atgal ir pakartotinai autentifikuokitės."
+      account_not_found: "Paskyra su jūsų DID (%{did}) nerasta %{pds}. Grįžkite ir pasirinkite kitą paskirties PDS arba pradėkite naują perkėlimą."
+      account_verify_failed: "Nepavyko patikrinti paskyros egzistavimo %{pds}: %{error}. Bandykite dar kartą."
+      target_tokens_missing: "Trūksta paskirties PDS autentifikacijos žetonų. Grįžkite ir patvirtinkite savo prisijungimo duomenis %{pds}."
+      reauth_not_available: "Pakartotinė autentifikacija šioje stadijoje negalima."
+      reauth_failed: "Autentifikacija nepavyko: %{error}. Patikrinkite slaptažodį."
+      reauth_error: "Pakartotinė autentifikacija nepavyko: %{error}"
+      plc_not_available: "Šioje stadijoje negalima prašyti naujo PLC žetono. PLC atnaujinimas galbūt jau buvo bandytas."
+      plc_requested: "Naujas PLC žetonas paprašytas. Patikrinkite el. paštą nuo %{pds}."
+      plc_request_failed: "Automatiškai paprašyti naujo PLC žetono nepavyko (%{error}). Paprašykite rankiniu būdu per senojo PDS teikėjo nustatymus (pvz., Bluesky programėlė → Nustatymai → Paskyra → Prašyti PLC žetono), tada įveskite jį žemiau."
+      plc_session_expired: "Jūsų sesija su %{pds} baigėsi. Paprašykite naujo PLC žetono rankiniu būdu: prisijunkite prie senos paskyros ir eikite į Nustatymai → Paskyra → Prašyti PLC žetono, tada įveskite žetoną žemiau."
+      pds_connect_check: "Nepavyko prisijungti prie PDS. Patikrinkite URL."
+      migration_not_found: "Perkėlimas nerastas"
+      password_required_short: "Slaptažodis yra privalomas."
+      reauth_success_plc_valid: "Pakartotinė autentifikacija sėkminga! Jūsų PLC žetonas dar galioja — kartojamas PLC atnaujinimas."
+      reauth_success_plc_requested: "Pakartotinė autentifikacija sėkminga! Naujas PLC žetonas paprašytas — patikrinkite el. paštą nuo %{pds}."
+      reauth_success_plc_failed: "Pakartotinė autentifikacija sėkminga, bet automatiškai paprašyti PLC žetono nepavyko (%{error}). Galite paprašyti rankiniu būdu per senojo PDS teikėjo nustatymus, tada įveskite jį žemiau."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky perkėlimo tarnyba"
+
+    email_verification:
+      subject: "Jūsų patvirtinimo kodas: %{code} (%{token})"
+      heading: "PATVIRTINKITE EL. PAŠTĄ - PASKYROS PERKĖLIMO PRADŽIA"
+      migration_token: "Perkėlimo žetonas: %{token}"
+      initiated: "Jūs pradėjote %{handle} perkėlimą į %{pds}."
+      enter_code: "Įveskite šį patvirtinimo kodą perkėlimo puslapyje, kad pradėtumėte procesą:"
+      go_to_page: "Eikite į perkėlimo puslapį:"
+      what_next: "KAS BUS TOLIAU?"
+      next_step1: "Įveskite aukščiau pateiktą patvirtinimo kodą perkėlimo puslapyje"
+      next_step2: "Perkėlimas prasidės automatiškai"
+      next_step3: "Būsenos atnaujinimus gausite el. paštu"
+      next_step4: "Visas procesas trunka apytiksliai 20-30 minučių"
+      important: "SVARBŪS PRIMINIMAI"
+      reminder1: "Nenaudokite paskyros perkėlimo metu"
+      reminder2: "Bet kokia veikla perkėlimo metu nebus perkelta"
+      reminder3: "Uždarykite visas programėles ir naršyklės skirtukus su jūsų paskyra"
+      reminder4: "Palaukite užbaigimo el. laiško prieš vėl prisijungdami"
+      not_you: "Jei ne jūs pradėjote šį perkėlimą, tiesiog nepaisykite šio el. laiško."
+
+    account_password:
+      subject: "Jūsų naujas paskyros slaptažodis %{handle} (%{token})"
+      heading: "JŪSŲ NAUJAS PASKYROS SLAPTAŽODIS"
+      intro: "Perkėlimas prasidėjo! Sukūrėme saugų slaptažodį jūsų naujai paskyrai."
+      security_notice: "SAUGUMO PRANEŠIMAS"
+      save_password: "NEDELSDAMI IŠSAUGOKITE ŠĮ SLAPTAŽODĮ! Jo reikės prisijungti prie naujos paskyros."
+      tip1: "Saugokite jį saugioje slaptažodžių tvarkyklėje"
+      tip2: "Niekam jo nedalykite"
+      tip3: "Galite jį pakeisti po pirmo prisijungimo"
+      account_details: "PASKYROS DUOMENYS"
+      new_handle: "Naujas handle: @%{handle}"
+      new_pds: "Naujas PDS: %{pds}"
+      email: "El. paštas: %{email}"
+      whats_happening: "KAS VYKSTA DABAR?"
+      backup_step1: "Kuriame jūsų paskyros duomenų atsarginę kopiją"
+      backup_step2: "Gausite kitą el. laišką, kai atsarginė kopija bus paruošta atsisiuntimui"
+      backup_step3: "Jūsų paskyra bus sukurta ir duomenys perkelti"
+      no_backup_step1: "Jūsų paskyra kuriama naujame PDS"
+      no_backup_step2: "Jūsų duomenys perkeliami (be atsarginės kopijos)"
+      no_backup_step3: "Būsite informuoti, kai perkėlimas bus baigtas"
+      track_progress: "Sekite perkėlimo eigą adresu:"
+
+    migration_completed:
+      subject: "Perkėlimas baigtas! (%{token})"
+      heading: "PERKĖLIMAS BAIGTAS!"
+      success: "Jūsų Bluesky/ATProto paskyra sėkmingai perkelta į naują PDS."
+      password_heading: "JŪSŲ NAUJAS PASKYROS SLAPTAŽODIS"
+      password_help: "Naudokite šį slaptažodį prisijungti prie naujos paskyros:"
+      save_password: "Išsaugokite šį slaptažodį dabar — saugokite jį slaptažodžių tvarkyklėje."
+      change_password: "Galite jį pakeisti po pirmo prisijungimo."
+      backup_heading: "ATSARGINĖ KOPIJA PRIEINAMA"
+      backup_help: "Jūsų paskyros duomenų atsarginė kopija prieinama atsisiuntimui artimiausiаs 10 minučių:"
+      backup_expiry: "Po 10 minučių ši nuoroda nebegalios ir atsarginė kopija bus negrįžtamai ištrinta."
+      summary: "PERKĖLIMO SANTRAUKA"
+      migration_token: "Perkėlimo žetonas: %{token}"
+      did: "DID: %{did}"
+      old_account: "Sena paskyra: %{handle} @ %{pds}"
+      new_account: "Nauja paskyra: %{handle} @ %{pds}"
+      completed_at: "Užbaigta: %{time}"
+      status_page: "Peržiūrėti būsenos puslapį (prieinamas 10 minučių):"
+      login_heading: "KAIP PRISIJUNGTI PRIE NAUJOS PASKYROS"
+      login_help: "Jei dar to nepadarėte, atsijunkite nuo senos paskyros visose Bluesky programėlėse, tada prisijunkite naudodami naują handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "SVARBU: Būtinai prisijungimo formos viršuje įveskite \"%{pds}\" kaip prieglobos teikėją!"
+      hosting_miss: "Daugelis vartotojų praleidžia šį žingsnį — be teisingo prieglobos teikėjo nepavyks prisijungti."
+      change_password_heading: "PAKEISKITE SLAPTAŽODĮ"
+      change_password_help: "Jūsų saugumui primygtinai rekomenduojame nedelsiant pakeisti slaptažodį:"
+      change_password_later: "Taip pat galite jį pakeisti vėliau paskyros nustatymuose."
+      whats_next: "KAS BUS TOLIAU?"
+      next1: "Jūsų paskyra dabar aktyvi %{pds}"
+      next2: "Jūsų sena paskyra %{old_pds} buvo deaktyvuota"
+      next3: "Visi jūsų įrašai, sekimai ir duomenys buvo perkelti"
+      next4: "Jūsų sekėjai turėtų automatiškai matyti naują vietą (pagal DID)"
+      privacy_heading: "PRIVATUMAS IR SAUGUMAS"
+      privacy1: "Šis perkėlimo įrašas bus automatiškai ištrintas po 10 minučių dėl BDAR atitikties"
+      privacy2: "Visi užšifruoti prisijungimo duomenys saugiai ištrinti iš mūsų serverių"
+      support: "Jei turite klausimų ar problemų, susisiekite su palaikymo tarnyba nurodydami perkėlimo žetoną:"
+      email_footer: "Šis el. laiškas buvo išsiųstas adresu %{email}, nes jūs pradėjote paskyros perkėlimą."
+
+    migration_failed:
+      subject: "Perkėlimas nepavyko - reikalingas veiksmas (%{token})"
+      heading: "Eurosky perkėlimas nepavyko - reikalingas veiksmas"
+      intro: "Jūsų paskyros perkėlimas %{token} susidūrė su klaida ir reikalauja jūsų dėmesio."
+      account_details: "Paskyros duomenys:"
+      did: "DID: %{did}"
+      old_handle: "Senas handle: @%{handle}"
+      new_handle: "Naujas handle: @%{handle}"
+      failure_info: "Klaidos informacija:"
+      failed_step: "Nepavykęs žingsnis: %{step}"
+      error: "Klaida: %{error}"
+      previous_retries: "Ankstesni pakartotiniai bandymai: %{count}"
+      what_to_do: "Ką galite padaryti:"
+      do_step1: "Peržiūrėkite perkėlimo būseną:"
+      do_step2: "Spauskite mygtuką \"Pakartoti perkėlimą\", kad bandytumėte iš naujo"
+      do_step3: "Jei problema kartojasi po kelių bandymų, susisiekite su palaikymo tarnyba nurodydami perkėlimo žetoną: %{token}"
+      common_issues: "Dažnos problemos ir sprendimai:"
+      issue1: "Tinklo laiko limitas: Paprastai išsisprendžia pakartojus"
+      issue2: "Užklausų limitas: Palaukite kelias minutes prieš kartodami"
+      issue3: "Trūkstami duomenys: Patikrinkite, ar visi duomenys pasiekiami senajame PDS"
+      important: "SVARBU:"
+      note1: "Jūsų duomenys senajame PDS lieka nepaliesti"
+      note2: "Galite saugiai pakartoti perkėlimą"
+      note3: "Jei reikia pagalbos, nurodykite perkėlimo žetoną: %{token}"
+
+    backup_ready:
+      subject: "Jūsų Eurosky perkėlimo atsarginė kopija paruošta (%{token})"
+      heading: "JŪSŲ ATSARGINĖ KOPIJA PARUOŠTA"
+      intro: "Jūsų paskyros duomenų atsarginė kopija perkėlimui %{token} paruošta atsisiuntimui."
+      download: "Atsisiųskite atsarginę kopiją:"
+      size: "Atsarginės kopijos dydis: %{size}"
+      expires: "Ši atsisiuntimo nuoroda nebegalios %{time}."
+      expiry_warning: "Pasibaigus galiojimui, atsarginė kopija bus negrįžtamai ištrinta iš mūsų serverių."
+      whats_next: "Perkėlimas vyksta fone. Gausite kitą el. laišką, kai jis bus baigtas."
+
+    rotation_key_notice:
+      subject: "Reikalingas veiksmas: Patvirtinkite perkėlimą PLC kodu (%{token})"
+      heading: "PATVIRTINKITE SAVO PERKĖLIMĄ"
+      intro: "Jūsų paskyros duomenys perkelti. Norėdami užbaigti perkėlimą, turite pateikti PLC patvirtinimo kodą."
+      key_heading: "JŪSŲ ROTACIJOS RAKTAS (PIRMIAUSIA IŠSAUGOKITE TAI!)"
+      key_help: "Prieš tęsdami, saugiai išsaugokite šį rotacijos raktą. Tai vienintelis būdas atkurti paskyrą, jei kas nors nutiktų:"
+      key_warning: "Saugokite šį raktą slaptažodžių tvarkyklėje ar kitoje saugioje vietoje. Vėliau jo NEGALĖSITE gauti."
+      next_step: "Eikite į perkėlimo puslapį ir įveskite PLC patvirtinimo kodą:"
+      check_email: "Patikrinkite el. paštą dėl kodo nuo senojo PDS teikėjo — jis atrodo taip: XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Reikalingas veiksmas: Prašykite naujo PLC patvirtinimo kodo (%{token})"
+      heading: "PLC ŽETONAS NEBEGALIOJA ARBA NETINKAMAS"
+      intro: "PLC patvirtinimo kodas jūsų perkėlimui %{token} nebegalioja arba buvo netinkamas."
+      what_to_do: "Ką turite padaryti:"
+      step1: "Eikite į perkėlimo puslapį:"
+      step2: "Paprašykite naujo PLC žetono (gali tekti iš naujo įvesti slaptažodį)"
+      step3: "Įveskite naują žetoną, kai jį gausite el. paštu"
+      error_detail: "Klaida: %{error}"
+
+    critical_plc_failure:
+      subject: "SKUBU: Kritinė perkėlimo klaida - NEPRADĖKITE NAUJO PERKĖLIMO (%{token})"
+      heading: "KRITINĖ PERKĖLIMO KLAIDA"
+      warning: "NEPRADĖKITE naujo perkėlimo. Jūsų paskyra gali būti nenuoseklioje būsenoje."
+      intro: "PLC katalogo atnaujinimas perkėlimui %{token} nepavyko po negrįžtamumo taško."
+      key_heading: "JŪSŲ ROTACIJOS RAKTAS"
+      key_help: "Jums reikės šio rakto paskyrai atkurti:"
+      contact: "Nedelsdami susisiekite su palaikymo tarnyba:"
+      error_detail: "Klaida: %{error}"
+
+    invalid_invite_code:
+      subject: "Perkėlimas nepavyko - netinkamas kvietimo kodas (%{token})"
+      heading: "NETINKAMAS KVIETIMO KODAS"
+      intro: "Perkėlimas %{token} negalėjo tęstis, nes kvietimo kodas netinkamas arba jau panaudotas."
+      what_to_do: "Norėdami pradėti naują perkėlimą su tinkamu kvietimo kodu:"
+
+    orphaned_account_error:
+      subject: "Perkėlimas pristabdytas - apleista paskyra paskirties PDS (%{token})"
+      heading: "APTIKTA APLEISTA PASKYRA"
+      intro: "Perkėlimas %{token} pristabdytas, nes paskirties PDS rasta apleista paskyra."
+      explanation: "Tai paprastai nutinka, kai ankstesnis perkėlimo bandymas buvo nutrauktas. Sena paskyra vis dar egzistuoja paskirties serveryje ir turi būti pašalinta prieš tęsiant."
+      what_to_do: "Ką galite padaryti:"
+      option1: "Susisiekite su paskirties PDS administratoriumi adresu %{email}, kad pašalintų apleistą paskyrą"
+      option2: "Nurodykite savo DID: %{did}"
+      option3: "Pašalinus, pakartokite perkėlimą iš būsenos puslapio:"
+
+    reauthentication_required:
+      subject: "Reikalingas veiksmas: Reikalinga pakartotinė autentifikacija (%{token})"
+      heading: "REIKALINGA PAKARTOTINĖ AUTENTIFIKACIJA"
+      intro: "Perkėlimui %{token} tęsti reikia iš naujo įvesti slaptažodį."
+      reason: "Jūsų sesija su senajuoju PDS baigėsi perkėlimo proceso metu."
+      what_to_do: "Eikite į perkėlimo puslapį ir iš naujo įveskite slaptažodį:"
+      error_detail: "Klaida: %{error}"
+      step: "Nepavykęs žingsnis: %{step}"
+
+    cancellation_confirmation:
+      subject: "Perkėlimo atšaukimo patvirtinimas (%{token})"
+      heading: "PATVIRTINKITE ATŠAUKIMĄ"
+      intro: "Jūs paprašėte atšaukti perkėlimą %{token}."
+      confirm_help: "Spustelėkite žemiau esančią nuorodą, kad patvirtintumėte atšaukimą:"
+      confirm_link: "Patvirtinti atšaukimą"
+      not_you: "Jei neprašėte šio atšaukimo, galite tiesiog nepaisyti šio el. laiško. Perkėlimas tęsis įprastai."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "turi būti tinkamas ATProto handle (pvz., vartotojas.bsky.social)"

@@ -111,6 +111,7 @@ class Migration < ApplicationRecord
   # Callbacks
   before_validation :generate_token, on: :create
   before_validation :generate_email_verification_token, on: :create
+  before_validation :set_locale, on: :create
   before_validation :normalize_hosts
   after_create_commit :send_email_verification
 
@@ -524,6 +525,11 @@ class Migration < ApplicationRecord
       self.email_verification_token = candidate
       break unless Migration.exists?(email_verification_token: candidate)
     end
+  end
+
+  # Store the user's locale at migration creation time
+  def set_locale
+    self.locale ||= I18n.locale.to_s
   end
 
   # Normalize PDS hosts to include https:// prefix

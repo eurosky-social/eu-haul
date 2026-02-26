@@ -1,7 +1,7 @@
-PLC CONFIRMATION CODE EXPIRED
+<%= t('mailers.plc_token_failed.heading') %>
 ==============================
 
-Your migration needs a fresh confirmation code to continue.
+<%= t('mailers.plc_token_failed.intro', token: @migration.token) %>
 
 
 YOUR ACCOUNT IS SAFE
@@ -20,18 +20,16 @@ it could be used. These codes are only valid for a limited time
 (typically 1 hour).
 
 <% if @error_message.present? %>
-Error Details:
-<%= @error_message %>
+<%= t('mailers.plc_token_failed.error_detail', error: @error_message) %>
 <% end %>
 
 
-WHAT TO DO
+<%= t('mailers.plc_token_failed.what_to_do') %>
 ==========
 
-1. Go to your migration status page (link below)
-2. Click "Request New PLC Token" to get a fresh confirmation code
-3. Check your email from <%= @migration.old_pds_host %> for the new code
-4. Enter the code within 1 hour of receiving it
+1. <%= t('mailers.plc_token_failed.step1') %>
+2. <%= t('mailers.plc_token_failed.step2') %>
+3. <%= t('mailers.plc_token_failed.step3') %>
 
 
 View your migration status:

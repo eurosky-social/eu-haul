@@ -1,0 +1,652 @@
+ro:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Pornire migrare cont"
+    privacy_policy: "Politica de confidențialitate"
+    terms_of_service: "Termeni și condiții"
+    background_attribution: "Fotografie de fundal:"
+    background_attribution_by: "de"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Limbă"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Pornire migrare cont"
+      errors_heading: "Vă rugăm să corectați următoarele erori:"
+
+      # Progress bar labels
+      progress:
+        account: "Cont"
+        email: "Email"
+        destination: "Destinație"
+        handle: "Handle"
+        review: "Verificare"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Pasul 1: Credențiale cont"
+        handle_label: "Handle-ul dumneavoastră"
+        handle_placeholder: "handle-ul_dvs.bsky.social"
+        handle_help: "Introduceți handle-ul AT Protocol actual"
+        password_label: "Parola contului"
+        password_help: "Parola actuală a contului"
+        two_factor_title: "Autentificare cu doi factori"
+        two_factor_help: "Un cod de autentificare a fost trimis pe email. Introduceți-l mai jos."
+        two_factor_placeholder: "Introduceți codul de autentificare"
+        continue: "Continuare"
+
+      # Step 2: Email
+      step2:
+        title: "Pasul 2: Adresă de email"
+        email_label: "Adresă de email"
+        email_help: "Vom trimite actualizări despre starea migrării la acest email"
+        email_readonly_help: "Email preluat din contul dumneavoastră"
+        email_manual_help: "Nu am putut prelua adresa de email. Vă rugăm să o introduceți manual."
+        confirm_access: "Am acces la această adresă de email și pot primi un cod de confirmare trimis la aceasta."
+        back: "Înapoi"
+        continue: "Continuare"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Pasul 3: Server de destinație"
+        server_label: "Server de destinație"
+        server_placeholder: "Selectați un server..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Server personalizat..."
+        server_help: "Alegeți unde doriți să migrați contul"
+        custom_url_label: "URL server personalizat"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Introduceți URL-ul complet al serverului personalizat"
+        invite_code_label: "Cod de invitație"
+        invite_code_placeholder: "Introduceți codul de invitație"
+        invite_code_help: "Acest server necesită un cod de invitație"
+        existing_account_title: "Cont existent găsit"
+        existing_account_help: "Contul dumneavoastră există deja pe serverul de destinație. Vă rugăm să verificați parola pentru a continua migrarea."
+        target_password_label: "Parola dumneavoastră pe serverul de destinație"
+        target_password_placeholder: "Introduceți parola pentru contul existent"
+        target_2fa_label: "Cod de autentificare (2FA)"
+        target_2fa_help: "Verificați emailul pentru codul de autentificare cu doi factori"
+        deactivated_notice: "Acest cont pare să fie dezactivat"
+        deactivated_reason: "(posibil din cauza unei încercări anterioare de migrare)."
+        deactivated_help: "Dacă nu vă amintiți parola, puteți încerca:"
+        deactivated_reset: "Resetați parola:"
+        deactivated_contact: "Contactați administratorul PDS la %{email} pentru a elimina acest cont inactiv și a reporni migrarea. Includeți DID-ul dumneavoastră:"
+        back: "Înapoi"
+        continue: "Continuare"
+
+      # Step 4: New Handle
+      step4:
+        title: "Pasul 4: Handle nou"
+        custom_domain_title: "Domeniu personalizat detectat"
+        custom_domain_help: "Handle-ul dumneavoastră %{handle} este un domeniu personalizat. Puteți continua să-l folosiți pe noul server."
+        keep_handle: "Păstrează handle-ul actual"
+        new_handle_label: "Noul dumneavoastră handle"
+        new_handle_placeholder: "utilizator"
+        new_handle_help: "Alegeți noul handle (poate fi cel vechi) pe serverul de destinație"
+        back: "Înapoi"
+        continue: "Continuare"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Pasul 5: Verificare și confirmare"
+        current_handle: "Handle actual:"
+        email: "Email:"
+        destination_server: "Server de destinație:"
+        new_handle: "Handle nou:"
+        invite_code: "Cod de invitație:"
+        create_backup: "Creează o copie de siguranță înainte de migrare"
+        backup_help: "Descarcă o copie completă a datelor contului. Disponibilă 24 de ore."
+        confirm_email_html: "Când faceți clic pe <strong>Continuare</strong>, vom trimite un email de confirmare la <strong>%{email}</strong>. Migrarea va începe doar după confirmarea prin acel email."
+        no_usage_title: "Nu utilizați contul în timpul migrării"
+        no_usage_help: "Odată ce migrarea începe, închideți toate aplicațiile și filele de browser cu contul dumneavoastră. Orice postări, aprecieri sau urmăriri efectuate în timpul migrării nu vor fi transferate. Veți primi un email la finalizare (~20-30 minute)."
+        acknowledge: "Înțeleg că nu trebuie să-mi folosesc contul în timpul migrării"
+        back: "Înapoi"
+        continue: "Continuare"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Vă rugăm să introduceți un handle"
+      enter_password: "Vă rugăm să introduceți parola"
+      handle_needs_domain: "Handle-ul trebuie să includă un domeniu (de ex., utilizator.bsky.social)"
+      authenticating: "Se autentifică..."
+      authenticating_details: "Se autentifică și se preiau detaliile contului..."
+      two_factor_sent: "Un cod de autentificare a fost trimis pe email. Introduceți-l mai sus și faceți clic din nou pe Continuare."
+      auth_success: "Autentificare reușită!"
+      network_error: "Eroare de rețea. Vă rugăm să încercați din nou."
+      continue: "Continuare"
+      # Step 2
+      email_readonly_help: "Email preluat din contul dumneavoastră"
+      email_manual_help: "Nu am putut prelua adresa de email. Vă rugăm să o introduceți manual."
+      enter_email: "Vă rugăm să introduceți adresa de email"
+      invalid_email: "Vă rugăm să introduceți o adresă de email validă"
+      confirm_email_access: "Vă rugăm să confirmați că aveți acces la această adresă de email."
+      # Step 3
+      select_server: "Vă rugăm să selectați un server sau să introduceți un URL de server personalizat"
+      checking_server: "Se verifică serverul..."
+      checking_requirements: "Se verifică cerințele serverului..."
+      server_verified: "Server verificat!"
+      failed_verify_pds: "Nu s-a putut verifica PDS-ul. Vă rugăm să verificați URL-ul."
+      invite_code_required: "Acest server necesită un cod de invitație. Vă rugăm să-l introduceți mai jos, apoi faceți clic pe Continuare."
+      enter_invite_code: "Vă rugăm să introduceți un cod de invitație pentru a continua."
+      checking_existing: "Se verifică contul existent..."
+      verifying_credentials: "Se verifică credențialele..."
+      authenticating_existing: "Se autentifică cu contul existent..."
+      credentials_verified: "Credențiale verificate!"
+      enter_target_password: "Vă rugăm să introduceți parola pentru acest server"
+      # Step 4
+      custom_domain_help: "Handle-ul dumneavoastră {handle} este un domeniu personalizat. Puteți continua să-l folosiți pe noul server."
+      enter_handle_short: "Vă rugăm să introduceți un handle"
+      checking_availability: "Se verifică disponibilitatea..."
+      checking_handle: "Se verifică dacă handle-ul este disponibil..."
+      handle_taken: "Acest handle este deja ocupat. Vă rugăm să alegeți altul."
+      all_checks_passed: "Toate verificările au trecut!"
+      using_existing_handle: "Se utilizează handle-ul existent pe serverul de destinație."
+      keeping_custom_handle: "Se păstrează handle-ul cu domeniu personalizat!"
+      handle_available_checking: "Handle disponibil, se verifică conturile existente..."
+      checking_existing_accounts: "Se verifică conturile existente..."
+      failed_check_availability: "Nu s-a putut verifica disponibilitatea. Vă rugăm să încercați din nou."
+      failed_check_existing: "Nu s-au putut verifica conturile existente: "
+      account_exists_title: "Cont existent pe serverul de destinație"
+      account_exists_what: "Un cont cu DID-ul dumneavoastră există deja pe serverul de destinație (%{pds}). Acest lucru poate fi din cauza unei încercări anterioare de migrare."
+      account_exists_do: "Reveniți la pasul anterior și introduceți parola pentru contul existent. Dacă nu știți parola:"
+      account_exists_reset: "Încercați să resetați parola:"
+      account_exists_contact: "Contactați furnizorul serverului la <strong>%{email}</strong> pentru a elimina contul abandonat"
+      account_exists_did: "Includeți DID-ul dumneavoastră:"
+      # Step 5
+      confirm_email_html: "Când faceți clic pe <strong>Continuare</strong>, vom trimite un email de confirmare la <strong>{email}</strong>. Migrarea va începe doar după confirmarea prin acel email."
+      confirm_no_usage: "Vă rugăm să confirmați că înțelegeți că nu trebuie să utilizați contul în timpul migrării."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migrare %{token}"
+      migration_status: "Starea migrării"
+      status_label: "Stare:"
+      retry_info: "Reîncercare %{attempt}/%{max} - %{step}"
+      verify_email: "Verificați adresa de email"
+      enter_verification: "Introduceți codul de verificare"
+      verification_sent: "Am trimis un cod la <strong>%{email}</strong>. Introduceți-l mai jos pentru a porni migrarea."
+      verification_label: "Cod de verificare"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Verificare și pornire migrare"
+      didnt_receive: "Nu ați primit emailul?"
+      check_spam: "Verificați folderul de spam sau junk"
+      check_email_correct: "Asigurați-vă că <strong>%{email}</strong> este corect"
+      email_delay: "Emailul poate dura câteva minute să ajungă"
+
+      # Queue
+      in_queue: "În coadă"
+      queue_default: "Se așteaptă finalizarea altor migrări"
+      queue_auto_start: "Migrarea dumneavoastră va porni automat când se eliberează un loc."
+
+      # Blob conversion
+      converting_blobs: "Se convertesc blob-urile în format vechi"
+      converting_blobs_detail: "aceasta poate dura câteva minute..."
+      blobs_converted: "Formatul vechi al blob-urilor a fost convertit cu succes."
+
+      # Blob progress
+      blobs_uploaded: "Blob-uri încărcate"
+      files: "fișiere"
+      data_transferred: "Date transferate"
+      failed: "Eșuate"
+      preparing_blobs: "Se pregătesc <strong>%{count}</strong> blob-uri pentru transfer..."
+
+      # Download/backup progress
+      downloading_account: "Se descarcă datele contului"
+      downloading_detail: "se descarcă repository-ul + blob-urile pentru copie de siguranță..."
+      creating_backup: "Se creează copia de siguranță"
+      creating_backup_detail: "se împachetează datele contului..."
+      downloaded_count: "Descărcate: %{downloaded} / %{total} blob-uri"
+      backup_expired: "Copia de siguranță a expirat"
+      backup_expired_detail: "copia de siguranță a fost ștearsă de pe serverele noastre."
+
+      # PLC pending
+      updating_identity: "Se actualizează identitatea"
+      plc_accepted: "Codul de confirmare a fost acceptat. Actualizăm acum intrarea din directorul PLC pentru a indica către <strong>%{pds}</strong>. Aceasta poate dura un moment."
+      page_auto_update: "Această pagină se va actualiza automat. Vă rugăm să nu închideți această filă."
+      enter_confirmation: "Introduceți codul de confirmare"
+      confirmation_hint: "Verificați emailul pentru un cod de la <strong>%{pds}</strong> &mdash; arată ca <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Cod de confirmare"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Finalizare migrare"
+      complete_confirm: "Aceasta va finaliza migrarea contului. Acest pas nu poate fi anulat.\n\nSunteți sigur(ă) că doriți să continuați?"
+
+      # Completed
+      completed_title: "Migrare finalizată cu succes!"
+      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la <strong>%{pds}</strong>. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Contul dumneavoastră a fost migrat cu succes înapoi la <strong>%{pds}</strong>. Acum vă puteți autentifica cu handle-ul: <strong>%{handle}</strong>"
+      email_sent_html: "Am trimis un email la %{email} cu noua parolă a contului, instrucțiuni de autentificare și un link pentru schimbarea parolei. Vă rugăm să verificați căsuța de primire (și folderul de spam)."
+      save_rotation_key: "SALVAȚI CHEIA DE ROTAȚIE!"
+      page_auto_delete: "Această pagină va fi ștearsă automat în 2 zile."
+      rotation_key_needed: "Cheia de rotație este necesară pentru recuperarea contului. Copiați-o acum și stocați-o în siguranță!"
+      copy_rotation_key: "Copiază cheia de rotație"
+      key_emailed: "Am trimis această cheie și la <strong>%{email}</strong>"
+      privacy_notice: "Notificare de confidențialitate"
+      privacy_detail: "Pentru confidențialitatea dumneavoastră și conformitatea GDPR, această înregistrare de migrare va fi ștearsă automat în <strong>2 zile</strong>. Asigurați-vă că ați salvat cheia de rotație și ați descărcat copia de siguranță până atunci!"
+      privacy_delete_now: "După ce ați salvat totul, puteți șterge datele imediat folosind butonul de mai jos."
+      delete_confirm: "Sunteți sigur(ă) că doriți să ștergeți permanent toate datele de migrare?\n\nAsigurați-vă că ați:\n• Copiat cheia de rotație\n• Descărcat copia de siguranță (dacă este cazul)\n\nAceastă acțiune nu poate fi anulată."
+      delete_button: "Am salvat copia de siguranță și cheia de rotație — șterge toate datele mele"
+      welcome_back: "Credențialele vechi ale contului au fost șterse în siguranță. Bine ați revenit!"
+      welcome_new: "Credențialele vechi ale contului au fost șterse în siguranță. Bine ați venit în noua dumneavoastră casă!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Cheie de recuperare cont"
+      recovery_key_important: "IMPORTANT:"
+      recovery_key_help: "Salvați această cheie de rotație în siguranță. Aceasta vă permite să reveniți la modificările PLC sau să vă recuperați contul."
+      copy_clipboard: "Copiază în clipboard"
+      revert_title: "Cum să utilizați această cheie pentru a reveni la modificări"
+      revert_help: "Dacă trebuie să reveniți la modificările din directorul PLC, puteți folosi această cheie de rotație:"
+      revert_step1: "Instalați instrumentul CLI <code>goat</code>"
+      revert_step2: "Obțineți istoricul PLC: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identificați starea istorică dorită (CID)"
+      revert_step4: "Creați operația de revenire: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Semnați cu cheia de rotație: <code>goat plc sign</code>"
+      revert_step6: "Trimiteți operația semnată: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Aceasta este o operațiune avansată. Utilizați-o doar dacă înțelegeți sistemul directorului PLC."
+
+      # PLC help section
+      didnt_receive_plc: "Nu ați primit emailul?"
+      plc_check_spam: "Verificați folderul de spam sau junk"
+      plc_from_bluesky: "Emailul vine de la Bluesky, nu de la noi"
+      plc_expires: "Codul expiră după 1 oră"
+      plc_new_code_help: "Dacă aveți nevoie de un cod nou, introduceți parola mai jos și vom solicita unul:"
+      plc_password_placeholder: "Parola pentru %{handle}"
+      request_new_code: "Solicită cod nou"
+      technical_details: "Detalii tehnice"
+      plc_explanation: "Codul de confirmare este un <strong>token de operație PLC</strong> — autorizează actualizarea documentului DID din directorul PLC pentru a indica către noul dumneavoastră Personal Data Server."
+      plc_irreversible: "<strong>Aceasta este ireversibilă.</strong> Odată trimisă, identitatea contului (DID) va indica permanent către <strong>%{new_pds}</strong> în loc de <strong>%{old_pds}</strong>."
+      plc_expiry_note: "Token-urile PLC expiră după 1 oră. Dacă al dumneavoastră a expirat, puteți solicita unul nou."
+
+      # Sidebar
+      download_backup: "Descărcați copia de siguranță"
+      backup_ready: "Copie de siguranță disponibilă"
+      backup_download_completed: "Descărcați copia de siguranță înainte să expire."
+      backup_download_ready: "Copia de siguranță a contului este gata! Descărcați-o înainte să expire."
+      size: "Dimensiune:"
+      expires: "Expiră:"
+      download_button: "Descarcă copia de siguranță"
+      recovery_key: "Cheie de recuperare"
+      recovery_key_sidebar: "Salvați această cheie în siguranță. Aceasta vă permite să vă recuperați contul."
+      copy_key: "Copiază cheia"
+      cancel_migration: "Anulare migrare"
+      cancel_help: "Anulați această migrare și păstrați contul pe serverul actual."
+      cancel_button: "Anulare migrare"
+      cancel_confirm: "Sunteți sigur(ă) că doriți să anulați această migrare?\n\nUn link de confirmare va fi trimis pe email. Migrarea va fi anulată doar după ce faceți clic pe acel link."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Stare curentă:"
+      retry_attempt: "Încercare de reluare:"
+      remaining_attempts: "Încercări rămase:"
+      next_retry: "Următoarea reîncercare în"
+      calculating: "se calculează..."
+      retrying_now: "se reîncearcă acum..."
+      reauth_safe: "Datele migrării sunt în siguranță — trebuie doar să reintroduceți parola pentru a continua."
+      reauth_help: "Introduceți parola pentru <strong>%{handle}</strong> pentru a restabili sesiunea și a continua migrarea."
+      password_for: "Parola pentru %{handle}"
+      enter_password_placeholder: "Introduceți parola contului"
+      reauth_button: "Reautentificare și continuare migrare"
+      plc_safe: "Datele migrării sunt în siguranță — aveți nevoie doar de un token PLC nou."
+      plc_request_help: "Faceți clic pe butonul de mai jos pentru a solicita un token PLC nou. Îl veți primi prin email de la <strong>%{pds}</strong>."
+      request_plc_confirm: "Solicitați un nou token PLC de la PDS-ul vechi?"
+      request_plc_button: "Solicită token PLC nou"
+      plc_session_expired: "Sesiunea dumneavoastră cu <strong>%{pds}</strong> a expirat. Introduceți parola pentru <strong>%{handle}</strong> pentru a vă reconecta și a solicita un token PLC nou."
+      reauth_plc_button: "Reautentificare și solicitare token PLC"
+      what_happened_title: "Ce s-a întâmplat și ce puteți face"
+      what_happened: "Ce s-a întâmplat:"
+      what_to_do: "Ce puteți face:"
+      request_plc_action: "Solicită token PLC nou"
+      retry_migration: "Reîncearcă migrarea"
+      retry_confirm: "Reîncercați migrarea din etapa curentă?"
+      start_new: "Pornește o migrare nouă"
+      check_pds: "Verifică starea PDS"
+      download_report: "Descarcă raportul blob-urilor eșuate"
+      cleanup_title: "Instrucțiuni de curățare"
+      cleanup_help: "Pentru a curăța contul abandonat, rulați această comandă (necesită acces la server):"
+      cleanup_contact: "Sau contactați administratorul PDS de destinație pentru a șterge manual contul abandonat."
+      rotation_key_save: "Cheia dumneavoastră de rotație (SALVAȚI ACEASTA)"
+      copy_rotation_key: "Copiază cheia de rotație"
+      contact_support: "Contactați suportul imediat"
+      support_email: "Email suport:"
+      migration_token: "Token migrare:"
+      include_token: "Includeți token-ul de migrare în solicitarea de suport pentru asistență mai rapidă."
+      technical_title: "Detalii tehnice (pentru depanare)"
+      error_message: "Mesaj de eroare:"
+      job_step: "Pas job:"
+      migration_status: "Starea migrării:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PUNCT FĂRĂ ÎNTOARCERE"
+      subtitle: "Următoarea acțiune va redirecționa permanent DID-ul dumneavoastră către noul PDS"
+      once_submit: "Odată ce trimiteți token-ul PLC:"
+      will_point: "DID-ul dumneavoastră (%{did}) va indica către %{pds}"
+      all_apps: "Toate aplicațiile AT Protocol vor rezolva identitatea dumneavoastră către noul PDS"
+      immediate: "Această modificare este imediată și afectează întreaga rețea federată"
+      cannot_undo: "Această acțiune NU poate fi anulată fără cheia de rotație"
+      what_you_need: "Ce aveți nevoie înainte de a continua:"
+      need_rotation_key: "Cheia de rotație salvată în siguranță (derulați în sus pentru a o copia)"
+      need_data_verified: "Verificarea că toate datele au fost migrate (repository, blob-uri, preferințe)"
+      need_plc_token: "Token-ul de operație PLC (va fi trimis pe email de la %{pds})"
+      need_understanding: "Înțelegerea că acest proces este ireversibil fără cheia de rotație"
+      instructions_title: "Instrucțiuni pas cu pas:"
+      step1_title: "Salvați cheia de rotație"
+      step1_help: "Derulați în sus și copiați cheia de rotație într-o locație sigură (manager de parole, fișier criptat). Aceasta este SINGURA modalitate de recuperare dacă ceva nu funcționează."
+      step2_title: "Verificați emailul"
+      step2_help: "Furnizorul PDS vechi (<strong>%{pds}</strong>) a fost solicitat să vă trimită un token de operație PLC prin email. Verificați căsuța de primire pentru un email conținând token-ul."
+      step3_title: "Copiați token-ul PLC"
+      step3_help: "Copiați token-ul de operație PLC din emailul trimis de furnizorul PDS vechi. Token-ul va arăta ca un șir lung de caractere."
+      step4_title: "Trimiteți token-ul mai jos"
+      step4_help: "Lipiți token-ul PLC în formularul de mai jos și trimiteți pentru a finaliza migrarea."
+      final_warning: "Avertisment final: Sunteți pregătit(ă)?"
+      check_saved: "Ați salvat cheia de rotație într-o locație sigură?"
+      check_understand: "Înțelegeți că această modificare este permanentă și afectează întreaga rețea AT Protocol?"
+      check_prepared: "Sunteți pregătit(ă) să pierdeți accesul dacă nu aveți cheia de rotație?"
+      check_verified: "Ați verificat că toate datele (postări, media, preferințe) au fost migrate cu succes?"
+      do_not_proceed: "Dacă ați răspuns NU la oricare dintre aceste întrebări, NU continuați încă."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Am trimis un cod de verificare la %{email}. Introduceți-l pe pagina următoare pentru a porni migrarea."
+      # Verify email
+      email_verified: "Email verificat! Migrarea a pornit."
+      invalid_code: "Cod de verificare invalid. Vă rugăm să verificați codul din email și să încercați din nou."
+      enter_code: "Vă rugăm să introduceți codul de verificare din email."
+      # PLC token
+      plc_submitted: "Token PLC trimis! DID-ul dumneavoastră va fi actualizat în curând."
+      plc_blank: "Token-ul PLC nu poate fi gol"
+      session_expired: "Sesiunea a expirat. Vă rugăm să reintroduceți parola pentru a continua."
+      old_session_expired: "Sesiunea cu %{pds} a expirat. Vă rugăm să reintroduceți parola pentru a continua."
+      credentials_expired: "Credențialele au expirat. Vă rugăm să reintroduceți parola pentru a continua."
+      # Cancellation
+      cancellation_sent: "Un link de confirmare a anulării a fost trimis pe email. Vă rugăm să verificați căsuța de primire."
+      cannot_cancel: "Această migrare nu poate fi anulată în etapa actuală."
+      cancel_email_failed: "Nu s-a putut trimite emailul de anulare. Vă rugăm să încercați din nou."
+      invalid_cancel_link: "Link de anulare invalid. Vă rugăm să solicitați unul nou din pagina de stare a migrării."
+      cancel_too_late: "Această migrare nu mai poate fi anulată (este posibil să fi depășit punctul fără întoarcere)."
+      cancelled: "Migrare anulată cu succes. Contul dumneavoastră rămâne neschimbat pe %{pds}. Puteți porni o nouă migrare oricând."
+      # Delete
+      only_completed: "Doar migrările finalizate pot fi șterse."
+      deleted: "Toate datele de migrare au fost șterse permanent. Vă mulțumim că ați folosit %{site_name}!"
+      # Retry
+      retry_started: "Reîncercarea migrării a pornit!"
+      not_failed: "Migrarea nu este în stare eșuată și nu poate fi reîncercată"
+      no_failed_blobs: "Nu există blob-uri eșuate de reîncercat"
+      retrying_blobs: "Se reîncearcă %{count} blob-uri eșuate..."
+      # Backup
+      backup_not_found: "Copia de siguranță nu a fost găsită sau a expirat"
+      # API errors
+      did_required: "DID-ul este obligatoriu"
+      pds_required: "Gazda PDS este obligatorie"
+      handle_required: "Handle-ul este obligatoriu"
+      password_required: "Parola este obligatorie"
+      pds_did_password_required: "Gazda PDS, DID-ul și parola sunt obligatorii"
+      two_factor_required: "Autentificarea cu doi factori este necesară. Verificați emailul pentru un cod de autentificare."
+      wrong_password: "Parolă incorectă pentru contul Bluesky. Vă rugăm să introduceți parola folosită pe bsky.social."
+      auth_failed: "Autentificare eșuată: %{error}"
+      invalid_pds_response: "Răspuns invalid de la PDS-ul de destinație"
+      pds_connect_failed: "Nu s-a putut conecta la PDS-ul de destinație. Vă rugăm să încercați din nou."
+      resolve_failed: "Nu s-a putut rezolva handle-ul. Vă rugăm să verificați că handle-ul este corect."
+      auth_check_failed: "Autentificare eșuată. Vă rugăm să verificați parola."
+      unexpected_error: "A apărut o eroare neașteptată. Vă rugăm să încercați din nou."
+      unexpected_error_detail: "A apărut o eroare neașteptată: %{error}"
+      tokens_missing: "Token-urile de autentificare lipsesc. Vă rugăm să reveniți și să vă reautentificați."
+      account_not_found: "Nu s-a găsit niciun cont pe %{pds} cu DID-ul dumneavoastră (%{did}). Vă rugăm să reveniți și să selectați un alt PDS de destinație sau să porniți o migrare nouă."
+      account_verify_failed: "Nu s-a putut verifica existența contului pe %{pds}: %{error}. Vă rugăm să încercați din nou."
+      target_tokens_missing: "Token-urile de autentificare ale PDS-ului de destinație lipsesc. Vă rugăm să reveniți și să verificați credențialele pe %{pds}."
+      reauth_not_available: "Reautentificarea nu este disponibilă în această etapă."
+      reauth_failed: "Autentificare eșuată: %{error}. Vă rugăm să verificați parola."
+      reauth_error: "Reautentificare eșuată: %{error}"
+      plc_not_available: "Nu se poate solicita un token PLC nou în această etapă. Actualizarea PLC poate fi deja încercată."
+      plc_requested: "Un token PLC nou a fost solicitat. Verificați emailul de la %{pds}."
+      plc_request_failed: "Nu s-a putut solicita automat un token PLC nou (%{error}). Vă rugăm să solicitați unul manual prin setările furnizorului PDS vechi (de ex., aplicația Bluesky → Setări → Cont → Solicitare token PLC), apoi introduceți-l mai jos."
+      plc_session_expired: "Sesiunea cu %{pds} a expirat. Vă rugăm să solicitați manual un token PLC nou: autentificați-vă în contul vechi și mergeți la Setări → Cont → Solicitare token PLC, apoi introduceți token-ul mai jos."
+      pds_connect_check: "Nu s-a putut conecta la PDS. Vă rugăm să verificați URL-ul."
+      migration_not_found: "Migrare negăsită"
+      password_required_short: "Parola este obligatorie."
+      reauth_success_plc_valid: "Reautentificare reușită! Token-ul PLC este încă valid — se reîncearcă actualizarea PLC acum."
+      reauth_success_plc_requested: "Reautentificare reușită! Un token PLC nou a fost solicitat — verificați emailul de la %{pds}."
+      reauth_success_plc_failed: "Reautentificare reușită, dar nu s-a putut solicita automat token-ul PLC (%{error}). Puteți solicita unul manual prin setările furnizorului PDS vechi, apoi introduceți-l mai jos."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Serviciul de migrare Eurosky"
+
+    email_verification:
+      subject: "Codul dumneavoastră de verificare: %{code} (%{token})"
+      heading: "VERIFICAȚI EMAIL-UL - PORNIRE MIGRARE CONT"
+      migration_token: "Token migrare: %{token}"
+      initiated: "Ați inițiat o migrare pentru %{handle} către %{pds}."
+      enter_code: "Introduceți următorul cod de verificare pe pagina de migrare pentru a porni procesul:"
+      go_to_page: "Mergeți la pagina de migrare:"
+      what_next: "CE URMEAZĂ?"
+      next_step1: "Introduceți codul de verificare de mai sus pe pagina de migrare"
+      next_step2: "Migrarea va porni automat"
+      next_step3: "Veți primi actualizări de stare prin email"
+      next_step4: "Întregul proces durează aproximativ 20-30 de minute"
+      important: "MEMENTOURI IMPORTANTE"
+      reminder1: "Nu utilizați contul în timpul migrării"
+      reminder2: "Orice activitate în timpul migrării nu va fi transferată"
+      reminder3: "Închideți toate aplicațiile și filele de browser cu contul"
+      reminder4: "Așteptați emailul de finalizare înainte de a vă autentifica din nou"
+      not_you: "Dacă nu ați inițiat această migrare, vă rugăm să ignorați acest email."
+
+    account_password:
+      subject: "Noua parolă a contului pentru %{handle} (%{token})"
+      heading: "NOUA PAROLĂ A CONTULUI"
+      intro: "Migrarea a pornit! Am creat o parolă securizată pentru noul dumneavoastră cont."
+      security_notice: "AVIZ DE SECURITATE"
+      save_password: "SALVAȚI ACEASTĂ PAROLĂ IMEDIAT! Veți avea nevoie de ea pentru a vă autentifica în noul cont."
+      tip1: "Stocați-o într-un manager de parole securizat"
+      tip2: "Nu o partajați cu nimeni"
+      tip3: "O puteți schimba după prima autentificare"
+      account_details: "DETALII CONT"
+      new_handle: "Handle nou: @%{handle}"
+      new_pds: "PDS nou: %{pds}"
+      email: "Email: %{email}"
+      whats_happening: "CE SE ÎNTÂMPLĂ ACUM?"
+      backup_step1: "Creăm o copie de siguranță a datelor contului"
+      backup_step2: "Veți primi un alt email când copia de siguranță este gata de descărcat"
+      backup_step3: "Contul va fi creat și datele vor fi migrate"
+      no_backup_step1: "Contul dumneavoastră este în curs de creare pe noul PDS"
+      no_backup_step2: "Datele sunt în curs de migrare (fără copie de siguranță)"
+      no_backup_step3: "Veți fi notificat(ă) când migrarea este finalizată"
+      track_progress: "Urmăriți progresul migrării la:"
+
+    migration_completed:
+      subject: "Migrare finalizată! (%{token})"
+      heading: "MIGRARE FINALIZATĂ!"
+      success: "Contul dumneavoastră Bluesky/ATProto a fost migrat cu succes către noul PDS."
+      password_heading: "NOUA PAROLĂ A CONTULUI"
+      password_help: "Folosiți această parolă pentru a vă autentifica în noul cont:"
+      save_password: "Salvați această parolă acum — stocați-o într-un manager de parole."
+      change_password: "O puteți schimba după prima autentificare."
+      backup_heading: "COPIE DE SIGURANȚĂ DISPONIBILĂ"
+      backup_help: "Copia de siguranță a datelor contului este disponibilă pentru descărcare în următoarele 10 minute:"
+      backup_expiry: "După 10 minute, acest link va expira și copia de siguranță va fi ștearsă permanent."
+      summary: "REZUMAT MIGRARE"
+      migration_token: "Token migrare: %{token}"
+      did: "DID: %{did}"
+      old_account: "Cont vechi: %{handle} @ %{pds}"
+      new_account: "Cont nou: %{handle} @ %{pds}"
+      completed_at: "Finalizat la: %{time}"
+      status_page: "Vizualizare pagină de stare (disponibilă 10 minute):"
+      login_heading: "CUM SĂ VĂ AUTENTIFICAȚI ÎN NOUL CONT"
+      login_help: "Dacă nu ați făcut-o deja, deconectați-vă din contul vechi în orice aplicație Bluesky, apoi autentificați-vă cu noul handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "IMPORTANT: Asigurați-vă că introduceți \"%{pds}\" ca furnizor de găzduire în partea de sus a formularului de autentificare!"
+      hosting_miss: "Mulți utilizatori ratează acest pas — fără furnizorul corect de găzduire, nu vă veți putea autentifica."
+      change_password_heading: "SCHIMBAȚI PAROLA"
+      change_password_help: "Pentru securitatea dumneavoastră, vă recomandăm insistent să schimbați parola imediat:"
+      change_password_later: "O puteți schimba și ulterior din setările contului."
+      whats_next: "CE URMEAZĂ?"
+      next1: "Contul dumneavoastră este acum activ pe %{pds}"
+      next2: "Contul vechi de pe %{old_pds} a fost dezactivat"
+      next3: "Toate postările, urmăririle și datele au fost transferate"
+      next4: "Urmăritorii ar trebui să vadă automat noua locație (bazat pe DID)"
+      privacy_heading: "CONFIDENȚIALITATE ȘI SECURITATE"
+      privacy1: "Această înregistrare de migrare va fi ștearsă automat în 10 minute pentru conformitatea GDPR"
+      privacy2: "Toate credențialele criptate au fost șterse în siguranță de pe serverele noastre"
+      support: "Dacă aveți întrebări sau probleme, vă rugăm să contactați suportul cu token-ul de migrare:"
+      email_footer: "Acest email a fost trimis la %{email} deoarece ați inițiat o migrare de cont."
+
+    migration_failed:
+      subject: "Migrare eșuată - Acțiune necesară (%{token})"
+      heading: "Migrare Eurosky eșuată - Acțiune necesară"
+      intro: "Migrarea contului %{token} a întâmpinat o eroare și necesită atenția dumneavoastră."
+      account_details: "Detalii cont:"
+      did: "DID: %{did}"
+      old_handle: "Handle vechi: @%{handle}"
+      new_handle: "Handle nou: @%{handle}"
+      failure_info: "Informații despre eșec:"
+      failed_step: "Pas eșuat: %{step}"
+      error: "Eroare: %{error}"
+      previous_retries: "Încercări anterioare de reluare: %{count}"
+      what_to_do: "Ce puteți face:"
+      do_step1: "Verificați starea migrării:"
+      do_step2: "Faceți clic pe butonul \"Reîncearcă migrarea\" pentru a încerca din nou"
+      do_step3: "Dacă problema persistă după mai multe reîncercări, vă rugăm să contactați suportul cu token-ul de migrare: %{token}"
+      common_issues: "Probleme frecvente și soluții:"
+      issue1: "Expirarea timpului de rețea: de obicei se rezolvă la reîncercare"
+      issue2: "Limitarea ratei: așteptați câteva minute înainte de a reîncerca"
+      issue3: "Date lipsă: verificați dacă toate datele sunt accesibile pe PDS-ul vechi"
+      important: "IMPORTANT:"
+      note1: "Datele de pe PDS-ul vechi rămân intacte"
+      note2: "Puteți reîncerca migrarea în siguranță"
+      note3: "Dacă aveți nevoie de ajutor, menționați token-ul de migrare: %{token}"
+
+    backup_ready:
+      subject: "Copia de siguranță Eurosky este gata (%{token})"
+      heading: "COPIA DE SIGURANȚĂ ESTE GATĂ"
+      intro: "Copia de siguranță a datelor contului pentru migrarea %{token} este gata de descărcat."
+      download: "Descărcați copia de siguranță:"
+      size: "Dimensiune copie de siguranță: %{size}"
+      expires: "Acest link de descărcare expiră la %{time}."
+      expiry_warning: "După expirare, copia de siguranță va fi ștearsă permanent de pe serverele noastre."
+      whats_next: "Migrarea continuă în fundal. Veți primi un alt email la finalizare."
+
+    rotation_key_notice:
+      subject: "Acțiune necesară: Confirmați migrarea cu codul PLC (%{token})"
+      heading: "CONFIRMAȚI MIGRAREA"
+      intro: "Datele contului au fost transferate. Pentru a finaliza migrarea, trebuie să trimiteți un cod de confirmare PLC."
+      key_heading: "CHEIA DE ROTAȚIE (SALVAȚI-O PRIMA DATĂ!)"
+      key_help: "Înainte de a continua, salvați această cheie de rotație în siguranță. Este singura modalitate de a vă recupera contul dacă ceva nu funcționează:"
+      key_warning: "Stocați această cheie într-un manager de parole sau altă locație sigură. NU o veți putea recupera ulterior."
+      next_step: "Mergeți la pagina de migrare pentru a introduce codul de confirmare PLC:"
+      check_email: "Verificați emailul pentru un cod de la furnizorul PDS vechi — arată ca XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Acțiune necesară: Solicitați un nou cod de confirmare PLC (%{token})"
+      heading: "TOKEN PLC EXPIRAT SAU INVALID"
+      intro: "Codul de confirmare PLC pentru migrarea %{token} a expirat sau a fost invalid."
+      what_to_do: "Ce trebuie să faceți:"
+      step1: "Mergeți la pagina de migrare:"
+      step2: "Solicitați un token PLC nou (este posibil să fie nevoie să reintroduceți parola)"
+      step3: "Introduceți noul token când îl primiți prin email"
+      error_detail: "Eroare: %{error}"
+
+    critical_plc_failure:
+      subject: "URGENT: Eșec critic de migrare - NU PORNIȚI O MIGRARE NOUĂ (%{token})"
+      heading: "EȘEC CRITIC DE MIGRARE"
+      warning: "NU porniți o nouă migrare. Contul dumneavoastră poate fi într-o stare inconsistentă."
+      intro: "Actualizarea directorului PLC pentru migrarea %{token} a eșuat după punctul fără întoarcere."
+      key_heading: "CHEIA DE ROTAȚIE"
+      key_help: "Veți avea nevoie de această cheie pentru a vă recupera contul:"
+      contact: "Contactați suportul imediat:"
+      error_detail: "Eroare: %{error}"
+
+    invalid_invite_code:
+      subject: "Migrare eșuată - Cod de invitație invalid (%{token})"
+      heading: "COD DE INVITAȚIE INVALID"
+      intro: "Migrarea %{token} nu a putut continua deoarece codul de invitație a fost invalid sau a fost deja utilizat."
+      what_to_do: "Pentru a porni o nouă migrare cu un cod de invitație valid:"
+
+    orphaned_account_error:
+      subject: "Migrare întreruptă - Cont abandonat pe PDS-ul de destinație (%{token})"
+      heading: "CONT ABANDONAT DETECTAT"
+      intro: "Migrarea %{token} a fost întreruptă deoarece un cont abandonat a fost găsit pe PDS-ul de destinație."
+      explanation: "Aceasta se întâmplă de obicei când o încercare anterioară de migrare a fost întreruptă. Contul vechi există încă pe serverul de destinație și trebuie eliminat înainte de a putea continua."
+      what_to_do: "Ce puteți face:"
+      option1: "Contactați administratorul PDS-ului de destinație la %{email} pentru a elimina contul abandonat"
+      option2: "Includeți DID-ul dumneavoastră: %{did}"
+      option3: "Odată eliminat, reîncercați migrarea din pagina de stare:"
+
+    reauthentication_required:
+      subject: "Acțiune necesară: Reautentificare necesară (%{token})"
+      heading: "REAUTENTIFICARE NECESARĂ"
+      intro: "Migrarea %{token} necesită reintroducerea parolei pentru a continua."
+      reason: "Sesiunea cu PDS-ul vechi a expirat în timpul procesului de migrare."
+      what_to_do: "Mergeți la pagina de migrare și reintroduceți parola:"
+      error_detail: "Eroare: %{error}"
+      step: "Pas eșuat: %{step}"
+
+    cancellation_confirmation:
+      subject: "Confirmare anulare migrare (%{token})"
+      heading: "CONFIRMARE ANULARE"
+      intro: "Ați solicitat anularea migrării %{token}."
+      confirm_help: "Faceți clic pe linkul de mai jos pentru a confirma anularea:"
+      confirm_link: "Confirmare anulare"
+      not_you: "Dacă nu ați solicitat această anulare, puteți ignora acest email în siguranță. Migrarea va continua normal."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "trebuie să fie un handle ATProto valid (de ex., utilizator.bsky.social)"

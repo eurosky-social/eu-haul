@@ -71,48 +71,48 @@
 </head>
 <body>
   <div class="header">
-    <h1>⚠️ PLC Verification Code</h1>
-    <p>CRITICAL: Point of No Return</p>
+    <h1><%= t('mailers.plc_otp.heading') %></h1>
+    <p><%= t('mailers.plc_otp.critical') %></p>
     <p>Migration <%= @migration.token %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>Your migration is ready for the final, <strong>irreversible</strong> step. You're about to submit your PLC token to redirect your DID to the new PDS.</p>
+    <p><%= t('mailers.plc_otp.intro').html_safe %></p>
 
     <div class="otp-box">
-      <h3 style="margin-top: 0; color: #dc2626;">Your Verification Code</h3>
+      <h3 style="margin-top: 0; color: #dc2626;"><%= t('mailers.plc_otp.your_code') %></h3>
       <div class="otp"><%= @otp %></div>
       <p style="font-size: 14px; color: #666; margin-bottom: 0;">Click to select and copy</p>
-      <p style="font-size: 13px; color: #dc2626; margin-top: 10px;"><strong>Expires in <%= @expires_in %></strong></p>
+      <p style="font-size: 13px; color: #dc2626; margin-top: 10px;"><strong><%= t('mailers.plc_otp.expires_in', time: @expires_in) %></strong></p>
     </div>
 
     <div class="critical-box">
-      <h3 style="margin-top: 0; color: #dc2626;">🚨 This is the Point of No Return</h3>
-      <p><strong>Once you submit this code along with your PLC token, your account will be permanently migrated to the new PDS.</strong></p>
+      <h3 style="margin-top: 0; color: #dc2626;"><%= t('mailers.plc_otp.point_of_no_return') %></h3>
+      <p><strong><%= t('mailers.plc_otp.point_of_no_return_detail') %></strong></p>
       <ul style="margin: 10px 0;">
-        <li>Your DID will point to the new PDS immediately</li>
-        <li>You cannot undo this operation</li>
-        <li>Make sure your new account is ready before proceeding</li>
+        <li><%= t('mailers.plc_otp.did_will_point') %></li>
+        <li><%= t('mailers.plc_otp.cannot_undo') %></li>
+        <li><%= t('mailers.plc_otp.ensure_ready') %></li>
       </ul>
     </div>
 
     <div class="warning-box">
-      <h3 style="margin-top: 0;">📋 How to Use This Code</h3>
+      <h3 style="margin-top: 0;"><%= t('mailers.plc_otp.how_to_use') %></h3>
       <ol style="margin: 10px 0;">
-        <li>Go to your <a href="<%= @migration_url %>">migration status page</a></li>
-        <li>Enter your PLC token (from your old PDS email)</li>
-        <li>Enter this verification code: <strong><%= @otp %></strong></li>
-        <li>Submit both to complete the migration</li>
+        <li><%= t('mailers.plc_otp.step1') %> <a href="<%= @migration_url %>">migration status page</a></li>
+        <li><%= t('mailers.plc_otp.step2') %></li>
+        <li><%= t('mailers.plc_otp.step3', code: @otp) %></li>
+        <li><%= t('mailers.plc_otp.step4') %></li>
       </ol>
-      <p style="margin-bottom: 0; font-size: 14px;"><strong>Note:</strong> You have <strong>5 attempts</strong> to enter the correct code. After that, you'll need to request a new one.</p>
+      <p style="margin-bottom: 0; font-size: 14px;"><strong>Note:</strong> <%= t('mailers.plc_otp.attempts_note') %></p>
     </div>
 
     <div class="footer">
       <p>Migration Token: <code><%= @migration.token %></code></p>
-      <p>If you didn't request this code, someone may be attempting to access your migration.</p>
-      <p>Eurosky Migration Service</p>
+      <p><%= t('mailers.plc_otp.not_you') %></p>
+      <p><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

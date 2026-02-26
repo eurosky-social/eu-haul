@@ -80,14 +80,14 @@
 </head>
 <body>
   <div class="header">
-    <h1>🎉 Your Backup is Ready!</h1>
+    <h1><%= t('mailers.backup_ready.heading') %></h1>
     <p>Migration <%= @migration.token %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>Great news! Your account backup is now ready for download.</p>
+    <p><%= t('mailers.backup_ready.intro', token: @migration.token) %></p>
 
     <div class="details">
       <dl>
@@ -101,7 +101,7 @@
         <dd>@<%= @migration.new_handle %></dd>
 
         <% if @backup_size %>
-        <dt>Backup Size:</dt>
+        <dt><%= t('mailers.backup_ready.size', size: '').split(':').first %>:</dt>
         <dd><%= number_to_human_size(@backup_size) %></dd>
         <% end %>
       </dl>
@@ -109,37 +109,22 @@
 
     <div style="text-align: center;">
       <a href="<%= @download_url %>" class="button">
-        ⬇️ Download Your Backup
+        <%= t('mailers.backup_ready.download') %>
       </a>
     </div>
 
     <div class="warning-box">
-      <h3 style="margin-top: 0;">⏰ Important: 24-Hour Availability</h3>
-      <p>This backup will be available for <strong>24 hours</strong> and will automatically be deleted after:</p>
-      <p><strong><%= @expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at %></strong></p>
-      <p>We recommend downloading it now for safekeeping.</p>
+      <h3 style="margin-top: 0;"><%= t('mailers.backup_ready.expires', time: (@expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at)) %></h3>
+      <p><%= t('mailers.backup_ready.expiry_warning') %></p>
     </div>
 
     <div class="info-box">
-      <h3 style="margin-top: 0;">📦 What's in your backup?</h3>
-      <ul>
-        <li><strong>Repository:</strong> All your posts, likes, follows, and profile data</li>
-        <li><strong>Blobs:</strong> All images, videos, and media attachments</li>
-        <li><strong>Metadata:</strong> Migration information and timestamps</li>
-      </ul>
+      <h3 style="margin-top: 0;"><%= t('mailers.backup_ready.whats_next') %></h3>
     </div>
-
-    <h3>What's Next?</h3>
-    <ol>
-      <li><strong>Download your backup</strong> (recommended for safekeeping)</li>
-      <li>Your migration will <strong>continue automatically</strong> in the background</li>
-      <li>Track progress at: <a href="<%= migration_url(@migration, token: @migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001')) %>">Migration Status Page</a></li>
-      <li>You'll be notified when ready for final activation</li>
-    </ol>
 
     <div class="footer">
       <p>Migration Token: <code><%= @migration.token %></code></p>
-      <p>Eurosky Migration Service</p>
+      <p><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

@@ -1,0 +1,652 @@
+hr:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Pokretanje migracije racuna"
+    privacy_policy: "Pravila o privatnosti"
+    terms_of_service: "Uvjeti koristenja"
+    background_attribution: "Fotografija u pozadini:"
+    background_attribution_by: "autor"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Jezik"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Pokretanje migracije racuna"
+      errors_heading: "Ispravite sljedece pogreske:"
+
+      # Progress bar labels
+      progress:
+        account: "Racun"
+        email: "E-posta"
+        destination: "Odrediste"
+        handle: "Handle"
+        review: "Pregled"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Korak 1: Podaci za prijavu"
+        handle_label: "Vas handle"
+        handle_placeholder: "vashandle.bsky.social"
+        handle_help: "Unesite svoj trenutni AT Protocol handle"
+        password_label: "Lozinka racuna"
+        password_help: "Vasa trenutna lozinka racuna"
+        two_factor_title: "Dvofaktorska autentifikacija"
+        two_factor_help: "Kod za prijavu poslan je na vasu e-postu. Unesite ga ispod."
+        two_factor_placeholder: "Unesite kod za prijavu"
+        continue: "Nastavi"
+
+      # Step 2: Email
+      step2:
+        title: "Korak 2: Adresa e-poste"
+        email_label: "Adresa e-poste"
+        email_help: "Na ovu adresu slat cemo obavijesti o statusu migracije"
+        email_readonly_help: "E-posta preuzeta s vaseg racuna"
+        email_manual_help: "Nismo mogli dohvatiti vasu e-postu. Unesite je rucno."
+        confirm_access: "Imam pristup ovoj adresi e-poste i mogu preuzeti potvrdni kod poslan na nju."
+        back: "Natrag"
+        continue: "Nastavi"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Korak 3: Odredisni posluzitelj"
+        server_label: "Odredisni posluzitelj"
+        server_placeholder: "Odaberite posluzitelj..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Prilagodeni posluzitelj..."
+        server_help: "Odaberite gdje zelite migrirati svoj racun"
+        custom_url_label: "URL prilagodenog posluzitelja"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Unesite potpuni URL vaseg prilagodenog posluzitelja"
+        invite_code_label: "Pozivni kod"
+        invite_code_placeholder: "Unesite pozivni kod"
+        invite_code_help: "Ovaj posluzitelj zahtijeva pozivni kod"
+        existing_account_title: "Pronaden postojeci racun"
+        existing_account_help: "Vas racun vec postoji na odredisnom posluzitelju. Potvrdite svoju lozinku za nastavak migracije."
+        target_password_label: "Vasa lozinka na odredisnom posluzitelju"
+        target_password_placeholder: "Unesite lozinku za postojeci racun"
+        target_2fa_label: "Kod za prijavu (2FA)"
+        target_2fa_help: "Provjerite e-postu za kod dvofaktorske autentifikacije"
+        deactivated_notice: "Ovaj racun je deaktiviran"
+        deactivated_reason: "(moguce zbog prethodnog pokusaja migracije)."
+        deactivated_help: "Ako se ne sjecate lozinke, mozete pokusati:"
+        deactivated_reset: "Resetiranje lozinke:"
+        deactivated_contact: "Kontaktirajte administratora PDS-a na %{email} za uklanjanje ovog neaktivnog racuna i ponovno pokretanje migracije. Ukljucite svoj DID:"
+        back: "Natrag"
+        continue: "Nastavi"
+
+      # Step 4: New Handle
+      step4:
+        title: "Korak 4: Novi handle"
+        custom_domain_title: "Otkrivena prilagodena domena"
+        custom_domain_help: "Vas handle %{handle} je prilagodena domena. Mozete ga nastaviti koristiti na novom posluzitelju."
+        keep_handle: "Zadrzi trenutni handle"
+        new_handle_label: "Vas novi handle"
+        new_handle_placeholder: "korisnickoime"
+        new_handle_help: "Odaberite svoj novi handle (moze biti stari) na odredisnom posluzitelju"
+        back: "Natrag"
+        continue: "Nastavi"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Korak 5: Pregled i potvrda"
+        current_handle: "Trenutni handle:"
+        email: "E-posta:"
+        destination_server: "Odredisni posluzitelj:"
+        new_handle: "Novi handle:"
+        invite_code: "Pozivni kod:"
+        create_backup: "Stvori sigurnosnu kopiju prije migracije"
+        backup_help: "Preuzima potpunu kopiju podataka vaseg racuna. Dostupno 24 sata."
+        confirm_email_html: "Kada kliknete <strong>Nastavi</strong>, poslat cemo potvrdnu e-poruku na <strong>%{email}</strong>. Migracija ce zapoceti tek nakon sto potvrdite putem te e-poruke."
+        no_usage_title: "Ne koristite svoj racun tijekom migracije"
+        no_usage_help: "Nakon sto migracija zapocne, zatvorite sve aplikacije i kartice preglednika s vasim racunom. Sve objave, oznake svidanja i pracenja napravljeni tijekom migracije nece biti preneseni. Primit cete e-poruku kada zavrsi (~20-30 minuta)."
+        acknowledge: "Razumijem da ne smijem koristiti svoj racun tijekom migracije"
+        back: "Natrag"
+        continue: "Nastavi"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Unesite handle"
+      enter_password: "Unesite lozinku"
+      handle_needs_domain: "Handle mora sadrzavati domenu (npr. korisnik.bsky.social)"
+      authenticating: "Autentifikacija..."
+      authenticating_details: "Autentifikacija i dohvacanje podataka vaseg racuna..."
+      two_factor_sent: "Kod za prijavu poslan je na vasu e-postu. Unesite ga iznad i ponovno kliknite Nastavi."
+      auth_success: "Autentifikacija uspjesna!"
+      network_error: "Mrezna pogreska. Pokusajte ponovo."
+      continue: "Nastavi"
+      # Step 2
+      email_readonly_help: "E-posta preuzeta s vaseg racuna"
+      email_manual_help: "Nismo mogli dohvatiti vasu e-postu. Unesite je rucno."
+      enter_email: "Unesite svoju adresu e-poste"
+      invalid_email: "Unesite valjanu adresu e-poste"
+      confirm_email_access: "Potvrdite da imate pristup ovoj adresi e-poste."
+      # Step 3
+      select_server: "Odaberite posluzitelj ili unesite URL prilagodenog posluzitelja"
+      checking_server: "Provjera posluzitelja..."
+      checking_requirements: "Provjera zahtjeva posluzitelja..."
+      server_verified: "Posluzitelj potvrden!"
+      failed_verify_pds: "Provjera PDS-a nije uspjela. Provjerite URL."
+      invite_code_required: "Ovaj posluzitelj zahtijeva pozivni kod. Unesite ga ispod, zatim kliknite Nastavi."
+      enter_invite_code: "Unesite pozivni kod za nastavak."
+      checking_existing: "Provjera postojeceg racuna..."
+      verifying_credentials: "Provjera vjerodajnica..."
+      authenticating_existing: "Autentifikacija s vasim postojecim racunom..."
+      credentials_verified: "Vjerodajnice potvrdene!"
+      enter_target_password: "Unesite lozinku za ovaj posluzitelj"
+      # Step 4
+      custom_domain_help: "Vas handle {handle} je prilagodena domena. Mozete ga nastaviti koristiti na novom posluzitelju."
+      enter_handle_short: "Unesite handle"
+      checking_availability: "Provjera dostupnosti..."
+      checking_handle: "Provjera dostupnosti handlea..."
+      handle_taken: "Ovaj handle je vec zauzet. Odaberite drugi."
+      all_checks_passed: "Sve provjere prosle!"
+      using_existing_handle: "Koristenje vaseg postojeceg handlea na odredisnom posluzitelju."
+      keeping_custom_handle: "Zadrzavanje vaseg handlea prilagodene domene!"
+      handle_available_checking: "Handle je dostupan, provjera postojecih racuna..."
+      checking_existing_accounts: "Provjera postojecih racuna..."
+      failed_check_availability: "Provjera dostupnosti nije uspjela. Pokusajte ponovo."
+      failed_check_existing: "Provjera postojecih racuna nije uspjela: "
+      account_exists_title: "Racun vec postoji na odredisnom posluzitelju"
+      account_exists_what: "Racun s vasim DID-om vec postoji na odredisnom posluzitelju (%{pds}). To moze biti posljedica prethodnog pokusaja migracije."
+      account_exists_do: "Vratite se na prethodni korak i unesite lozinku za postojeci racun. Ako ne znate lozinku:"
+      account_exists_reset: "Pokusajte resetirati lozinku:"
+      account_exists_contact: "Kontaktirajte pružatelja poslužitelja na <strong>%{email}</strong> za uklanjanje napuštenog računa"
+      account_exists_did: "Ukljucite svoj DID:"
+      # Step 5
+      confirm_email_html: "Kada kliknete <strong>Nastavi</strong>, poslat cemo potvrdnu e-poruku na <strong>{email}</strong>. Migracija ce zapoceti tek nakon sto potvrdite putem te e-poruke."
+      confirm_no_usage: "Potvrdite da razumijete kako ne smijete koristiti svoj racun tijekom migracije."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migracija %{token}"
+      migration_status: "Status migracije"
+      status_label: "Status:"
+      retry_info: "Pokusaj %{attempt}/%{max} - %{step}"
+      verify_email: "Potvrdite svoju e-postu"
+      enter_verification: "Unesite svoj potvrdni kod"
+      verification_sent: "Poslali smo kod na <strong>%{email}</strong>. Unesite ga ispod za pokretanje migracije."
+      verification_label: "Potvrdni kod"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Potvrdi i pokreni migraciju"
+      didnt_receive: "Niste primili e-poruku?"
+      check_spam: "Provjerite mapu za nezeljenu postu"
+      check_email_correct: "Provjerite je li <strong>%{email}</strong> ispravno"
+      email_delay: "E-poruka moze potrajati nekoliko minuta"
+
+      # Queue
+      in_queue: "U redu cekanja"
+      queue_default: "Cekanje da druge migracije zavrse s prijenosom podataka"
+      queue_auto_start: "Vasa migracija ce automatski zapoceti kada se oslobodi mjesto."
+
+      # Blob conversion
+      converting_blobs: "Pretvorba zastarjelog formata blobova"
+      converting_blobs_detail: "ovo moze potrajati nekoliko minuta..."
+      blobs_converted: "Zastarjeli format blobova uspjesno pretvoren."
+
+      # Blob progress
+      blobs_uploaded: "Blobovi preneseni"
+      files: "datoteka"
+      data_transferred: "Podataka preneseno"
+      failed: "Neuspjelo"
+      preparing_blobs: "Priprema za prijenos <strong>%{count}</strong> blobova..."
+
+      # Download/backup progress
+      downloading_account: "Preuzimanje podataka racuna"
+      downloading_detail: "preuzimanje vaseg repozitorija + blobova za sigurnosnu kopiju..."
+      creating_backup: "Stvaranje sigurnosne kopije"
+      creating_backup_detail: "pakiranje podataka vaseg racuna..."
+      downloaded_count: "Preuzeto: %{downloaded} / %{total} blobova"
+      backup_expired: "Sigurnosna kopija istekla"
+      backup_expired_detail: "vasa sigurnosna kopija izbrisana je s nasih posluzitelja."
+
+      # PLC pending
+      updating_identity: "Azuriranje vaseg identiteta"
+      plc_accepted: "Vas potvrdni kod je prihvacen. Azuriramo vas unos u PLC direktoriju da pokazuje na <strong>%{pds}</strong>. Ovo moze potrajati trenutak."
+      page_auto_update: "Ova stranica ce se automatski azurirati. Ne zatvarajte ovu karticu."
+      enter_confirmation: "Unesite potvrdni kod"
+      confirmation_hint: "Provjerite e-postu za kod od <strong>%{pds}</strong> &mdash; izgleda poput <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Potvrdni kod"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Dovrsi migraciju"
+      complete_confirm: "Ovime cete dovrsiti migraciju vaseg racuna. Ovaj korak se ne moze ponistiti.\n\nJeste li sigurni da zelite nastaviti?"
+
+      # Completed
+      completed_title: "Migracija uspjesno dovrsena!"
+      completed_migrated_to: "Vas racun je uspjesno migriran na <strong>%{pds}</strong>. Sada se mozete prijaviti s novim handleom: <strong>%{handle}</strong>"
+      completed_migrated_back: "Vas racun je uspjesno migriran natrag na <strong>%{pds}</strong>. Sada se mozete prijaviti sa svojim handleom: <strong>%{handle}</strong>"
+      email_sent_html: "Poslali smo e-poruku na %{email} s novom lozinkom racuna, uputama za prijavu i poveznicom za promjenu lozinke. Provjerite pristiglu postu (i mapu za nezeljenu postu)."
+      save_rotation_key: "SACUVAJTE SVOJ ROTACIJSKI KLJUC!"
+      page_auto_delete: "Ova stranica ce biti automatski izbrisana za 2 dana."
+      rotation_key_needed: "Vas rotacijski kljuc potreban je za oporavak racuna. Kopirajte ga odmah i pohranite na sigurno mjesto!"
+      copy_rotation_key: "Kopiraj rotacijski kljuc"
+      key_emailed: "Ovaj kljuc smo takoder poslali na <strong>%{email}</strong>"
+      privacy_notice: "Obavijest o privatnosti"
+      privacy_detail: "Radi vase privatnosti i uskladenosti s GDPR-om, ovaj zapis o migraciji bit ce automatski izbrisan za <strong>2 dana</strong>. Pobrinite se da ste sacuvali rotacijski kljuc i preuzeli sigurnosnu kopiju prije toga!"
+      privacy_delete_now: "Nakon sto ste sve sacuvali, mozete odmah izbrisati svoje podatke pomocu gumba ispod."
+      delete_confirm: "Jeste li sigurni da zelite trajno izbrisati sve podatke o migraciji?\n\nProvjerite jeste li:\n• Kopirali rotacijski kljuc\n• Preuzeli sigurnosnu kopiju (ako je primjenjivo)\n\nOva radnja se ne moze ponistiti."
+      delete_button: "Sacuvao/la sam sigurnosnu kopiju i rotacijski kljuc — izbrisi sve moje podatke"
+      welcome_back: "Vasi stari podaci za prijavu sigurno su izbrisani. Dobro dosli natrag!"
+      welcome_new: "Vasi stari podaci za prijavu sigurno su izbrisani. Dobro dosli u novi dom!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Kljuc za oporavak racuna"
+      recovery_key_important: "VAZNO:"
+      recovery_key_help: "Sacuvajte ovaj rotacijski kljuc na sigurno mjesto. Omogucuje vam povrtat PLC promjena ili oporavak racuna."
+      copy_clipboard: "Kopiraj u meduspremnik"
+      revert_title: "Kako koristiti ovaj kljuc za povrat promjena"
+      revert_help: "Ako trebate poništiti promjene u PLC direktoriju, možete koristiti ovaj rotacijski ključ:"
+      revert_step1: "Instalirajte <code>goat</code> CLI alat"
+      revert_step2: "Dohvatite PLC povijest: <code>goat plc history &lt;vas-did&gt;</code>"
+      revert_step3: "Identificirajte zeljeno povijesno stanje (CID)"
+      revert_step4: "Stvorite operaciju povrata: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Potpisite rotacijskim kljucem: <code>goat plc sign</code>"
+      revert_step6: "Posaljite potpisanu operaciju: <code>goat plc submit --did &lt;vas-did&gt;</code>"
+      revert_warning: "Ovo je napredna operacija. Koristite samo ako razumijete sustav PLC direktorija."
+
+      # PLC help section
+      didnt_receive_plc: "Niste primili e-poruku?"
+      plc_check_spam: "Provjerite mapu za nezeljenu postu"
+      plc_from_bluesky: "E-poruka dolazi od Blueskyja, ne od nas"
+      plc_expires: "Kod istjece nakon 1 sata"
+      plc_new_code_help: "Ako trebate novi kod, unesite lozinku ispod i zatrazit cemo ga:"
+      plc_password_placeholder: "Lozinka za %{handle}"
+      request_new_code: "Zatrazi novi kod"
+      technical_details: "Tehnicki detalji"
+      plc_explanation: "Potvrdni kod je <strong>PLC operacijski token</strong> — ovlascuje azuriranje vaseg DID dokumenta u PLC direktoriju da pokazuje na vas novi Personal Data Server."
+      plc_irreversible: "<strong>Ovo je nepovratno.</strong> Nakon slanja, identitet vaseg racuna (DID) ce trajno pokazivati na <strong>%{new_pds}</strong> umjesto na <strong>%{old_pds}</strong>."
+      plc_expiry_note: "PLC tokeni istjecu nakon 1 sata. Ako je vas istekao, mozete zatraziti novi."
+
+      # Sidebar
+      download_backup: "Preuzmite sigurnosnu kopiju"
+      backup_ready: "Sigurnosna kopija spremna"
+      backup_download_completed: "Preuzmite sigurnosnu kopiju prije isteka."
+      backup_download_ready: "Vasa sigurnosna kopija racuna je spremna! Preuzmite je prije isteka."
+      size: "Velicina:"
+      expires: "Istjece:"
+      download_button: "Preuzmi sigurnosnu kopiju"
+      recovery_key: "Kljuc za oporavak"
+      recovery_key_sidebar: "Sacuvajte ovaj kljuc na sigurno mjesto. Omogucuje vam oporavak racuna."
+      copy_key: "Kopiraj kljuc"
+      cancel_migration: "Otkazi migraciju"
+      cancel_help: "Otkazite ovu migraciju i zadrzite racun na trenutnom posluzitelju."
+      cancel_button: "Otkazi migraciju"
+      cancel_confirm: "Jeste li sigurni da zelite otkazati ovu migraciju?\n\nPoveznica za potvrdu bit ce poslana na vasu e-postu. Migracija ce biti otkazana tek nakon sto kliknete tu poveznicu."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Trenutni status:"
+      retry_attempt: "Pokusaj ponovnog pokretanja:"
+      remaining_attempts: "Preostali pokusaji:"
+      next_retry: "Sljedeci pokusaj za"
+      calculating: "izracunavanje..."
+      retrying_now: "pokusavanje sada..."
+      reauth_safe: "Vasi podaci o migraciji su sigurni — samo ponovno unesite lozinku za nastavak."
+      reauth_help: "Unesite lozinku za <strong>%{handle}</strong> za obnavljanje sesije i nastavak migracije."
+      password_for: "Lozinka za %{handle}"
+      enter_password_placeholder: "Unesite lozinku racuna"
+      reauth_button: "Ponovna autentifikacija i nastavak migracije"
+      plc_safe: "Vasi podaci o migraciji su sigurni — samo trebate novi PLC token."
+      plc_request_help: "Kliknite gumb ispod za zahtjev novog PLC tokena. Primit cete ga e-postom od <strong>%{pds}</strong>."
+      request_plc_confirm: "Zatraziti novi PLC token od vaseg starog PDS-a?"
+      request_plc_button: "Zatrazi novi PLC token"
+      plc_session_expired: "Vasa sesija s <strong>%{pds}</strong> je istekla. Unesite lozinku za <strong>%{handle}</strong> za ponovnu autentifikaciju i zahtjev novog PLC tokena."
+      reauth_plc_button: "Ponovna autentifikacija i zahtjev PLC tokena"
+      what_happened_title: "Sto se dogodilo i sto uciniti"
+      what_happened: "Sto se dogodilo:"
+      what_to_do: "Sto mozete uciniti:"
+      request_plc_action: "Zatrazi novi PLC token"
+      retry_migration: "Ponovi migraciju"
+      retry_confirm: "Ponoviti ovu migraciju od trenutne faze?"
+      start_new: "Pokreni novu migraciju"
+      check_pds: "Provjeri status PDS-a"
+      download_report: "Preuzmi izvjestaj o neuspjelim blobovima"
+      cleanup_title: "Upute za ciscenje"
+      cleanup_help: "Za ciscenje napustenog racuna, pokrenite ovu naredbu (zahtijeva pristup posluzitelju):"
+      cleanup_contact: "Ili kontaktirajte administratora odredisnog PDS-a za rucno brisanje napustenog racuna."
+      rotation_key_save: "Vas rotacijski kljuc (SACUVAJTE OVO)"
+      copy_rotation_key: "Kopiraj rotacijski kljuc"
+      contact_support: "Odmah kontaktirajte podrsku"
+      support_email: "E-posta za podrsku:"
+      migration_token: "Token migracije:"
+      include_token: "Ukljucite token migracije u zahtjev za podrsku za brzu pomoc."
+      technical_title: "Tehnicki detalji (za otklanjanje pogresakа)"
+      error_message: "Poruka pogreske:"
+      job_step: "Korak zadatka:"
+      migration_status: "Status migracije:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "TOCKA BEZ POVRATKA"
+      subtitle: "Sljedeca radnja ce trajno preusmjeriti vas DID na novi PDS"
+      once_submit: "Nakon sto posaljete PLC token:"
+      will_point: "Vas DID (%{did}) ce pokazivati na %{pds}"
+      all_apps: "Sve AT Protocol aplikacije ce razrjesiti vas identitet na novi PDS"
+      immediate: "Ova promjena je trenutna i utjece na cijelu federiranu mrezu"
+      cannot_undo: "Ova radnja se NE MOZE ponistiti bez vaseg rotacijskog kljuca"
+      what_you_need: "Sto trebate prije nastavka:"
+      need_rotation_key: "Vas rotacijski kljuc sacuvan na sigurnom mjestu (pomaknite se gore za kopiranje)"
+      need_data_verified: "Potvrdeno da su svi vasi podaci migrirani (repozitorij, blobovi, postavke)"
+      need_plc_token: "PLC operacijski token (bit ce poslan na vasu e-postu od %{pds})"
+      need_understanding: "Razumijevanje da je ovo nepovratno bez rotacijskog kljuca"
+      instructions_title: "Upute korak po korak:"
+      step1_title: "Sacuvajte rotacijski kljuc"
+      step1_help: "Pomaknite se gore i kopirajte rotacijski kljuc na sigurno mjesto (upravitelj lozinki, sifrirani dokument). Ovo je vas JEDINI nacin oporavka ako nesto pode po krivu."
+      step2_title: "Provjerite e-postu"
+      step2_help: "Vas stari pruzatelj PDS-a (<strong>%{pds}</strong>) zamoljen je da vam poslje PLC operacijski token e-postom. Provjerite pristiglu postu za e-poruku s tokenom."
+      step3_title: "Kopirajte PLC token"
+      step3_help: "Kopirajte PLC operacijski token iz e-poruke vaseg starog pruzatelja PDS-a. Token ce izgledati kao dugi niz znakova."
+      step4_title: "Posaljite token ispod"
+      step4_help: "Zalijepite PLC token u obrazac ispod i posaljite za dovršetak migracije."
+      final_warning: "Zadnje upozorenje: Jeste li spremni?"
+      check_saved: "Jeste li sacuvali rotacijski kljuc na sigurnom mjestu?"
+      check_understand: "Razumijete li da je ova promjena trajna i utjece na cijelu AT Protocol mrezu?"
+      check_prepared: "Jeste li spremni na gubitak pristupa ako nemate rotacijski kljuc?"
+      check_verified: "Jeste li potvrdili da su svi vasi podaci (objave, mediji, postavke) uspjesno migrirani?"
+      do_not_proceed: "Ako ste na bilo koje od ovih pitanja odgovorili NE, NEMOJTE jos nastaviti."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Poslali smo potvrdni kod na %{email}. Unesite ga na sljedecoj stranici za pokretanje migracije."
+      # Verify email
+      email_verified: "E-posta potvrdena! Vasa migracija je zapocela."
+      invalid_code: "Nevaljani potvrdni kod. Provjerite kod u e-poruci i pokusajte ponovo."
+      enter_code: "Unesite potvrdni kod iz e-poruke."
+      # PLC token
+      plc_submitted: "PLC token poslan! Vas DID ce uskoro biti azuriran."
+      plc_blank: "PLC token ne smije biti prazan"
+      session_expired: "Vasa sesija je istekla. Ponovno unesite lozinku za nastavak."
+      old_session_expired: "Vasa sesija s %{pds} je istekla. Ponovno unesite lozinku za nastavak."
+      credentials_expired: "Vase vjerodajnice su istekle. Ponovno unesite lozinku za nastavak."
+      # Cancellation
+      cancellation_sent: "Poveznica za potvrdu otkazivanja poslana je na vasu e-postu. Provjerite pristiglu postu."
+      cannot_cancel: "Ova migracija se ne moze otkazati u trenutnoj fazi."
+      cancel_email_failed: "Slanje e-poruke za otkazivanje nije uspjelo. Pokusajte ponovo."
+      invalid_cancel_link: "Nevaljana poveznica za otkazivanje. Zatrazite novu na stranici statusa migracije."
+      cancel_too_late: "Ova migracija se vise ne moze otkazati (moguce je prosla tocku bez povratka)."
+      cancelled: "Migracija uspjesno otkazana. Vas racun ostaje nepromijenjen na %{pds}. Mozete pokrenuti novu migraciju u bilo kojem trenutku."
+      # Delete
+      only_completed: "Samo dovrsene migracije mogu se izbrisati."
+      deleted: "Svi podaci o migraciji trajno su izbrisani. Hvala sto koristite %{site_name}!"
+      # Retry
+      retry_started: "Ponovni pokusaj migracije zapocet!"
+      not_failed: "Migracija nije u statusu neuspjele i ne moze se ponoviti"
+      no_failed_blobs: "Nema neuspjelih blobova za ponovni pokusaj"
+      retrying_blobs: "Ponovni pokusaj za %{count} neuspjelih blobova..."
+      # Backup
+      backup_not_found: "Sigurnosna kopija nije pronadena ili je istekla"
+      # API errors
+      did_required: "DID je obavezan"
+      pds_required: "PDS adresa je obavezna"
+      handle_required: "Handle je obavezan"
+      password_required: "Lozinka je obavezna"
+      pds_did_password_required: "PDS adresa, DID i lozinka su obavezni"
+      two_factor_required: "Potrebna je dvofaktorska autentifikacija. Provjerite e-postu za kod za prijavu."
+      wrong_password: "Pogresna lozinka za vas Bluesky racun. Unesite lozinku koju ste koristili na bsky.social."
+      auth_failed: "Autentifikacija neuspjesna: %{error}"
+      invalid_pds_response: "Nevaljani odgovor od odredisnog PDS-a"
+      pds_connect_failed: "Povezivanje s odredisnim PDS-om nije uspjelo. Pokusajte ponovo."
+      resolve_failed: "Nije moguce razrijesiti handle. Provjerite je li handle ispravan."
+      auth_check_failed: "Autentifikacija neuspjesna. Provjerite lozinku."
+      unexpected_error: "Doslo je do neocekivane pogreske. Pokusajte ponovo."
+      unexpected_error_detail: "Doslo je do neocekivane pogreske: %{error}"
+      tokens_missing: "Tokeni za autentifikaciju nedostaju. Vratite se i ponovno se autentificirajte."
+      account_not_found: "Racun s vasim DID-om (%{did}) nije pronaden na %{pds}. Vratite se i odaberite drugi odredisni PDS ili pokrenite novu migraciju."
+      account_verify_failed: "Provjera postojanja racuna na %{pds} nije uspjela: %{error}. Pokusajte ponovo."
+      target_tokens_missing: "Tokeni za autentifikaciju odredisnog PDS-a nedostaju. Vratite se i potvrdite svoje vjerodajnice na %{pds}."
+      reauth_not_available: "Ponovna autentifikacija nije dostupna u ovoj fazi."
+      reauth_failed: "Autentifikacija neuspjesna: %{error}. Provjerite lozinku."
+      reauth_error: "Ponovna autentifikacija neuspjesna: %{error}"
+      plc_not_available: "Zahtjev za novi PLC token nije moguc u ovoj fazi. PLC azuriranje je mozda vec pokusano."
+      plc_requested: "Novi PLC token je zatražen. Provjerite e-postu od %{pds}."
+      plc_request_failed: "Automatski zahtjev za novi PLC token nije uspio (%{error}). Zatrazite ga rucno kroz postavke vaseg starog pruzatelja PDS-a (npr. Bluesky aplikacija → Postavke → Racun → Zatrazi PLC token), zatim ga unesite ispod."
+      plc_session_expired: "Vasa sesija s %{pds} je istekla. Zatrazite novi PLC token rucno: prijavite se na stari racun i idite na Postavke → Racun → Zatrazi PLC token, zatim unesite token ispod."
+      pds_connect_check: "Nije moguce povezati se s PDS-om. Provjerite URL."
+      migration_not_found: "Migracija nije pronadena"
+      password_required_short: "Lozinka je obavezna."
+      reauth_success_plc_valid: "Ponovna autentifikacija uspjesna! Vas PLC token je jos valjan — ponovni pokusaj PLC azuriranja sada."
+      reauth_success_plc_requested: "Ponovna autentifikacija uspjesna! Novi PLC token je zatrazen — provjerite e-postu od %{pds}."
+      reauth_success_plc_failed: "Ponovna autentifikacija uspjesna, ali automatski zahtjev za PLC token nije uspio (%{error}). Mozete ga zatraziti rucno kroz postavke vaseg starog pruzatelja PDS-a, zatim ga unesite ispod."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky servis za migraciju"
+
+    email_verification:
+      subject: "Vas potvrdni kod: %{code} (%{token})"
+      heading: "POTVRDITE E-POSTU - POKRETANJE MIGRACIJE RACUNA"
+      migration_token: "Token migracije: %{token}"
+      initiated: "Pokrenuli ste migraciju za %{handle} na %{pds}."
+      enter_code: "Unesite sljedeci potvrdni kod na stranici migracije za pokretanje procesa:"
+      go_to_page: "Idite na stranicu migracije:"
+      what_next: "STO SE DOGADA DALJE?"
+      next_step1: "Unesite potvrdni kod iznad na stranici migracije"
+      next_step2: "Vasa migracija ce automatski zapoceti"
+      next_step3: "Primit cete obavijesti o statusu putem e-poste"
+      next_step4: "Cijeli proces traje otprilike 20-30 minuta"
+      important: "VAZNE NAPOMENE"
+      reminder1: "Ne koristite racun tijekom migracije"
+      reminder2: "Aktivnost tijekom migracije nece biti prenesena"
+      reminder3: "Zatvorite sve aplikacije i kartice preglednika s vasim racunom"
+      reminder4: "Pricekajte e-poruku o zavrsetku prije ponovne prijave"
+      not_you: "Ako niste vi pokrenuli ovu migraciju, zanemarite ovu e-poruku."
+
+    account_password:
+      subject: "Vasa nova lozinka racuna za %{handle} (%{token})"
+      heading: "VASA NOVA LOZINKA RACUNA"
+      intro: "Vasa migracija je zapocela! Stvorili smo sigurnu lozinku za vas novi racun."
+      security_notice: "SIGURNOSNA OBAVIJEST"
+      save_password: "ODMAH SACUVAJTE OVU LOZINKU! Trebat ce vam za prijavu na novi racun."
+      tip1: "Pohranite je u siguran upravitelj lozinki"
+      tip2: "Ne dijelite je ni s kim"
+      tip3: "Mozete je promijeniti nakon prve prijave"
+      account_details: "DETALJI RACUNA"
+      new_handle: "Novi handle: @%{handle}"
+      new_pds: "Novi PDS: %{pds}"
+      email: "E-posta: %{email}"
+      whats_happening: "STO SE SADA DOGADA?"
+      backup_step1: "Stvaramo sigurnosnu kopiju podataka vaseg racuna"
+      backup_step2: "Primit cete drugu e-poruku kada sigurnosna kopija bude spremna za preuzimanje"
+      backup_step3: "Vas racun ce biti stvoren i podaci migrirani"
+      no_backup_step1: "Vas racun se stvara na novom PDS-u"
+      no_backup_step2: "Vasi podaci se migriraju (bez sigurnosne kopije)"
+      no_backup_step3: "Bit cete obavijesteni kada migracija zavrsi"
+      track_progress: "Pratite napredak migracije na:"
+
+    migration_completed:
+      subject: "Migracija dovrsena! (%{token})"
+      heading: "MIGRACIJA DOVRSENA!"
+      success: "Vas Bluesky/ATProto racun uspjesno je migriran na novi PDS."
+      password_heading: "VASA NOVA LOZINKA RACUNA"
+      password_help: "Koristite ovu lozinku za prijavu na novi racun:"
+      save_password: "Sacuvajte ovu lozinku odmah — pohranite je u upravitelj lozinki."
+      change_password: "Mozete je promijeniti nakon prve prijave."
+      backup_heading: "SIGURNOSNA KOPIJA DOSTUPNA"
+      backup_help: "Sigurnosna kopija podataka vaseg racuna dostupna je za preuzimanje sljedecih 10 minuta:"
+      backup_expiry: "Nakon 10 minuta ova poveznica ce isteci i sigurnosna kopija ce biti trajno izbrisana."
+      summary: "SAZETAK MIGRACIJE"
+      migration_token: "Token migracije: %{token}"
+      did: "DID: %{did}"
+      old_account: "Stari racun: %{handle} @ %{pds}"
+      new_account: "Novi racun: %{handle} @ %{pds}"
+      completed_at: "Dovrseno: %{time}"
+      status_page: "Pogledajte stranicu statusa (dostupna 10 minuta):"
+      login_heading: "KAKO SE PRIJAVITI NA NOVI RACUN"
+      login_help: "Ako to vec niste ucinili, odjavite se sa starog racuna u svim Bluesky aplikacijama, zatim se prijavite s novim handleom:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "VAZNO: Obavezno unesite \"%{pds}\" kao pruzatelja usluge hostinga na vrhu obrasca za prijavu!"
+      hosting_miss: "Mnogi korisnici preskoce ovaj korak — bez ispravnog pruzatelja hostinga necete se moci prijaviti."
+      change_password_heading: "PROMIJENITE LOZINKU"
+      change_password_help: "Radi vase sigurnosti, snazno preporucujemo da odmah promijenite lozinku:"
+      change_password_later: "Mozete je promijeniti i kasnije u postavkama racuna."
+      whats_next: "STO SE DOGADA DALJE?"
+      next1: "Vas racun je sada aktivan na %{pds}"
+      next2: "Vas stari racun na %{old_pds} je deaktiviran"
+      next3: "Sve vase objave, pracenja i podaci su preneseni"
+      next4: "Vasi pratitelji bi trebali automatski vidjeti vasu novu lokaciju (na temelju DID-a)"
+      privacy_heading: "PRIVATNOST I SIGURNOST"
+      privacy1: "Ovaj zapis o migraciji bit ce automatski izbrisan za 10 minuta radi uskladenosti s GDPR-om"
+      privacy2: "Sve sifrirane vjerodajnice sigurno su izbrisane s nasih posluzitelja"
+      support: "Ako imate pitanja ili problema, kontaktirajte podrsku s tokenom migracije:"
+      email_footer: "Ova e-poruka poslana je na %{email} jer ste pokrenuli migraciju racuna."
+
+    migration_failed:
+      subject: "Migracija neuspjesna - potrebna radnja (%{token})"
+      heading: "Eurosky migracija neuspjesna - potrebna radnja"
+      intro: "Vasa migracija racuna %{token} naisla je na pogresku i zahtijeva vasu pozornost."
+      account_details: "Detalji racuna:"
+      did: "DID: %{did}"
+      old_handle: "Stari handle: @%{handle}"
+      new_handle: "Novi handle: @%{handle}"
+      failure_info: "Informacije o neuspjehu:"
+      failed_step: "Neuspjeli korak: %{step}"
+      error: "Pogreska: %{error}"
+      previous_retries: "Prethodni pokusaji ponovnog pokretanja: %{count}"
+      what_to_do: "Sto mozete uciniti:"
+      do_step1: "Pregledajte status migracije:"
+      do_step2: "Kliknite gumb \"Ponovi migraciju\" za ponovni pokusaj migracije"
+      do_step3: "Ako problem potraje nakon vise pokusaja, kontaktirajte podrsku s tokenom migracije: %{token}"
+      common_issues: "Cesti problemi i rjesenja:"
+      issue1: "Mrezna isteka vremena: Obicno se rjesava ponovnim pokusajem"
+      issue2: "Ogranicenje zahtjeva: Pricekajte nekoliko minuta prije ponovnog pokusaja"
+      issue3: "Nedostajuci podaci: Provjerite jesu li svi podaci dostupni na starom PDS-u"
+      important: "VAZNO:"
+      note1: "Vasi podaci na starom PDS-u ostaju netaknuti"
+      note2: "Mozete sigurno ponoviti migraciju"
+      note3: "Ako trebate pomoc, navedite token migracije: %{token}"
+
+    backup_ready:
+      subject: "Vasa Eurosky sigurnosna kopija za migraciju je spremna (%{token})"
+      heading: "VASA SIGURNOSNA KOPIJA JE SPREMNA"
+      intro: "Sigurnosna kopija podataka vaseg racuna za migraciju %{token} spremna je za preuzimanje."
+      download: "Preuzmite sigurnosnu kopiju:"
+      size: "Velicina sigurnosne kopije: %{size}"
+      expires: "Ova poveznica za preuzimanje istjece u %{time}."
+      expiry_warning: "Nakon isteka, sigurnosna kopija ce biti trajno izbrisana s nasih posluzitelja."
+      whats_next: "Vasa migracija nastavlja se u pozadini. Primit cete drugu e-poruku kada zavrsi."
+
+    rotation_key_notice:
+      subject: "Potrebna radnja: Potvrdite migraciju PLC kodom (%{token})"
+      heading: "POTVRDITE SVOJU MIGRACIJU"
+      intro: "Podaci vaseg racuna su preneseni. Za dovršetak migracije morate poslati PLC potvrdni kod."
+      key_heading: "VAS ROTACIJSKI KLJUC (PRVO SACUVAJTE OVO!)"
+      key_help: "Prije nastavka, sacuvajte ovaj rotacijski kljuc na sigurno mjesto. To je vas jedini nacin za oporavak racuna ako nesto pode po krivu:"
+      key_warning: "Pohranite ovaj kljuc u upravitelj lozinki ili na drugo sigurno mjesto. NECETE ga moci dohvatiti kasnije."
+      next_step: "Idite na stranicu migracije za unos PLC potvrdnog koda:"
+      check_email: "Provjerite e-postu za kod od vaseg starog pruzatelja PDS-a — izgleda poput XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Potrebna radnja: Zatrazite novi PLC potvrdni kod (%{token})"
+      heading: "PLC TOKEN ISTEKAO ILI NEVALJAN"
+      intro: "PLC potvrdni kod za vasu migraciju %{token} je istekao ili je bio nevaljan."
+      what_to_do: "Sto trebate uciniti:"
+      step1: "Idite na stranicu migracije:"
+      step2: "Zatrazite novi PLC token (mozda cete morati ponovno unijeti lozinku)"
+      step3: "Unesite novi token kada ga primite e-postom"
+      error_detail: "Pogreska: %{error}"
+
+    critical_plc_failure:
+      subject: "HITNO: Kriticni neuspjeh migracije - NE POKRECITE NOVU MIGRACIJU (%{token})"
+      heading: "KRITICNI NEUSPJEH MIGRACIJE"
+      warning: "NE pokrecite novu migraciju. Vas racun moze biti u nekonzistentnom stanju."
+      intro: "PLC azuriranje direktorija za migraciju %{token} nije uspjelo nakon tocke bez povratka."
+      key_heading: "VAS ROTACIJSKI KLJUC"
+      key_help: "Trebat ce vam ovaj kljuc za oporavak racuna:"
+      contact: "Odmah kontaktirajte podrsku:"
+      error_detail: "Pogreska: %{error}"
+
+    invalid_invite_code:
+      subject: "Migracija neuspjesna - nevaljani pozivni kod (%{token})"
+      heading: "NEVALJANI POZIVNI KOD"
+      intro: "Vasa migracija %{token} nije mogla nastaviti jer je pozivni kod nevaljan ili je vec iskoristen."
+      what_to_do: "Za pokretanje nove migracije s valjanim pozivnim kodom:"
+
+    orphaned_account_error:
+      subject: "Migracija pauzirana - napusteni racun na odredisnom PDS-u (%{token})"
+      heading: "OTKRIVEN NAPUSTENI RACUN"
+      intro: "Vasa migracija %{token} je pauzirana jer je pronaden napusteni racun na odredisnom PDS-u."
+      explanation: "To se obicno dogada kada je prethodni pokusaj migracije prekinut. Stari racun jos postoji na odredisnom posluzitelju i mora se ukloniti prije nego sto mozemo nastaviti."
+      what_to_do: "Sto mozete uciniti:"
+      option1: "Kontaktirajte administratora odredisnog PDS-a na %{email} za uklanjanje napustenog racuna"
+      option2: "Ukljucite svoj DID: %{did}"
+      option3: "Nakon uklanjanja, ponovite migraciju sa stranice statusa:"
+
+    reauthentication_required:
+      subject: "Potrebna radnja: Potrebna ponovna autentifikacija (%{token})"
+      heading: "POTREBNA PONOVNA AUTENTIFIKACIJA"
+      intro: "Vasa migracija %{token} zahtijeva da ponovno unesete lozinku za nastavak."
+      reason: "Vasa sesija sa starim PDS-om istekla je tijekom procesa migracije."
+      what_to_do: "Idite na stranicu migracije i ponovno unesite lozinku:"
+      error_detail: "Pogreska: %{error}"
+      step: "Neuspjeli korak: %{step}"
+
+    cancellation_confirmation:
+      subject: "Potvrda otkazivanja migracije (%{token})"
+      heading: "POTVRDITE OTKAZIVANJE"
+      intro: "Zatrazili ste otkazivanje migracije %{token}."
+      confirm_help: "Kliknite poveznicu ispod za potvrdu otkazivanja:"
+      confirm_link: "Potvrdi otkazivanje"
+      not_you: "Ako niste zatrazili ovo otkazivanje, mozete zanemariti ovu e-poruku. Vasa migracija ce nastaviti normalno."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "mora biti valjani ATProto handle (npr. korisnik.bsky.social)"

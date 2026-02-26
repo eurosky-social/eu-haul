@@ -1,4 +1,4 @@
-<% content_for :title do %><%= EuroskyConfig::SITE_NAME %> - Start Account Migration<% end %>
+<% content_for :title do %><%= EuroskyConfig::SITE_NAME %> - <%= t('migrations.new.page_title') %><% end %>
 
 <% content_for :head do %>
 <style>
@@ -86,6 +86,14 @@
 
 <% content_for :scripts do %>
 <script>
+  // Translations for JavaScript
+  var I18n = <%= raw t('migrations.js').to_json %>;
+  function i18n(key, vars) {
+    var str = I18n[key] || key;
+    if (vars) Object.entries(vars).forEach(function(e) { str = str.replace('{' + e[0] + '}', e[1]); });
+    return str;
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
 
@@ -194,17 +202,17 @@
       const status = document.getElementById('step1-status');
 
       if (!handle) {
-        showStatus(status, 'Please enter a handle', 'error');
+        showStatus(status, i18n('enter_handle'), 'error');
         return;
       }
 
       if (!password) {
-        showStatus(status, 'Please enter your password', 'error');
+        showStatus(status, i18n('enter_password'), 'error');
         return;
       }
 
       if (!handle.includes('.')) {
-        showStatus(status, 'Handle must include a domain (e.g., user.bsky.social)', 'error');
+        showStatus(status, i18n('handle_needs_domain'), 'error');
         return;
       }
 
@@ -216,8 +224,8 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Authenticating...';
-      showStatus(status, 'Authenticating and fetching your account details...', 'info');
+      btn.textContent = i18n('authenticating');
+      showStatus(status, i18n('authenticating_details'), 'info');
 
       fetch('/migrations/lookup_handle', {
         method: 'POST',
@@ -236,20 +244,20 @@
         if (data.two_factor_required) {
           document.getElementById('two-factor-group').style.display = 'block';
           document.getElementById('two_factor_code').focus();
-          showStatus(status, 'A sign-in code has been sent to your email. Enter it above and click Continue again.', 'info');
+          showStatus(status, i18n('two_factor_sent'), 'info');
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
           return;
         }
 
         if (data.error) {
           showStatus(status, data.error, 'error');
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
           return;
         }
 
-        showStatus(status, 'Authentication successful!', 'success');
+        showStatus(status, i18n('auth_success'), 'success');
 
         // Store email data and mark as authenticated
         wizardData.authenticated = true;
@@ -278,15 +286,15 @@
           handleField.readOnly = true;
           passwordField.readOnly = true;
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
           showStep(2);
           setupStep2();
         }, 500);
       })
       .catch(error => {
-        showStatus(status, 'Network error. Please try again.', 'error');
+        showStatus(status, i18n('network_error'), 'error');
         btn.disabled = false;
-        btn.textContent = 'Continue';
+        btn.textContent = i18n('continue');
       });
     });
 
@@ -296,11 +304,11 @@
       if (wizardData.emailReadonly) {
         emailField.readOnly = true;
         emailField.classList.add('readonly-field');
-        document.querySelector('#step-2 .form-text').textContent = 'Email retrieved from your account';
+        document.querySelector('#step-2 .form-text').textContent = i18n('email_readonly_help');
       } else {
         emailField.readOnly = false;
         emailField.classList.remove('readonly-field');
-        document.querySelector('#step-2 .form-text').textContent = 'We couldn\'t retrieve your email. Please enter it manually.';
+        document.querySelector('#step-2 .form-text').textContent = i18n('email_manual_help');
         emailField.focus();
       }
     }
@@ -320,19 +328,19 @@
 
       const email = emailField.value.trim();
       if (!email) {
-        alert('Please enter your email address');
+        alert(i18n('enter_email'));
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address');
+        alert(i18n('invalid_email'));
         return;
       }
 
       const confirmCheckbox = document.getElementById('confirm-email-access');
       if (!confirmCheckbox.checked) {
-        alert('Please confirm that you have access to this email address.');
+        alert(i18n('confirm_email_access'));
         confirmCheckbox.focus();
         return;
       }
@@ -381,32 +389,32 @@
       }
 
       if (!selectedPds || selectedPds === 'custom') {
-        alert('Please select a Server or enter a custom Server URL');
+        alert(i18n('select_server'));
         return;
       }
 
       // For custom PDS: if not yet verified, check requirements first
       if (pdsSelect.value === 'custom' && (!wizardData.pdsVerified || wizardData.pdsVerifiedHost !== selectedPds)) {
         btn.disabled = true;
-        btn.textContent = 'Checking Server...';
+        btn.textContent = i18n('checking_server');
         checkPdsRequirements(selectedPds, status, inviteGroup, function(success) {
           if (!success) {
             btn.disabled = false;
-            btn.textContent = 'Continue';
+            btn.textContent = i18n('continue');
             return;
           }
 
           // After PDS check succeeds, check if account already exists on target
-          btn.textContent = 'Checking for existing account...';
+          btn.textContent = i18n('checking_existing');
           checkAccountExistsOnTarget(selectedPds, function(exists) {
             btn.disabled = false;
-            btn.textContent = 'Continue';
+            btn.textContent = i18n('continue');
             if (exists) {
               showTargetPasswordSection(selectedPds);
               // Stay on step 3 for credential entry
             } else if (inviteCodeField.required) {
               hideTargetPasswordSection();
-              showStatus(status, 'This Server requires an invite code. Please enter it below, then click Continue.', 'info');
+              showStatus(status, i18n('invite_code_required'), 'info');
               inviteCodeField.focus();
             } else {
               hideTargetPasswordSection();
@@ -421,7 +429,7 @@
 
       // Check if invite code is required and empty (only for migration_out)
       if (!wizardData.accountExistsOnTarget && inviteCodeField.required && !inviteCodeField.value.trim()) {
-        showStatus(status, 'Please enter an invite code to continue.', 'error');
+        showStatus(status, i18n('enter_invite_code'), 'error');
         inviteCodeField.focus();
         return;
       }
@@ -432,7 +440,7 @@
         const targetStatus = document.getElementById('target-password-status');
 
         if (!targetPassword) {
-          showStatus(targetStatus, 'Please enter your password for this server', 'error');
+          showStatus(targetStatus, i18n('enter_target_password'), 'error');
           return;
         }
 
@@ -444,8 +452,8 @@
         }
 
         btn.disabled = true;
-        btn.textContent = 'Verifying credentials...';
-        showStatus(targetStatus, 'Authenticating with your existing account...', 'info');
+        btn.textContent = i18n('verifying_credentials');
+        showStatus(targetStatus, i18n('authenticating_existing'), 'info');
 
         fetch('/migrations/verify_target_credentials', {
           method: 'POST',
@@ -463,7 +471,7 @@
         .then(response => response.json())
         .then(data => {
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
 
           if (data.two_factor_required) {
             document.getElementById('target-2fa-group').style.display = 'block';
@@ -481,7 +489,7 @@
           wizardData.newPdsAccessToken = data.access_token;
           wizardData.newPdsRefreshToken = data.refresh_token;
 
-          showStatus(targetStatus, 'Credentials verified!', 'success');
+          showStatus(targetStatus, i18n('credentials_verified'), 'success');
 
           setTimeout(() => {
             wizardData.pdsHost = selectedPds;
@@ -491,7 +499,7 @@
         })
         .catch(error => {
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
           showStatus(targetStatus, 'Network error. Please try again.', 'error');
         });
         return;
@@ -639,7 +647,7 @@
     });
 
     function checkPdsRequirements(pdsHost, statusElement, inviteGroup, callback) {
-      showStatus(statusElement, 'Checking Server requirements...', 'info');
+      showStatus(statusElement, i18n('checking_requirements'), 'info');
 
       fetch('/migrations/check_pds', {
         method: 'POST',
@@ -659,7 +667,7 @@
           return;
         }
 
-        showStatus(statusElement, 'Server verified!', 'success');
+        showStatus(statusElement, i18n('server_verified'), 'success');
 
         wizardData.availableDomains = data.available_user_domains || [];
         wizardData.pdsContactEmail = data.contact_email || null;
@@ -678,7 +686,7 @@
         if (callback) callback(true);
       })
       .catch(error => {
-        showStatus(statusElement, 'Failed to verify PDS. Please check the URL.', 'error');
+        showStatus(statusElement, i18n('failed_verify_pds'), 'error');
         inviteGroup.style.display = 'none';
         wizardData.pdsVerified = false;
         if (callback) callback(false);
@@ -706,6 +714,8 @@
         // Custom domain: offer to keep it
         preservationSection.style.display = 'block';
         customHandleDisplay.textContent = '@' + wizardData.oldHandle;
+        var domainHelp = document.getElementById('custom-domain-help-text');
+        if (domainHelp) domainHelp.innerHTML = i18n('custom_domain_help', {handle: '<strong>@' + wizardData.oldHandle + '</strong>'});
         preserveCheckbox.checked = true;
         newHandleSection.style.display = 'none';
         newHandleInput.readOnly = false;
@@ -766,7 +776,7 @@
       if (wizardData.accountExistsOnTarget && wizardData.existingHandleOnTarget) {
         fullHandle = wizardData.existingHandleOnTarget;
         document.getElementById('migration_new_handle').value = fullHandle;
-        showStatus(status, 'Using your existing handle on the target server.', 'success');
+        showStatus(status, i18n('using_existing_handle'), 'success');
 
         setTimeout(() => {
           showStep(5);
@@ -778,7 +788,7 @@
       if (wizardData.canPreserveHandle && preserveCheckbox.checked) {
         fullHandle = wizardData.oldHandle;
         document.getElementById('migration_new_handle').value = fullHandle;
-        showStatus(status, 'Keeping your custom domain handle!', 'success');
+        showStatus(status, i18n('keeping_custom_handle'), 'success');
 
         setTimeout(() => {
           showStep(5);
@@ -789,7 +799,7 @@
 
       const handleUsername = newHandleInput.value.trim();
       if (!handleUsername) {
-        alert('Please enter a handle');
+        alert(i18n('enter_handle_short'));
         return;
       }
 
@@ -806,8 +816,8 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Checking availability...';
-      showStatus(status, 'Checking if handle is available...', 'info');
+      btn.textContent = i18n('checking_availability');
+      showStatus(status, i18n('checking_handle'), 'info');
 
       fetch('/migrations/check_handle', {
         method: 'POST',
@@ -824,7 +834,7 @@
       .then(response => response.json())
       .then(data => {
         btn.disabled = false;
-        btn.textContent = 'Continue';
+        btn.textContent = i18n('continue');
 
         if (data.error) {
           showStatus(status, data.error, 'error');
@@ -832,13 +842,13 @@
         }
 
         if (!data.available) {
-          showStatus(status, 'This handle is already taken. Please choose another.', 'error');
+          showStatus(status, i18n('handle_taken'), 'error');
           return;
         }
 
         // Skip DID check if account was already verified in Step 3 (migration_in)
         if (wizardData.accountExistsOnTarget && wizardData.targetCredentialsVerified) {
-          showStatus(status, 'All checks passed!', 'success');
+          showStatus(status, i18n('all_checks_passed'), 'success');
           document.getElementById('migration_new_handle').value = fullHandle;
 
           setTimeout(() => {
@@ -848,9 +858,9 @@
           return;
         }
 
-        showStatus(status, 'Handle available, checking for existing accounts...', 'info');
+        showStatus(status, i18n('handle_available_checking'), 'info');
         btn.disabled = true;
-        btn.textContent = 'Checking for existing accounts...';
+        btn.textContent = i18n('checking_existing_accounts');
 
         fetch('/migrations/check_did_on_pds', {
           method: 'POST',
@@ -866,7 +876,7 @@
         .then(response => response.json())
         .then(didData => {
           btn.disabled = false;
-          btn.textContent = 'Continue';
+          btn.textContent = i18n('continue');
 
           if (didData.error) {
             showStatus(status, didData.error, 'error');
@@ -877,17 +887,14 @@
             const supportEmail = wizardData.pdsContactEmail || '<%= ENV.fetch('SUPPORT_EMAIL', 'support@example.com') %>';
             const errorMessage = `
               <div class="text-start lh-lg">
-                <strong>Account Already Exists on Target Server</strong><br><br>
-                <strong>What happened:</strong><br>
-                An account with your DID already exists on the target Server (${wizardData.pdsHost}).
-                This may be from a previous migration attempt.<br><br>
+                <strong>${i18n('account_exists_title')}</strong><br><br>
+                <strong>${i18n('account_exists_what', {pds: wizardData.pdsHost})}</strong><br><br>
 
-                <strong>What to do:</strong><br>
-                Go back to the previous step and enter your password for the existing account. If you don't know the password:
+                ${i18n('account_exists_do')}
                 <ul class="ms-3">
-                  <li>Try resetting your password: <a href="${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password" target="_blank" rel="noopener">${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password</a></li>
-                  <li>Contact the Server provider at <strong>${supportEmail}</strong> to remove the orphaned account</li>
-                  <li>Include your DID: <code>${wizardData.did}</code></li>
+                  <li>${i18n('account_exists_reset')} <a href="${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password" target="_blank" rel="noopener">${wizardData.pdsHost.replace(/\/$/, '')}/.well-known/change-password</a></li>
+                  <li>${i18n('account_exists_contact', {email: supportEmail})}</li>
+                  <li>${i18n('account_exists_did')} <code>${wizardData.did}</code></li>
                 </ul>
               </div>
             `;
@@ -898,7 +905,7 @@
             return;
           }
 
-          showStatus(status, 'All checks passed!', 'success');
+          showStatus(status, i18n('all_checks_passed'), 'success');
           document.getElementById('migration_new_handle').value = fullHandle;
 
           setTimeout(() => {
@@ -908,14 +915,14 @@
         })
         .catch(didError => {
           btn.disabled = false;
-          btn.textContent = 'Continue';
-          showStatus(status, 'Failed to check for existing accounts: ' + didError.message, 'error');
+          btn.textContent = i18n('continue');
+          showStatus(status, i18n('failed_check_existing') + didError.message, 'error');
         });
       })
       .catch(error => {
         btn.disabled = false;
-        btn.textContent = 'Continue';
-        showStatus(status, 'Failed to check availability. Please try again.', 'error');
+        btn.textContent = i18n('continue');
+        showStatus(status, i18n('failed_check_availability'), 'error');
       });
     });
 
@@ -925,7 +932,7 @@
       document.getElementById('summary-email').textContent = emailField.value;
       document.getElementById('summary-pds').textContent = wizardData.pdsHost;
       document.getElementById('summary-new-handle').textContent = document.getElementById('migration_new_handle').value;
-      document.getElementById('summary-email-reminder').textContent = emailField.value;
+      document.getElementById('confirm-email-notice').innerHTML = i18n('confirm_email_html', {email: emailField.value});
 
       if (inviteCodeField.value.trim()) {
         document.getElementById('summary-invite-row').style.display = 'table-row';
@@ -951,7 +958,7 @@
 
       const acknowledgeCheckbox = document.getElementById('acknowledge-no-usage');
       if (!acknowledgeCheckbox.checked) {
-        alert('Please confirm that you understand you must not use your account during migration.');
+        alert(i18n('confirm_no_usage'));
         acknowledgeCheckbox.focus();
         return;
       }
@@ -981,7 +988,7 @@
 
     <% if @migration&.errors&.any? %>
       <div class="alert alert-danger" role="alert">
-        <h6 class="alert-heading fw-bold">Please correct the following errors:</h6>
+        <h6 class="alert-heading fw-bold"><%= t('migrations.new.errors_heading') %></h6>
         <ul class="mb-0">
           <% @migration.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -1005,135 +1012,135 @@
       <div class="wizard-progress mb-4">
         <div id="progress-1" class="wizard-progress-step">
           <div class="wizard-progress-circle">1</div>
-          <div class="wizard-progress-label">Account</div>
+          <div class="wizard-progress-label"><%= t('migrations.new.progress.account') %></div>
         </div>
         <div id="progress-2" class="wizard-progress-step">
           <div class="wizard-progress-circle">2</div>
-          <div class="wizard-progress-label">Email</div>
+          <div class="wizard-progress-label"><%= t('migrations.new.progress.email') %></div>
         </div>
         <div id="progress-3" class="wizard-progress-step">
           <div class="wizard-progress-circle">3</div>
-          <div class="wizard-progress-label">Destination</div>
+          <div class="wizard-progress-label"><%= t('migrations.new.progress.destination') %></div>
         </div>
         <div id="progress-4" class="wizard-progress-step">
           <div class="wizard-progress-circle">4</div>
-          <div class="wizard-progress-label">Handle</div>
+          <div class="wizard-progress-label"><%= t('migrations.new.progress.handle') %></div>
         </div>
         <div id="progress-5" class="wizard-progress-step">
           <div class="wizard-progress-circle">5</div>
-          <div class="wizard-progress-label">Review</div>
+          <div class="wizard-progress-label"><%= t('migrations.new.progress.review') %></div>
         </div>
       </div>
 
       <!-- STEP 1: Handle & Password -->
       <div id="step-1" class="wizard-step">
-        <h2 class="mb-3">Step 1: Account Credentials</h2>
+        <h2 class="mb-3"><%= t('migrations.new.step1.title') %></h2>
 
         <div class="mb-3">
-          <%= f.label :old_handle, "Your Handle", class: "form-label" %>
-          <%= f.text_field :old_handle, id: "migration_old_handle", placeholder: "yourhandle.bsky.social", autocomplete: "username", class: "form-control" %>
-          <div class="form-text">Enter your current AT Protocol handle</div>
+          <%= f.label :old_handle, t('migrations.new.step1.handle_label'), class: "form-label" %>
+          <%= f.text_field :old_handle, id: "migration_old_handle", placeholder: t('migrations.new.step1.handle_placeholder'), autocomplete: "username", class: "form-control" %>
+          <div class="form-text"><%= t('migrations.new.step1.handle_help') %></div>
         </div>
 
         <div class="mb-3">
-          <%= f.label :password, "Account Password", class: "form-label" %>
+          <%= f.label :password, t('migrations.new.step1.password_label'), class: "form-label" %>
           <%= f.password_field :password, id: "migration_password", autocomplete: "current-password", class: "form-control" %>
-          <div class="form-text">Your current account password</div>
+          <div class="form-text"><%= t('migrations.new.step1.password_help') %></div>
         </div>
 
         <div id="step1-status" class="lookup-status"></div>
 
         <!-- Two-Factor Authentication -->
         <div id="two-factor-group" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3" style="display: none;">
-          <div class="fw-semibold small mb-1" style="color: #92400e;">Two-Factor Authentication</div>
+          <div class="fw-semibold small mb-1" style="color: #92400e;"><%= t('migrations.new.step1.two_factor_title') %></div>
           <p class="small mb-2" style="color: #78350f;">
-            A sign-in code has been sent to your email. Enter it below.
+            <%= t('migrations.new.step1.two_factor_help') %>
           </p>
-          <input type="text" id="two_factor_code" class="form-control form-control-lg text-center font-monospace" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric">
+          <input type="text" id="two_factor_code" class="form-control form-control-lg text-center font-monospace" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
         </div>
 
         <div class="d-grid mt-4">
-          <button type="button" id="step1-next" class="btn btn-lg btn-gradient">Continue</button>
+          <button type="button" id="step1-next" class="btn btn-lg btn-gradient"><%= t('migrations.new.step1.continue') %></button>
         </div>
       </div>
 
       <!-- STEP 2: Email -->
       <div id="step-2" class="wizard-step">
-        <h2 class="mb-3">Step 2: Email Address</h2>
+        <h2 class="mb-3"><%= t('migrations.new.step2.title') %></h2>
 
         <div class="mb-3">
-          <%= f.label :email, "Email Address", class: "form-label" %>
+          <%= f.label :email, t('migrations.new.step2.email_label'), class: "form-label" %>
           <%= f.email_field :email, id: "migration_email", placeholder: "you@example.com", autocomplete: "email", class: "form-control" %>
-          <div class="form-text">We'll send migration status updates to this email</div>
+          <div class="form-text"><%= t('migrations.new.step2.email_help') %></div>
         </div>
 
         <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
           <div class="form-check mb-0">
             <input type="checkbox" id="confirm-email-access" class="form-check-input">
             <label class="form-check-label" for="confirm-email-access" style="color: #78350f;">
-              I have access to this email address and can retrieve a confirmation code sent to it.
+              <%= t('migrations.new.step2.confirm_access') %>
             </label>
           </div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step2-back" class="btn btn-secondary">Back</button>
-          <button type="button" id="step2-next" class="btn btn-lg btn-gradient flex-grow-1">Continue</button>
+          <button type="button" id="step2-back" class="btn btn-secondary"><%= t('migrations.new.step2.back') %></button>
+          <button type="button" id="step2-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step2.continue') %></button>
         </div>
       </div>
 
       <!-- STEP 3: Destination PDS -->
       <div id="step-3" class="wizard-step">
-        <h2 class="mb-3">Step 3: Destination Sever</h2>
+        <h2 class="mb-3"><%= t('migrations.new.step3.title') %></h2>
 
         <div class="mb-3">
-          <label for="pds-select" class="form-label">Destination Server</label>
+          <label for="pds-select" class="form-label"><%= t('migrations.new.step3.server_label') %></label>
           <select id="pds-select" class="form-select form-select-lg">
-            <option value="">Select a Server...</option>
-            <option value="https://eurosky.social">Eurosky (eurosky.social)</option>
-            <option value="https://blacksky.app">Blacksky (blacksky.app)</option>
-            <option value="https://myatproto.social">myatproto (myatproto.social)</option>
-            <option value="https://bsky.social">Bluesky (bsky.social)</option>
-            <option value="custom">Custom Server...</option>
+            <option value=""><%= t('migrations.new.step3.server_placeholder') %></option>
+            <option value="https://eurosky.social"><%= t('migrations.new.step3.server_eurosky') %></option>
+            <option value="https://blacksky.app"><%= t('migrations.new.step3.server_blacksky') %></option>
+            <option value="https://myatproto.social"><%= t('migrations.new.step3.server_myatproto') %></option>
+            <option value="https://bsky.social"><%= t('migrations.new.step3.server_bluesky') %></option>
+            <option value="custom"><%= t('migrations.new.step3.server_custom') %></option>
           </select>
-          <div class="form-text">Choose where you want to migrate your account</div>
+          <div class="form-text"><%= t('migrations.new.step3.server_help') %></div>
         </div>
 
         <div id="custom-pds-group" class="mb-3" style="display: none;">
-          <%= f.label :new_pds_host, "Custom Server URL", class: "form-label" %>
-          <%= f.text_field :new_pds_host, id: "migration_new_pds_host", placeholder: "https://pds.example.com", autocomplete: "url", class: "form-control" %>
-          <div class="form-text">Enter the full URL of your custom Server</div>
+          <%= f.label :new_pds_host, t('migrations.new.step3.custom_url_label'), class: "form-label" %>
+          <%= f.text_field :new_pds_host, id: "migration_new_pds_host", placeholder: t('migrations.new.step3.custom_url_placeholder'), autocomplete: "url", class: "form-control" %>
+          <div class="form-text"><%= t('migrations.new.step3.custom_url_help') %></div>
         </div>
 
         <div id="pds-status" class="lookup-status"></div>
 
         <div id="invite-code-group" class="mb-3" style="display: none;">
-          <%= f.label :invite_code, "Invite Code", class: "form-label" %>
-          <%= f.text_field :invite_code, id: "migration_invite_code", placeholder: "Enter your invite code", autocomplete: "off", class: "form-control" %>
-          <div class="form-text">This Server requires an invite code</div>
+          <%= f.label :invite_code, t('migrations.new.step3.invite_code_label'), class: "form-label" %>
+          <%= f.text_field :invite_code, id: "migration_invite_code", placeholder: t('migrations.new.step3.invite_code_placeholder'), autocomplete: "off", class: "form-control" %>
+          <div class="form-text"><%= t('migrations.new.step3.invite_code_help') %></div>
         </div>
 
         <!-- Target PDS password (for existing account on target server) -->
         <div id="target-password-group" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mt-3 mb-3" style="display: none;">
-          <div class="fw-semibold small mb-1" style="color: #0c4a6e;">Existing Account Found</div>
+          <div class="fw-semibold small mb-1" style="color: #0c4a6e;"><%= t('migrations.new.step3.existing_account_title') %></div>
           <p class="small mb-2" style="color: #164e63;">
-            Your account already exists on the destination server. Please verify your password to continue with the migration.
+            <%= t('migrations.new.step3.existing_account_help') %>
           </p>
           <div class="mb-2">
-            <label for="target-pds-password" class="form-label small">Your password on the target server</label>
-            <input type="password" id="target-pds-password" class="form-control" placeholder="Enter your password for the existing account" autocomplete="current-password">
+            <label for="target-pds-password" class="form-label small"><%= t('migrations.new.step3.target_password_label') %></label>
+            <input type="password" id="target-pds-password" class="form-control" placeholder="<%= t('migrations.new.step3.target_password_placeholder') %>" autocomplete="current-password">
           </div>
           <div id="target-2fa-group" class="mt-2" style="display: none;">
-            <label for="target-2fa-code" class="form-label small">Sign-in Code (2FA)</label>
-            <input type="text" id="target-2fa-code" class="form-control form-control-lg text-center font-monospace" placeholder="Enter your sign-in code" autocomplete="one-time-code" inputmode="numeric">
-            <div class="form-text">Check your email for the two-factor authentication code</div>
+            <label for="target-2fa-code" class="form-label small"><%= t('migrations.new.step3.target_2fa_label') %></label>
+            <input type="text" id="target-2fa-code" class="form-control form-control-lg text-center font-monospace" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
+            <div class="form-text"><%= t('migrations.new.step3.target_2fa_help') %></div>
           </div>
           <div id="target-deactivated-help" class="mt-2 small" style="display: none; color: #78350f; background: #fef3c7; padding: 10px; border-radius: 4px;">
-            <strong>This account appears to be deactivated</strong> (possibly from a previous migration attempt).<br>
-            If you don't remember your password, you can try:
+            <strong><%= t('migrations.new.step3.deactivated_notice') %></strong> <%= t('migrations.new.step3.deactivated_reason') %><br>
+            <%= t('migrations.new.step3.deactivated_help') %>
             <ul class="mb-1 mt-1">
-              <li>Reset your password: <a id="target-deactivated-pwd-link" href="#" target="_blank" rel="noopener"></a></li>
-              <li>Contact the PDS admin at <a id="target-deactivated-support-email" href="#"></a> to remove this inactive account and restart the migration. Include your DID: <code id="target-deactivated-did"></code></li>
+              <li><%= t('migrations.new.step3.deactivated_reset') %> <a id="target-deactivated-pwd-link" href="#" target="_blank" rel="noopener"></a></li>
+              <li><span id="target-deactivated-contact-text"></span> <code id="target-deactivated-did"></code></li>
             </ul>
           </div>
           <div id="target-password-status" class="lookup-status"></div>
@@ -1144,69 +1151,68 @@
         <%= hidden_field_tag 'migration[new_refresh_token]', '', id: 'migration_new_refresh_token' %>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step3-back" class="btn btn-secondary">Back</button>
-          <button type="button" id="step3-next" class="btn btn-lg btn-gradient flex-grow-1">Continue</button>
+          <button type="button" id="step3-back" class="btn btn-secondary"><%= t('migrations.new.step3.back') %></button>
+          <button type="button" id="step3-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step3.continue') %></button>
         </div>
       </div>
 
       <!-- STEP 4: New Handle -->
       <div id="step-4" class="wizard-step">
-        <h2 class="mb-3">Step 4: New Handle</h2>
+        <h2 class="mb-3"><%= t('migrations.new.step4.title') %></h2>
 
         <!-- Custom Domain Handle Preservation Option -->
         <div id="handle-preservation-section" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mb-3 small" style="display: none;">
-          <div class="fw-semibold mb-1" style="color: #075985;">Custom Domain Detected</div>
-          <p class="mb-2" style="color: #075985;">
-            Your handle <strong id="custom-handle-display"></strong> is a custom domain. You can keep using it on the new server.
+          <div class="fw-semibold mb-1" style="color: #075985;"><%= t('migrations.new.step4.custom_domain_title') %></div>
+          <p class="mb-2" style="color: #075985;" id="custom-domain-help-text">
           </p>
           <div class="form-check mb-0">
             <input type="checkbox" id="preserve-handle-checkbox" checked class="form-check-input">
-            <label class="form-check-label fw-semibold" for="preserve-handle-checkbox">Keep my current handle</label>
+            <label class="form-check-label fw-semibold" for="preserve-handle-checkbox"><%= t('migrations.new.step4.keep_handle') %></label>
           </div>
         </div>
 
         <!-- Regular Handle Input -->
         <div id="new-handle-section" class="mb-3">
-          <label for="new-handle-input" class="form-label">Your New Handle</label>
+          <label for="new-handle-input" class="form-label"><%= t('migrations.new.step4.new_handle_label') %></label>
           <div class="position-relative">
-            <input type="text" id="new-handle-input" class="form-control" placeholder="username" style="padding-right: 200px;">
+            <input type="text" id="new-handle-input" class="form-control" placeholder="<%= t('migrations.new.step4.new_handle_placeholder') %>" style="padding-right: 200px;">
             <span id="new-handle-suffix" class="handle-suffix"></span>
           </div>
-          <div class="form-text">Choose your new handle (can be your old) on the destination Server</div>
+          <div class="form-text"><%= t('migrations.new.step4.new_handle_help') %></div>
           <%= f.hidden_field :new_handle, id: "migration_new_handle" %>
         </div>
 
         <div id="step4-status" class="lookup-status"></div>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step4-back" class="btn btn-secondary">Back</button>
-          <button type="button" id="step4-next" class="btn btn-lg btn-gradient flex-grow-1">Continue</button>
+          <button type="button" id="step4-back" class="btn btn-secondary"><%= t('migrations.new.step4.back') %></button>
+          <button type="button" id="step4-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step4.continue') %></button>
         </div>
       </div>
 
       <!-- STEP 5: Summary & Confirm -->
       <div id="step-5" class="wizard-step">
-        <h2 class="mb-3">Step 5: Review & Confirm</h2>
+        <h2 class="mb-3"><%= t('migrations.new.step5.title') %></h2>
 
         <table class="table mb-4">
           <tr>
-            <td class="fw-semibold">Current Handle:</td>
+            <td class="fw-semibold"><%= t('migrations.new.step5.current_handle') %></td>
             <td id="summary-handle"></td>
           </tr>
           <tr>
-            <td class="fw-semibold">Email:</td>
+            <td class="fw-semibold"><%= t('migrations.new.step5.email') %></td>
             <td id="summary-email"></td>
           </tr>
           <tr>
-            <td class="fw-semibold">Destination Server:</td>
+            <td class="fw-semibold"><%= t('migrations.new.step5.destination_server') %></td>
             <td id="summary-pds"></td>
           </tr>
           <tr>
-            <td class="fw-semibold">New Handle:</td>
+            <td class="fw-semibold"><%= t('migrations.new.step5.new_handle') %></td>
             <td class="fw-bold text-primary" id="summary-new-handle"></td>
           </tr>
           <tr id="summary-invite-row" style="display: none;">
-            <td class="fw-semibold">Invite Code:</td>
+            <td class="fw-semibold"><%= t('migrations.new.step5.invite_code') %></td>
             <td id="summary-invite"></td>
           </tr>
         </table>
@@ -1215,37 +1221,33 @@
           <div class="form-check mb-0">
             <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true, class: "form-check-input" %>
             <label class="form-check-label fw-semibold" for="migration_create_backup_bundle">
-              Create a backup before migration
+              <%= t('migrations.new.step5.create_backup') %>
             </label>
             <div class="text-body-secondary mt-1">
-              Downloads a complete copy of your account data. Available for 24 hours.
+              <%= t('migrations.new.step5.backup_help') %>
             </div>
           </div>
         </div>
 
-        <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-          When you click <strong>Continue</strong>, we'll send a confirmation email to <strong id="summary-email-reminder"></strong>.
-          The migration will only start once you confirm via that email.
+        <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small" id="confirm-email-notice">
         </div>
 
         <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-          <div class="fw-semibold mb-1" style="color: #92400e;">Do not use your account during migration</div>
+          <div class="fw-semibold mb-1" style="color: #92400e;"><%= t('migrations.new.step5.no_usage_title') %></div>
           <p class="mb-2" style="color: #78350f;">
-            Once the migration starts, close all apps and browser tabs with your account.
-            Any posts, likes, or follows made during migration will not be transferred.
-            You'll receive an email when it's complete (~20-30 minutes).
+            <%= t('migrations.new.step5.no_usage_help') %>
           </p>
           <div class="form-check mb-0">
             <input type="checkbox" id="acknowledge-no-usage" class="form-check-input" required>
             <label class="form-check-label fw-semibold" for="acknowledge-no-usage" style="color: #92400e;">
-              I understand I should not use my account during migration
+              <%= t('migrations.new.step5.acknowledge') %>
             </label>
           </div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step5-back" class="btn btn-secondary">Back</button>
-          <%= f.submit "Continue", class: "btn btn-lg btn-gradient flex-grow-1", id: "start-migration-btn" %>
+          <button type="button" id="step5-back" class="btn btn-secondary"><%= t('migrations.new.step5.back') %></button>
+          <%= f.submit t('migrations.new.step5.continue'), class: "btn btn-lg btn-gradient flex-grow-1", id: "start-migration-btn" %>
         </div>
       </div>
 
@@ -1255,20 +1257,20 @@
     <% if EuroskyConfig::PRIVACY_POLICY_URL.present? || EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
       <div class="text-center mt-3 small text-muted">
         <% if EuroskyConfig::PRIVACY_POLICY_URL.present? %>
-          <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener" class="text-muted">Privacy Policy</a>
+          <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener" class="text-muted"><%= t('layouts.privacy_policy') %></a>
         <% end %>
         <% if EuroskyConfig::PRIVACY_POLICY_URL.present? && EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
           <span class="mx-1">·</span>
         <% end %>
         <% if EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
-          <a href="<%= EuroskyConfig::TERMS_OF_SERVICE_URL %>" target="_blank" rel="noopener" class="text-muted">Terms of Service</a>
+          <a href="<%= EuroskyConfig::TERMS_OF_SERVICE_URL %>" target="_blank" rel="noopener" class="text-muted"><%= t('layouts.terms_of_service') %></a>
         <% end %>
       </div>
     <% end %>
 
     <!-- Image Attribution -->
     <div class="text-center mt-3 small text-muted">
-      Background photo: <a href="https://commons.wikimedia.org/wiki/File:GMC_U-Haul_truck_front_1.JPG" target="_blank" rel="noopener" class="text-muted">GMC U-Haul truck</a> by <a href="https://commons.wikimedia.org/wiki/User:BrokenSphere" target="_blank" rel="noopener" class="text-muted">BrokenSphere</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener" class="text-muted">CC BY 3.0</a>
+      <%= t('layouts.background_attribution') %> <a href="https://commons.wikimedia.org/wiki/File:GMC_U-Haul_truck_front_1.JPG" target="_blank" rel="noopener" class="text-muted">GMC U-Haul truck</a> <%= t('layouts.background_attribution_by') %> <a href="https://commons.wikimedia.org/wiki/User:BrokenSphere" target="_blank" rel="noopener" class="text-muted">BrokenSphere</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener" class="text-muted">CC BY 3.0</a>
     </div>
   </div>
 </div>

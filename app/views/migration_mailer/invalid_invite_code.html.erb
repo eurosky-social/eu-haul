@@ -78,14 +78,14 @@
 <body>
   <div class="header">
     <h1>Migration Failed</h1>
-    <p>Invalid Invite Code</p>
+    <p><%= t('mailers.invalid_invite_code.heading') %></p>
     <p>Migration <%= @migration.token %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>Your account migration from <strong>@<%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong> could not be completed because the invite code you provided is invalid.</p>
+    <p><%= t('mailers.invalid_invite_code.intro', token: @migration.token) %></p>
 
     <div class="error-box">
       <h3 style="margin-top: 0; color: #991b1b;">What Happened</h3>
@@ -112,7 +112,7 @@
     <div class="action-box">
       <h3 style="margin-top: 0; color: #2563eb;">Start a New Migration</h3>
       <p style="margin-bottom: 15px;">
-        Please obtain a valid invite code from your target PDS provider and start a new migration.
+        <%= t('mailers.invalid_invite_code.what_to_do') %>
       </p>
       <a href="<%= @new_migration_url %>" class="action-button">
         Start New Migration
@@ -123,7 +123,7 @@
       <p>Migration Token: <code><%= @migration.token %></code></p>
       <p>DID: <code><%= @migration.did %></code></p>
       <p>Target PDS: <%= @migration.new_pds_host %></p>
-      <p style="margin-top: 20px;">Eurosky Migration Service</p>
+      <p style="margin-top: 20px;"><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

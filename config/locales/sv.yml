@@ -1,0 +1,652 @@
+sv:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Starta kontoflyttning"
+    privacy_policy: "Integritetspolicy"
+    terms_of_service: "Användarvillkor"
+    background_attribution: "Bakgrundsfoto:"
+    background_attribution_by: "av"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Språk"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Starta kontoflyttning"
+      errors_heading: "Vänligen rätta följande fel:"
+
+      # Progress bar labels
+      progress:
+        account: "Konto"
+        email: "E-post"
+        destination: "Destination"
+        handle: "Handle"
+        review: "Granska"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Steg 1: Kontouppgifter"
+        handle_label: "Ditt handle"
+        handle_placeholder: "ditthandle.bsky.social"
+        handle_help: "Ange ditt nuvarande AT Protocol-handle"
+        password_label: "Kontolösenord"
+        password_help: "Ditt nuvarande kontolösenord"
+        two_factor_title: "Tvåfaktorsautentisering"
+        two_factor_help: "En inloggningskod har skickats till din e-post. Ange den nedan."
+        two_factor_placeholder: "Ange din inloggningskod"
+        continue: "Fortsätt"
+
+      # Step 2: Email
+      step2:
+        title: "Steg 2: E-postadress"
+        email_label: "E-postadress"
+        email_help: "Vi skickar statusuppdateringar om flytten till denna e-postadress"
+        email_readonly_help: "E-postadress hämtad från ditt konto"
+        email_manual_help: "Vi kunde inte hämta din e-postadress. Vänligen ange den manuellt."
+        confirm_access: "Jag har tillgång till denna e-postadress och kan hämta en bekräftelsekod som skickas till den."
+        back: "Tillbaka"
+        continue: "Fortsätt"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Steg 3: Destinationsserver"
+        server_label: "Destinationsserver"
+        server_placeholder: "Välj en server..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Anpassad server..."
+        server_help: "Välj vart du vill flytta ditt konto"
+        custom_url_label: "Anpassad server-URL"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Ange den fullständiga URL:en till din anpassade server"
+        invite_code_label: "Inbjudningskod"
+        invite_code_placeholder: "Ange din inbjudningskod"
+        invite_code_help: "Denna server kräver en inbjudningskod"
+        existing_account_title: "Befintligt konto hittat"
+        existing_account_help: "Ditt konto finns redan på destinationsservern. Vänligen verifiera ditt lösenord för att fortsätta med flytten."
+        target_password_label: "Ditt lösenord på destinationsservern"
+        target_password_placeholder: "Ange lösenordet för det befintliga kontot"
+        target_2fa_label: "Inloggningskod (2FA)"
+        target_2fa_help: "Kontrollera din e-post för tvåfaktorsautentiseringskoden"
+        deactivated_notice: "Detta konto verkar vara inaktiverat"
+        deactivated_reason: "(troligen från ett tidigare flyttningsförsök)."
+        deactivated_help: "Om du inte minns ditt lösenord kan du prova:"
+        deactivated_reset: "Återställ ditt lösenord:"
+        deactivated_contact: "Kontakta PDS-administratören på %{email} för att ta bort detta inaktiva konto och starta om flytten. Inkludera ditt DID:"
+        back: "Tillbaka"
+        continue: "Fortsätt"
+
+      # Step 4: New Handle
+      step4:
+        title: "Steg 4: Nytt handle"
+        custom_domain_title: "Anpassad domän upptäckt"
+        custom_domain_help: "Ditt handle %{handle} är en anpassad domän. Du kan fortsätta använda det på den nya servern."
+        keep_handle: "Behåll mitt nuvarande handle"
+        new_handle_label: "Ditt nya handle"
+        new_handle_placeholder: "användarnamn"
+        new_handle_help: "Välj ditt nya handle (kan vara ditt gamla) på destinationsservern"
+        back: "Tillbaka"
+        continue: "Fortsätt"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Steg 5: Granska och bekräfta"
+        current_handle: "Nuvarande handle:"
+        email: "E-post:"
+        destination_server: "Destinationsserver:"
+        new_handle: "Nytt handle:"
+        invite_code: "Inbjudningskod:"
+        create_backup: "Skapa en säkerhetskopia före flytten"
+        backup_help: "Laddar ner en komplett kopia av dina kontodata. Tillgänglig i 24 timmar."
+        confirm_email_html: "När du klickar på <strong>Fortsätt</strong> skickar vi ett bekräftelsemeddelande till <strong>%{email}</strong>. Flytten startar först efter att du bekräftar via det meddelandet."
+        no_usage_title: "Använd inte ditt konto under flytten"
+        no_usage_help: "När flytten börjar, stäng alla appar och webbläsarflikar med ditt konto. Alla inlägg, gillanden eller följningar som görs under flytten överförs inte. Du får ett e-postmeddelande när det är klart (~20-30 minuter)."
+        acknowledge: "Jag förstår att jag inte ska använda mitt konto under flytten"
+        back: "Tillbaka"
+        continue: "Fortsätt"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Vänligen ange ett handle"
+      enter_password: "Vänligen ange ditt lösenord"
+      handle_needs_domain: "Handle måste innehålla en domän (t.ex. användare.bsky.social)"
+      authenticating: "Autentiserar..."
+      authenticating_details: "Autentiserar och hämtar dina kontouppgifter..."
+      two_factor_sent: "En inloggningskod har skickats till din e-post. Ange den ovan och klicka på Fortsätt igen."
+      auth_success: "Autentisering lyckades!"
+      network_error: "Nätverksfel. Vänligen försök igen."
+      continue: "Fortsätt"
+      # Step 2
+      email_readonly_help: "E-postadress hämtad från ditt konto"
+      email_manual_help: "Vi kunde inte hämta din e-postadress. Vänligen ange den manuellt."
+      enter_email: "Vänligen ange din e-postadress"
+      invalid_email: "Vänligen ange en giltig e-postadress"
+      confirm_email_access: "Vänligen bekräfta att du har tillgång till denna e-postadress."
+      # Step 3
+      select_server: "Vänligen välj en server eller ange en anpassad server-URL"
+      checking_server: "Kontrollerar server..."
+      checking_requirements: "Kontrollerar serverkrav..."
+      server_verified: "Server verifierad!"
+      failed_verify_pds: "Kunde inte verifiera PDS. Vänligen kontrollera URL:en."
+      invite_code_required: "Denna server kräver en inbjudningskod. Vänligen ange den nedan och klicka sedan på Fortsätt."
+      enter_invite_code: "Vänligen ange en inbjudningskod för att fortsätta."
+      checking_existing: "Kontrollerar befintligt konto..."
+      verifying_credentials: "Verifierar uppgifter..."
+      authenticating_existing: "Autentiserar med ditt befintliga konto..."
+      credentials_verified: "Uppgifter verifierade!"
+      enter_target_password: "Vänligen ange ditt lösenord för denna server"
+      # Step 4
+      custom_domain_help: "Ditt handle {handle} är en anpassad domän. Du kan fortsätta använda det på den nya servern."
+      enter_handle_short: "Vänligen ange ett handle"
+      checking_availability: "Kontrollerar tillgänglighet..."
+      checking_handle: "Kontrollerar om handle är tillgängligt..."
+      handle_taken: "Detta handle är redan taget. Vänligen välj ett annat."
+      all_checks_passed: "Alla kontroller godkända!"
+      using_existing_handle: "Använder ditt befintliga handle på destinationsservern."
+      keeping_custom_handle: "Behåller ditt anpassade domänhandle!"
+      handle_available_checking: "Handle tillgängligt, kontrollerar befintliga konton..."
+      checking_existing_accounts: "Kontrollerar befintliga konton..."
+      failed_check_availability: "Kunde inte kontrollera tillgänglighet. Vänligen försök igen."
+      failed_check_existing: "Kunde inte kontrollera befintliga konton: "
+      account_exists_title: "Konto finns redan på destinationsservern"
+      account_exists_what: "Ett konto med ditt DID finns redan på destinationsservern (%{pds}). Detta kan bero på ett tidigare flyttningsförsök."
+      account_exists_do: "Gå tillbaka till föregående steg och ange lösenordet för det befintliga kontot. Om du inte vet lösenordet:"
+      account_exists_reset: "Försök återställa ditt lösenord:"
+      account_exists_contact: "Kontakta serverleverantören på <strong>%{email}</strong> för att ta bort det övergivna kontot"
+      account_exists_did: "Inkludera ditt DID:"
+      # Step 5
+      confirm_email_html: "När du klickar på <strong>Fortsätt</strong> skickar vi ett bekräftelsemeddelande till <strong>{email}</strong>. Flytten startar först efter att du bekräftar via det meddelandet."
+      confirm_no_usage: "Vänligen bekräfta att du förstår att du inte får använda ditt konto under flytten."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Flytt %{token}"
+      migration_status: "Flyttstatus"
+      status_label: "Status:"
+      retry_info: "Försök %{attempt}/%{max} - %{step}"
+      verify_email: "Verifiera din e-post"
+      enter_verification: "Ange din verifieringskod"
+      verification_sent: "Vi har skickat en kod till <strong>%{email}</strong>. Ange den nedan för att starta flytten."
+      verification_label: "Verifieringskod"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Verifiera och starta flytt"
+      didnt_receive: "Fick du inte e-postmeddelandet?"
+      check_spam: "Kontrollera din skräppost- eller junkmapp"
+      check_email_correct: "Kontrollera att <strong>%{email}</strong> är korrekt"
+      email_delay: "Det kan ta några minuter innan e-postmeddelandet kommer"
+
+      # Queue
+      in_queue: "I kö"
+      queue_default: "Väntar på att andra flyttningar ska slutföra dataöverföring"
+      queue_auto_start: "Din flytt startar automatiskt när en plats blir ledig."
+
+      # Blob conversion
+      converting_blobs: "Konverterar äldre blobformat"
+      converting_blobs_detail: "detta kan ta några minuter..."
+      blobs_converted: "Äldre blobformat har konverterats."
+
+      # Blob progress
+      blobs_uploaded: "Uppladdade blobbar"
+      files: "filer"
+      data_transferred: "Data överfört"
+      failed: "Misslyckades"
+      preparing_blobs: "Förbereder överföring av <strong>%{count}</strong> blobbar..."
+
+      # Download/backup progress
+      downloading_account: "Laddar ner kontodata"
+      downloading_detail: "laddar ner ditt arkiv + blobbar för säkerhetskopia..."
+      creating_backup: "Skapar säkerhetskopia"
+      creating_backup_detail: "paketerar dina kontodata..."
+      downloaded_count: "Nedladdat: %{downloaded} / %{total} blobbar"
+      backup_expired: "Säkerhetskopian har gått ut"
+      backup_expired_detail: "din säkerhetskopia har raderats från våra servrar."
+
+      # PLC pending
+      updating_identity: "Uppdaterar din identitet"
+      plc_accepted: "Din bekräftelsekod har accepterats. Vi uppdaterar nu din PLC-katalogpost för att peka mot <strong>%{pds}</strong>. Detta kan ta en stund."
+      page_auto_update: "Denna sida uppdateras automatiskt. Vänligen stäng inte denna flik."
+      enter_confirmation: "Ange din bekräftelsekod"
+      confirmation_hint: "Kontrollera din e-post för en kod från <strong>%{pds}</strong> &mdash; den ser ut som <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Bekräftelsekod"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Slutför flytt"
+      complete_confirm: "Detta kommer att slutföra din kontoflyttning. Detta steg kan inte ångras.\n\nÄr du säker på att du vill fortsätta?"
+
+      # Completed
+      completed_title: "Flytt slutförd!"
+      completed_migrated_to: "Ditt konto har flyttats till <strong>%{pds}</strong>. Du kan nu logga in med ditt nya handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Ditt konto har flyttats tillbaka till <strong>%{pds}</strong>. Du kan nu logga in med ditt handle: <strong>%{handle}</strong>"
+      email_sent_html: "Vi har skickat ett e-postmeddelande till %{email} med ditt nya kontolösenord, inloggningsinstruktioner och en länk för att byta lösenord. Vänligen kontrollera din inkorg (och skräppostmapp)."
+      save_rotation_key: "SPARA DIN ROTATIONSNYCKEL!"
+      page_auto_delete: "Denna sida raderas automatiskt om 2 dagar."
+      rotation_key_needed: "Din rotationsnyckel behövs för kontoåterställning. Kopiera den nu och förvara den säkert!"
+      copy_rotation_key: "Kopiera rotationsnyckel"
+      key_emailed: "Vi har även skickat denna nyckel till <strong>%{email}</strong>"
+      privacy_notice: "Integritetsmeddelande"
+      privacy_detail: "För din integritet och GDPR-efterlevnad kommer denna flyttningspost att raderas automatiskt om <strong>2 dagar</strong>. Se till att du har sparat din rotationsnyckel och laddat ner din säkerhetskopia innan dess!"
+      privacy_delete_now: "När du har sparat allt kan du radera dina data direkt med knappen nedan."
+      delete_confirm: "Är du säker på att du vill permanent radera alla flyttningsdata?\n\nSe till att du har:\n• Kopierat din rotationsnyckel\n• Laddat ner din säkerhetskopia (om tillämpligt)\n\nDenna åtgärd kan inte ångras."
+      delete_button: "Jag har sparat min säkerhetskopia och rotationsnyckel — radera alla mina data"
+      welcome_back: "Dina gamla kontouppgifter har raderats säkert. Välkommen tillbaka!"
+      welcome_new: "Dina gamla kontouppgifter har raderats säkert. Välkommen till ditt nya hem!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Kontoåterställningsnyckel"
+      recovery_key_important: "VIKTIGT:"
+      recovery_key_help: "Spara denna rotationsnyckel säkert. Den gör det möjligt att ångra PLC-ändringar eller återställa ditt konto."
+      copy_clipboard: "Kopiera till urklipp"
+      revert_title: "Hur du använder denna nyckel för att ångra ändringar"
+      revert_help: "Om du behöver ångra PLC-katalogändringar kan du använda denna rotationsnyckel:"
+      revert_step1: "Installera CLI-verktyget <code>goat</code>"
+      revert_step2: "Hämta din PLC-historik: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identifiera önskat historiskt tillstånd (CID)"
+      revert_step4: "Skapa en återställningsoperation: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Signera med din rotationsnyckel: <code>goat plc sign</code>"
+      revert_step6: "Skicka den signerade operationen: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Detta är en avancerad operation. Använd den endast om du förstår PLC-katalogsystemet."
+
+      # PLC help section
+      didnt_receive_plc: "Fick du inte e-postmeddelandet?"
+      plc_check_spam: "Kontrollera din skräppost- eller junkmapp"
+      plc_from_bluesky: "E-postmeddelandet kommer från Bluesky, inte från oss"
+      plc_expires: "Koden upphör efter 1 timme"
+      plc_new_code_help: "Om du behöver en ny kod, ange ditt lösenord nedan så begär vi en:"
+      plc_password_placeholder: "Lösenord för %{handle}"
+      request_new_code: "Begär ny kod"
+      technical_details: "Tekniska detaljer"
+      plc_explanation: "Bekräftelsekoden är en <strong>PLC-operationstoken</strong> — den auktoriserar uppdatering av ditt DID-dokument i PLC-katalogen för att peka mot din nya Personal Data Server."
+      plc_irreversible: "<strong>Detta är oåterkalleligt.</strong> När det väl skickats kommer din kontoidentitet (DID) permanent att peka mot <strong>%{new_pds}</strong> istället för <strong>%{old_pds}</strong>."
+      plc_expiry_note: "PLC-tokens upphör efter 1 timme. Om din har gått ut kan du begära en ny."
+
+      # Sidebar
+      download_backup: "Ladda ner din säkerhetskopia"
+      backup_ready: "Säkerhetskopia klar"
+      backup_download_completed: "Ladda ner din säkerhetskopia innan den går ut."
+      backup_download_ready: "Din kontosäkerhetskopia är klar! Ladda ner den innan den går ut."
+      size: "Storlek:"
+      expires: "Går ut:"
+      download_button: "Ladda ner säkerhetskopia"
+      recovery_key: "Återställningsnyckel"
+      recovery_key_sidebar: "Spara denna nyckel säkert. Den gör det möjligt att återställa ditt konto."
+      copy_key: "Kopiera nyckel"
+      cancel_migration: "Avbryt flytt"
+      cancel_help: "Avbryt denna flytt och behåll ditt konto på dess nuvarande server."
+      cancel_button: "Avbryt flytt"
+      cancel_confirm: "Är du säker på att du vill avbryta denna flytt?\n\nEn bekräftelselänk skickas till din e-post. Flytten avbryts först efter att du klickar på den länken."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Aktuell status:"
+      retry_attempt: "Försöksomgång:"
+      remaining_attempts: "Återstående försök:"
+      next_retry: "Nästa försök om"
+      calculating: "beräknar..."
+      retrying_now: "försöker igen nu..."
+      reauth_safe: "Dina flyttningsdata är säkra — ange bara ditt lösenord igen för att fortsätta."
+      reauth_help: "Ange lösenordet för <strong>%{handle}</strong> för att återställa din session och fortsätta flytten."
+      password_for: "Lösenord för %{handle}"
+      enter_password_placeholder: "Ange ditt kontolösenord"
+      reauth_button: "Autentisera igen och fortsätt flytt"
+      plc_safe: "Dina flyttningsdata är säkra — du behöver bara en ny PLC-token."
+      plc_request_help: "Klicka på knappen nedan för att begära en ny PLC-token. Du får den via e-post från <strong>%{pds}</strong>."
+      request_plc_confirm: "Begär en ny PLC-token från din gamla PDS?"
+      request_plc_button: "Begär ny PLC-token"
+      plc_session_expired: "Din session med <strong>%{pds}</strong> har gått ut. Ange lösenordet för <strong>%{handle}</strong> för att återansluta och begära en ny PLC-token."
+      reauth_plc_button: "Autentisera igen och begär PLC-token"
+      what_happened_title: "Vad som hände och vad du kan göra"
+      what_happened: "Vad som hände:"
+      what_to_do: "Vad du kan göra:"
+      request_plc_action: "Begär ny PLC-token"
+      retry_migration: "Försök flytten igen"
+      retry_confirm: "Försöka flytten igen från det aktuella steget?"
+      start_new: "Starta ny flytt"
+      check_pds: "Kontrollera PDS-status"
+      download_report: "Ladda ner rapport över misslyckade blobbar"
+      cleanup_title: "Städningsinstruktioner"
+      cleanup_help: "För att städa det övergivna kontot, kör detta kommando (kräver serveråtkomst):"
+      cleanup_contact: "Eller kontakta destinationsserverns PDS-administratör för att manuellt radera det övergivna kontot."
+      rotation_key_save: "Din rotationsnyckel (SPARA DENNA)"
+      copy_rotation_key: "Kopiera rotationsnyckel"
+      contact_support: "Kontakta supporten omedelbart"
+      support_email: "Support-e-post:"
+      migration_token: "Flyttningstoken:"
+      include_token: "Inkludera din flyttningstoken i din supportförfrågan för snabbare hjälp."
+      technical_title: "Tekniska detaljer (för felsökning)"
+      error_message: "Felmeddelande:"
+      job_step: "Jobbsteg:"
+      migration_status: "Flyttstatus:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PUNKT UTAN ÅTERVÄNDO"
+      subtitle: "Nästa åtgärd kommer permanent omdirigera ditt DID till den nya PDS:en"
+      once_submit: "När du skickar PLC-token:"
+      will_point: "Ditt DID (%{did}) kommer att peka mot %{pds}"
+      all_apps: "Alla AT Protocol-appar kommer att lösa din identitet till den nya PDS:en"
+      immediate: "Denna ändring är omedelbar och påverkar hela det federerade nätverket"
+      cannot_undo: "Denna åtgärd KAN INTE ångras utan din rotationsnyckel"
+      what_you_need: "Vad du behöver innan du fortsätter:"
+      need_rotation_key: "Din rotationsnyckel sparad säkert (scrolla upp för att kopiera den)"
+      need_data_verified: "Verifierat att all din data har flyttats (arkiv, blobbar, inställningar)"
+      need_plc_token: "PLC-operationstoken (skickas till din e-post från %{pds})"
+      need_understanding: "Förståelse för att detta är oåterkalleligt utan rotationsnyckeln"
+      instructions_title: "Steg-för-steg-instruktioner:"
+      step1_title: "Spara din rotationsnyckel"
+      step1_help: "Scrolla upp och kopiera din rotationsnyckel till en säker plats (lösenordshanterare, krypterad fil). Detta är ditt ENDA sätt att återställa om något går fel."
+      step2_title: "Kontrollera din e-post"
+      step2_help: "Din gamla PDS-leverantör (<strong>%{pds}</strong>) har ombetts skicka dig en PLC-operationstoken via e-post. Kontrollera din inkorg efter ett meddelande med token."
+      step3_title: "Kopiera PLC-token"
+      step3_help: "Kopiera PLC-operationstoken från e-postmeddelandet från din gamla PDS-leverantör. Token kommer att se ut som en lång teckensträng."
+      step4_title: "Skicka token nedan"
+      step4_help: "Klistra in PLC-token i formuläret nedan och skicka för att slutföra din flytt."
+      final_warning: "Sista varningen: Är du redo?"
+      check_saved: "Har du sparat din rotationsnyckel på en säker plats?"
+      check_understand: "Förstår du att denna ändring är permanent och påverkar hela AT Protocol-nätverket?"
+      check_prepared: "Är du beredd att förlora åtkomsten om du inte har din rotationsnyckel?"
+      check_verified: "Har du verifierat att all din data (inlägg, media, inställningar) har flyttats korrekt?"
+      do_not_proceed: "Om du svarade NEJ på någon av dessa frågor, fortsätt INTE ännu."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Vi har skickat en verifieringskod till %{email}. Ange den på nästa sida för att starta din flytt."
+      # Verify email
+      email_verified: "E-post verifierad! Din flytt har startat."
+      invalid_code: "Ogiltig verifieringskod. Vänligen kontrollera koden i din e-post och försök igen."
+      enter_code: "Vänligen ange verifieringskoden från din e-post."
+      # PLC token
+      plc_submitted: "PLC-token skickad! Ditt DID uppdateras snart."
+      plc_blank: "PLC-token får inte vara tom"
+      session_expired: "Din session har gått ut. Vänligen ange ditt lösenord igen för att fortsätta."
+      old_session_expired: "Din session med %{pds} har gått ut. Vänligen ange ditt lösenord igen för att fortsätta."
+      credentials_expired: "Dina uppgifter har gått ut. Vänligen ange ditt lösenord igen för att fortsätta."
+      # Cancellation
+      cancellation_sent: "En bekräftelselänk för avbokning har skickats till din e-post. Vänligen kontrollera din inkorg."
+      cannot_cancel: "Denna flytt kan inte avbrytas i sitt nuvarande skede."
+      cancel_email_failed: "Kunde inte skicka avbokningsmeddelande. Vänligen försök igen."
+      invalid_cancel_link: "Ogiltig avbokningslänk. Vänligen begär en ny från flyttningsstatussidan."
+      cancel_too_late: "Denna flytt kan inte längre avbrytas (den kan ha passerat punkten utan återvändo)."
+      cancelled: "Flytt avbruten. Ditt konto förblir oförändrat på %{pds}. Du kan starta en ny flytt när som helst."
+      # Delete
+      only_completed: "Endast slutförda flyttningar kan raderas."
+      deleted: "All flyttningsdata har permanent raderats. Tack för att du använde %{site_name}!"
+      # Retry
+      retry_started: "Nytt flyttningsförsök har startats!"
+      not_failed: "Flytten är inte i misslyckat tillstånd och kan inte göras om"
+      no_failed_blobs: "Inga misslyckade blobbar att göra om"
+      retrying_blobs: "Försöker igen med %{count} misslyckade blobbar..."
+      # Backup
+      backup_not_found: "Säkerhetskopia hittades inte eller har gått ut"
+      # API errors
+      did_required: "DID krävs"
+      pds_required: "PDS-värd krävs"
+      handle_required: "Handle krävs"
+      password_required: "Lösenord krävs"
+      pds_did_password_required: "PDS-värd, DID och lösenord krävs"
+      two_factor_required: "Tvåfaktorsautentisering krävs. Kontrollera din e-post för en inloggningskod."
+      wrong_password: "Fel lösenord för ditt Bluesky-konto. Vänligen ange lösenordet du använde på bsky.social."
+      auth_failed: "Autentisering misslyckades: %{error}"
+      invalid_pds_response: "Ogiltigt svar från destinations-PDS"
+      pds_connect_failed: "Kunde inte ansluta till destinations-PDS. Vänligen försök igen."
+      resolve_failed: "Kunde inte lösa handle. Vänligen kontrollera att handle är korrekt."
+      auth_check_failed: "Autentisering misslyckades. Vänligen kontrollera ditt lösenord."
+      unexpected_error: "Ett oväntat fel uppstod. Vänligen försök igen."
+      unexpected_error_detail: "Ett oväntat fel uppstod: %{error}"
+      tokens_missing: "Autentiseringstokens saknas. Vänligen gå tillbaka och autentisera dig igen."
+      account_not_found: "Inget konto hittades på %{pds} med ditt DID (%{did}). Vänligen gå tillbaka och välj en annan destinations-PDS eller starta en ny flytt."
+      account_verify_failed: "Kunde inte verifiera kontoexistens på %{pds}: %{error}. Vänligen försök igen."
+      target_tokens_missing: "Autentiseringstokens för destinations-PDS saknas. Vänligen gå tillbaka och verifiera dina uppgifter på %{pds}."
+      reauth_not_available: "Omautentisering är inte tillgänglig i detta skede."
+      reauth_failed: "Autentisering misslyckades: %{error}. Vänligen kontrollera ditt lösenord."
+      reauth_error: "Omautentisering misslyckades: %{error}"
+      plc_not_available: "Kan inte begära en ny PLC-token i detta skede. PLC-uppdateringen kan redan ha försökts."
+      plc_requested: "En ny PLC-token har begärts. Kontrollera din e-post från %{pds}."
+      plc_request_failed: "Kunde inte automatiskt begära en ny PLC-token (%{error}). Vänligen begär en manuellt via din gamla PDS-leverantörs inställningar (t.ex. Bluesky-appen → Inställningar → Konto → Begär PLC-token) och ange den sedan nedan."
+      plc_session_expired: "Din session med %{pds} har gått ut. Vänligen begär en ny PLC-token manuellt: logga in på ditt gamla konto och gå till Inställningar → Konto → Begär PLC-token, ange sedan token nedan."
+      pds_connect_check: "Kunde inte ansluta till PDS. Vänligen kontrollera URL:en."
+      migration_not_found: "Flytt hittades inte"
+      password_required_short: "Lösenord krävs."
+      reauth_success_plc_valid: "Omautentisering lyckades! Din PLC-token är fortfarande giltig — försöker PLC-uppdateringen igen nu."
+      reauth_success_plc_requested: "Omautentisering lyckades! En ny PLC-token har begärts — kontrollera din e-post från %{pds}."
+      reauth_success_plc_failed: "Omautentisering lyckades, men kunde inte automatiskt begära PLC-token (%{error}). Du kan begära en manuellt via din gamla PDS-leverantörs inställningar och sedan ange den nedan."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky flytningstjänst"
+
+    email_verification:
+      subject: "Din verifieringskod: %{code} (%{token})"
+      heading: "VERIFIERA DIN E-POST - STARTA KONTOFLYTTNING"
+      migration_token: "Flyttningstoken: %{token}"
+      initiated: "Du har initierat en flytt för %{handle} till %{pds}."
+      enter_code: "Ange följande verifieringskod på flyttningssidan för att starta processen:"
+      go_to_page: "Gå till flyttningssidan:"
+      what_next: "VAD HÄNDER HÄRNÄST?"
+      next_step1: "Ange verifieringskoden ovan på flyttningssidan"
+      next_step2: "Din flytt startar automatiskt"
+      next_step3: "Du kommer att få statusuppdateringar via e-post"
+      next_step4: "Hela processen tar ungefär 20-30 minuter"
+      important: "VIKTIGA PÅMINNELSER"
+      reminder1: "Använd inte ditt konto under flytten"
+      reminder2: "All aktivitet under flytten kommer inte att överföras"
+      reminder3: "Stäng alla appar och webbläsarflikar med ditt konto"
+      reminder4: "Vänta på bekräftelsemeddelandet innan du loggar in igen"
+      not_you: "Om du inte initierade denna flytt, vänligen ignorera detta meddelande."
+
+    account_password:
+      subject: "Ditt nya kontolösenord för %{handle} (%{token})"
+      heading: "DITT NYA KONTOLÖSENORD"
+      intro: "Din flytt har startat! Vi har skapat ett säkert lösenord för ditt nya konto."
+      security_notice: "SÄKERHETSMEDDELANDE"
+      save_password: "SPARA DETTA LÖSENORD OMEDELBART! Du behöver det för att logga in på ditt nya konto."
+      tip1: "Spara det i en säker lösenordshanterare"
+      tip2: "Dela det inte med någon"
+      tip3: "Du kan ändra det efter din första inloggning"
+      account_details: "KONTOUPPGIFTER"
+      new_handle: "Nytt handle: @%{handle}"
+      new_pds: "Ny PDS: %{pds}"
+      email: "E-post: %{email}"
+      whats_happening: "VAD HÄNDER NU?"
+      backup_step1: "Vi skapar en säkerhetskopia av dina kontodata"
+      backup_step2: "Du får ett annat meddelande när din säkerhetskopia är klar att ladda ner"
+      backup_step3: "Ditt konto skapas och dina data flyttas"
+      no_backup_step1: "Ditt konto skapas på den nya PDS:en"
+      no_backup_step2: "Dina data flyttas (utan säkerhetskopia)"
+      no_backup_step3: "Du meddelas när flytten är klar"
+      track_progress: "Följ din flyttnings framsteg på:"
+
+    migration_completed:
+      subject: "Flytt slutförd! (%{token})"
+      heading: "FLYTT SLUTFÖRD!"
+      success: "Ditt Bluesky/ATProto-konto har flyttats till den nya PDS:en."
+      password_heading: "DITT NYA KONTOLÖSENORD"
+      password_help: "Använd detta lösenord för att logga in på ditt nya konto:"
+      save_password: "Spara detta lösenord nu — spara det i en lösenordshanterare."
+      change_password: "Du kan ändra det efter din första inloggning."
+      backup_heading: "SÄKERHETSKOPIA TILLGÄNGLIG"
+      backup_help: "Din kontosäkerhetskopia är tillgänglig för nedladdning de närmaste 10 minuterna:"
+      backup_expiry: "Efter 10 minuter upphör denna länk och säkerhetskopian raderas permanent."
+      summary: "FLYTTNINGSSAMMANFATTNING"
+      migration_token: "Flyttningstoken: %{token}"
+      did: "DID: %{did}"
+      old_account: "Gammalt konto: %{handle} @ %{pds}"
+      new_account: "Nytt konto: %{handle} @ %{pds}"
+      completed_at: "Slutfört: %{time}"
+      status_page: "Visa statussida (tillgänglig i 10 minuter):"
+      login_heading: "HUR DU LOGGAR IN PÅ DITT NYA KONTO"
+      login_help: "Om du inte redan gjort det, logga ut från ditt gamla konto i valfri Bluesky-app och logga sedan in med ditt nya handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "VIKTIGT: Se till att ange \"%{pds}\" som din värdleverantör högst upp i inloggningsformuläret!"
+      hosting_miss: "Många användare missar detta steg — utan rätt värdleverantör kommer du inte att kunna logga in."
+      change_password_heading: "BYT DITT LÖSENORD"
+      change_password_help: "För din säkerhet rekommenderar vi starkt att du byter lösenord omedelbart:"
+      change_password_later: "Du kan även byta det senare i dina kontoinställningar."
+      whats_next: "VAD HÄNDER HÄRNÄST?"
+      next1: "Ditt konto är nu aktivt på %{pds}"
+      next2: "Ditt gamla konto på %{old_pds} har inaktiverats"
+      next3: "Alla dina inlägg, följningar och data har överförts"
+      next4: "Dina följare bör automatiskt se din nya plats (DID-baserat)"
+      privacy_heading: "INTEGRITET OCH SÄKERHET"
+      privacy1: "Denna flyttningspost raderas automatiskt om 10 minuter för GDPR-efterlevnad"
+      privacy2: "Alla krypterade uppgifter har raderats säkert från våra servrar"
+      support: "Om du har frågor eller problem, vänligen kontakta supporten med din flyttningstoken:"
+      email_footer: "Detta meddelande skickades till %{email} eftersom du initierade en kontoflyttning."
+
+    migration_failed:
+      subject: "Flytt misslyckades - Åtgärd krävs (%{token})"
+      heading: "Eurosky-flytt misslyckades - Åtgärd krävs"
+      intro: "Din kontoflyttning %{token} har stött på ett fel och kräver din uppmärksamhet."
+      account_details: "Kontouppgifter:"
+      did: "DID: %{did}"
+      old_handle: "Gammalt handle: @%{handle}"
+      new_handle: "Nytt handle: @%{handle}"
+      failure_info: "Felinformation:"
+      failed_step: "Misslyckat steg: %{step}"
+      error: "Fel: %{error}"
+      previous_retries: "Tidigare försök: %{count}"
+      what_to_do: "Vad du kan göra:"
+      do_step1: "Granska flyttstatusen:"
+      do_step2: "Klicka på knappen \"Försök flytten igen\" för att göra ett nytt försök"
+      do_step3: "Om problemet kvarstår efter flera försök, vänligen kontakta supporten med din flyttningstoken: %{token}"
+      common_issues: "Vanliga problem och lösningar:"
+      issue1: "Nätverkstimeout: Löser sig vanligtvis vid nytt försök"
+      issue2: "Hastighetsbegränsning: Vänta några minuter innan du försöker igen"
+      issue3: "Saknade data: Kontrollera att all data är tillgänglig på den gamla PDS:en"
+      important: "VIKTIGT:"
+      note1: "Dina data på den gamla PDS:en förblir intakta"
+      note2: "Du kan säkert försöka flytten igen"
+      note3: "Om du behöver hjälp, uppge din flyttningstoken: %{token}"
+
+    backup_ready:
+      subject: "Din Eurosky-säkerhetskopia är klar (%{token})"
+      heading: "DIN SÄKERHETSKOPIA ÄR KLAR"
+      intro: "Din kontosäkerhetskopia för flytt %{token} är klar att ladda ner."
+      download: "Ladda ner din säkerhetskopia:"
+      size: "Säkerhetskopians storlek: %{size}"
+      expires: "Denna nedladdningslänk upphör %{time}."
+      expiry_warning: "Efter utgångsdatumet raderas säkerhetskopian permanent från våra servrar."
+      whats_next: "Din flytt fortsätter i bakgrunden. Du får ett annat meddelande när den är klar."
+
+    rotation_key_notice:
+      subject: "Åtgärd krävs: Bekräfta din flytt med PLC-koden (%{token})"
+      heading: "BEKRÄFTA DIN FLYTT"
+      intro: "Dina kontodata har överförts. För att slutföra flytten behöver du skicka en PLC-bekräftelsekod."
+      key_heading: "DIN ROTATIONSNYCKEL (SPARA DENNA FÖRST!)"
+      key_help: "Innan du fortsätter, spara denna rotationsnyckel säkert. Det är ditt enda sätt att återställa ditt konto om något går fel:"
+      key_warning: "Spara denna nyckel i en lösenordshanterare eller annan säker plats. Du kommer INTE kunna hämta den senare."
+      next_step: "Gå till flyttningssidan för att ange din PLC-bekräftelsekod:"
+      check_email: "Kontrollera din e-post för en kod från din gamla PDS-leverantör — den ser ut som XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Åtgärd krävs: Begär en ny PLC-bekräftelsekod (%{token})"
+      heading: "PLC-TOKEN HAR GÅTT UT ELLER ÄR OGILTIG"
+      intro: "PLC-bekräftelsekoden för din flytt %{token} har gått ut eller var ogiltig."
+      what_to_do: "Vad du behöver göra:"
+      step1: "Gå till flyttningssidan:"
+      step2: "Begär en ny PLC-token (du kan behöva ange ditt lösenord igen)"
+      step3: "Ange den nya token när du får den via e-post"
+      error_detail: "Fel: %{error}"
+
+    critical_plc_failure:
+      subject: "BRÅDSKANDE: Kritiskt flyttningsfel - STARTA INTE NY FLYTT (%{token})"
+      heading: "KRITISKT FLYTTNINGSFEL"
+      warning: "STARTA INTE en ny flytt. Ditt konto kan vara i ett inkonsekvent tillstånd."
+      intro: "PLC-kataloguppdateringen för flytt %{token} har misslyckats efter punkten utan återvändo."
+      key_heading: "DIN ROTATIONSNYCKEL"
+      key_help: "Du behöver denna nyckel för att återställa ditt konto:"
+      contact: "Kontakta supporten omedelbart:"
+      error_detail: "Fel: %{error}"
+
+    invalid_invite_code:
+      subject: "Flytt misslyckades - Ogiltig inbjudningskod (%{token})"
+      heading: "OGILTIG INBJUDNINGSKOD"
+      intro: "Din flytt %{token} kunde inte fortsätta eftersom inbjudningskoden var ogiltig eller redan har använts."
+      what_to_do: "För att starta en ny flytt med en giltig inbjudningskod:"
+
+    orphaned_account_error:
+      subject: "Flytt pausad - Övergivet konto på destinations-PDS (%{token})"
+      heading: "ÖVERGIVET KONTO UPPTÄCKT"
+      intro: "Din flytt %{token} har pausats eftersom ett övergivet konto hittades på destinations-PDS:en."
+      explanation: "Detta händer vanligtvis när ett tidigare flyttningsförsök avbröts. Det gamla kontot finns fortfarande på destinationsservern och måste tas bort innan vi kan fortsätta."
+      what_to_do: "Vad du kan göra:"
+      option1: "Kontakta destinations-PDS:ens administratör på %{email} för att ta bort det övergivna kontot"
+      option2: "Inkludera ditt DID: %{did}"
+      option3: "När det är borttaget, försök flytten igen från statussidan:"
+
+    reauthentication_required:
+      subject: "Åtgärd krävs: Omautentisering behövs (%{token})"
+      heading: "OMAUTENTISERING KRÄVS"
+      intro: "Din flytt %{token} kräver att du anger ditt lösenord igen för att fortsätta."
+      reason: "Din session med den gamla PDS:en har gått ut under flyttningsprocessen."
+      what_to_do: "Gå till flyttningssidan och ange ditt lösenord igen:"
+      error_detail: "Fel: %{error}"
+      step: "Misslyckat steg: %{step}"
+
+    cancellation_confirmation:
+      subject: "Bekräftelse av flyttningsavbokning (%{token})"
+      heading: "BEKRÄFTA AVBOKNING"
+      intro: "Du har begärt att avbryta flytt %{token}."
+      confirm_help: "Klicka på länken nedan för att bekräfta avbokningen:"
+      confirm_link: "Bekräfta avbokning"
+      not_you: "Om du inte begärde denna avbokning kan du lugnt ignorera detta meddelande. Din flytt fortsätter som vanligt."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "måste vara ett giltigt ATProto-handle (t.ex. användare.bsky.social)"

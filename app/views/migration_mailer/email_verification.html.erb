@@ -89,17 +89,16 @@
 </head>
 <body>
   <div class="header">
-    <h1>Verify Your Email</h1>
-    <p>Start Your Account Migration</p>
-    <p>Migration <%= @migration.token %></p>
+    <h1><%= t('mailers.email_verification.heading') %></h1>
+    <p><%= t('mailers.email_verification.migration_token', token: @migration.token) %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>You've initiated a migration for <strong><%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong>.</p>
+    <p><%= t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host).html_safe %></p>
 
-    <p>Enter the following verification code on the migration page to start the process:</p>
+    <p><%= t('mailers.email_verification.enter_code') %></p>
 
     <div class="code-box">
       <div class="code-label">Your verification code</div>
@@ -107,33 +106,33 @@
     </div>
 
     <div style="text-align: center;">
-      <a href="<%= @status_url %>" class="status-link">Go to Migration Page</a>
+      <a href="<%= @status_url %>" class="status-link"><%= t('mailers.email_verification.go_to_page').chomp(':') %></a>
     </div>
 
     <div class="info-box">
-      <h3 style="margin-top: 0;">What Happens Next?</h3>
+      <h3 style="margin-top: 0;"><%= t('mailers.email_verification.what_next') %></h3>
       <ul style="margin: 10px 0;">
-        <li>Enter the verification code above on the migration page</li>
-        <li>Your migration will start automatically</li>
-        <li>You'll receive status updates via email</li>
-        <li>The entire process takes approximately 20-30 minutes</li>
+        <li><%= t('mailers.email_verification.next_step1') %></li>
+        <li><%= t('mailers.email_verification.next_step2') %></li>
+        <li><%= t('mailers.email_verification.next_step3') %></li>
+        <li><%= t('mailers.email_verification.next_step4') %></li>
       </ul>
     </div>
 
     <div class="warning-box">
-      <h3 style="margin-top: 0;">Important Reminders</h3>
+      <h3 style="margin-top: 0;"><%= t('mailers.email_verification.important') %></h3>
       <ul style="margin: 10px 0; margin-bottom: 0;">
-        <li><strong>Do not use your account</strong> during the migration</li>
-        <li>Any activity during migration will not be transferred</li>
-        <li>Close all apps and browser tabs with your account</li>
-        <li>Wait for the completion email before logging in again</li>
+        <li><strong><%= t('mailers.email_verification.reminder1') %></strong></li>
+        <li><%= t('mailers.email_verification.reminder2') %></li>
+        <li><%= t('mailers.email_verification.reminder3') %></li>
+        <li><%= t('mailers.email_verification.reminder4') %></li>
       </ul>
     </div>
 
     <div class="footer">
-      <p>Migration Token: <code><%= @migration.token %></code></p>
-      <p>If you didn't initiate this migration, please ignore this email.</p>
-      <p>Eurosky Migration Service</p>
+      <p><%= t('mailers.email_verification.migration_token', token: @migration.token) %></p>
+      <p><%= t('mailers.email_verification.not_you') %></p>
+      <p><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

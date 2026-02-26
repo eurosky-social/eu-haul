@@ -56,12 +56,12 @@ class MigrationsController < ApplicationController
     pds_host = params[:pds_host]&.strip
 
     if did.blank?
-      render json: { error: 'DID is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.did_required') }, status: :bad_request
       return
     end
 
     if pds_host.blank?
-      render json: { error: 'PDS host is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.pds_required') }, status: :bad_request
       return
     end
 
@@ -96,7 +96,7 @@ class MigrationsController < ApplicationController
       end
     rescue StandardError => e
       Rails.logger.error("Error checking DID on PDS: #{e.message}")
-      render json: { error: "Failed to check PDS" }, status: :internal_server_error
+      render json: { error: I18n.t('controllers.migrations.pds_connect_failed') }, status: :internal_server_error
     end
   end
 
@@ -119,7 +119,7 @@ class MigrationsController < ApplicationController
     password = params[:password]&.strip
 
     if pds_host.blank? || did.blank? || password.blank?
-      render json: { error: 'PDS host, DID, and password are required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.pds_did_password_required') }, status: :bad_request
       return
     end
 
@@ -144,16 +144,16 @@ class MigrationsController < ApplicationController
 
       # Check for 2FA requirement
       if error_body['error'] == 'AuthFactorTokenRequired'
-        render json: { two_factor_required: true, error: "Two-factor authentication required. Check your email for a sign-in code." }, status: :unauthorized
+        render json: { two_factor_required: true, error: I18n.t('controllers.migrations.two_factor_required') }, status: :unauthorized
         return
       end
 
       error_msg = error_body['message'] || error_body['error'] || 'Authentication failed'
 
       if error_msg.include?('Invalid identifier or password')
-        render json: { error: "Wrong password for your Bluesky account. Please enter the password you used on bsky.social." }, status: :unauthorized
+        render json: { error: I18n.t('controllers.migrations.wrong_password') }, status: :unauthorized
       else
-        render json: { error: "Authentication failed: #{error_msg}" }, status: :unauthorized
+        render json: { error: I18n.t('controllers.migrations.auth_failed', error: error_msg) }, status: :unauthorized
       end
       return
     end
@@ -167,10 +167,10 @@ class MigrationsController < ApplicationController
     }
   rescue JSON::ParserError => e
     Rails.logger.error("Failed to parse target PDS response: #{e.message}")
-    render json: { error: "Invalid response from target PDS" }, status: :internal_server_error
+    render json: { error: I18n.t('controllers.migrations.invalid_pds_response') }, status: :internal_server_error
   rescue StandardError => e
     Rails.logger.error("Failed to verify target credentials: #{e.message}")
-    render json: { error: "Failed to connect to target PDS. Please try again." }, status: :internal_server_error
+    render json: { error: I18n.t('controllers.migrations.pds_connect_failed') }, status: :internal_server_error
   end
 
   # POST /migrations/check_handle
@@ -189,12 +189,12 @@ class MigrationsController < ApplicationController
     user_did = params[:did]&.strip  # The authenticated user's DID (for migration_in)
 
     if handle.blank?
-      render json: { error: 'Handle is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.handle_required') }, status: :bad_request
       return
     end
 
     if pds_host.blank?
-      render json: { error: 'PDS host is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.pds_required') }, status: :bad_request
       return
     end
 
@@ -271,7 +271,7 @@ class MigrationsController < ApplicationController
     pds_host = params[:pds_host]&.strip
 
     if pds_host.blank?
-      render json: { error: 'PDS host is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.pds_required') }, status: :bad_request
       return
     end
 
@@ -284,7 +284,7 @@ class MigrationsController < ApplicationController
     response = HTTParty.get(describe_url, timeout: 10)
 
     unless response.success?
-      render json: { error: "Could not connect to PDS. Please check the URL." }, status: :not_found
+      render json: { error: I18n.t('controllers.migrations.pds_connect_check') }, status: :not_found
       return
     end
 
@@ -304,11 +304,11 @@ class MigrationsController < ApplicationController
     }
   rescue JSON::ParserError => e
     Rails.logger.error("Failed to parse PDS response: #{e.message}")
-    render json: { error: "Invalid response from PDS" }, status: :internal_server_error
+    render json: { error: I18n.t('controllers.migrations.invalid_pds_response') }, status: :internal_server_error
   rescue HTTParty::Error, StandardError => e
     Rails.logger.error("Failed to check PDS requirements: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n")) if e.respond_to?(:backtrace)
-    error_message = Rails.env.production? ? "Failed to connect to PDS. Please check the URL." : "Failed to connect to PDS: #{e.message}"
+    error_message = Rails.env.production? ? I18n.t('controllers.migrations.pds_connect_check') : "Failed to connect to PDS: #{e.message}"
     render json: { error: error_message }, status: :internal_server_error
   end
 
@@ -327,12 +327,12 @@ class MigrationsController < ApplicationController
     password = params[:password]&.strip
 
     if handle.blank?
-      render json: { error: 'Handle is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.handle_required') }, status: :bad_request
       return
     end
 
     if password.blank?
-      render json: { error: 'Password is required' }, status: :bad_request
+      render json: { error: I18n.t('controllers.migrations.password_required') }, status: :bad_request
       return
     end
 
@@ -368,14 +368,14 @@ class MigrationsController < ApplicationController
     render json: { two_factor_required: true, error: e.message }, status: :unauthorized
   rescue GoatService::NetworkError => e
     Rails.logger.error("Failed to resolve handle #{handle}: #{e.message}")
-    render json: { error: "Could not resolve handle. Please check that the handle is correct." }, status: :not_found
+    render json: { error: I18n.t('controllers.migrations.resolve_failed') }, status: :not_found
   rescue AuthenticationError => e
     Rails.logger.error("Authentication failed for handle #{handle}: #{e.message}")
-    render json: { error: "Authentication failed. Please check your password." }, status: :unauthorized
+    render json: { error: I18n.t('controllers.migrations.auth_check_failed') }, status: :unauthorized
   rescue StandardError => e
     Rails.logger.error("Unexpected error during handle lookup: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    error_message = Rails.env.production? ? "An unexpected error occurred. Please try again." : "An unexpected error occurred: #{e.message}"
+    error_message = Rails.env.production? ? I18n.t('controllers.migrations.unexpected_error') : I18n.t('controllers.migrations.unexpected_error_detail', error: e.message)
     render json: { error: error_message }, status: :internal_server_error
   end
 
@@ -434,8 +434,7 @@ class MigrationsController < ApplicationController
           account_check = verify_account_exists_on_pds(@migration.new_pds_host, @migration.did)
 
           unless account_check[:exists]
-            @migration.errors.add(:base, "No account found on #{@migration.new_pds_host} with your DID (#{@migration.did}). " \
-              "Please go back and select a different target PDS, or start a new migration.")
+            @migration.errors.add(:base, I18n.t('controllers.migrations.account_not_found', pds: @migration.new_pds_host, did: @migration.did))
             render :new, status: :unprocessable_entity
             return
           end
@@ -443,8 +442,7 @@ class MigrationsController < ApplicationController
           Rails.logger.info("Pre-existing account verified on #{@migration.new_pds_host} (deactivated: #{account_check[:deactivated]}, handle: #{account_check[:handle]})")
         rescue StandardError => e
           Rails.logger.error("Failed to verify pre-existing account on #{@migration.new_pds_host}: #{e.message}")
-          @migration.errors.add(:base, "Failed to verify account existence on #{@migration.new_pds_host}: #{e.message}. " \
-            "Please try again.")
+          @migration.errors.add(:base, I18n.t('controllers.migrations.account_verify_failed', pds: @migration.new_pds_host, error: e.message))
           render :new, status: :unprocessable_entity
           return
         end
@@ -459,7 +457,7 @@ class MigrationsController < ApplicationController
       old_refresh_token = params[:migration][:old_refresh_token]
 
       if old_access_token.blank? || old_refresh_token.blank?
-        @migration.errors.add(:base, "Authentication tokens are missing. Please go back and re-authenticate.")
+        @migration.errors.add(:base, I18n.t('controllers.migrations.tokens_missing'))
         render :new, status: :unprocessable_entity
         return
       end
@@ -478,7 +476,7 @@ class MigrationsController < ApplicationController
         new_refresh_token = params[:migration][:new_refresh_token]
 
         if new_access_token.blank? || new_refresh_token.blank?
-          @migration.errors.add(:base, "Target PDS authentication tokens are missing. Please go back and verify your credentials on #{@migration.new_pds_host}.")
+          @migration.errors.add(:base, I18n.t('controllers.migrations.target_tokens_missing', pds: @migration.new_pds_host))
           render :new, status: :unprocessable_entity
           return
         end
@@ -509,17 +507,17 @@ class MigrationsController < ApplicationController
         # Password email is deferred until migration completes (sent from ActivateAccountJob)
 
         redirect_to migration_by_token_path(@migration.token),
-                    notice: "We've sent a verification code to #{@migration.email}. Enter it on the next page to start your migration."
+                    notice: I18n.t('controllers.migrations.verification_sent', email: @migration.email)
       else
         render :new, status: :unprocessable_entity
       end
     rescue GoatService::NetworkError => e
       Rails.logger.error("Failed to resolve handle #{@migration.old_handle}: #{e.message}")
-      @migration.errors.add(:old_handle, "could not be resolved. Please check that the handle is correct and try again.")
+      @migration.errors.add(:old_handle, I18n.t('controllers.migrations.resolve_failed'))
       render :new, status: :unprocessable_entity
     rescue StandardError => e
       Rails.logger.error("Unexpected error during migration creation: #{e.message}")
-      @migration.errors.add(:base, "An unexpected error occurred. Please try again.")
+      @migration.errors.add(:base, I18n.t('controllers.migrations.unexpected_error'))
       render :new, status: :unprocessable_entity
     end
   end
@@ -538,18 +536,18 @@ class MigrationsController < ApplicationController
 
     if verification_code.blank?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Please enter the verification code from your email."
+                  alert: I18n.t('controllers.migrations.enter_code')
       return
     end
 
     if @migration.verify_email!(verification_code)
       Rails.logger.info("Email verified for migration #{@migration.token}, starting migration")
       redirect_to migration_by_token_path(@migration.token),
-                  notice: "Email verified! Your migration has started."
+                  notice: I18n.t('controllers.migrations.email_verified')
     else
       Rails.logger.warn("Invalid email verification code for migration #{@migration.token}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Invalid verification code. Please check the code in your email and try again."
+                  alert: I18n.t('controllers.migrations.invalid_code')
     end
   end
 
@@ -592,7 +590,7 @@ class MigrationsController < ApplicationController
     if plc_token.blank?
       Rails.logger.warn("PLC token submission failed for migration #{@migration.token}: Token blank")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "PLC token cannot be blank"
+                  alert: I18n.t('controllers.migrations.plc_blank')
       return
     end
 
@@ -601,7 +599,7 @@ class MigrationsController < ApplicationController
     if @migration.credentials_expired?
       Rails.logger.warn("Credentials expired at PLC token submission for migration #{@migration.token} — cannot extend without re-authentication")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Your session has expired. Please re-enter your password to continue."
+                  alert: I18n.t('controllers.migrations.session_expired')
       return
     end
     @migration.update!(credentials_expires_at: 2.hours.from_now)
@@ -611,7 +609,7 @@ class MigrationsController < ApplicationController
     unless @migration.has_old_pds_tokens?
       Rails.logger.warn("Old PDS tokens missing at PLC token submission for migration #{@migration.token}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Your session with #{@migration.old_pds_host} has expired. Please re-enter your password to continue."
+                  alert: I18n.t('controllers.migrations.old_session_expired', pds: @migration.old_pds_host)
       return
     end
 
@@ -620,14 +618,14 @@ class MigrationsController < ApplicationController
       unless @migration.has_new_pds_tokens?
         Rails.logger.warn("New PDS tokens missing at PLC token submission for migration_in #{@migration.token}")
         redirect_to migration_by_token_path(@migration.token),
-                    alert: "Your session with #{@migration.new_pds_host} has expired. Please re-enter your password to continue."
+                    alert: I18n.t('controllers.migrations.old_session_expired', pds: @migration.new_pds_host)
         return
       end
     else
       if @migration.password.nil?
         Rails.logger.warn("New PDS password missing at PLC token submission for migration #{@migration.token}")
         redirect_to migration_by_token_path(@migration.token),
-                    alert: "Your credentials have expired. Please re-enter your password to continue."
+                    alert: I18n.t('controllers.migrations.credentials_expired')
         return
       end
     end
@@ -640,11 +638,11 @@ class MigrationsController < ApplicationController
     UpdatePlcJob.perform_later(@migration.id)
 
     redirect_to migration_by_token_path(@migration.token),
-                notice: "PLC token submitted! Your DID will be updated shortly."
+                notice: I18n.t('controllers.migrations.plc_submitted')
   rescue StandardError => e
     Rails.logger.error("Failed to submit PLC token for migration #{@migration.token}: #{e.message}")
     redirect_to migration_by_token_path(@migration.token),
-                alert: "Failed to submit PLC token. Please try again."
+                alert: I18n.t('controllers.migrations.unexpected_error')
   end
 
   # POST /migrations/:id/request_new_plc_token
@@ -661,7 +659,7 @@ class MigrationsController < ApplicationController
     unless @migration.status == 'pending_plc' || plc_related_failure
       Rails.logger.warn("PLC token request failed for migration #{@migration.token}: Not in correct status (status: #{@migration.status}, plc_submitted: #{plc_actually_submitted})")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Cannot request a new PLC token at this stage. The PLC update may have already been attempted."
+                  alert: I18n.t('controllers.migrations.plc_not_available')
       return
     end
 
@@ -680,24 +678,20 @@ class MigrationsController < ApplicationController
         @migration.progress_data['plc_token_resent'] = true
         @migration.save!
 
-        notice_msg = "A new PLC token has been requested. Check your email from #{@migration.old_pds_host}."
+        notice_msg = I18n.t('controllers.migrations.plc_requested', pds: @migration.old_pds_host)
       rescue StandardError => e
         Rails.logger.error("Failed to request new PLC token for migration #{@migration.token}: #{e.message}")
         Rails.logger.error(e.backtrace.join("\n"))
 
         # Even if the API call failed, reset to pending_plc so the user can
         # manually enter a token they request through other means
-        notice_msg = "Could not automatically request a new PLC token (#{e.message}). " \
-                     "Please request one manually through your old PDS provider's settings (e.g., Bluesky app → Settings → Account → Request PLC Token), " \
-                     "then enter it below."
+        notice_msg = I18n.t('controllers.migrations.plc_request_failed', error: e.message)
       end
     else
       # Old PDS tokens are no longer available (expired or cleared).
       # Reset to pending_plc and instruct the user to request the token manually.
       Rails.logger.info("Old PDS tokens unavailable for migration #{@migration.token}, resetting to pending_plc for manual token entry")
-      notice_msg = "Your session with #{@migration.old_pds_host} has expired. " \
-                   "Please request a new PLC token manually: log in to your old account and go to Settings → Account → Request PLC Token, " \
-                   "then enter the token below."
+      notice_msg = I18n.t('controllers.migrations.plc_session_expired', pds: @migration.old_pds_host)
     end
 
     # Reset to pending_plc status so user can submit the new token.
@@ -718,7 +712,7 @@ class MigrationsController < ApplicationController
     password = params[:password]&.strip
 
     if password.blank?
-      redirect_to migration_by_token_path(@migration.token), alert: "Password is required."
+      redirect_to migration_by_token_path(@migration.token), alert: I18n.t('controllers.migrations.password_required_short')
       return
     end
 
@@ -729,7 +723,7 @@ class MigrationsController < ApplicationController
     plc_related = @migration.pending_plc? || (@migration.failed? && !plc_actually_submitted)
     unless plc_related
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Re-authentication is not available at this stage."
+                  alert: I18n.t('controllers.migrations.reauth_not_available')
       return
     end
 
@@ -747,7 +741,7 @@ class MigrationsController < ApplicationController
         error_body = JSON.parse(response.body) rescue {}
         error_msg = error_body['message'] || 'Authentication failed'
         redirect_to migration_by_token_path(@migration.token),
-                    alert: "Authentication failed: #{error_msg}. Please check your password."
+                    alert: I18n.t('controllers.migrations.reauth_failed', error: error_msg)
         return
       end
 
@@ -773,17 +767,16 @@ class MigrationsController < ApplicationController
 
         @migration.update!(status: 'pending_plc', last_error: nil, error_code: nil, current_job_attempt: 0) if @migration.failed?
         UpdatePlcJob.perform_later(@migration.id)
-        notice_msg = "Re-authenticated successfully! Your PLC token is still valid — retrying the PLC update now."
+        notice_msg = I18n.t('controllers.migrations.reauth_success_plc_valid')
       else
         # No valid PLC token — request a new one
         begin
           service = GoatService.new(@migration)
           service.request_plc_token
-          notice_msg = "Re-authenticated successfully! A new PLC token has been requested — check your email from #{@migration.old_pds_host}."
+          notice_msg = I18n.t('controllers.migrations.reauth_success_plc_requested', pds: @migration.old_pds_host)
         rescue StandardError => e
           Rails.logger.error("Failed to request PLC token after re-auth for #{@migration.token}: #{e.message}")
-          notice_msg = "Re-authenticated successfully, but could not request PLC token automatically (#{e.message}). " \
-                       "You can request one manually through your old PDS provider's settings, then enter it below."
+          notice_msg = I18n.t('controllers.migrations.reauth_success_plc_failed', error: e.message)
         end
 
         # Reset to pending_plc so the PLC token form appears
@@ -797,7 +790,7 @@ class MigrationsController < ApplicationController
     rescue StandardError => e
       Rails.logger.error("Re-authentication failed for migration #{@migration.token}: #{e.message}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Failed to re-authenticate: #{e.message}"
+                  alert: I18n.t('controllers.migrations.reauth_error', error: e.message)
     end
   end
 
@@ -806,7 +799,7 @@ class MigrationsController < ApplicationController
   def request_cancellation
     unless @migration.cancellable?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "This migration cannot be cancelled at its current stage."
+                  alert: I18n.t('controllers.migrations.cannot_cancel')
       return
     end
 
@@ -823,12 +816,12 @@ class MigrationsController < ApplicationController
     rescue StandardError => e
       Rails.logger.error("[CancelMigration] Failed to send cancellation email for #{@migration.token}: #{e.message}")
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Failed to send cancellation email. Please try again."
+                  alert: I18n.t('controllers.migrations.cancel_email_failed')
       return
     end
 
     redirect_to migration_by_token_path(@migration.token),
-                notice: "A cancellation confirmation link has been sent to your email. Please check your inbox."
+                notice: I18n.t('controllers.migrations.cancellation_sent')
   end
 
   # GET /migrate/:token/confirm_cancellation?cancellation_token=XYZ
@@ -839,13 +832,13 @@ class MigrationsController < ApplicationController
 
     if stored_token.blank? || provided_token.blank? || stored_token != provided_token
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Invalid cancellation link. Please request a new one from the migration status page."
+                  alert: I18n.t('controllers.migrations.invalid_cancel_link')
       return
     end
 
     unless @migration.cancellable?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "This migration can no longer be cancelled (it may have progressed past the point of no return)."
+                  alert: I18n.t('controllers.migrations.cancel_too_late')
       return
     end
 
@@ -859,7 +852,7 @@ class MigrationsController < ApplicationController
     Rails.logger.info("[CancelMigration] Migration #{@migration.token} cancelled by user")
 
     redirect_to migration_by_token_path(@migration.token),
-                notice: "Migration cancelled successfully. Your account remains unchanged on #{@migration.old_pds_host}. You can start a new migration at any time."
+                notice: I18n.t('controllers.migrations.cancelled', pds: @migration.old_pds_host)
   end
 
   # POST /migrate/:token/confirm_delete
@@ -869,7 +862,7 @@ class MigrationsController < ApplicationController
   def confirm_delete
     unless @migration.completed?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Only completed migrations can be deleted."
+                  alert: I18n.t('controllers.migrations.only_completed')
       return
     end
 
@@ -887,11 +880,11 @@ class MigrationsController < ApplicationController
 
     # Redirect to root with a confirmation message
     redirect_to root_path,
-                notice: "All migration data has been permanently deleted. Thank you for using #{EuroskyConfig::SITE_NAME}!"
+                notice: I18n.t('controllers.migrations.deleted', site_name: EuroskyConfig::SITE_NAME)
   rescue StandardError => e
     Rails.logger.error("Failed to delete migration #{@migration&.token}: #{e.message}")
     redirect_to migration_by_token_path(@migration.token),
-                alert: "Failed to delete migration data. Please try again."
+                alert: I18n.t('controllers.migrations.unexpected_error')
   end
 
   # GET /migrations/:id/status
@@ -932,7 +925,7 @@ class MigrationsController < ApplicationController
   #   - Not Found: Returns 404 if backup doesn't exist or is expired
   def download_backup
     unless @migration.backup_available?
-      render plain: "Backup not found or has expired", status: :not_found
+      render plain: I18n.t('controllers.migrations.backup_not_found'), status: :not_found
       return
     end
 
@@ -947,7 +940,7 @@ class MigrationsController < ApplicationController
     Rails.logger.info("Backup downloaded for migration #{@migration.token}")
   rescue StandardError => e
     Rails.logger.error("Failed to download backup for migration #{@migration.token}: #{e.message}")
-    render plain: "Failed to download backup: #{e.message}", status: :internal_server_error
+    render plain: I18n.t('controllers.migrations.unexpected_error'), status: :internal_server_error
   end
 
   # POST /migrate/:token/resend_otp
@@ -975,7 +968,7 @@ class MigrationsController < ApplicationController
   def retry
     unless @migration.failed?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "Migration is not in failed status and cannot be retried"
+                  alert: I18n.t('controllers.migrations.not_failed')
       return
     end
 
@@ -992,11 +985,11 @@ class MigrationsController < ApplicationController
 
     Rails.logger.info("Migration #{@migration.token} retry requested by user")
     redirect_to migration_by_token_path(@migration.token),
-                notice: "Migration retry started!"
+                notice: I18n.t('controllers.migrations.retry_started')
   rescue StandardError => e
     Rails.logger.error("Failed to retry migration #{@migration.token}: #{e.message}")
     redirect_to migration_by_token_path(@migration.token),
-                alert: "Failed to retry migration. Please try again."
+                alert: I18n.t('controllers.migrations.unexpected_error')
   end
 
   # POST /migrate/:token/retry_failed_blobs
@@ -1014,7 +1007,7 @@ class MigrationsController < ApplicationController
 
     if failed_blobs.empty?
       redirect_to migration_by_token_path(@migration.token),
-                  alert: "No failed blobs to retry"
+                  alert: I18n.t('controllers.migrations.no_failed_blobs')
       return
     end
 
@@ -1023,11 +1016,11 @@ class MigrationsController < ApplicationController
 
     Rails.logger.info("Retry failed blobs requested for migration #{@migration.token} (#{failed_blobs.length} blobs)")
     redirect_to migration_by_token_path(@migration.token),
-                notice: "Retrying #{failed_blobs.length} failed blobs..."
+                notice: I18n.t('controllers.migrations.retrying_blobs', count: failed_blobs.length)
   rescue StandardError => e
     Rails.logger.error("Failed to retry failed blobs for migration #{@migration.token}: #{e.message}")
     redirect_to migration_by_token_path(@migration.token),
-                alert: "Failed to retry blobs: #{e.message}"
+                alert: I18n.t('controllers.migrations.unexpected_error')
   end
 
   # GET /migrate/:token/export_recovery_data
@@ -1183,9 +1176,9 @@ class MigrationsController < ApplicationController
 
     unless @migration
       if request.format.json?
-        render json: { error: "Migration not found" }, status: :not_found
+        render json: { error: I18n.t('controllers.migrations.migration_not_found') }, status: :not_found
       else
-        render plain: "Migration not found with token: #{token}", status: :not_found
+        render plain: "#{I18n.t('controllers.migrations.migration_not_found')}: #{token}", status: :not_found
       end
       return  # Halt the filter chain after rendering
     end

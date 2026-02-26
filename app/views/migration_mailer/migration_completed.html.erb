@@ -79,49 +79,49 @@
 <body>
   <div class="container">
     <div class="success-icon">✅</div>
-    <h1>Migration Complete!</h1>
+    <h1><%= t('mailers.migration_completed.heading') %></h1>
 
-    <p>Your Bluesky/ATProto account has been successfully migrated to the new PDS.</p>
+    <p><%= t('mailers.migration_completed.success') %></p>
 
     <!-- New Account Password -->
     <% if @password.present? %>
     <div style="background-color: #f0f4ff; border: 2px solid #3b82f6; border-radius: 6px; padding: 20px; margin: 20px 0;">
-      <h2 style="margin-top: 0; color: #1e40af; font-size: 18px;">🔐 Your New Account Password</h2>
-      <p>Use this password to log in to your new account:</p>
+      <h2 style="margin-top: 0; color: #1e40af; font-size: 18px;"><%= t('mailers.migration_completed.password_heading') %></h2>
+      <p><%= t('mailers.migration_completed.password_help') %></p>
       <div style="background-color: #f3f4f6; border: 2px solid #d1d5db; border-radius: 6px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; text-align: center; word-break: break-all; color: #3b82f6; user-select: all; -webkit-user-select: all;"><%= @password %></div>
-      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;"><strong>Save this password now</strong> — store it in a password manager. You can change it after logging in.</p>
+      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;"><strong><%= t('mailers.migration_completed.save_password') %></strong> <%= t('mailers.migration_completed.change_password') %></p>
     </div>
     <% end %>
 
     <!-- Backup Download -->
     <% if @backup_available %>
       <div class="info-box">
-        <h2 style="margin-top: 0; color: #1e40af;">📦 Backup Bundle Available</h2>
-        <p>Your account data backup is available for download for the next 10 minutes:</p>
+        <h2 style="margin-top: 0; color: #1e40af;"><%= t('mailers.migration_completed.backup_heading') %></h2>
+        <p><%= t('mailers.migration_completed.backup_help') %></p>
         <a href="<%= @download_url %>" class="button button-success">Download Backup Bundle</a>
         <p style="font-size: 13px; color: #6b7280; margin-top: 12px;">
-          After 10 minutes, this link will expire and the backup will be permanently deleted.
+          <%= t('mailers.migration_completed.backup_expiry') %>
         </p>
       </div>
     <% end %>
 
     <!-- Migration Details -->
     <div class="migration-details">
-      <h3 style="margin-top: 0;">Migration Summary</h3>
+      <h3 style="margin-top: 0;"><%= t('mailers.migration_completed.summary') %></h3>
       <dl>
-        <dt>Migration Token</dt>
+        <dt><%= t('mailers.migration_completed.migration_token', token: '').split(':').first %></dt>
         <dd><code><%= @migration.token %></code></dd>
 
-        <dt>DID (Decentralized Identifier)</dt>
+        <dt><%= t('mailers.migration_completed.did', did: '').split(':').first %></dt>
         <dd><code><%= @migration.did %></code></dd>
 
-        <dt>Old Account</dt>
+        <dt><%= t('mailers.migration_completed.old_account', handle: '', pds: '').split(':').first %></dt>
         <dd><%= @migration.old_handle %> @ <%= @migration.old_pds_host %></dd>
 
-        <dt>New Account</dt>
+        <dt><%= t('mailers.migration_completed.new_account', handle: '', pds: '').split(':').first %></dt>
         <dd><strong><%= @migration.new_handle %> @ <%= @migration.new_pds_host %></strong></dd>
 
-        <dt>Completed At</dt>
+        <dt><%= t('mailers.migration_completed.completed_at', time: '').split(':').first %></dt>
         <dd><%= Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at %></dd>
       </dl>
     </div>
@@ -131,55 +131,55 @@
       <a href="<%= @migration_url %>" class="button">View Migration Status Page</a>
     </p>
     <p style="font-size: 13px; color: #6b7280;">
-      ⏱️ The status page will be available for 10 minutes, then permanently deleted for your privacy.
+      <%= t('mailers.migration_completed.status_page', page: '').split(':').first %>
     </p>
 
     <!-- Login Instructions -->
     <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 6px; padding: 20px; margin: 20px 0;">
-      <h2 style="margin-top: 0; color: #92400e; font-size: 18px;">🔑 How to Log In to Your New Account</h2>
-      <p>If you haven't done so already, <strong>log out of your old account</strong> in any Bluesky app, then log in with your new handle:</p>
+      <h2 style="margin-top: 0; color: #92400e; font-size: 18px;"><%= t('mailers.migration_completed.login_heading') %></h2>
+      <p><%= t('mailers.migration_completed.login_help') %></p>
       <div style="background-color: #fffbeb; border: 2px solid #d97706; border-radius: 6px; padding: 16px; margin: 12px 0;">
-        <p style="margin: 0 0 8px 0;"><strong>Handle:</strong> <code style="font-size: 16px; color: #92400e;"><%= @migration.new_handle %></code></p>
-        <p style="margin: 0; color: #92400e; font-weight: 600;">⚠️ Important: Make sure to enter <code style="font-size: 16px;"><%= @migration.new_pds_host %></code> as your hosting provider at the top of the sign-in form!</p>
+        <p style="margin: 0 0 8px 0;"><%= t('mailers.migration_completed.login_handle', handle: @migration.new_handle).html_safe %></p>
+        <p style="margin: 0; color: #92400e; font-weight: 600;"><%= t('mailers.migration_completed.hosting_warning', pds: @migration.new_pds_host).html_safe %></p>
       </div>
-      <p style="font-size: 14px; color: #78350f; margin-bottom: 0;">Many users miss this step — without the correct hosting provider, you won't be able to sign in.</p>
+      <p style="font-size: 14px; color: #78350f; margin-bottom: 0;"><%= t('mailers.migration_completed.hosting_miss') %></p>
     </div>
 
     <!-- Change Password -->
     <div style="background-color: #fef2f2; border: 2px solid #ef4444; border-radius: 6px; padding: 20px; margin: 20px 0;">
-      <h2 style="margin-top: 0; color: #991b1b; font-size: 18px;">🔒 Change Your Password</h2>
-      <p>For your security, we strongly recommend changing your password immediately:</p>
+      <h2 style="margin-top: 0; color: #991b1b; font-size: 18px;"><%= t('mailers.migration_completed.change_password_heading') %></h2>
+      <p><%= t('mailers.migration_completed.change_password_help') %></p>
       <p style="text-align: center; margin: 16px 0;">
         <a href="<%= @migration.new_pds_host %>/.well-known/change-password" style="display: inline-block; background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Change Your Password Now</a>
       </p>
-      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;">You can also change it later in your account settings or by visiting:<br><a href="<%= @migration.new_pds_host %>/.well-known/change-password"><%= @migration.new_pds_host %>/.well-known/change-password</a></p>
+      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;"><%= t('mailers.migration_completed.change_password_later') %></p>
     </div>
 
     <!-- Important Notes -->
     <div class="info-box">
-      <h3 style="margin-top: 0; color: #1e40af;">What Happens Next?</h3>
+      <h3 style="margin-top: 0; color: #1e40af;"><%= t('mailers.migration_completed.whats_next') %></h3>
       <ul style="margin: 0; padding-left: 20px;">
-        <li>Your account is now live on <strong><%= @migration.new_pds_host %></strong></li>
-        <li>Your old account on <%= @migration.old_pds_host %> has been deactivated</li>
-        <li>All your posts, follows, and data have been transferred</li>
-        <li>Your followers should automatically see your new location (DID-based)</li>
+        <li><%= t('mailers.migration_completed.next1', pds: @migration.new_pds_host).html_safe %></li>
+        <li><%= t('mailers.migration_completed.next2', old_pds: @migration.old_pds_host) %></li>
+        <li><%= t('mailers.migration_completed.next3') %></li>
+        <li><%= t('mailers.migration_completed.next4') %></li>
       </ul>
     </div>
 
     <!-- Security Notice -->
     <div class="footer">
-      <p><strong>Privacy & Security:</strong></p>
+      <p><strong><%= t('mailers.migration_completed.privacy_heading') %></strong></p>
       <ul style="margin: 8px 0; padding-left: 20px; font-size: 13px;">
-        <li>This migration record will be automatically deleted in 10 minutes for GDPR compliance</li>
-        <li>All encrypted credentials have been securely erased from our servers</li>
+        <li><%= t('mailers.migration_completed.privacy1') %></li>
+        <li><%= t('mailers.migration_completed.privacy2') %></li>
       </ul>
 
       <p style="margin-top: 20px;">
-        If you have questions or issues, please contact support with your migration token: <code><%= @migration.token %></code>
+        <%= t('mailers.migration_completed.support') %> <code><%= @migration.token %></code>
       </p>
 
       <p style="margin-top: 20px; font-size: 12px; color: #9ca3af;">
-        This email was sent to <%= @migration.email %> because you initiated an account migration.
+        <%= t('mailers.migration_completed.email_footer', email: @migration.email) %>
       </p>
     </div>
   </div>

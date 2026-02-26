@@ -74,14 +74,14 @@
 </head>
 <body>
   <div class="header">
-    <h1>Confirm Cancellation</h1>
+    <h1><%= t('mailers.cancellation_confirmation.heading') %></h1>
     <p>Migration <%= @migration.token %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>You have requested to cancel your account migration from <strong>@<%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong>.</p>
+    <p><%= t('mailers.cancellation_confirmation.intro', token: @migration.token) %></p>
 
     <div class="info-box">
       <h3 style="margin-top: 0;">Your Account is Safe</h3>
@@ -92,27 +92,26 @@
     </div>
 
     <div class="action-box">
-      <h3 style="margin-top: 0; color: #dc2626;">Click to Confirm Cancellation</h3>
+      <h3 style="margin-top: 0; color: #dc2626;"><%= t('mailers.cancellation_confirmation.confirm_help') %></h3>
       <p style="margin-bottom: 15px;">
         This action cannot be undone. You will need to start a new migration if you change your mind.
       </p>
       <a href="<%= @confirm_url %>" class="action-button">
-        Confirm Cancellation
+        <%= t('mailers.cancellation_confirmation.confirm_link') %>
       </a>
     </div>
 
     <div class="warning-box">
       <h3 style="margin-top: 0; color: #92400e;">Didn't request this?</h3>
       <p style="margin-bottom: 0;">
-        If you did not request this cancellation, you can safely ignore this email.
-        Your migration will continue as normal.
+        <%= t('mailers.cancellation_confirmation.not_you') %>
       </p>
     </div>
 
     <div class="footer">
       <p>Migration Token: <code><%= @migration.token %></code></p>
       <p>DID: <code><%= @migration.did %></code></p>
-      <p style="margin-top: 20px;">Eurosky Migration Service</p>
+      <p style="margin-top: 20px;"><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

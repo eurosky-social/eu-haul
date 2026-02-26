@@ -1,0 +1,16 @@
+<div class="language-selector" style="position: fixed; top: 12px; right: 12px; z-index: 1050;">
+  <div class="dropdown">
+    <button class="btn btn-sm btn-light bg-white bg-opacity-75 border-0 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px; padding: 4px 10px;">
+      <%= t("language_names.#{I18n.locale}") %>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" style="max-height: 400px; overflow-y: auto; font-size: 13px;">
+      <% I18n.available_locales.sort.each do |loc| %>
+        <li>
+          <a class="dropdown-item<%= ' active' if I18n.locale == loc %>" href="<%= url_for(request.query_parameters.merge(locale: loc)) %>" onclick="document.cookie='locale=<%= loc %>;path=/;max-age=31536000';">
+            <%= t("language_names.#{loc}") %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

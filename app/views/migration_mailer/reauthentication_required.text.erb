@@ -1,16 +1,18 @@
-Re-authentication Required
+<%= t('mailers.reauthentication_required.heading') %>
 =========================
 
 Hello,
 
-Your migration <%= @migration.token %> has been paused because a login session expired. To continue, you need to re-enter your password on the migration status page.
+<%= t('mailers.reauthentication_required.intro', token: @migration.token) %>
+
+<%= t('mailers.reauthentication_required.reason') %>
 
 Account Details:
 - Old Handle: @<%= @migration.old_handle %>
 - New Handle: @<%= @migration.new_handle %>
-- Failed Step: <%= @failed_step.to_s.gsub('Job', '').humanize %>
+- <%= t('mailers.reauthentication_required.step', step: @failed_step.to_s.gsub('Job', '').humanize) %>
 
-What You Need to Do:
+<%= t('mailers.reauthentication_required.what_to_do') %>
 
 1. Visit your migration status page:
    <%= @migration_url %>
@@ -24,4 +26,4 @@ All migration progress has been preserved. You just need to re-authenticate so w
 
 ---
 Migration Token: <%= @migration.token %>
-This email was sent to <%= @migration.email %> because you initiated an account migration.
+<%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

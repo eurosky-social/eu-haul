@@ -1,0 +1,652 @@
+sk:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Spustenie migrácie účtu"
+    privacy_policy: "Zásady ochrany osobných údajov"
+    terms_of_service: "Podmienky používania"
+    background_attribution: "Fotografia pozadia:"
+    background_attribution_by: "od"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Jazyk"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Spustenie migrácie účtu"
+      errors_heading: "Prosím, opravte nasledujúce chyby:"
+
+      # Progress bar labels
+      progress:
+        account: "Účet"
+        email: "E-mail"
+        destination: "Cieľ"
+        handle: "Handle"
+        review: "Kontrola"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Krok 1: Prihlasovacie údaje"
+        handle_label: "Váš handle"
+        handle_placeholder: "vashandle.bsky.social"
+        handle_help: "Zadajte váš aktuálny handle AT Protocol"
+        password_label: "Heslo účtu"
+        password_help: "Vaše aktuálne heslo účtu"
+        two_factor_title: "Dvojfaktorové overenie"
+        two_factor_help: "Prihlasovací kód bol odoslaný na váš e-mail. Zadajte ho nižšie."
+        two_factor_placeholder: "Zadajte prihlasovací kód"
+        continue: "Pokračovať"
+
+      # Step 2: Email
+      step2:
+        title: "Krok 2: E-mailová adresa"
+        email_label: "E-mailová adresa"
+        email_help: "Na tento e-mail budeme posielať aktualizácie o stave migrácie"
+        email_readonly_help: "E-mail získaný z vášho účtu"
+        email_manual_help: "Nepodarilo sa získať váš e-mail. Prosím, zadajte ho manuálne."
+        confirm_access: "Mám prístup k tejto e-mailovej adrese a môžem získať potvrdzovací kód, ktorý na ňu bude odoslaný."
+        back: "Späť"
+        continue: "Pokračovať"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Krok 3: Cieľový server"
+        server_label: "Cieľový server"
+        server_placeholder: "Vyberte server..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Vlastný server..."
+        server_help: "Vyberte, kam chcete migrovať svoj účet"
+        custom_url_label: "URL vlastného servera"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Zadajte úplnú URL adresu vášho vlastného servera"
+        invite_code_label: "Kód pozvánky"
+        invite_code_placeholder: "Zadajte kód pozvánky"
+        invite_code_help: "Tento server vyžaduje kód pozvánky"
+        existing_account_title: "Nájdený existujúci účet"
+        existing_account_help: "Váš účet už existuje na cieľovom serveri. Prosím, overte svoje heslo pre pokračovanie v migrácii."
+        target_password_label: "Vaše heslo na cieľovom serveri"
+        target_password_placeholder: "Zadajte heslo pre existujúci účet"
+        target_2fa_label: "Prihlasovací kód (2FA)"
+        target_2fa_help: "Skontrolujte e-mail pre kód dvojfaktorového overenia"
+        deactivated_notice: "Tento účet sa zdá byť deaktivovaný"
+        deactivated_reason: "(pravdepodobne z predchádzajúceho pokusu o migráciu)."
+        deactivated_help: "Ak si nepamätáte heslo, môžete skúsiť:"
+        deactivated_reset: "Resetovať heslo:"
+        deactivated_contact: "Kontaktujte administrátora PDS na %{email} pre odstránenie tohto neaktívneho účtu a reštartovanie migrácie. Uveďte svoj DID:"
+        back: "Späť"
+        continue: "Pokračovať"
+
+      # Step 4: New Handle
+      step4:
+        title: "Krok 4: Nový handle"
+        custom_domain_title: "Zistená vlastná doména"
+        custom_domain_help: "Váš handle %{handle} je vlastná doména. Môžete ho naďalej používať na novom serveri."
+        keep_handle: "Ponechať aktuálny handle"
+        new_handle_label: "Váš nový handle"
+        new_handle_placeholder: "používateľ"
+        new_handle_help: "Zvoľte si nový handle (môže byť rovnaký) na cieľovom serveri"
+        back: "Späť"
+        continue: "Pokračovať"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Krok 5: Kontrola a potvrdenie"
+        current_handle: "Aktuálny handle:"
+        email: "E-mail:"
+        destination_server: "Cieľový server:"
+        new_handle: "Nový handle:"
+        invite_code: "Kód pozvánky:"
+        create_backup: "Vytvoriť zálohu pred migráciou"
+        backup_help: "Stiahne kompletnú kópiu dát vášho účtu. K dispozícii 24 hodín."
+        confirm_email_html: "Keď kliknete na <strong>Pokračovať</strong>, odošleme potvrdzovací e-mail na <strong>%{email}</strong>. Migrácia začne až po potvrdení prostredníctvom tohto e-mailu."
+        no_usage_title: "Nepoužívajte svoj účet počas migrácie"
+        no_usage_help: "Keď migrácia začne, zatvorte všetky aplikácie a karty prehliadača s vaším účtom. Akékoľvek príspevky, hodnotenia alebo sledovania vykonané počas migrácie nebudú prenesené. Po dokončení dostanete e-mail (~20-30 minút)."
+        acknowledge: "Rozumiem, že počas migrácie nemám používať svoj účet"
+        back: "Späť"
+        continue: "Pokračovať"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Prosím, zadajte handle"
+      enter_password: "Prosím, zadajte heslo"
+      handle_needs_domain: "Handle musí obsahovať doménu (napr. používateľ.bsky.social)"
+      authenticating: "Overovanie..."
+      authenticating_details: "Overovanie a získavanie údajov účtu..."
+      two_factor_sent: "Prihlasovací kód bol odoslaný na váš e-mail. Zadajte ho vyššie a znova kliknite na Pokračovať."
+      auth_success: "Overenie úspešné!"
+      network_error: "Chyba siete. Prosím, skúste to znova."
+      continue: "Pokračovať"
+      # Step 2
+      email_readonly_help: "E-mail získaný z vášho účtu"
+      email_manual_help: "Nepodarilo sa získať váš e-mail. Prosím, zadajte ho manuálne."
+      enter_email: "Prosím, zadajte svoju e-mailovú adresu"
+      invalid_email: "Prosím, zadajte platnú e-mailovú adresu"
+      confirm_email_access: "Prosím, potvrďte, že máte prístup k tejto e-mailovej adrese."
+      # Step 3
+      select_server: "Prosím, vyberte server alebo zadajte URL vlastného servera"
+      checking_server: "Kontrola servera..."
+      checking_requirements: "Kontrola požiadaviek servera..."
+      server_verified: "Server overený!"
+      failed_verify_pds: "Nepodarilo sa overiť PDS. Prosím, skontrolujte URL."
+      invite_code_required: "Tento server vyžaduje kód pozvánky. Prosím, zadajte ho nižšie a potom kliknite na Pokračovať."
+      enter_invite_code: "Prosím, zadajte kód pozvánky pre pokračovanie."
+      checking_existing: "Kontrola existujúceho účtu..."
+      verifying_credentials: "Overovanie prihlasovacích údajov..."
+      authenticating_existing: "Overovanie s existujúcim účtom..."
+      credentials_verified: "Prihlasovacie údaje overené!"
+      enter_target_password: "Prosím, zadajte heslo pre tento server"
+      # Step 4
+      custom_domain_help: "Váš handle {handle} je vlastná doména. Môžete ho naďalej používať na novom serveri."
+      enter_handle_short: "Prosím, zadajte handle"
+      checking_availability: "Kontrola dostupnosti..."
+      checking_handle: "Kontrola, či je handle dostupný..."
+      handle_taken: "Tento handle je už obsadený. Prosím, zvoľte iný."
+      all_checks_passed: "Všetky kontroly prešli!"
+      using_existing_handle: "Používa sa váš existujúci handle na cieľovom serveri."
+      keeping_custom_handle: "Ponecháva sa váš handle s vlastnou doménou!"
+      handle_available_checking: "Handle je dostupný, kontrola existujúcich účtov..."
+      checking_existing_accounts: "Kontrola existujúcich účtov..."
+      failed_check_availability: "Nepodarilo sa skontrolovať dostupnosť. Prosím, skúste to znova."
+      failed_check_existing: "Nepodarilo sa skontrolovať existujúce účty: "
+      account_exists_title: "Účet už existuje na cieľovom serveri"
+      account_exists_what: "Účet s vaším DID už existuje na cieľovom serveri (%{pds}). Môže to byť z predchádzajúceho pokusu o migráciu."
+      account_exists_do: "Vráťte sa na predchádzajúci krok a zadajte heslo pre existujúci účet. Ak heslo nepoznáte:"
+      account_exists_reset: "Skúste resetovať heslo:"
+      account_exists_contact: "Kontaktujte poskytovateľa servera na <strong>%{email}</strong> pre odstránenie osirelého účtu"
+      account_exists_did: "Uveďte svoj DID:"
+      # Step 5
+      confirm_email_html: "Keď kliknete na <strong>Pokračovať</strong>, odošleme potvrdzovací e-mail na <strong>{email}</strong>. Migrácia začne až po potvrdení prostredníctvom tohto e-mailu."
+      confirm_no_usage: "Prosím, potvrďte, že rozumiete, že počas migrácie nesmiete používať svoj účet."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migrácia %{token}"
+      migration_status: "Stav migrácie"
+      status_label: "Stav:"
+      retry_info: "Pokus %{attempt}/%{max} - %{step}"
+      verify_email: "Overte svoj e-mail"
+      enter_verification: "Zadajte overovací kód"
+      verification_sent: "Odoslali sme kód na <strong>%{email}</strong>. Zadajte ho nižšie pre spustenie migrácie."
+      verification_label: "Overovací kód"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Overiť a spustiť migráciu"
+      didnt_receive: "Nedostali ste e-mail?"
+      check_spam: "Skontrolujte priečinok so spamom alebo nevyžiadanou poštou"
+      check_email_correct: "Uistite sa, že <strong>%{email}</strong> je správny"
+      email_delay: "Doručenie e-mailu môže trvať niekoľko minút"
+
+      # Queue
+      in_queue: "V poradí"
+      queue_default: "Čaká sa na dokončenie prenosu dát iných migrácií"
+      queue_auto_start: "Vaša migrácia sa spustí automaticky, keď sa uvoľní miesto."
+
+      # Blob conversion
+      converting_blobs: "Konverzia starého formátu blobov"
+      converting_blobs_detail: "môže to trvať niekoľko minút..."
+      blobs_converted: "Starý formát blobov bol úspešne konvertovaný."
+
+      # Blob progress
+      blobs_uploaded: "Nahrané bloby"
+      files: "súbory"
+      data_transferred: "Prenesené dáta"
+      failed: "Neúspešné"
+      preparing_blobs: "Príprava <strong>%{count}</strong> blobov na prenos..."
+
+      # Download/backup progress
+      downloading_account: "Sťahovanie dát účtu"
+      downloading_detail: "sťahovanie vášho úložiska + blobov pre zálohu..."
+      creating_backup: "Vytváranie zálohy"
+      creating_backup_detail: "balenie dát vášho účtu..."
+      downloaded_count: "Stiahnuté: %{downloaded} / %{total} blobov"
+      backup_expired: "Záloha vypršala"
+      backup_expired_detail: "vaša záloha bola vymazaná z našich serverov."
+
+      # PLC pending
+      updating_identity: "Aktualizácia vašej identity"
+      plc_accepted: "Váš potvrdzovací kód bol prijatý. Teraz aktualizujeme váš záznam v adresári PLC, aby ukazoval na <strong>%{pds}</strong>. Môže to chvíľu trvať."
+      page_auto_update: "Táto stránka sa bude automaticky aktualizovať. Prosím, nezatvárajte túto kartu."
+      enter_confirmation: "Zadajte potvrdzovací kód"
+      confirmation_hint: "Skontrolujte e-mail pre kód od <strong>%{pds}</strong> &mdash; vyzerá ako <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Potvrdzovací kód"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Dokončiť migráciu"
+      complete_confirm: "Týmto sa dokončí migrácia účtu. Tento krok nie je možné vrátiť.\n\nSte si istí, že chcete pokračovať?"
+
+      # Completed
+      completed_title: "Migrácia úspešne dokončená!"
+      completed_migrated_to: "Váš účet bol úspešne migrovaný na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť s novým handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "Váš účet bol úspešne migrovaný späť na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť so svojím handle: <strong>%{handle}</strong>"
+      email_sent_html: "Odoslali sme e-mail na %{email} s novým heslom účtu, pokynmi na prihlásenie a odkazom na zmenu hesla. Prosím, skontrolujte si priečinok doručenej pošty (aj spam)."
+      save_rotation_key: "ULOŽTE SI ROTAČNÝ KĽÚČ!"
+      page_auto_delete: "Táto stránka bude automaticky vymazaná o 2 dni."
+      rotation_key_needed: "Rotačný kľúč je potrebný na obnovenie účtu. Skopírujte si ho teraz a uložte ho bezpečne!"
+      copy_rotation_key: "Kopírovať rotačný kľúč"
+      key_emailed: "Tento kľúč sme tiež odoslali na <strong>%{email}</strong>"
+      privacy_notice: "Oznámenie o ochrane súkromia"
+      privacy_detail: "Pre vašu ochranu súkromia a súlad s GDPR bude tento záznam o migrácii automaticky vymazaný o <strong>2 dni</strong>. Uistite sa, že ste si uložili rotačný kľúč a stiahli zálohu!"
+      privacy_delete_now: "Keď máte všetko uložené, môžete svoje dáta okamžite vymazať pomocou tlačidla nižšie."
+      delete_confirm: "Ste si istí, že chcete natrvalo vymazať všetky dáta migrácie?\n\nUistite sa, že ste:\n• Skopírovali rotačný kľúč\n• Stiahli zálohu (ak je to relevantné)\n\nTúto akciu nie je možné vrátiť."
+      delete_button: "Uložil som si zálohu a rotačný kľúč — vymazať všetky moje dáta"
+      welcome_back: "Prihlasovacie údaje vášho starého účtu boli bezpečne vymazané. Vitajte späť!"
+      welcome_new: "Prihlasovacie údaje vášho starého účtu boli bezpečne vymazané. Vitajte vo vašom novom domove!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Kľúč na obnovenie účtu"
+      recovery_key_important: "DÔLEŽITÉ:"
+      recovery_key_help: "Uložte si tento rotačný kľúč bezpečne. Umožňuje vám vrátiť zmeny PLC alebo obnoviť účet."
+      copy_clipboard: "Kopírovať do schránky"
+      revert_title: "Ako použiť tento kľúč na vrátenie zmien"
+      revert_help: "Ak potrebujete vrátiť zmeny v adresári PLC, môžete použiť tento rotačný kľúč:"
+      revert_step1: "Nainštalujte CLI nástroj <code>goat</code>"
+      revert_step2: "Získajte históriu PLC: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identifikujte požadovaný historický stav (CID)"
+      revert_step4: "Vytvorte operáciu vrátenia: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Podpíšte rotačným kľúčom: <code>goat plc sign</code>"
+      revert_step6: "Odošlite podpísanú operáciu: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Toto je pokročilá operácia. Používajte ju len ak rozumiete systému adresára PLC."
+
+      # PLC help section
+      didnt_receive_plc: "Nedostali ste e-mail?"
+      plc_check_spam: "Skontrolujte priečinok so spamom alebo nevyžiadanou poštou"
+      plc_from_bluesky: "E-mail prichádza od Bluesky, nie od nás"
+      plc_expires: "Kód vyprší po 1 hodine"
+      plc_new_code_help: "Ak potrebujete nový kód, zadajte heslo nižšie a vyžiadame ho:"
+      plc_password_placeholder: "Heslo pre %{handle}"
+      request_new_code: "Vyžiadať nový kód"
+      technical_details: "Technické podrobnosti"
+      plc_explanation: "Potvrdzovací kód je <strong>token operácie PLC</strong> — autorizuje aktualizáciu vášho dokumentu DID v adresári PLC, aby ukazoval na váš nový Personal Data Server."
+      plc_irreversible: "<strong>Toto je nezvratné.</strong> Po odoslaní bude identita vášho účtu (DID) natrvalo ukazovať na <strong>%{new_pds}</strong> namiesto <strong>%{old_pds}</strong>."
+      plc_expiry_note: "Tokeny PLC vyprší po 1 hodine. Ak váš vypršal, môžete si vyžiadať nový."
+
+      # Sidebar
+      download_backup: "Stiahnuť zálohu"
+      backup_ready: "Záloha je pripravená"
+      backup_download_completed: "Stiahnite si zálohu pred jej vypršaním."
+      backup_download_ready: "Záloha vášho účtu je pripravená! Stiahnite si ju pred vypršaním."
+      size: "Veľkosť:"
+      expires: "Vyprší:"
+      download_button: "Stiahnuť zálohu"
+      recovery_key: "Kľúč na obnovenie"
+      recovery_key_sidebar: "Uložte si tento kľúč bezpečne. Umožňuje vám obnoviť váš účet."
+      copy_key: "Kopírovať kľúč"
+      cancel_migration: "Zrušiť migráciu"
+      cancel_help: "Zrušte túto migráciu a ponechajte účet na aktuálnom serveri."
+      cancel_button: "Zrušiť migráciu"
+      cancel_confirm: "Ste si istí, že chcete zrušiť túto migráciu?\n\nNa e-mail vám bude odoslaný potvrdzovací odkaz. Migrácia bude zrušená až po kliknutí na tento odkaz."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Aktuálny stav:"
+      retry_attempt: "Pokus o opakovanie:"
+      remaining_attempts: "Zostávajúce pokusy:"
+      next_retry: "Ďalší pokus o"
+      calculating: "vypočítava sa..."
+      retrying_now: "opakuje sa teraz..."
+      reauth_safe: "Vaše dáta migrácie sú v bezpečí — stačí znova zadať heslo pre pokračovanie."
+      reauth_help: "Zadajte heslo pre <strong>%{handle}</strong> pre obnovenie relácie a pokračovanie migrácie."
+      password_for: "Heslo pre %{handle}"
+      enter_password_placeholder: "Zadajte heslo účtu"
+      reauth_button: "Opätovné overenie a pokračovanie migrácie"
+      plc_safe: "Vaše dáta migrácie sú v bezpečí — potrebujete len nový token PLC."
+      plc_request_help: "Kliknite na tlačidlo nižšie pre vyžiadanie nového tokenu PLC. Dostanete ho e-mailom od <strong>%{pds}</strong>."
+      request_plc_confirm: "Vyžiadať nový token PLC z vášho starého PDS?"
+      request_plc_button: "Vyžiadať nový token PLC"
+      plc_session_expired: "Vaša relácia s <strong>%{pds}</strong> vypršala. Zadajte heslo pre <strong>%{handle}</strong> pre opätovné pripojenie a vyžiadanie nového tokenu PLC."
+      reauth_plc_button: "Opätovné overenie a vyžiadanie tokenu PLC"
+      what_happened_title: "Čo sa stalo a čo môžete urobiť"
+      what_happened: "Čo sa stalo:"
+      what_to_do: "Čo môžete urobiť:"
+      request_plc_action: "Vyžiadať nový token PLC"
+      retry_migration: "Opakovať migráciu"
+      retry_confirm: "Opakovať migráciu z aktuálnej fázy?"
+      start_new: "Spustiť novú migráciu"
+      check_pds: "Skontrolovať stav PDS"
+      download_report: "Stiahnuť správu o neúspešných bloboch"
+      cleanup_title: "Pokyny na vyčistenie"
+      cleanup_help: "Pre vyčistenie osirelého účtu spustite tento príkaz (vyžaduje prístup na server):"
+      cleanup_contact: "Alebo kontaktujte administrátora cieľového PDS pre manuálne vymazanie osirelého účtu."
+      rotation_key_save: "Váš rotačný kľúč (ULOŽTE SI HO)"
+      copy_rotation_key: "Kopírovať rotačný kľúč"
+      contact_support: "Kontaktujte podporu okamžite"
+      support_email: "E-mail podpory:"
+      migration_token: "Token migrácie:"
+      include_token: "Pre rýchlejšiu pomoc uveďte v žiadosti o podporu token migrácie."
+      technical_title: "Technické podrobnosti (na ladenie)"
+      error_message: "Chybová správa:"
+      job_step: "Krok úlohy:"
+      migration_status: "Stav migrácie:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "BOD BEZ NÁVRATU"
+      subtitle: "Nasledujúca akcia natrvalo presmeruje váš DID na nový PDS"
+      once_submit: "Po odoslaní tokenu PLC:"
+      will_point: "Váš DID (%{did}) bude ukazovať na %{pds}"
+      all_apps: "Všetky aplikácie AT Protocol budú riešiť vašu identitu na novom PDS"
+      immediate: "Táto zmena je okamžitá a ovplyvní celú federovanú sieť"
+      cannot_undo: "Túto akciu NIE JE možné vrátiť bez rotačného kľúča"
+      what_you_need: "Čo potrebujete pred pokračovaním:"
+      need_rotation_key: "Rotačný kľúč bezpečne uložený (posuňte sa hore pre skopírovanie)"
+      need_data_verified: "Overenie, že všetky dáta boli migrované (úložisko, bloby, preferencie)"
+      need_plc_token: "Token operácie PLC (bude odoslaný na váš e-mail od %{pds})"
+      need_understanding: "Pochopenie, že toto je nezvratné bez rotačného kľúča"
+      instructions_title: "Pokyny krok za krokom:"
+      step1_title: "Uložte si rotačný kľúč"
+      step1_help: "Posuňte sa hore a skopírujte rotačný kľúč na bezpečné miesto (správca hesiel, šifrovaný súbor). Toto je váš JEDINÝ spôsob obnovy, ak sa niečo pokazí."
+      step2_title: "Skontrolujte e-mail"
+      step2_help: "Váš starý poskytovateľ PDS (<strong>%{pds}</strong>) bol požiadaný o odoslanie tokenu operácie PLC e-mailom. Skontrolujte si priečinok doručenej pošty pre e-mail obsahujúci token."
+      step3_title: "Skopírujte token PLC"
+      step3_help: "Skopírujte token operácie PLC z e-mailu od vášho starého poskytovateľa PDS. Token bude vyzerať ako dlhý reťazec znakov."
+      step4_title: "Odošlite token nižšie"
+      step4_help: "Vložte token PLC do formulára nižšie a odošlite ho pre dokončenie migrácie."
+      final_warning: "Posledné varovanie: Ste pripravení?"
+      check_saved: "Uložili ste si rotačný kľúč na bezpečnom mieste?"
+      check_understand: "Rozumiete, že táto zmena je trvalá a ovplyvní celú sieť AT Protocol?"
+      check_prepared: "Ste pripravení na stratu prístupu, ak nemáte rotačný kľúč?"
+      check_verified: "Overili ste, že všetky vaše dáta (príspevky, médiá, preferencie) boli úspešne migrované?"
+      do_not_proceed: "Ak ste na niektorú z týchto otázok odpovedali NIE, zatiaľ NEPOKRAČUJTE."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Odoslali sme overovací kód na %{email}. Zadajte ho na ďalšej stránke pre spustenie migrácie."
+      # Verify email
+      email_verified: "E-mail overený! Vaša migrácia začala."
+      invalid_code: "Neplatný overovací kód. Prosím, skontrolujte kód v e-maili a skúste to znova."
+      enter_code: "Prosím, zadajte overovací kód z e-mailu."
+      # PLC token
+      plc_submitted: "Token PLC odoslaný! Váš DID bude čoskoro aktualizovaný."
+      plc_blank: "Token PLC nemôže byť prázdny"
+      session_expired: "Vaša relácia vypršala. Prosím, znova zadajte heslo pre pokračovanie."
+      old_session_expired: "Vaša relácia s %{pds} vypršala. Prosím, znova zadajte heslo pre pokračovanie."
+      credentials_expired: "Vaše prihlasovacie údaje vypršali. Prosím, znova zadajte heslo pre pokračovanie."
+      # Cancellation
+      cancellation_sent: "Potvrdzovací odkaz na zrušenie bol odoslaný na váš e-mail. Prosím, skontrolujte si priečinok doručenej pošty."
+      cannot_cancel: "Túto migráciu nie je možné zrušiť v aktuálnej fáze."
+      cancel_email_failed: "Nepodarilo sa odoslať e-mail o zrušení. Prosím, skúste to znova."
+      invalid_cancel_link: "Neplatný odkaz na zrušenie. Prosím, vyžiadajte si nový zo stránky stavu migrácie."
+      cancel_too_late: "Túto migráciu už nie je možné zrušiť (mohla prekročiť bod bez návratu)."
+      cancelled: "Migrácia bola úspešne zrušená. Váš účet zostáva nezmenený na %{pds}. Novú migráciu môžete spustiť kedykoľvek."
+      # Delete
+      only_completed: "Vymazať je možné len dokončené migrácie."
+      deleted: "Všetky dáta migrácie boli natrvalo vymazané. Ďakujeme, že ste použili %{site_name}!"
+      # Retry
+      retry_started: "Opakovanie migrácie spustené!"
+      not_failed: "Migrácia nie je v stave zlyhania a nie je možné ju opakovať"
+      no_failed_blobs: "Žiadne neúspešné bloby na opakovanie"
+      retrying_blobs: "Opakuje sa %{count} neúspešných blobov..."
+      # Backup
+      backup_not_found: "Záloha nebola nájdená alebo vypršala"
+      # API errors
+      did_required: "DID je povinný"
+      pds_required: "Hostiteľ PDS je povinný"
+      handle_required: "Handle je povinný"
+      password_required: "Heslo je povinné"
+      pds_did_password_required: "Hostiteľ PDS, DID a heslo sú povinné"
+      two_factor_required: "Vyžaduje sa dvojfaktorové overenie. Skontrolujte e-mail pre prihlasovací kód."
+      wrong_password: "Nesprávne heslo pre účet Bluesky. Prosím, zadajte heslo, ktoré ste použili na bsky.social."
+      auth_failed: "Overenie zlyhalo: %{error}"
+      invalid_pds_response: "Neplatná odpoveď z cieľového PDS"
+      pds_connect_failed: "Nepodarilo sa pripojiť k cieľovému PDS. Prosím, skúste to znova."
+      resolve_failed: "Nepodarilo sa rozlíšiť handle. Prosím, skontrolujte, či je handle správny."
+      auth_check_failed: "Overenie zlyhalo. Prosím, skontrolujte heslo."
+      unexpected_error: "Vyskytla sa neočakávaná chyba. Prosím, skúste to znova."
+      unexpected_error_detail: "Vyskytla sa neočakávaná chyba: %{error}"
+      tokens_missing: "Autentifikačné tokeny chýbajú. Prosím, vráťte sa a znova sa overte."
+      account_not_found: "Na %{pds} nebol nájdený žiadny účet s vaším DID (%{did}). Prosím, vráťte sa a vyberte iný cieľový PDS, alebo spustite novú migráciu."
+      account_verify_failed: "Nepodarilo sa overiť existenciu účtu na %{pds}: %{error}. Prosím, skúste to znova."
+      target_tokens_missing: "Autentifikačné tokeny cieľového PDS chýbajú. Prosím, vráťte sa a overte svoje prihlasovacie údaje na %{pds}."
+      reauth_not_available: "Opätovné overenie nie je v tejto fáze dostupné."
+      reauth_failed: "Overenie zlyhalo: %{error}. Prosím, skontrolujte heslo."
+      reauth_error: "Opätovné overenie zlyhalo: %{error}"
+      plc_not_available: "V tejto fáze nie je možné vyžiadať nový token PLC. Aktualizácia PLC už mohla byť pokusená."
+      plc_requested: "Nový token PLC bol vyžiadaný. Skontrolujte e-mail od %{pds}."
+      plc_request_failed: "Nepodarilo sa automaticky vyžiadať nový token PLC (%{error}). Prosím, vyžiadajte si ho manuálne cez nastavenia starého poskytovateľa PDS (napr. aplikácia Bluesky → Nastavenia → Účet → Vyžiadať token PLC) a potom ho zadajte nižšie."
+      plc_session_expired: "Vaša relácia s %{pds} vypršala. Prosím, vyžiadajte si nový token PLC manuálne: prihláste sa do starého účtu a prejdite na Nastavenia → Účet → Vyžiadať token PLC, potom zadajte token nižšie."
+      pds_connect_check: "Nepodarilo sa pripojiť k PDS. Prosím, skontrolujte URL."
+      migration_not_found: "Migrácia nenájdená"
+      password_required_short: "Heslo je povinné."
+      reauth_success_plc_valid: "Opätovné overenie úspešné! Váš token PLC je stále platný — opakuje sa aktualizácia PLC."
+      reauth_success_plc_requested: "Opätovné overenie úspešné! Nový token PLC bol vyžiadaný — skontrolujte e-mail od %{pds}."
+      reauth_success_plc_failed: "Opätovné overenie úspešné, ale nepodarilo sa automaticky vyžiadať token PLC (%{error}). Môžete si ho vyžiadať manuálne cez nastavenia starého poskytovateľa PDS a potom ho zadať nižšie."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Migračná služba Eurosky"
+
+    email_verification:
+      subject: "Váš overovací kód: %{code} (%{token})"
+      heading: "OVERTE SVOJ E-MAIL - SPUSTENIE MIGRÁCIE ÚČTU"
+      migration_token: "Token migrácie: %{token}"
+      initiated: "Iniciovali ste migráciu pre %{handle} na %{pds}."
+      enter_code: "Zadajte nasledujúci overovací kód na stránke migrácie pre spustenie procesu:"
+      go_to_page: "Prejsť na stránku migrácie:"
+      what_next: "ČO SA STANE ĎALEJ?"
+      next_step1: "Zadajte overovací kód vyššie na stránke migrácie"
+      next_step2: "Vaša migrácia sa spustí automaticky"
+      next_step3: "Budete dostávať aktualizácie stavu e-mailom"
+      next_step4: "Celý proces trvá približne 20-30 minút"
+      important: "DÔLEŽITÉ UPOZORNENIA"
+      reminder1: "Nepoužívajte svoj účet počas migrácie"
+      reminder2: "Akákoľvek aktivita počas migrácie nebude prenesená"
+      reminder3: "Zatvorte všetky aplikácie a karty prehliadača s vaším účtom"
+      reminder4: "Počkajte na e-mail o dokončení pred opätovným prihlásením"
+      not_you: "Ak ste túto migráciu neiniciovali, prosím, ignorujte tento e-mail."
+
+    account_password:
+      subject: "Vaše nové heslo účtu pre %{handle} (%{token})"
+      heading: "VAŠE NOVÉ HESLO ÚČTU"
+      intro: "Vaša migrácia začala! Vytvorili sme bezpečné heslo pre váš nový účet."
+      security_notice: "BEZPEČNOSTNÉ UPOZORNENIE"
+      save_password: "ULOŽTE SI TOTO HESLO OKAMŽITE! Budete ho potrebovať na prihlásenie do nového účtu."
+      tip1: "Uložte ho v bezpečnom správcovi hesiel"
+      tip2: "Nezdieľajte ho s nikým"
+      tip3: "Môžete ho zmeniť po prvom prihlásení"
+      account_details: "PODROBNOSTI ÚČTU"
+      new_handle: "Nový handle: @%{handle}"
+      new_pds: "Nový PDS: %{pds}"
+      email: "E-mail: %{email}"
+      whats_happening: "ČO SA DEJE TERAZ?"
+      backup_step1: "Vytvárame zálohu dát vášho účtu"
+      backup_step2: "Dostanete ďalší e-mail, keď bude záloha pripravená na stiahnutie"
+      backup_step3: "Váš účet bude vytvorený a dáta budú migrované"
+      no_backup_step1: "Váš účet sa vytvára na novom PDS"
+      no_backup_step2: "Vaše dáta sa migrujú (bez zálohy)"
+      no_backup_step3: "Budete upozornení po dokončení migrácie"
+      track_progress: "Sledujte priebeh migrácie na:"
+
+    migration_completed:
+      subject: "Migrácia dokončená! (%{token})"
+      heading: "MIGRÁCIA DOKONČENÁ!"
+      success: "Váš účet Bluesky/ATProto bol úspešne migrovaný na nový PDS."
+      password_heading: "VAŠE NOVÉ HESLO ÚČTU"
+      password_help: "Použite toto heslo na prihlásenie do nového účtu:"
+      save_password: "Uložte si toto heslo teraz — uložte ho v správcovi hesiel."
+      change_password: "Môžete ho zmeniť po prvom prihlásení."
+      backup_heading: "ZÁLOHA K DISPOZÍCII"
+      backup_help: "Záloha dát vášho účtu je k dispozícii na stiahnutie počas nasledujúcich 10 minút:"
+      backup_expiry: "Po 10 minútach tento odkaz vyprší a záloha bude natrvalo vymazaná."
+      summary: "SÚHRN MIGRÁCIE"
+      migration_token: "Token migrácie: %{token}"
+      did: "DID: %{did}"
+      old_account: "Starý účet: %{handle} @ %{pds}"
+      new_account: "Nový účet: %{handle} @ %{pds}"
+      completed_at: "Dokončené: %{time}"
+      status_page: "Zobraziť stránku stavu (dostupná 10 minút):"
+      login_heading: "AKO SA PRIHLÁSIŤ DO NOVÉHO ÚČTU"
+      login_help: "Ak ste tak ešte neurobili, odhláste sa zo starého účtu v akejkoľvek aplikácii Bluesky a potom sa prihláste s novým handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "DÔLEŽITÉ: Uistite sa, že na vrchu prihlasovacieho formulára zadáte \"%{pds}\" ako poskytovateľa hostingu!"
+      hosting_miss: "Mnoho používateľov tento krok vynechá — bez správneho poskytovateľa hostingu sa nebudete môcť prihlásiť."
+      change_password_heading: "ZMENA HESLA"
+      change_password_help: "Pre vašu bezpečnosť dôrazne odporúčame okamžite zmeniť heslo:"
+      change_password_later: "Môžete ho zmeniť aj neskôr v nastaveniach účtu."
+      whats_next: "ČO SA STANE ĎALEJ?"
+      next1: "Váš účet je teraz aktívny na %{pds}"
+      next2: "Váš starý účet na %{old_pds} bol deaktivovaný"
+      next3: "Všetky vaše príspevky, sledovania a dáta boli prenesené"
+      next4: "Vaši sledovatelia by mali automaticky vidieť vašu novú lokáciu (na základe DID)"
+      privacy_heading: "OCHRANA SÚKROMIA A BEZPEČNOSŤ"
+      privacy1: "Tento záznam o migrácii bude automaticky vymazaný o 10 minút v súlade s GDPR"
+      privacy2: "Všetky šifrované prihlasovacie údaje boli bezpečne vymazané z našich serverov"
+      support: "Ak máte otázky alebo problémy, kontaktujte podporu s vaším tokenom migrácie:"
+      email_footer: "Tento e-mail bol odoslaný na %{email}, pretože ste iniciovali migráciu účtu."
+
+    migration_failed:
+      subject: "Migrácia zlyhala - Vyžaduje sa akcia (%{token})"
+      heading: "Migrácia Eurosky zlyhala - Vyžaduje sa akcia"
+      intro: "Vaša migrácia účtu %{token} narazila na chybu a vyžaduje vašu pozornosť."
+      account_details: "Podrobnosti účtu:"
+      did: "DID: %{did}"
+      old_handle: "Starý handle: @%{handle}"
+      new_handle: "Nový handle: @%{handle}"
+      failure_info: "Informácie o zlyhaní:"
+      failed_step: "Neúspešný krok: %{step}"
+      error: "Chyba: %{error}"
+      previous_retries: "Predchádzajúce pokusy o opakovanie: %{count}"
+      what_to_do: "Čo môžete urobiť:"
+      do_step1: "Skontrolujte stav migrácie:"
+      do_step2: "Kliknite na tlačidlo \"Opakovať migráciu\" pre ďalší pokus"
+      do_step3: "Ak problém pretrváva po viacerých pokusoch, kontaktujte podporu s tokenom migrácie: %{token}"
+      common_issues: "Bežné problémy a riešenia:"
+      issue1: "Časové limity siete: Zvyčajne sa vyriešia pri opakovaní"
+      issue2: "Obmedzenie rýchlosti: Počkajte niekoľko minút pred opakovaním"
+      issue3: "Chýbajúce dáta: Skontrolujte, či sú všetky dáta dostupné na starom PDS"
+      important: "DÔLEŽITÉ:"
+      note1: "Vaše dáta na starom PDS zostávajú nedotknuté"
+      note2: "Migráciu môžete bezpečne opakovať"
+      note3: "Ak potrebujete pomoc, uveďte token migrácie: %{token}"
+
+    backup_ready:
+      subject: "Vaša záloha Eurosky je pripravená (%{token})"
+      heading: "VAŠA ZÁLOHA JE PRIPRAVENÁ"
+      intro: "Záloha dát vášho účtu pre migráciu %{token} je pripravená na stiahnutie."
+      download: "Stiahnite si zálohu:"
+      size: "Veľkosť zálohy: %{size}"
+      expires: "Tento odkaz na stiahnutie vyprší o %{time}."
+      expiry_warning: "Po vypršaní bude záloha natrvalo vymazaná z našich serverov."
+      whats_next: "Vaša migrácia pokračuje na pozadí. Po dokončení dostanete ďalší e-mail."
+
+    rotation_key_notice:
+      subject: "Vyžaduje sa akcia: Potvrďte migráciu kódom PLC (%{token})"
+      heading: "POTVRĎTE SVOJU MIGRÁCIU"
+      intro: "Dáta vášho účtu boli prenesené. Pre dokončenie migrácie musíte odoslať potvrdzovací kód PLC."
+      key_heading: "VÁŠ ROTAČNÝ KĽÚČ (NAJSKÔR SI HO ULOŽTE!)"
+      key_help: "Pred pokračovaním si bezpečne uložte tento rotačný kľúč. Je to váš jediný spôsob obnovenia účtu, ak sa niečo pokazí:"
+      key_warning: "Uložte tento kľúč v správcovi hesiel alebo na inom bezpečnom mieste. Neskôr ho NEBUDE možné získať."
+      next_step: "Prejdite na stránku migrácie pre zadanie potvrdzovacieho kódu PLC:"
+      check_email: "Skontrolujte e-mail pre kód od vášho starého poskytovateľa PDS — vyzerá ako XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Vyžaduje sa akcia: Vyžiadajte si nový potvrdzovací kód PLC (%{token})"
+      heading: "TOKEN PLC VYPRŠAL ALEBO JE NEPLATNÝ"
+      intro: "Potvrdzovací kód PLC pre vašu migráciu %{token} vypršal alebo bol neplatný."
+      what_to_do: "Čo musíte urobiť:"
+      step1: "Prejdite na stránku migrácie:"
+      step2: "Vyžiadajte si nový token PLC (možno budete musieť znova zadať heslo)"
+      step3: "Zadajte nový token, keď ho dostanete e-mailom"
+      error_detail: "Chyba: %{error}"
+
+    critical_plc_failure:
+      subject: "NALIEHAVÉ: Kritické zlyhanie migrácie - NESPÚŠŤAJTE NOVÚ MIGRÁCIU (%{token})"
+      heading: "KRITICKÉ ZLYHANIE MIGRÁCIE"
+      warning: "NESPÚŠŤAJTE novú migráciu. Váš účet môže byť v nekonzistentnom stave."
+      intro: "Aktualizácia adresára PLC pre migráciu %{token} zlyhala po bode bez návratu."
+      key_heading: "VÁŠ ROTAČNÝ KĽÚČ"
+      key_help: "Tento kľúč budete potrebovať na obnovenie účtu:"
+      contact: "Kontaktujte podporu okamžite:"
+      error_detail: "Chyba: %{error}"
+
+    invalid_invite_code:
+      subject: "Migrácia zlyhala - Neplatný kód pozvánky (%{token})"
+      heading: "NEPLATNÝ KÓD POZVÁNKY"
+      intro: "Vaša migrácia %{token} nemohla pokračovať, pretože kód pozvánky bol neplatný alebo už bol použitý."
+      what_to_do: "Pre spustenie novej migrácie s platným kódom pozvánky:"
+
+    orphaned_account_error:
+      subject: "Migrácia pozastavená - Osirelý účet na cieľovom PDS (%{token})"
+      heading: "ZISTENÝ OSIRELÝ ÚČET"
+      intro: "Vaša migrácia %{token} bola pozastavená, pretože na cieľovom PDS bol nájdený osirelý účet."
+      explanation: "Toto sa zvyčajne stáva, keď bol predchádzajúci pokus o migráciu prerušený. Starý účet stále existuje na cieľovom serveri a musí byť odstránený pred pokračovaním."
+      what_to_do: "Čo môžete urobiť:"
+      option1: "Kontaktujte administrátora cieľového PDS na %{email} pre odstránenie osirelého účtu"
+      option2: "Uveďte svoj DID: %{did}"
+      option3: "Po odstránení opakujte migráciu zo stránky stavu:"
+
+    reauthentication_required:
+      subject: "Vyžaduje sa akcia: Opätovné overenie potrebné (%{token})"
+      heading: "VYŽADUJE SA OPÄTOVNÉ OVERENIE"
+      intro: "Vaša migrácia %{token} vyžaduje opätovné zadanie hesla pre pokračovanie."
+      reason: "Vaša relácia so starým PDS vypršala počas procesu migrácie."
+      what_to_do: "Prejdite na stránku migrácie a znova zadajte heslo:"
+      error_detail: "Chyba: %{error}"
+      step: "Neúspešný krok: %{step}"
+
+    cancellation_confirmation:
+      subject: "Potvrdenie zrušenia migrácie (%{token})"
+      heading: "POTVRDENIE ZRUŠENIA"
+      intro: "Požiadali ste o zrušenie migrácie %{token}."
+      confirm_help: "Kliknite na odkaz nižšie pre potvrdenie zrušenia:"
+      confirm_link: "Potvrdiť zrušenie"
+      not_you: "Ak ste o toto zrušenie nepožiadali, môžete tento e-mail pokojne ignorovať. Vaša migrácia bude pokračovať normálne."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "musí byť platný handle ATProto (napr. používateľ.bsky.social)"

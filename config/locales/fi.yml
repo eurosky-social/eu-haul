@@ -1,0 +1,652 @@
+fi:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Aloita tilin siirto"
+    privacy_policy: "Tietosuojakäytäntö"
+    terms_of_service: "Käyttöehdot"
+    background_attribution: "Taustakuva:"
+    background_attribution_by: "tekijä"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Kieli"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Aloita tilin siirto"
+      errors_heading: "Korjaa seuraavat virheet:"
+
+      # Progress bar labels
+      progress:
+        account: "Tili"
+        email: "Sähköposti"
+        destination: "Kohde"
+        handle: "Handle"
+        review: "Tarkistus"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Vaihe 1: Tilin tunnistetiedot"
+        handle_label: "Handle"
+        handle_placeholder: "handle.bsky.social"
+        handle_help: "Syötä nykyinen AT Protocol -handle"
+        password_label: "Tilin salasana"
+        password_help: "Nykyinen tilisi salasana"
+        two_factor_title: "Kaksivaiheinen tunnistautuminen"
+        two_factor_help: "Kirjautumiskoodi on lähetetty sähköpostiisi. Syötä se alle."
+        two_factor_placeholder: "Syötä kirjautumiskoodi"
+        continue: "Jatka"
+
+      # Step 2: Email
+      step2:
+        title: "Vaihe 2: Sähköpostiosoite"
+        email_label: "Sähköpostiosoite"
+        email_help: "Lähetämme siirron tilannepäivitykset tähän sähköpostiosoitteeseen"
+        email_readonly_help: "Sähköpostiosoite haettu tililtäsi"
+        email_manual_help: "Emme pystyneet hakemaan sähköpostiosoitettasi. Syötä se manuaalisesti."
+        confirm_access: "Minulla on pääsy tähän sähköpostiosoitteeseen ja voin noutaa siihen lähetetyn vahvistuskoodin."
+        back: "Takaisin"
+        continue: "Jatka"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Vaihe 3: Kohdepalvelin"
+        server_label: "Kohdepalvelin"
+        server_placeholder: "Valitse palvelin..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Mukautettu palvelin..."
+        server_help: "Valitse, minne haluat siirtää tilisi"
+        custom_url_label: "Mukautetun palvelimen URL"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Syötä mukautetun palvelimesi täydellinen URL"
+        invite_code_label: "Kutsukoodi"
+        invite_code_placeholder: "Syötä kutsukoodisi"
+        invite_code_help: "Tämä palvelin vaatii kutsukoodin"
+        existing_account_title: "Olemassa oleva tili löydetty"
+        existing_account_help: "Tilisi on jo olemassa kohdepalvelimella. Vahvista salasanasi jatkaaksesi siirtoa."
+        target_password_label: "Salasanasi kohdepalvelimella"
+        target_password_placeholder: "Syötä olemassa olevan tilisi salasana"
+        target_2fa_label: "Kirjautumiskoodi (2FA)"
+        target_2fa_help: "Tarkista sähköpostistasi kaksivaiheisen tunnistautumisen koodi"
+        deactivated_notice: "Tämä tili vaikuttaa olevan deaktivoitu"
+        deactivated_reason: "(mahdollisesti aiemman siirtoyrityksen vuoksi)."
+        deactivated_help: "Jos et muista salasanaasi, voit kokeilla:"
+        deactivated_reset: "Nollaa salasanasi:"
+        deactivated_contact: "Ota yhteyttä PDS-ylläpitäjään osoitteessa %{email} poistaaksesi tämän passiivisen tilin ja aloittaaksesi siirron uudelleen. Liitä mukaan DID:"
+        back: "Takaisin"
+        continue: "Jatka"
+
+      # Step 4: New Handle
+      step4:
+        title: "Vaihe 4: Uusi handle"
+        custom_domain_title: "Mukautettu verkkotunnus havaittu"
+        custom_domain_help: "Handle %{handle} on mukautettu verkkotunnus. Voit jatkaa sen käyttöä uudella palvelimella."
+        keep_handle: "Säilytä nykyinen handle"
+        new_handle_label: "Uusi handle"
+        new_handle_placeholder: "käyttäjänimi"
+        new_handle_help: "Valitse uusi handle (voi olla vanha) kohdepalvelimella"
+        back: "Takaisin"
+        continue: "Jatka"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Vaihe 5: Tarkistus ja vahvistus"
+        current_handle: "Nykyinen handle:"
+        email: "Sähköposti:"
+        destination_server: "Kohdepalvelin:"
+        new_handle: "Uusi handle:"
+        invite_code: "Kutsukoodi:"
+        create_backup: "Luo varmuuskopio ennen siirtoa"
+        backup_help: "Lataa täydellisen kopion tilisi tiedoista. Saatavilla 24 tuntia."
+        confirm_email_html: "Kun napsautat <strong>Jatka</strong>, lähetämme vahvistussähköpostin osoitteeseen <strong>%{email}</strong>. Siirto alkaa vasta, kun vahvistat sähköpostin kautta."
+        no_usage_title: "Älä käytä tiliäsi siirron aikana"
+        no_usage_help: "Kun siirto alkaa, sulje kaikki sovellukset ja selainvälilehdet, joissa tilisi on auki. Siirron aikana tehtyjä julkaisuja, tykkäyksiä tai seuraamisia ei siirretä. Saat sähköpostin, kun siirto on valmis (~20-30 minuuttia)."
+        acknowledge: "Ymmärrän, etten saa käyttää tiliäni siirron aikana"
+        back: "Takaisin"
+        continue: "Jatka"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Syötä handle"
+      enter_password: "Syötä salasanasi"
+      handle_needs_domain: "Handle täytyy sisältää verkkotunnus (esim. käyttäjä.bsky.social)"
+      authenticating: "Tunnistaudutaan..."
+      authenticating_details: "Tunnistaudutaan ja haetaan tilisi tietoja..."
+      two_factor_sent: "Kirjautumiskoodi on lähetetty sähköpostiisi. Syötä se yllä ja napsauta Jatka uudelleen."
+      auth_success: "Tunnistautuminen onnistui!"
+      network_error: "Verkkovirhe. Yritä uudelleen."
+      continue: "Jatka"
+      # Step 2
+      email_readonly_help: "Sähköpostiosoite haettu tililtäsi"
+      email_manual_help: "Emme pystyneet hakemaan sähköpostiosoitettasi. Syötä se manuaalisesti."
+      enter_email: "Syötä sähköpostiosoitteesi"
+      invalid_email: "Syötä kelvollinen sähköpostiosoite"
+      confirm_email_access: "Vahvista, että sinulla on pääsy tähän sähköpostiosoitteeseen."
+      # Step 3
+      select_server: "Valitse palvelin tai syötä mukautetun palvelimen URL"
+      checking_server: "Tarkistetaan palvelinta..."
+      checking_requirements: "Tarkistetaan palvelimen vaatimuksia..."
+      server_verified: "Palvelin vahvistettu!"
+      failed_verify_pds: "PDS:n vahvistus epäonnistui. Tarkista URL."
+      invite_code_required: "Tämä palvelin vaatii kutsukoodin. Syötä se alle ja napsauta sitten Jatka."
+      enter_invite_code: "Syötä kutsukoodi jatkaaksesi."
+      checking_existing: "Tarkistetaan olemassa olevaa tiliä..."
+      verifying_credentials: "Vahvistetaan tunnistetietoja..."
+      authenticating_existing: "Tunnistaudutaan olemassa olevalla tilillä..."
+      credentials_verified: "Tunnistetiedot vahvistettu!"
+      enter_target_password: "Syötä salasanasi tälle palvelimelle"
+      # Step 4
+      custom_domain_help: "Handle {handle} on mukautettu verkkotunnus. Voit jatkaa sen käyttöä uudella palvelimella."
+      enter_handle_short: "Syötä handle"
+      checking_availability: "Tarkistetaan saatavuutta..."
+      checking_handle: "Tarkistetaan, onko handle saatavilla..."
+      handle_taken: "Tämä handle on jo varattu. Valitse toinen."
+      all_checks_passed: "Kaikki tarkistukset läpäisty!"
+      using_existing_handle: "Käytetään olemassa olevaa handleasi kohdepalvelimella."
+      keeping_custom_handle: "Säilytetään mukautetun verkkotunnuksen handle!"
+      handle_available_checking: "Handle saatavilla, tarkistetaan olemassa olevia tilejä..."
+      checking_existing_accounts: "Tarkistetaan olemassa olevia tilejä..."
+      failed_check_availability: "Saatavuuden tarkistus epäonnistui. Yritä uudelleen."
+      failed_check_existing: "Olemassa olevien tilien tarkistus epäonnistui: "
+      account_exists_title: "Tili on jo olemassa kohdepalvelimella"
+      account_exists_what: "DID-tunnuksellasi varustettu tili on jo olemassa kohdepalvelimella (%{pds}). Tämä voi johtua aiemmasta siirtoyrityksestä."
+      account_exists_do: "Palaa edelliseen vaiheeseen ja syötä olemassa olevan tilin salasana. Jos et tiedä salasanaa:"
+      account_exists_reset: "Kokeile salasanan nollausta:"
+      account_exists_contact: "Ota yhteyttä palveluntarjoajaan osoitteessa <strong>%{email}</strong> poistaaksesi orvon tilin"
+      account_exists_did: "Liitä mukaan DID:"
+      # Step 5
+      confirm_email_html: "Kun napsautat <strong>Jatka</strong>, lähetämme vahvistussähköpostin osoitteeseen <strong>{email}</strong>. Siirto alkaa vasta, kun vahvistat sähköpostin kautta."
+      confirm_no_usage: "Vahvista, että ymmärrät, ettet saa käyttää tiliäsi siirron aikana."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Siirto %{token}"
+      migration_status: "Siirron tila"
+      status_label: "Tila:"
+      retry_info: "Uudelleenyritys %{attempt}/%{max} - %{step}"
+      verify_email: "Vahvista sähköpostiosoitteesi"
+      enter_verification: "Syötä vahvistuskoodi"
+      verification_sent: "Olemme lähettäneet koodin osoitteeseen <strong>%{email}</strong>. Syötä se alle aloittaaksesi siirron."
+      verification_label: "Vahvistuskoodi"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Vahvista ja aloita siirto"
+      didnt_receive: "Etkö saanut sähköpostia?"
+      check_spam: "Tarkista roskapostikansio"
+      check_email_correct: "Varmista, että <strong>%{email}</strong> on oikein"
+      email_delay: "Sähköpostin saapuminen voi kestää muutaman minuutin"
+
+      # Queue
+      in_queue: "Jonossa"
+      queue_default: "Odotetaan muiden siirtojen tiedonsiirron valmistumista"
+      queue_auto_start: "Siirtosi alkaa automaattisesti, kun paikka vapautuu."
+
+      # Blob conversion
+      converting_blobs: "Muunnetaan vanhaa blob-muotoa"
+      converting_blobs_detail: "tämä voi kestää muutaman minuutin..."
+      blobs_converted: "Vanha blob-muoto muunnettu onnistuneesti."
+
+      # Blob progress
+      blobs_uploaded: "Blobit ladattu"
+      files: "tiedostoa"
+      data_transferred: "Tietoa siirretty"
+      failed: "Epäonnistuneet"
+      preparing_blobs: "Valmistellaan <strong>%{count}</strong> blobin siirtoa..."
+
+      # Download/backup progress
+      downloading_account: "Ladataan tilin tietoja"
+      downloading_detail: "ladataan tietovarastoa ja blobeja varmuuskopiota varten..."
+      creating_backup: "Luodaan varmuuskopiopakettia"
+      creating_backup_detail: "pakataan tilisi tietoja..."
+      downloaded_count: "Ladattu: %{downloaded} / %{total} blobia"
+      backup_expired: "Varmuuskopio vanhentunut"
+      backup_expired_detail: "varmuuskopiopakettisi on poistettu palvelimiltamme."
+
+      # PLC pending
+      updating_identity: "Päivitetään identiteettiäsi"
+      plc_accepted: "Vahvistuskoodisi on hyväksytty. Päivitämme nyt PLC-hakemistomerkintääsi osoittamaan palvelimeen <strong>%{pds}</strong>. Tämä voi kestää hetken."
+      page_auto_update: "Tämä sivu päivittyy automaattisesti. Älä sulje tätä välilehteä."
+      enter_confirmation: "Syötä vahvistuskoodisi"
+      confirmation_hint: "Tarkista sähköpostistasi koodi palvelimelta <strong>%{pds}</strong> &mdash; se näyttää tältä: <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Vahvistuskoodi"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Viimeistele siirto"
+      complete_confirm: "Tämä viimeistelee tilisi siirron. Tätä vaihetta ei voi peruuttaa.\n\nHaluatko varmasti jatkaa?"
+
+      # Completed
+      completed_title: "Siirto suoritettu onnistuneesti!"
+      completed_migrated_to: "Tilisi on siirretty onnistuneesti palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään uudella handlellasi: <strong>%{handle}</strong>"
+      completed_migrated_back: "Tilisi on siirretty onnistuneesti takaisin palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään handlellasi: <strong>%{handle}</strong>"
+      email_sent_html: "Olemme lähettäneet sähköpostin osoitteeseen %{email} uuden tilisi salasanan, kirjautumisohjeet ja linkin salasanan vaihtamiseen. Tarkista saapuneet-kansiosi (ja roskapostikansio)."
+      save_rotation_key: "TALLENNA ROTAATIOAVAIMESI!"
+      page_auto_delete: "Tämä sivu poistetaan automaattisesti 2 päivän kuluttua."
+      rotation_key_needed: "Rotaatioavaimesi tarvitaan tilin palauttamiseen. Kopioi se nyt ja säilytä turvallisesti!"
+      copy_rotation_key: "Kopioi rotaatioavain"
+      key_emailed: "Olemme myös lähettäneet tämän avaimen osoitteeseen <strong>%{email}</strong>"
+      privacy_notice: "Tietosuojailmoitus"
+      privacy_detail: "Yksityisyytesi ja GDPR-vaatimustenmukaisuuden vuoksi tämä siirtotietue poistetaan automaattisesti <strong>2 päivän</strong> kuluttua. Varmista, että olet tallentanut rotaatioavaimesi ja ladannut varmuuskopiosi ennen sitä!"
+      privacy_delete_now: "Kun olet tallentanut kaiken, voit poistaa tietosi välittömästi alla olevalla painikkeella."
+      delete_confirm: "Haluatko varmasti poistaa kaikki siirtotiedot pysyvästi?\n\nVarmista, että olet:\n• Kopioinut rotaatioavaimesi\n• Ladannut varmuuskopiosi (jos sovellettavissa)\n\nTätä toimintoa ei voi peruuttaa."
+      delete_button: "Olen tallentanut varmuuskopioni ja rotaatioavaimeni — poista kaikki tietoni"
+      welcome_back: "Vanhan tilisi tunnistetiedot on poistettu turvallisesti. Tervetuloa takaisin!"
+      welcome_new: "Vanhan tilisi tunnistetiedot on poistettu turvallisesti. Tervetuloa uuteen kotiisi!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Tilin palautusavain"
+      recovery_key_important: "TÄRKEÄÄ:"
+      recovery_key_help: "Tallenna tämä rotaatioavain turvallisesti. Sen avulla voit palauttaa PLC-muutokset tai palauttaa tilisi."
+      copy_clipboard: "Kopioi leikepöydälle"
+      revert_title: "Kuinka käyttää tätä avainta muutosten palauttamiseen"
+      revert_help: "Jos sinun täytyy palauttaa PLC-hakemiston muutokset, voit käyttää tätä rotaatioavainta:"
+      revert_step1: "Asenna <code>goat</code>-komentorivityökalu"
+      revert_step2: "Hae PLC-historiasi: <code>goat plc history &lt;sinun-did&gt;</code>"
+      revert_step3: "Tunnista haluttu historiallinen tila (CID)"
+      revert_step4: "Luo palautusoperaatio: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Allekirjoita rotaatioavaimellasi: <code>goat plc sign</code>"
+      revert_step6: "Lähetä allekirjoitettu operaatio: <code>goat plc submit --did &lt;sinun-did&gt;</code>"
+      revert_warning: "Tämä on edistynyt toiminto. Käytä sitä vain, jos ymmärrät PLC-hakemistojärjestelmän."
+
+      # PLC help section
+      didnt_receive_plc: "Etkö saanut sähköpostia?"
+      plc_check_spam: "Tarkista roskapostikansio"
+      plc_from_bluesky: "Sähköposti tulee Blueskyltä, ei meiltä"
+      plc_expires: "Koodi vanhenee 1 tunnin kuluttua"
+      plc_new_code_help: "Jos tarvitset uuden koodin, syötä salasanasi alle ja pyydämme uuden:"
+      plc_password_placeholder: "Salasana käyttäjälle %{handle}"
+      request_new_code: "Pyydä uusi koodi"
+      technical_details: "Tekniset tiedot"
+      plc_explanation: "Vahvistuskoodi on <strong>PLC-operaatiotoken</strong> — se valtuuttaa DID-dokumenttisi päivittämisen PLC-hakemistossa osoittamaan uuteen henkilökohtaiseen datapalvelimeesi."
+      plc_irreversible: "<strong>Tämä on peruuttamaton.</strong> Lähettämisen jälkeen tilisi identiteetti (DID) osoittaa pysyvästi palvelimeen <strong>%{new_pds}</strong> palvelimen <strong>%{old_pds}</strong> sijaan."
+      plc_expiry_note: "PLC-tokenit vanhenevat 1 tunnin kuluttua. Jos tokenisi on vanhentunut, voit pyytää uuden."
+
+      # Sidebar
+      download_backup: "Lataa varmuuskopiosi"
+      backup_ready: "Varmuuskopio valmis"
+      backup_download_completed: "Lataa varmuuskopiopakettisi ennen sen vanhenemista."
+      backup_download_ready: "Tilisi varmuuskopio on valmis! Lataa se ennen vanhenemista."
+      size: "Koko:"
+      expires: "Vanhenee:"
+      download_button: "Lataa varmuuskopio"
+      recovery_key: "Palautusavain"
+      recovery_key_sidebar: "Tallenna tämä avain turvallisesti. Sen avulla voit palauttaa tilisi."
+      copy_key: "Kopioi avain"
+      cancel_migration: "Peruuta siirto"
+      cancel_help: "Peruuta tämä siirto ja säilytä tilisi nykyisellä palvelimella."
+      cancel_button: "Peruuta siirto"
+      cancel_confirm: "Haluatko varmasti peruuttaa tämän siirron?\n\nVahvistuslinkki lähetetään sähköpostiisi. Siirto peruutetaan vasta, kun napsautat kyseistä linkkiä."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Nykyinen tila:"
+      retry_attempt: "Uudelleenyritys:"
+      remaining_attempts: "Jäljellä olevat yritykset:"
+      next_retry: "Seuraava uudelleenyritys"
+      calculating: "lasketaan..."
+      retrying_now: "yritetään uudelleen nyt..."
+      reauth_safe: "Siirtotietosi ovat turvassa — syötä vain salasanasi uudelleen jatkaaksesi."
+      reauth_help: "Syötä salasanasi käyttäjälle <strong>%{handle}</strong> palauttaaksesi istuntosi ja jatkaaksesi siirtoa."
+      password_for: "Salasana käyttäjälle %{handle}"
+      enter_password_placeholder: "Syötä tilisi salasana"
+      reauth_button: "Tunnistaudu uudelleen ja jatka siirtoa"
+      plc_safe: "Siirtotietosi ovat turvassa — tarvitset vain uuden PLC-tokenin."
+      plc_request_help: "Napsauta alla olevaa painiketta pyytääksesi uuden PLC-tokenin. Saat sen sähköpostitse palvelimelta <strong>%{pds}</strong>."
+      request_plc_confirm: "Pyydä uusi PLC-token vanhalta PDS:ltäsi?"
+      request_plc_button: "Pyydä uusi PLC-token"
+      plc_session_expired: "Istuntosi palvelimen <strong>%{pds}</strong> kanssa on vanhentunut. Syötä salasanasi käyttäjälle <strong>%{handle}</strong> yhdistääksesi uudelleen ja pyytääksesi uuden PLC-tokenin."
+      reauth_plc_button: "Tunnistaudu uudelleen ja pyydä PLC-token"
+      what_happened_title: "Mitä tapahtui ja mitä tehdä"
+      what_happened: "Mitä tapahtui:"
+      what_to_do: "Mitä voit tehdä:"
+      request_plc_action: "Pyydä uusi PLC-token"
+      retry_migration: "Yritä siirtoa uudelleen"
+      retry_confirm: "Yritä tätä siirtoa uudelleen nykyisestä vaiheesta?"
+      start_new: "Aloita uusi siirto"
+      check_pds: "Tarkista PDS:n tila"
+      download_report: "Lataa epäonnistuneiden blobien raportti"
+      cleanup_title: "Siivoamisohjeet"
+      cleanup_help: "Orvon tilin siivoamiseksi suorita tämä komento (vaatii palvelimen käyttöoikeuden):"
+      cleanup_contact: "Tai ota yhteyttä kohde-PDS:n ylläpitäjään poistaaksesi orvon tilin manuaalisesti."
+      rotation_key_save: "Rotaatioavaimesi (TALLENNA TÄMÄ)"
+      copy_rotation_key: "Kopioi rotaatioavain"
+      contact_support: "Ota yhteyttä tukeen välittömästi"
+      support_email: "Tukisähköposti:"
+      migration_token: "Siirtotoken:"
+      include_token: "Liitä siirtotokenisi tukipyyntöösi nopeamman avun saamiseksi."
+      technical_title: "Tekniset tiedot (virheenkorjausta varten)"
+      error_message: "Virheilmoitus:"
+      job_step: "Työvaihe:"
+      migration_status: "Siirron tila:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PALUUTON PISTE"
+      subtitle: "Seuraava toiminto ohjaa DID-tunnuksesi pysyvästi uuteen PDS:ään"
+      once_submit: "Kun olet lähettänyt PLC-tokenin:"
+      will_point: "DID-tunnuksesi (%{did}) osoittaa palvelimeen %{pds}"
+      all_apps: "Kaikki AT Protocol -sovellukset ratkaisevat identiteettisi uuteen PDS:ään"
+      immediate: "Tämä muutos on välitön ja vaikuttaa koko federoituun verkkoon"
+      cannot_undo: "Tätä toimintoa EI VOI peruuttaa ilman rotaatioavaintasi"
+      what_you_need: "Mitä tarvitset ennen jatkamista:"
+      need_rotation_key: "Rotaatioavaimesi on tallennettu turvallisesti (selaa ylös kopioidaksesi sen)"
+      need_data_verified: "Olet varmistanut, että kaikki tietosi on siirretty (tietovarasto, blobit, asetukset)"
+      need_plc_token: "PLC-operaatiotoken (lähetetään sinulle sähköpostitse palvelimelta %{pds})"
+      need_understanding: "Ymmärrät, että tämä on peruuttamaton ilman rotaatioavainta"
+      instructions_title: "Vaiheittaiset ohjeet:"
+      step1_title: "Tallenna rotaatioavaimesi"
+      step1_help: "Selaa ylös ja kopioi rotaatioavaimesi turvalliseen paikkaan (salasananhallinta, salattu tiedosto). Tämä on AINOA tapasi palauttaa tili, jos jokin menee pieleen."
+      step2_title: "Tarkista sähköpostisi"
+      step2_help: "Vanhaa PDS-palveluntarjoajaasi (<strong>%{pds}</strong>) on pyydetty lähettämään sinulle PLC-operaatiotoken sähköpostitse. Tarkista saapuneet-kansiosi tokenin sisältävän sähköpostin varalta."
+      step3_title: "Kopioi PLC-token"
+      step3_help: "Kopioi PLC-operaatiotoken vanhan PDS-palveluntarjoajasi lähettämästä sähköpostista. Token on pitkä merkkijono."
+      step4_title: "Lähetä token alla"
+      step4_help: "Liitä PLC-token alla olevaan lomakkeeseen ja lähetä se viimeistelläksesi siirtosi."
+      final_warning: "Viimeinen varoitus: Oletko valmis?"
+      check_saved: "Oletko tallentanut rotaatioavaimesi turvalliseen paikkaan?"
+      check_understand: "Ymmärrätkö, että tämä muutos on pysyvä ja vaikuttaa koko AT Protocol -verkkoon?"
+      check_prepared: "Oletko valmis menettämään pääsyn, jos sinulla ei ole rotaatioavaintasi?"
+      check_verified: "Oletko varmistanut, että kaikki tietosi (julkaisut, media, asetukset) on siirretty onnistuneesti?"
+      do_not_proceed: "Jos vastasit EI johonkin näistä kysymyksistä, ÄLÄ jatka vielä."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Olemme lähettäneet vahvistuskoodin osoitteeseen %{email}. Syötä se seuraavalla sivulla aloittaaksesi siirron."
+      # Verify email
+      email_verified: "Sähköposti vahvistettu! Siirtosi on alkanut."
+      invalid_code: "Virheellinen vahvistuskoodi. Tarkista sähköpostissasi oleva koodi ja yritä uudelleen."
+      enter_code: "Syötä sähköpostistasi saatu vahvistuskoodi."
+      # PLC token
+      plc_submitted: "PLC-token lähetetty! DID-tunnuksesi päivitetään pian."
+      plc_blank: "PLC-token ei voi olla tyhjä"
+      session_expired: "Istuntosi on vanhentunut. Syötä salasanasi uudelleen jatkaaksesi."
+      old_session_expired: "Istuntosi palvelimen %{pds} kanssa on vanhentunut. Syötä salasanasi uudelleen jatkaaksesi."
+      credentials_expired: "Tunnistetietosi ovat vanhentuneet. Syötä salasanasi uudelleen jatkaaksesi."
+      # Cancellation
+      cancellation_sent: "Peruutuksen vahvistuslinkki on lähetetty sähköpostiisi. Tarkista saapuneet-kansiosi."
+      cannot_cancel: "Tätä siirtoa ei voi peruuttaa nykyisessä vaiheessa."
+      cancel_email_failed: "Peruutussähköpostin lähettäminen epäonnistui. Yritä uudelleen."
+      invalid_cancel_link: "Virheellinen peruutuslinkki. Pyydä uusi siirron tilasivulta."
+      cancel_too_late: "Tätä siirtoa ei voi enää peruuttaa (se on saattanut edetä paluuttoman pisteen ohi)."
+      cancelled: "Siirto peruutettu onnistuneesti. Tilisi pysyy muuttumattomana palvelimella %{pds}. Voit aloittaa uuden siirron milloin tahansa."
+      # Delete
+      only_completed: "Vain valmiit siirrot voidaan poistaa."
+      deleted: "Kaikki siirtotiedot on poistettu pysyvästi. Kiitos, että käytit palvelua %{site_name}!"
+      # Retry
+      retry_started: "Siirron uudelleenyritys aloitettu!"
+      not_failed: "Siirto ei ole epäonnistuneessa tilassa eikä sitä voi yrittää uudelleen"
+      no_failed_blobs: "Ei epäonnistuneita blobeja uudelleenyritettäväksi"
+      retrying_blobs: "Yritetään %{count} epäonnistunutta blobia uudelleen..."
+      # Backup
+      backup_not_found: "Varmuuskopiota ei löytynyt tai se on vanhentunut"
+      # API errors
+      did_required: "DID vaaditaan"
+      pds_required: "PDS-isäntä vaaditaan"
+      handle_required: "Handle vaaditaan"
+      password_required: "Salasana vaaditaan"
+      pds_did_password_required: "PDS-isäntä, DID ja salasana vaaditaan"
+      two_factor_required: "Kaksivaiheinen tunnistautuminen vaaditaan. Tarkista sähköpostistasi kirjautumiskoodi."
+      wrong_password: "Väärä salasana Bluesky-tilillesi. Syötä salasana, jota käytit palvelussa bsky.social."
+      auth_failed: "Tunnistautuminen epäonnistui: %{error}"
+      invalid_pds_response: "Virheellinen vastaus kohde-PDS:ltä"
+      pds_connect_failed: "Yhdistäminen kohde-PDS:ään epäonnistui. Yritä uudelleen."
+      resolve_failed: "Handlea ei voitu ratkaista. Tarkista, että handle on oikein."
+      auth_check_failed: "Tunnistautuminen epäonnistui. Tarkista salasanasi."
+      unexpected_error: "Odottamaton virhe. Yritä uudelleen."
+      unexpected_error_detail: "Odottamaton virhe: %{error}"
+      tokens_missing: "Tunnistautumistokenit puuttuvat. Palaa taaksepäin ja tunnistaudu uudelleen."
+      account_not_found: "Tiliä ei löytynyt palvelimelta %{pds} DID-tunnuksellasi (%{did}). Palaa taaksepäin ja valitse toinen kohde-PDS tai aloita uusi siirto."
+      account_verify_failed: "Tilin olemassaolon tarkistus palvelimella %{pds} epäonnistui: %{error}. Yritä uudelleen."
+      target_tokens_missing: "Kohde-PDS:n tunnistautumistokenit puuttuvat. Palaa taaksepäin ja vahvista tunnistetietosi palvelimella %{pds}."
+      reauth_not_available: "Uudelleentunnistautuminen ei ole käytettävissä tässä vaiheessa."
+      reauth_failed: "Tunnistautuminen epäonnistui: %{error}. Tarkista salasanasi."
+      reauth_error: "Uudelleentunnistautuminen epäonnistui: %{error}"
+      plc_not_available: "Uutta PLC-tokenia ei voi pyytää tässä vaiheessa. PLC-päivitystä on saatettu jo yrittää."
+      plc_requested: "Uusi PLC-token on pyydetty. Tarkista sähköpostisi palvelimelta %{pds}."
+      plc_request_failed: "Uuden PLC-tokenin automaattinen pyyntö epäonnistui (%{error}). Pyydä se manuaalisesti vanhan PDS-palveluntarjoajasi asetuksista (esim. Bluesky-sovellus → Asetukset → Tili → Pyydä PLC-token) ja syötä se sitten alle."
+      plc_session_expired: "Istuntosi palvelimen %{pds} kanssa on vanhentunut. Pyydä uusi PLC-token manuaalisesti: kirjaudu vanhalle tilillesi ja siirry kohtaan Asetukset → Tili → Pyydä PLC-token, syötä sitten token alle."
+      pds_connect_check: "PDS:ään ei saatu yhteyttä. Tarkista URL."
+      migration_not_found: "Siirtoa ei löytynyt"
+      password_required_short: "Salasana vaaditaan."
+      reauth_success_plc_valid: "Uudelleentunnistautuminen onnistui! PLC-tokenisi on edelleen voimassa — yritetään PLC-päivitystä uudelleen nyt."
+      reauth_success_plc_requested: "Uudelleentunnistautuminen onnistui! Uusi PLC-token on pyydetty — tarkista sähköpostisi palvelimelta %{pds}."
+      reauth_success_plc_failed: "Uudelleentunnistautuminen onnistui, mutta PLC-tokenin automaattinen pyyntö epäonnistui (%{error}). Voit pyytää sen manuaalisesti vanhan PDS-palveluntarjoajasi asetuksista ja syöttää sen sitten alle."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Eurosky-siirtopalvelu"
+
+    email_verification:
+      subject: "Vahvistuskoodisi: %{code} (%{token})"
+      heading: "VAHVISTA SÄHKÖPOSTISI - ALOITA TILIN SIIRTO"
+      migration_token: "Siirtotoken: %{token}"
+      initiated: "Olet aloittanut käyttäjän %{handle} siirron palvelimelle %{pds}."
+      enter_code: "Syötä seuraava vahvistuskoodi siirtosivulla aloittaaksesi prosessin:"
+      go_to_page: "Siirry siirtosivulle:"
+      what_next: "MITÄ TAPAHTUU SEURAAVAKSI?"
+      next_step1: "Syötä yllä oleva vahvistuskoodi siirtosivulla"
+      next_step2: "Siirtosi alkaa automaattisesti"
+      next_step3: "Saat tilannepäivityksiä sähköpostitse"
+      next_step4: "Koko prosessi kestää noin 20-30 minuuttia"
+      important: "TÄRKEÄT MUISTUTUKSET"
+      reminder1: "Älä käytä tiliäsi siirron aikana"
+      reminder2: "Siirron aikana tapahtuneita toimintoja ei siirretä"
+      reminder3: "Sulje kaikki sovellukset ja selainvälilehdet, joissa tilisi on auki"
+      reminder4: "Odota valmistumissähköpostia ennen kuin kirjaudut uudelleen sisään"
+      not_you: "Jos et aloittanut tätä siirtoa, jätä tämä sähköposti huomiotta."
+
+    account_password:
+      subject: "Uuden tilisi salasana käyttäjälle %{handle} (%{token})"
+      heading: "UUDEN TILISI SALASANA"
+      intro: "Siirtosi on alkanut! Olemme luoneet turvallisen salasanan uudelle tilillesi."
+      security_notice: "TURVALLISUUSILMOITUS"
+      save_password: "TALLENNA TÄMÄ SALASANA HETI! Tarvitset sitä kirjautuaksesi uudelle tilillesi."
+      tip1: "Tallenna se turvalliseen salasananhallintaan"
+      tip2: "Älä jaa sitä kenellekään"
+      tip3: "Voit vaihtaa sen ensimmäisen kirjautumisen jälkeen"
+      account_details: "TILIN TIEDOT"
+      new_handle: "Uusi handle: @%{handle}"
+      new_pds: "Uusi PDS: %{pds}"
+      email: "Sähköposti: %{email}"
+      whats_happening: "MITÄ TAPAHTUU NYT?"
+      backup_step1: "Luomme varmuuskopiota tilisi tiedoista"
+      backup_step2: "Saat toisen sähköpostin, kun varmuuskopiosi on ladattavissa"
+      backup_step3: "Tilisi luodaan ja tietosi siirretään"
+      no_backup_step1: "Tiliäsi luodaan uudelle PDS:lle"
+      no_backup_step2: "Tietojasi siirretään (ilman varmuuskopiota)"
+      no_backup_step3: "Saat ilmoituksen, kun siirto on valmis"
+      track_progress: "Seuraa siirtosi etenemistä:"
+
+    migration_completed:
+      subject: "Siirto valmis! (%{token})"
+      heading: "SIIRTO VALMIS!"
+      success: "Bluesky/ATProto-tilisi on siirretty onnistuneesti uuteen PDS:ään."
+      password_heading: "UUDEN TILISI SALASANA"
+      password_help: "Käytä tätä salasanaa kirjautuaksesi uudelle tilillesi:"
+      save_password: "Tallenna tämä salasana nyt — säilytä se salasananhallinnassa."
+      change_password: "Voit vaihtaa sen ensimmäisen kirjautumisen jälkeen."
+      backup_heading: "VARMUUSKOPIOPAKETTI SAATAVILLA"
+      backup_help: "Tilisi tietojen varmuuskopio on ladattavissa seuraavat 10 minuuttia:"
+      backup_expiry: "10 minuutin kuluttua tämä linkki vanhenee ja varmuuskopio poistetaan pysyvästi."
+      summary: "SIIRRON YHTEENVETO"
+      migration_token: "Siirtotoken: %{token}"
+      did: "DID: %{did}"
+      old_account: "Vanha tili: %{handle} @ %{pds}"
+      new_account: "Uusi tili: %{handle} @ %{pds}"
+      completed_at: "Valmistui: %{time}"
+      status_page: "Näytä tilasivu (saatavilla 10 minuuttia):"
+      login_heading: "KUINKA KIRJAUTUA UUDELLE TILILLESI"
+      login_help: "Jos et ole vielä tehnyt niin, kirjaudu ulos vanhalta tililtäsi kaikissa Bluesky-sovelluksissa ja kirjaudu sitten sisään uudella handlellasi:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "TÄRKEÄÄ: Varmista, että syötät \"%{pds}\" palveluntarjoajaksi kirjautumislomakkeen yläosassa!"
+      hosting_miss: "Monet käyttäjät ohittavat tämän vaiheen — ilman oikeaa palveluntarjoajaa et pysty kirjautumaan sisään."
+      change_password_heading: "VAIHDA SALASANASI"
+      change_password_help: "Turvallisuutesi vuoksi suosittelemme vahvasti salasanan vaihtamista heti:"
+      change_password_later: "Voit myös vaihtaa sen myöhemmin tilisi asetuksissa."
+      whats_next: "MITÄ TAPAHTUU SEURAAVAKSI?"
+      next1: "Tilisi on nyt aktiivinen palvelimella %{pds}"
+      next2: "Vanha tilisi palvelimella %{old_pds} on deaktivoitu"
+      next3: "Kaikki julkaisusi, seurattavat ja tietosi on siirretty"
+      next4: "Seuraajiesi pitäisi nähdä automaattisesti uusi sijaintisi (DID-pohjainen)"
+      privacy_heading: "YKSITYISYYS JA TURVALLISUUS"
+      privacy1: "Tämä siirtotietue poistetaan automaattisesti 10 minuutin kuluttua GDPR-vaatimustenmukaisuuden vuoksi"
+      privacy2: "Kaikki salatut tunnistetiedot on poistettu turvallisesti palvelimiltamme"
+      support: "Jos sinulla on kysymyksiä tai ongelmia, ota yhteyttä tukeen siirtotokenillasi:"
+      email_footer: "Tämä sähköposti lähetettiin osoitteeseen %{email}, koska aloitit tilin siirron."
+
+    migration_failed:
+      subject: "Siirto epäonnistui - Toimenpiteitä vaaditaan (%{token})"
+      heading: "Eurosky-siirto epäonnistui - Toimenpiteitä vaaditaan"
+      intro: "Tilisi siirto %{token} on kohdannut virheen ja vaatii toimenpiteitäsi."
+      account_details: "Tilin tiedot:"
+      did: "DID: %{did}"
+      old_handle: "Vanha handle: @%{handle}"
+      new_handle: "Uusi handle: @%{handle}"
+      failure_info: "Virhetiedot:"
+      failed_step: "Epäonnistunut vaihe: %{step}"
+      error: "Virhe: %{error}"
+      previous_retries: "Aiemmat uudelleenyritykset: %{count}"
+      what_to_do: "Mitä voit tehdä:"
+      do_step1: "Tarkista siirron tila:"
+      do_step2: "Napsauta \"Yritä siirtoa uudelleen\" -painiketta yrittääksesi siirtoa uudelleen"
+      do_step3: "Jos ongelma jatkuu useiden uudelleenyritysten jälkeen, ota yhteyttä tukeen siirtotokenillasi: %{token}"
+      common_issues: "Yleisiä ongelmia ja ratkaisuja:"
+      issue1: "Verkon aikakatkaisut: ratkeaa yleensä uudelleenyrityksellä"
+      issue2: "Nopeusrajoitus: odota muutama minuutti ennen uudelleenyritystä"
+      issue3: "Puuttuvat tiedot: tarkista, ovatko kaikki tiedot saatavilla vanhalla PDS:llä"
+      important: "TÄRKEÄÄ:"
+      note1: "Tietosi vanhalla PDS:llä pysyvät ennallaan"
+      note2: "Voit turvallisesti yrittää siirtoa uudelleen"
+      note3: "Jos tarvitset apua, viittaa siirtotokeniisi: %{token}"
+
+    backup_ready:
+      subject: "Eurosky-siirron varmuuskopiosi on valmis (%{token})"
+      heading: "VARMUUSKOPIOSI ON VALMIS"
+      intro: "Tilisi tietojen varmuuskopio siirtoa %{token} varten on ladattavissa."
+      download: "Lataa varmuuskopiosi:"
+      size: "Varmuuskopion koko: %{size}"
+      expires: "Tämä latauslinkki vanhenee %{time}."
+      expiry_warning: "Vanhenemisen jälkeen varmuuskopio poistetaan pysyvästi palvelimiltamme."
+      whats_next: "Siirtosi jatkuu taustalla. Saat toisen sähköpostin, kun se on valmis."
+
+    rotation_key_notice:
+      subject: "Toimenpiteitä vaaditaan: Vahvista siirtosi PLC-koodilla (%{token})"
+      heading: "VAHVISTA SIIRTOSI"
+      intro: "Tilisi tiedot on siirretty. Siirron viimeistelemiseksi sinun tulee lähettää PLC-vahvistuskoodi."
+      key_heading: "ROTAATIOAVAIMESI (TALLENNA TÄMÄ ENSIN!)"
+      key_help: "Ennen jatkamista tallenna tämä rotaatioavain turvallisesti. Se on ainoa tapasi palauttaa tilisi, jos jokin menee pieleen:"
+      key_warning: "Säilytä tämä avain salasananhallinnassa tai muussa turvallisessa paikassa. Et VOI hakea sitä myöhemmin."
+      next_step: "Siirry siirtosivulle syöttääksesi PLC-vahvistuskoodisi:"
+      check_email: "Tarkista sähköpostistasi koodi vanhalta PDS-palveluntarjoajaltasi — se näyttää tältä: XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Toimenpiteitä vaaditaan: Pyydä uusi PLC-vahvistuskoodi (%{token})"
+      heading: "PLC-TOKEN VANHENTUNUT TAI VIRHEELLINEN"
+      intro: "Siirtosi %{token} PLC-vahvistuskoodi on vanhentunut tai oli virheellinen."
+      what_to_do: "Mitä sinun tulee tehdä:"
+      step1: "Siirry siirtosivulle:"
+      step2: "Pyydä uusi PLC-token (saatat joutua syöttämään salasanasi uudelleen)"
+      step3: "Syötä uusi token, kun saat sen sähköpostitse"
+      error_detail: "Virhe: %{error}"
+
+    critical_plc_failure:
+      subject: "KIIREELLINEN: Kriittinen siirtovirhe - ÄLÄ ALOITA UUTTA SIIRTOA (%{token})"
+      heading: "KRIITTINEN SIIRTOVIRHE"
+      warning: "ÄLÄ aloita uutta siirtoa. Tilisi saattaa olla epäjohdonmukaisessa tilassa."
+      intro: "PLC-hakemiston päivitys siirtoa %{token} varten on epäonnistunut paluuttoman pisteen jälkeen."
+      key_heading: "ROTAATIOAVAIMESI"
+      key_help: "Tarvitset tämän avaimen tilisi palauttamiseen:"
+      contact: "Ota yhteyttä tukeen välittömästi:"
+      error_detail: "Virhe: %{error}"
+
+    invalid_invite_code:
+      subject: "Siirto epäonnistui - Virheellinen kutsukoodi (%{token})"
+      heading: "VIRHEELLINEN KUTSUKOODI"
+      intro: "Siirtosi %{token} ei voinut jatkua, koska kutsukoodi oli virheellinen tai jo käytetty."
+      what_to_do: "Aloita uusi siirto kelvollisella kutsukoodilla:"
+
+    orphaned_account_error:
+      subject: "Siirto keskeytetty - Orpo tili kohde-PDS:llä (%{token})"
+      heading: "ORPO TILI HAVAITTU"
+      intro: "Siirtosi %{token} on keskeytetty, koska kohde-PDS:ltä löytyi orpo tili."
+      explanation: "Tämä tapahtuu yleensä, kun aiempi siirtoyritys keskeytyi. Vanha tili on edelleen kohdepalvelimella ja se täytyy poistaa ennen jatkamista."
+      what_to_do: "Mitä voit tehdä:"
+      option1: "Ota yhteyttä kohde-PDS:n ylläpitäjään osoitteessa %{email} poistaaksesi orvon tilin"
+      option2: "Liitä mukaan DID: %{did}"
+      option3: "Poistamisen jälkeen yritä siirtoa uudelleen tilasivulta:"
+
+    reauthentication_required:
+      subject: "Toimenpiteitä vaaditaan: Uudelleentunnistautuminen tarvitaan (%{token})"
+      heading: "UUDELLEENTUNNISTAUTUMINEN VAADITAAN"
+      intro: "Siirtosi %{token} vaatii salasanasi uudelleensyöttämistä jatkaakseen."
+      reason: "Istuntosi vanhan PDS:n kanssa on vanhentunut siirtoprosessin aikana."
+      what_to_do: "Siirry siirtosivulle ja syötä salasanasi uudelleen:"
+      error_detail: "Virhe: %{error}"
+      step: "Epäonnistunut vaihe: %{step}"
+
+    cancellation_confirmation:
+      subject: "Vahvista siirron peruutus (%{token})"
+      heading: "VAHVISTA PERUUTUS"
+      intro: "Olet pyytänyt siirron %{token} peruuttamista."
+      confirm_help: "Napsauta alla olevaa linkkiä vahvistaaksesi peruutuksen:"
+      confirm_link: "Vahvista peruutus"
+      not_you: "Jos et pyytänyt tätä peruutusta, voit jättää tämän sähköpostin huomiotta. Siirtosi jatkuu normaalisti."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "täytyy olla kelvollinen ATProto-handle (esim. käyttäjä.bsky.social)"

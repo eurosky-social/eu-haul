@@ -1,0 +1,652 @@
+pt:
+  # ──────────────────────────────────────────
+  # Layout
+  # ──────────────────────────────────────────
+  layouts:
+    title_suffix: "Iniciar migração de conta"
+    privacy_policy: "Política de Privacidade"
+    terms_of_service: "Termos de Serviço"
+    background_attribution: "Foto de fundo:"
+    background_attribution_by: "por"
+
+  # Language names in their native form (for the language selector)
+  language_names:
+    en: "English"
+    bg: "Български"
+    cs: "Čeština"
+    da: "Dansk"
+    de: "Deutsch"
+    el: "Ελληνικά"
+    es: "Español"
+    et: "Eesti"
+    fi: "Suomi"
+    fr: "Français"
+    ga: "Gaeilge"
+    hr: "Hrvatski"
+    hu: "Magyar"
+    it: "Italiano"
+    lt: "Lietuvių"
+    lv: "Latviešu"
+    mt: "Malti"
+    nb: "Norsk bokmål"
+    nl: "Nederlands"
+    pl: "Polski"
+    pt: "Português"
+    ro: "Română"
+    sk: "Slovenčina"
+    sl: "Slovenščina"
+    sv: "Svenska"
+    uk: "Українська"
+  language_selector: "Idioma"
+
+  # ──────────────────────────────────────────
+  # Wizard form (migrations/new)
+  # ──────────────────────────────────────────
+  migrations:
+    new:
+      page_title: "Iniciar migração de conta"
+      errors_heading: "Por favor, corrija os seguintes erros:"
+
+      # Progress bar labels
+      progress:
+        account: "Conta"
+        email: "E-mail"
+        destination: "Destino"
+        handle: "Handle"
+        review: "Revisão"
+
+      # Step 1: Account Credentials
+      step1:
+        title: "Passo 1: Credenciais da conta"
+        handle_label: "O seu handle"
+        handle_placeholder: "seuhandle.bsky.social"
+        handle_help: "Introduza o seu handle atual do AT Protocol"
+        password_label: "Palavra-passe da conta"
+        password_help: "A sua palavra-passe atual da conta"
+        two_factor_title: "Autenticação de dois fatores"
+        two_factor_help: "Um código de início de sessão foi enviado para o seu e-mail. Introduza-o abaixo."
+        two_factor_placeholder: "Introduza o seu código de início de sessão"
+        continue: "Continuar"
+
+      # Step 2: Email
+      step2:
+        title: "Passo 2: Endereço de e-mail"
+        email_label: "Endereço de e-mail"
+        email_help: "Enviaremos atualizações sobre o estado da migração para este e-mail"
+        email_readonly_help: "E-mail obtido da sua conta"
+        email_manual_help: "Não foi possível obter o seu e-mail. Por favor, introduza-o manualmente."
+        confirm_access: "Tenho acesso a este endereço de e-mail e posso obter um código de confirmação enviado para o mesmo."
+        back: "Voltar"
+        continue: "Continuar"
+
+      # Step 3: Destination Server
+      step3:
+        title: "Passo 3: Servidor de destino"
+        server_label: "Servidor de destino"
+        server_placeholder: "Selecione um servidor..."
+        server_eurosky: "Eurosky (eurosky.social)"
+        server_blacksky: "Blacksky (blacksky.app)"
+        server_myatproto: "myatproto (myatproto.social)"
+        server_bluesky: "Bluesky (bsky.social)"
+        server_custom: "Servidor personalizado..."
+        server_help: "Escolha para onde pretende migrar a sua conta"
+        custom_url_label: "URL do servidor personalizado"
+        custom_url_placeholder: "https://pds.example.com"
+        custom_url_help: "Introduza o URL completo do seu servidor personalizado"
+        invite_code_label: "Código de convite"
+        invite_code_placeholder: "Introduza o seu código de convite"
+        invite_code_help: "Este servidor requer um código de convite"
+        existing_account_title: "Conta existente encontrada"
+        existing_account_help: "A sua conta já existe no servidor de destino. Por favor, verifique a sua palavra-passe para continuar com a migração."
+        target_password_label: "A sua palavra-passe no servidor de destino"
+        target_password_placeholder: "Introduza a sua palavra-passe para a conta existente"
+        target_2fa_label: "Código de início de sessão (2FA)"
+        target_2fa_help: "Verifique o seu e-mail para o código de autenticação de dois fatores"
+        deactivated_notice: "Esta conta parece estar desativada"
+        deactivated_reason: "(possivelmente de uma tentativa de migração anterior)."
+        deactivated_help: "Se não se lembra da sua palavra-passe, pode tentar:"
+        deactivated_reset: "Redefinir a sua palavra-passe:"
+        deactivated_contact: "Contactar o administrador do PDS em %{email} para remover esta conta inativa e reiniciar a migração. Inclua o seu DID:"
+        back: "Voltar"
+        continue: "Continuar"
+
+      # Step 4: New Handle
+      step4:
+        title: "Passo 4: Novo handle"
+        custom_domain_title: "Domínio personalizado detetado"
+        custom_domain_help: "O seu handle %{handle} é um domínio personalizado. Pode continuar a utilizá-lo no novo servidor."
+        keep_handle: "Manter o meu handle atual"
+        new_handle_label: "O seu novo handle"
+        new_handle_placeholder: "nomedeutilizador"
+        new_handle_help: "Escolha o seu novo handle (pode ser o antigo) no servidor de destino"
+        back: "Voltar"
+        continue: "Continuar"
+
+      # Step 5: Review & Confirm
+      step5:
+        title: "Passo 5: Revisão e confirmação"
+        current_handle: "Handle atual:"
+        email: "E-mail:"
+        destination_server: "Servidor de destino:"
+        new_handle: "Novo handle:"
+        invite_code: "Código de convite:"
+        create_backup: "Criar uma cópia de segurança antes da migração"
+        backup_help: "Transfere uma cópia completa dos dados da sua conta. Disponível durante 24 horas."
+        confirm_email_html: "Ao clicar em <strong>Continuar</strong>, enviaremos um e-mail de confirmação para <strong>%{email}</strong>. A migração só será iniciada depois de confirmar através desse e-mail."
+        no_usage_title: "Não utilize a sua conta durante a migração"
+        no_usage_help: "Assim que a migração começar, feche todas as aplicações e separadores do navegador com a sua conta. Quaisquer publicações, gostos ou seguimentos feitos durante a migração não serão transferidos. Receberá um e-mail quando estiver concluída (~20-30 minutos)."
+        acknowledge: "Compreendo que não devo utilizar a minha conta durante a migração"
+        back: "Voltar"
+        continue: "Continuar"
+
+    # ──────────────────────────────────────────
+    # JavaScript strings for the wizard
+    # ──────────────────────────────────────────
+    js:
+      # Step 1
+      enter_handle: "Por favor, introduza um handle"
+      enter_password: "Por favor, introduza a sua palavra-passe"
+      handle_needs_domain: "O handle deve incluir um domínio (ex.: user.bsky.social)"
+      authenticating: "A autenticar..."
+      authenticating_details: "A autenticar e a obter os detalhes da sua conta..."
+      two_factor_sent: "Um código de início de sessão foi enviado para o seu e-mail. Introduza-o acima e clique novamente em Continuar."
+      auth_success: "Autenticação bem-sucedida!"
+      network_error: "Erro de rede. Por favor, tente novamente."
+      continue: "Continuar"
+      # Step 2
+      email_readonly_help: "E-mail obtido da sua conta"
+      email_manual_help: "Não foi possível obter o seu e-mail. Por favor, introduza-o manualmente."
+      enter_email: "Por favor, introduza o seu endereço de e-mail"
+      invalid_email: "Por favor, introduza um endereço de e-mail válido"
+      confirm_email_access: "Por favor, confirme que tem acesso a este endereço de e-mail."
+      # Step 3
+      select_server: "Por favor, selecione um servidor ou introduza um URL de servidor personalizado"
+      checking_server: "A verificar servidor..."
+      checking_requirements: "A verificar requisitos do servidor..."
+      server_verified: "Servidor verificado!"
+      failed_verify_pds: "Não foi possível verificar o PDS. Por favor, verifique o URL."
+      invite_code_required: "Este servidor requer um código de convite. Por favor, introduza-o abaixo e depois clique em Continuar."
+      enter_invite_code: "Por favor, introduza um código de convite para continuar."
+      checking_existing: "A verificar conta existente..."
+      verifying_credentials: "A verificar credenciais..."
+      authenticating_existing: "A autenticar com a sua conta existente..."
+      credentials_verified: "Credenciais verificadas!"
+      enter_target_password: "Por favor, introduza a sua palavra-passe para este servidor"
+      # Step 4
+      custom_domain_help: "O seu handle {handle} é um domínio personalizado. Pode continuar a utilizá-lo no novo servidor."
+      enter_handle_short: "Por favor, introduza um handle"
+      checking_availability: "A verificar disponibilidade..."
+      checking_handle: "A verificar se o handle está disponível..."
+      handle_taken: "Este handle já está em uso. Por favor, escolha outro."
+      all_checks_passed: "Todas as verificações passaram!"
+      using_existing_handle: "A utilizar o seu handle existente no servidor de destino."
+      keeping_custom_handle: "A manter o seu handle de domínio personalizado!"
+      handle_available_checking: "Handle disponível, a verificar contas existentes..."
+      checking_existing_accounts: "A verificar contas existentes..."
+      failed_check_availability: "Não foi possível verificar a disponibilidade. Por favor, tente novamente."
+      failed_check_existing: "Não foi possível verificar contas existentes: "
+      account_exists_title: "Conta já existe no servidor de destino"
+      account_exists_what: "Uma conta com o seu DID já existe no servidor de destino (%{pds}). Isto pode ser de uma tentativa de migração anterior."
+      account_exists_do: "Volte ao passo anterior e introduza a sua palavra-passe para a conta existente. Se não sabe a palavra-passe:"
+      account_exists_reset: "Tente redefinir a sua palavra-passe:"
+      account_exists_contact: "Contacte o fornecedor do servidor em <strong>%{email}</strong> para remover a conta órfã"
+      account_exists_did: "Inclua o seu DID:"
+      # Step 5
+      confirm_email_html: "Ao clicar em <strong>Continuar</strong>, enviaremos um e-mail de confirmação para <strong>{email}</strong>. A migração só será iniciada depois de confirmar através desse e-mail."
+      confirm_no_usage: "Por favor, confirme que compreende que não deve utilizar a sua conta durante a migração."
+
+    # ──────────────────────────────────────────
+    # Status page (migrations/show)
+    # ──────────────────────────────────────────
+    show:
+      page_title: "Migração %{token}"
+      migration_status: "Estado da migração"
+      status_label: "Estado:"
+      retry_info: "Tentativa %{attempt}/%{max} - %{step}"
+      verify_email: "Verifique o seu e-mail"
+      enter_verification: "Introduza o seu código de verificação"
+      verification_sent: "Enviámos um código para <strong>%{email}</strong>. Introduza-o abaixo para iniciar a migração."
+      verification_label: "Código de verificação"
+      verification_placeholder: "XXX-XXX"
+      verify_button: "Verificar e iniciar migração"
+      didnt_receive: "Não recebeu o e-mail?"
+      check_spam: "Verifique a pasta de spam ou lixo"
+      check_email_correct: "Certifique-se de que <strong>%{email}</strong> está correto"
+      email_delay: "O e-mail pode demorar alguns minutos a chegar"
+
+      # Queue
+      in_queue: "Em fila de espera"
+      queue_default: "A aguardar que outras migrações concluam a transferência de dados"
+      queue_auto_start: "A sua migração será iniciada automaticamente quando houver uma vaga."
+
+      # Blob conversion
+      converting_blobs: "A converter formato de blobs antigo"
+      converting_blobs_detail: "isto pode demorar alguns minutos..."
+      blobs_converted: "Formato de blobs antigo convertido com sucesso."
+
+      # Blob progress
+      blobs_uploaded: "Blobs carregados"
+      files: "ficheiros"
+      data_transferred: "Dados transferidos"
+      failed: "Falhou"
+      preparing_blobs: "A preparar a transferência de <strong>%{count}</strong> blobs..."
+
+      # Download/backup progress
+      downloading_account: "A transferir dados da conta"
+      downloading_detail: "a transferir o seu repositório + blobs para cópia de segurança..."
+      creating_backup: "A criar pacote de cópia de segurança"
+      creating_backup_detail: "a empacotar os dados da sua conta..."
+      downloaded_count: "Transferidos: %{downloaded} / %{total} blobs"
+      backup_expired: "Cópia de segurança expirada"
+      backup_expired_detail: "o seu pacote de cópia de segurança foi eliminado dos nossos servidores."
+
+      # PLC pending
+      updating_identity: "A atualizar a sua identidade"
+      plc_accepted: "O seu código de confirmação foi aceite. Estamos agora a atualizar a sua entrada no diretório PLC para apontar para <strong>%{pds}</strong>. Isto pode demorar um momento."
+      page_auto_update: "Esta página será atualizada automaticamente. Por favor, não feche este separador."
+      enter_confirmation: "Introduza o seu código de confirmação"
+      confirmation_hint: "Verifique o seu e-mail para um código de <strong>%{pds}</strong> &mdash; tem o aspeto de <code class=\"fs-6\">XXXXX-XXXXX</code>"
+      confirmation_label: "Código de confirmação"
+      confirmation_placeholder: "XXXXX-XXXXX"
+      complete_migration: "Concluir migração"
+      complete_confirm: "Isto irá finalizar a migração da sua conta. Este passo não pode ser revertido.\n\nTem a certeza de que pretende continuar?"
+
+      # Completed
+      completed_title: "Migração concluída com sucesso!"
+      completed_migrated_to: "A sua conta foi migrada com sucesso para <strong>%{pds}</strong>. Pode agora iniciar sessão com o seu novo handle: <strong>%{handle}</strong>"
+      completed_migrated_back: "A sua conta foi migrada com sucesso de volta para <strong>%{pds}</strong>. Pode agora iniciar sessão com o seu handle: <strong>%{handle}</strong>"
+      email_sent_html: "Enviámos um e-mail para %{email} com a sua nova palavra-passe de conta, instruções de início de sessão e uma ligação para alterar a sua palavra-passe. Por favor, verifique a sua caixa de entrada (e pasta de spam)."
+      save_rotation_key: "GUARDE A SUA CHAVE DE ROTAÇÃO!"
+      page_auto_delete: "Esta página será automaticamente eliminada em 2 dias."
+      rotation_key_needed: "A sua chave de rotação é necessária para a recuperação da conta. Copie-a agora e guarde-a em segurança!"
+      copy_rotation_key: "Copiar chave de rotação"
+      key_emailed: "Também enviámos esta chave para <strong>%{email}</strong>"
+      privacy_notice: "Aviso de privacidade"
+      privacy_detail: "Para a sua privacidade e conformidade com o RGPD, este registo de migração será automaticamente eliminado em <strong>2 dias</strong>. Certifique-se de que guardou a sua chave de rotação e transferiu a sua cópia de segurança antes disso!"
+      privacy_delete_now: "Depois de guardar tudo, pode eliminar os seus dados imediatamente com o botão abaixo."
+      delete_confirm: "Tem a certeza de que pretende eliminar permanentemente todos os dados da migração?\n\nCertifique-se de que:\n• Copiou a sua chave de rotação\n• Transferiu a sua cópia de segurança (se aplicável)\n\nEsta ação não pode ser revertida."
+      delete_button: "Guardei a minha cópia de segurança e chave de rotação — eliminar todos os meus dados"
+      welcome_back: "As suas credenciais de conta antigas foram eliminadas em segurança. Bem-vindo/a de volta!"
+      welcome_new: "As suas credenciais de conta antigas foram eliminadas em segurança. Bem-vindo/a à sua nova casa!"
+
+      # Rotation key section (collapsible)
+      recovery_key_title: "Chave de recuperação da conta"
+      recovery_key_important: "IMPORTANTE:"
+      recovery_key_help: "Guarde esta chave de rotação em segurança. Permite-lhe reverter alterações no PLC ou recuperar a sua conta."
+      copy_clipboard: "Copiar para a área de transferência"
+      revert_title: "Como utilizar esta chave para reverter alterações"
+      revert_help: "Se precisar de reverter as alterações no diretório PLC, pode utilizar esta chave de rotação:"
+      revert_step1: "Instale a ferramenta CLI <code>goat</code>"
+      revert_step2: "Obtenha o histórico PLC: <code>goat plc history &lt;your-did&gt;</code>"
+      revert_step3: "Identifique o estado histórico desejado (CID)"
+      revert_step4: "Crie a operação de reversão: <code>goat plc update --prev &lt;cid&gt;</code>"
+      revert_step5: "Assine com a sua chave de rotação: <code>goat plc sign</code>"
+      revert_step6: "Submeta a operação assinada: <code>goat plc submit --did &lt;your-did&gt;</code>"
+      revert_warning: "Esta é uma operação avançada. Utilize-a apenas se compreender o sistema do diretório PLC."
+
+      # PLC help section
+      didnt_receive_plc: "Não recebeu o e-mail?"
+      plc_check_spam: "Verifique a pasta de spam ou lixo"
+      plc_from_bluesky: "O e-mail é enviado pelo Bluesky, não por nós"
+      plc_expires: "O código expira após 1 hora"
+      plc_new_code_help: "Se precisar de um novo código, introduza a sua palavra-passe abaixo e solicitaremos um:"
+      plc_password_placeholder: "Palavra-passe para %{handle}"
+      request_new_code: "Solicitar novo código"
+      technical_details: "Detalhes técnicos"
+      plc_explanation: "O código de confirmação é um <strong>token de operação PLC</strong> — autoriza a atualização do seu documento DID no diretório PLC para apontar para o seu novo Personal Data Server."
+      plc_irreversible: "<strong>Isto é irreversível.</strong> Depois de submetido, a identidade da sua conta (DID) apontará permanentemente para <strong>%{new_pds}</strong> em vez de <strong>%{old_pds}</strong>."
+      plc_expiry_note: "Os tokens PLC expiram após 1 hora. Se o seu expirou, pode solicitar um novo."
+
+      # Sidebar
+      download_backup: "Transferir a sua cópia de segurança"
+      backup_ready: "Cópia de segurança pronta"
+      backup_download_completed: "Transfira o seu pacote de cópia de segurança antes que expire."
+      backup_download_ready: "A sua cópia de segurança da conta está pronta! Transfira-a antes que expire."
+      size: "Tamanho:"
+      expires: "Expira:"
+      download_button: "Transferir cópia de segurança"
+      recovery_key: "Chave de recuperação"
+      recovery_key_sidebar: "Guarde esta chave em segurança. Permite-lhe recuperar a sua conta."
+      copy_key: "Copiar chave"
+      cancel_migration: "Cancelar migração"
+      cancel_help: "Cancele esta migração e mantenha a sua conta no servidor atual."
+      cancel_button: "Cancelar migração"
+      cancel_confirm: "Tem a certeza de que pretende cancelar esta migração?\n\nUma ligação de confirmação será enviada para o seu e-mail. A migração só será cancelada depois de clicar nessa ligação."
+
+    # ──────────────────────────────────────────
+    # Error details partial
+    # ──────────────────────────────────────────
+    error_details:
+      current_status: "Estado atual:"
+      retry_attempt: "Número da tentativa:"
+      remaining_attempts: "Tentativas restantes:"
+      next_retry: "Próxima tentativa em"
+      calculating: "a calcular..."
+      retrying_now: "a tentar novamente..."
+      reauth_safe: "Os seus dados de migração estão seguros — basta reintroduzir a sua palavra-passe para continuar."
+      reauth_help: "Introduza a sua palavra-passe para <strong>%{handle}</strong> para restaurar a sua sessão e continuar a migração."
+      password_for: "Palavra-passe para %{handle}"
+      enter_password_placeholder: "Introduza a sua palavra-passe da conta"
+      reauth_button: "Reautenticar e continuar migração"
+      plc_safe: "Os seus dados de migração estão seguros — apenas precisa de um novo token PLC."
+      plc_request_help: "Clique no botão abaixo para solicitar um novo token PLC. Receberá por e-mail de <strong>%{pds}</strong>."
+      request_plc_confirm: "Solicitar um novo token PLC do seu PDS antigo?"
+      request_plc_button: "Solicitar novo token PLC"
+      plc_session_expired: "A sua sessão com <strong>%{pds}</strong> expirou. Introduza a sua palavra-passe para <strong>%{handle}</strong> para reconectar e solicitar um novo token PLC."
+      reauth_plc_button: "Reautenticar e solicitar token PLC"
+      what_happened_title: "O que aconteceu e o que pode fazer"
+      what_happened: "O que aconteceu:"
+      what_to_do: "O que pode fazer:"
+      request_plc_action: "Solicitar novo token PLC"
+      retry_migration: "Tentar migração novamente"
+      retry_confirm: "Tentar esta migração novamente a partir da etapa atual?"
+      start_new: "Iniciar nova migração"
+      check_pds: "Verificar estado do PDS"
+      download_report: "Transferir relatório de blobs falhados"
+      cleanup_title: "Instruções de limpeza"
+      cleanup_help: "Para limpar a conta órfã, execute este comando (requer acesso ao servidor):"
+      cleanup_contact: "Ou contacte o administrador do PDS de destino para eliminar manualmente a conta órfã."
+      rotation_key_save: "A sua chave de rotação (GUARDE ISTO)"
+      copy_rotation_key: "Copiar chave de rotação"
+      contact_support: "Contacte o suporte imediatamente"
+      support_email: "E-mail de suporte:"
+      migration_token: "Token de migração:"
+      include_token: "Inclua o seu token de migração no pedido de suporte para assistência mais rápida."
+      technical_title: "Detalhes técnicos (para depuração)"
+      error_message: "Mensagem de erro:"
+      job_step: "Etapa da tarefa:"
+      migration_status: "Estado da migração:"
+      did_label: "DID:"
+
+    # ──────────────────────────────────────────
+    # PLC Warning partial
+    # ──────────────────────────────────────────
+    plc_warning:
+      title: "PONTO SEM RETORNO"
+      subtitle: "A próxima ação irá redirecionar permanentemente o seu DID para o novo PDS"
+      once_submit: "Assim que submeter o token PLC:"
+      will_point: "O seu DID (%{did}) apontará para %{pds}"
+      all_apps: "Todas as aplicações AT Protocol resolverão a sua identidade para o novo PDS"
+      immediate: "Esta alteração é imediata e afeta toda a rede federada"
+      cannot_undo: "Esta ação NÃO PODE ser revertida sem a sua chave de rotação"
+      what_you_need: "O que precisa antes de continuar:"
+      need_rotation_key: "A sua chave de rotação guardada em segurança (desloque para cima para copiar)"
+      need_data_verified: "Verificado que todos os seus dados foram migrados (repositório, blobs, preferências)"
+      need_plc_token: "O token de operação PLC (será enviado para o seu e-mail de %{pds})"
+      need_understanding: "Compreensão de que isto é irreversível sem a chave de rotação"
+      instructions_title: "Instruções passo a passo:"
+      step1_title: "Guarde a sua chave de rotação"
+      step1_help: "Desloque para cima e copie a sua chave de rotação para um local seguro (gestor de palavras-passe, ficheiro encriptado). Esta é a sua ÚNICA forma de recuperar se algo correr mal."
+      step2_title: "Verifique o seu e-mail"
+      step2_help: "O seu antigo fornecedor PDS (<strong>%{pds}</strong>) foi solicitado a enviar-lhe um token de operação PLC por e-mail. Verifique a sua caixa de entrada para um e-mail com o token."
+      step3_title: "Copie o token PLC"
+      step3_help: "Copie o token de operação PLC do e-mail enviado pelo seu antigo fornecedor PDS. O token parecerá uma cadeia longa de caracteres."
+      step4_title: "Submeta o token abaixo"
+      step4_help: "Cole o token PLC no formulário abaixo e submeta para concluir a sua migração."
+      final_warning: "Último aviso: está preparado/a?"
+      check_saved: "Guardou a sua chave de rotação num local seguro?"
+      check_understand: "Compreende que esta alteração é permanente e afeta toda a rede AT Protocol?"
+      check_prepared: "Está preparado/a para perder o acesso se não tiver a sua chave de rotação?"
+      check_verified: "Verificou que todos os seus dados (publicações, média, preferências) foram migrados com sucesso?"
+      do_not_proceed: "Se respondeu NÃO a alguma destas perguntas, NÃO prossiga ainda."
+
+  # ──────────────────────────────────────────
+  # Controller flash messages & API errors
+  # ──────────────────────────────────────────
+  controllers:
+    migrations:
+      # Create
+      verification_sent: "Enviámos um código de verificação para %{email}. Introduza-o na próxima página para iniciar a sua migração."
+      # Verify email
+      email_verified: "E-mail verificado! A sua migração foi iniciada."
+      invalid_code: "Código de verificação inválido. Por favor, verifique o código no seu e-mail e tente novamente."
+      enter_code: "Por favor, introduza o código de verificação do seu e-mail."
+      # PLC token
+      plc_submitted: "Token PLC submetido! O seu DID será atualizado em breve."
+      plc_blank: "O token PLC não pode estar vazio"
+      session_expired: "A sua sessão expirou. Por favor, reintroduza a sua palavra-passe para continuar."
+      old_session_expired: "A sua sessão com %{pds} expirou. Por favor, reintroduza a sua palavra-passe para continuar."
+      credentials_expired: "As suas credenciais expiraram. Por favor, reintroduza a sua palavra-passe para continuar."
+      # Cancellation
+      cancellation_sent: "Uma ligação de confirmação de cancelamento foi enviada para o seu e-mail. Por favor, verifique a sua caixa de entrada."
+      cannot_cancel: "Esta migração não pode ser cancelada na sua etapa atual."
+      cancel_email_failed: "Não foi possível enviar o e-mail de cancelamento. Por favor, tente novamente."
+      invalid_cancel_link: "Ligação de cancelamento inválida. Por favor, solicite uma nova na página de estado da migração."
+      cancel_too_late: "Esta migração já não pode ser cancelada (pode ter ultrapassado o ponto sem retorno)."
+      cancelled: "Migração cancelada com sucesso. A sua conta permanece inalterada em %{pds}. Pode iniciar uma nova migração a qualquer momento."
+      # Delete
+      only_completed: "Apenas migrações concluídas podem ser eliminadas."
+      deleted: "Todos os dados da migração foram permanentemente eliminados. Obrigado por utilizar %{site_name}!"
+      # Retry
+      retry_started: "Nova tentativa de migração iniciada!"
+      not_failed: "A migração não está em estado de falha e não pode ser retentada"
+      no_failed_blobs: "Sem blobs falhados para retentar"
+      retrying_blobs: "A retentar %{count} blobs falhados..."
+      # Backup
+      backup_not_found: "Cópia de segurança não encontrada ou expirada"
+      # API errors
+      did_required: "DID é obrigatório"
+      pds_required: "O host do PDS é obrigatório"
+      handle_required: "Handle é obrigatório"
+      password_required: "Palavra-passe é obrigatória"
+      pds_did_password_required: "O host do PDS, DID e palavra-passe são obrigatórios"
+      two_factor_required: "Autenticação de dois fatores necessária. Verifique o seu e-mail para um código de início de sessão."
+      wrong_password: "Palavra-passe incorreta para a sua conta Bluesky. Por favor, introduza a palavra-passe que utilizou em bsky.social."
+      auth_failed: "Falha na autenticação: %{error}"
+      invalid_pds_response: "Resposta inválida do PDS de destino"
+      pds_connect_failed: "Não foi possível ligar ao PDS de destino. Por favor, tente novamente."
+      resolve_failed: "Não foi possível resolver o handle. Por favor, verifique se o handle está correto."
+      auth_check_failed: "Falha na autenticação. Por favor, verifique a sua palavra-passe."
+      unexpected_error: "Ocorreu um erro inesperado. Por favor, tente novamente."
+      unexpected_error_detail: "Ocorreu um erro inesperado: %{error}"
+      tokens_missing: "Tokens de autenticação em falta. Por favor, volte atrás e reautentique-se."
+      account_not_found: "Nenhuma conta encontrada em %{pds} com o seu DID (%{did}). Por favor, volte atrás e selecione um PDS de destino diferente, ou inicie uma nova migração."
+      account_verify_failed: "Não foi possível verificar a existência da conta em %{pds}: %{error}. Por favor, tente novamente."
+      target_tokens_missing: "Tokens de autenticação do PDS de destino em falta. Por favor, volte atrás e verifique as suas credenciais em %{pds}."
+      reauth_not_available: "A reautenticação não está disponível nesta etapa."
+      reauth_failed: "Falha na autenticação: %{error}. Por favor, verifique a sua palavra-passe."
+      reauth_error: "Não foi possível reautenticar: %{error}"
+      plc_not_available: "Não é possível solicitar um novo token PLC nesta etapa. A atualização PLC pode já ter sido tentada."
+      plc_requested: "Foi solicitado um novo token PLC. Verifique o seu e-mail de %{pds}."
+      plc_request_failed: "Não foi possível solicitar automaticamente um novo token PLC (%{error}). Por favor, solicite-o manualmente nas definições do seu antigo fornecedor PDS (ex.: aplicação Bluesky → Settings → Account → Request PLC Token) e depois introduza-o abaixo."
+      plc_session_expired: "A sua sessão com %{pds} expirou. Por favor, solicite um novo token PLC manualmente: inicie sessão na sua conta antiga e vá a Settings → Account → Request PLC Token, depois introduza o token abaixo."
+      pds_connect_check: "Não foi possível ligar ao PDS. Por favor, verifique o URL."
+      migration_not_found: "Migração não encontrada"
+      password_required_short: "Palavra-passe é obrigatória."
+      reauth_success_plc_valid: "Reautenticação bem-sucedida! O seu token PLC ainda é válido — a retentar a atualização PLC agora."
+      reauth_success_plc_requested: "Reautenticação bem-sucedida! Foi solicitado um novo token PLC — verifique o seu e-mail de %{pds}."
+      reauth_success_plc_failed: "Reautenticação bem-sucedida, mas não foi possível solicitar automaticamente um token PLC (%{error}). Pode solicitá-lo manualmente nas definições do seu antigo fornecedor PDS e depois introduzi-lo abaixo."
+
+  # ──────────────────────────────────────────
+  # Mailer strings
+  # ──────────────────────────────────────────
+  mailers:
+    common:
+      eurosky_migration: "Serviço de Migração Eurosky"
+
+    email_verification:
+      subject: "O seu código de verificação: %{code} (%{token})"
+      heading: "VERIFIQUE O SEU E-MAIL - INICIAR MIGRAÇÃO DE CONTA"
+      migration_token: "Token de migração: %{token}"
+      initiated: "Iniciou uma migração de %{handle} para %{pds}."
+      enter_code: "Introduza o seguinte código de verificação na página de migração para iniciar o processo:"
+      go_to_page: "Ir para a página de migração:"
+      what_next: "O QUE ACONTECE A SEGUIR?"
+      next_step1: "Introduza o código de verificação acima na página de migração"
+      next_step2: "A sua migração será iniciada automaticamente"
+      next_step3: "Receberá atualizações de estado por e-mail"
+      next_step4: "O processo completo demora aproximadamente 20-30 minutos"
+      important: "LEMBRETES IMPORTANTES"
+      reminder1: "Não utilize a sua conta durante a migração"
+      reminder2: "Qualquer atividade durante a migração não será transferida"
+      reminder3: "Feche todas as aplicações e separadores do navegador com a sua conta"
+      reminder4: "Aguarde o e-mail de conclusão antes de iniciar sessão novamente"
+      not_you: "Se não iniciou esta migração, por favor ignore este e-mail."
+
+    account_password:
+      subject: "A sua nova palavra-passe de conta para %{handle} (%{token})"
+      heading: "A SUA NOVA PALAVRA-PASSE DE CONTA"
+      intro: "A sua migração foi iniciada! Criámos uma palavra-passe segura para a sua nova conta."
+      security_notice: "AVISO DE SEGURANÇA"
+      save_password: "GUARDE ESTA PALAVRA-PASSE IMEDIATAMENTE! Vai precisar dela para iniciar sessão na sua nova conta."
+      tip1: "Guarde-a num gestor de palavras-passe seguro"
+      tip2: "Não a partilhe com ninguém"
+      tip3: "Pode alterá-la após o primeiro início de sessão"
+      account_details: "DETALHES DA CONTA"
+      new_handle: "Novo handle: @%{handle}"
+      new_pds: "Novo PDS: %{pds}"
+      email: "E-mail: %{email}"
+      whats_happening: "O QUE ESTÁ A ACONTECER AGORA?"
+      backup_step1: "Estamos a criar uma cópia de segurança dos dados da sua conta"
+      backup_step2: "Receberá outro e-mail quando a cópia de segurança estiver pronta para transferir"
+      backup_step3: "A sua conta será criada e os seus dados serão migrados"
+      no_backup_step1: "A sua conta está a ser criada no novo PDS"
+      no_backup_step2: "Os seus dados estão a ser migrados (sem cópia de segurança)"
+      no_backup_step3: "Será notificado/a quando a migração estiver concluída"
+      track_progress: "Acompanhe o progresso da sua migração em:"
+
+    migration_completed:
+      subject: "Migração concluída! (%{token})"
+      heading: "MIGRAÇÃO CONCLUÍDA!"
+      success: "A sua conta Bluesky/ATProto foi migrada com sucesso para o novo PDS."
+      password_heading: "A SUA NOVA PALAVRA-PASSE DE CONTA"
+      password_help: "Utilize esta palavra-passe para iniciar sessão na sua nova conta:"
+      save_password: "Guarde esta palavra-passe agora — armazene-a num gestor de palavras-passe."
+      change_password: "Pode alterá-la após o primeiro início de sessão."
+      backup_heading: "PACOTE DE CÓPIA DE SEGURANÇA DISPONÍVEL"
+      backup_help: "A cópia de segurança dos dados da sua conta está disponível para transferência durante os próximos 10 minutos:"
+      backup_expiry: "Após 10 minutos, esta ligação expirará e a cópia de segurança será permanentemente eliminada."
+      summary: "RESUMO DA MIGRAÇÃO"
+      migration_token: "Token de migração: %{token}"
+      did: "DID: %{did}"
+      old_account: "Conta antiga: %{handle} @ %{pds}"
+      new_account: "Conta nova: %{handle} @ %{pds}"
+      completed_at: "Concluída em: %{time}"
+      status_page: "Ver página de estado (disponível durante 10 minutos):"
+      login_heading: "COMO INICIAR SESSÃO NA SUA NOVA CONTA"
+      login_help: "Se ainda não o fez, termine a sessão da sua conta antiga em todas as aplicações Bluesky e depois inicie sessão com o seu novo handle:"
+      login_handle: "Handle: %{handle}"
+      hosting_warning: "IMPORTANTE: Certifique-se de que introduz \"%{pds}\" como fornecedor de alojamento no topo do formulário de início de sessão!"
+      hosting_miss: "Muitos utilizadores não completam este passo — sem o fornecedor de alojamento correto, não conseguirá iniciar sessão."
+      change_password_heading: "ALTERE A SUA PALAVRA-PASSE"
+      change_password_help: "Para a sua segurança, recomendamos vivamente que altere a sua palavra-passe imediatamente:"
+      change_password_later: "Também pode alterá-la mais tarde nas definições da sua conta."
+      whats_next: "O QUE ACONTECE A SEGUIR?"
+      next1: "A sua conta está agora ativa em %{pds}"
+      next2: "A sua conta antiga em %{old_pds} foi desativada"
+      next3: "Todas as suas publicações, seguimentos e dados foram transferidos"
+      next4: "Os seus seguidores deverão ver automaticamente a sua nova localização (baseada no DID)"
+      privacy_heading: "PRIVACIDADE E SEGURANÇA"
+      privacy1: "Este registo de migração será automaticamente eliminado em 10 minutos para conformidade com o RGPD"
+      privacy2: "Todas as credenciais encriptadas foram eliminadas em segurança dos nossos servidores"
+      support: "Se tiver perguntas ou problemas, por favor contacte o suporte com o seu token de migração:"
+      email_footer: "Este e-mail foi enviado para %{email} porque iniciou uma migração de conta."
+
+    migration_failed:
+      subject: "Migração falhou - ação necessária (%{token})"
+      heading: "Migração Eurosky falhou - ação necessária"
+      intro: "A migração da sua conta %{token} encontrou um erro e necessita da sua atenção."
+      account_details: "Detalhes da conta:"
+      did: "DID: %{did}"
+      old_handle: "Handle antigo: @%{handle}"
+      new_handle: "Novo handle: @%{handle}"
+      failure_info: "Informação da falha:"
+      failed_step: "Etapa que falhou: %{step}"
+      error: "Erro: %{error}"
+      previous_retries: "Tentativas anteriores: %{count}"
+      what_to_do: "O que pode fazer:"
+      do_step1: "Reveja o estado da migração:"
+      do_step2: "Clique no botão \"Tentar migração novamente\" para tentar novamente a migração"
+      do_step3: "Se o problema persistir após várias tentativas, por favor contacte o suporte com o seu token de migração: %{token}"
+      common_issues: "Problemas comuns e soluções:"
+      issue1: "Limites de tempo de rede: Geralmente resolvem-se ao tentar novamente"
+      issue2: "Limitação de taxa: Aguarde alguns minutos antes de tentar novamente"
+      issue3: "Dados em falta: Verifique se todos os dados estão acessíveis no PDS antigo"
+      important: "IMPORTANTE:"
+      note1: "Os seus dados no PDS antigo permanecem intactos"
+      note2: "Pode tentar a migração novamente com segurança"
+      note3: "Se precisar de ajuda, refira o seu token de migração: %{token}"
+
+    backup_ready:
+      subject: "A sua cópia de segurança de migração Eurosky está pronta (%{token})"
+      heading: "A SUA CÓPIA DE SEGURANÇA ESTÁ PRONTA"
+      intro: "A cópia de segurança dos dados da sua conta para a migração %{token} está pronta para transferência."
+      download: "Transfira a sua cópia de segurança:"
+      size: "Tamanho da cópia de segurança: %{size}"
+      expires: "Esta ligação de transferência expira em %{time}."
+      expiry_warning: "Após a expiração, a cópia de segurança será permanentemente eliminada dos nossos servidores."
+      whats_next: "A sua migração continua em segundo plano. Receberá outro e-mail quando estiver concluída."
+
+    rotation_key_notice:
+      subject: "Ação necessária: Confirme a sua migração com o código PLC (%{token})"
+      heading: "CONFIRME A SUA MIGRAÇÃO"
+      intro: "Os dados da sua conta foram transferidos. Para concluir a migração, precisa de submeter um código de confirmação PLC."
+      key_heading: "A SUA CHAVE DE ROTAÇÃO (GUARDE ISTO PRIMEIRO!)"
+      key_help: "Antes de prosseguir, guarde esta chave de rotação em segurança. É a sua única forma de recuperar a conta se algo correr mal:"
+      key_warning: "Guarde esta chave num gestor de palavras-passe ou noutro local seguro. NÃO poderá recuperá-la mais tarde."
+      next_step: "Vá à página de migração para introduzir o seu código de confirmação PLC:"
+      check_email: "Verifique o seu e-mail para um código do seu antigo fornecedor PDS — tem o aspeto de XXXXX-XXXXX"
+
+    plc_token_failed:
+      subject: "Ação necessária: Solicite um novo código de confirmação PLC (%{token})"
+      heading: "TOKEN PLC EXPIRADO OU INVÁLIDO"
+      intro: "O código de confirmação PLC para a sua migração %{token} expirou ou era inválido."
+      what_to_do: "O que precisa de fazer:"
+      step1: "Vá à página de migração:"
+      step2: "Solicite um novo token PLC (pode precisar de reintroduzir a sua palavra-passe)"
+      step3: "Introduza o novo token quando o receber por e-mail"
+      error_detail: "Erro: %{error}"
+
+    critical_plc_failure:
+      subject: "URGENTE: Falha crítica na migração - NÃO INICIE NOVA MIGRAÇÃO (%{token})"
+      heading: "FALHA CRÍTICA NA MIGRAÇÃO"
+      warning: "NÃO inicie uma nova migração. A sua conta pode estar num estado inconsistente."
+      intro: "A atualização do diretório PLC para a migração %{token} falhou após o ponto sem retorno."
+      key_heading: "A SUA CHAVE DE ROTAÇÃO"
+      key_help: "Vai precisar desta chave para recuperar a sua conta:"
+      contact: "Contacte o suporte imediatamente:"
+      error_detail: "Erro: %{error}"
+
+    invalid_invite_code:
+      subject: "Migração falhou - código de convite inválido (%{token})"
+      heading: "CÓDIGO DE CONVITE INVÁLIDO"
+      intro: "A sua migração %{token} não pôde prosseguir porque o código de convite era inválido ou já foi utilizado."
+      what_to_do: "Para iniciar uma nova migração com um código de convite válido:"
+
+    orphaned_account_error:
+      subject: "Migração pausada - conta órfã no PDS de destino (%{token})"
+      heading: "CONTA ÓRFÃ DETETADA"
+      intro: "A sua migração %{token} foi pausada porque foi encontrada uma conta órfã no PDS de destino."
+      explanation: "Isto geralmente acontece quando uma tentativa de migração anterior foi interrompida. A conta antiga ainda existe no servidor de destino e precisa de ser removida antes de podermos continuar."
+      what_to_do: "O que pode fazer:"
+      option1: "Contacte o administrador do PDS de destino em %{email} para remover a conta órfã"
+      option2: "Inclua o seu DID: %{did}"
+      option3: "Depois de removida, tente novamente a migração na página de estado:"
+
+    reauthentication_required:
+      subject: "Ação necessária: Reautenticação necessária (%{token})"
+      heading: "REAUTENTICAÇÃO NECESSÁRIA"
+      intro: "A sua migração %{token} precisa que reintroduza a sua palavra-passe para continuar."
+      reason: "A sua sessão com o PDS antigo expirou durante o processo de migração."
+      what_to_do: "Vá à página de migração e reintroduza a sua palavra-passe:"
+      error_detail: "Erro: %{error}"
+      step: "Etapa que falhou: %{step}"
+
+    cancellation_confirmation:
+      subject: "Confirme o cancelamento da migração (%{token})"
+      heading: "CONFIRME O CANCELAMENTO"
+      intro: "Solicitou o cancelamento da migração %{token}."
+      confirm_help: "Clique na ligação abaixo para confirmar o cancelamento:"
+      confirm_link: "Confirmar cancelamento"
+      not_you: "Se não solicitou este cancelamento, pode ignorar este e-mail com segurança. A sua migração continuará normalmente."
+
+  # ──────────────────────────────────────────
+  # ActiveRecord model validations
+  # ──────────────────────────────────────────
+  activerecord:
+    errors:
+      models:
+        migration:
+          attributes:
+            old_handle:
+              invalid: "deve ser um handle ATProto válido (ex.: user.bsky.social)"

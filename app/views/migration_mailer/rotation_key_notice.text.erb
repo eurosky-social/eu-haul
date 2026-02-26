@@ -1,10 +1,10 @@
-ACTION REQUIRED: CONFIRM YOUR MIGRATION
+<%= t('mailers.rotation_key_notice.heading') %>
 ================================================================================
 
-Your migration is almost done! There is ONE MORE STEP you need to complete.
+<%= t('mailers.rotation_key_notice.intro') %>
 
 
-⚠️  YOU WILL RECEIVE A CONFIRMATION EMAIL
+<%= t('mailers.rotation_key_notice.check_email') %>
 ================================================================================
 
 You will shortly receive an email from your OLD PDS provider
@@ -25,13 +25,10 @@ not from us.
 
 
 ================================================================================
-🔑 YOUR ACCOUNT RECOVERY KEY
+<%= t('mailers.rotation_key_notice.key_heading') %>
 ================================================================================
 
-Before the final step, we also want to make sure you have a recovery
-key for your account. Think of this as a master password — if you ever
-lose access to your account or your server goes down, this key lets
-you recover it.
+<%= t('mailers.rotation_key_notice.key_help') %>
 
 <% if @rotation_key_private.present? %>
 Your Recovery Key:
@@ -39,8 +36,7 @@ Your Recovery Key:
 <%= @rotation_key_private %>
 ----------------------------------------
 
-Copy this key and store it somewhere safe — a password manager, a printed
-note in a safe place, or an encrypted file. Don't share it with anyone.
+<%= t('mailers.rotation_key_notice.key_warning') %>
 <% end %>
 
 
@@ -58,5 +54,4 @@ completely offline.
 ---
 Migration Token: <%= @migration.token %>
 
-This email was sent to <%= @migration.email %> because you initiated
-an account migration.
+<%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

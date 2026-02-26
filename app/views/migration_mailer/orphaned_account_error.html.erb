@@ -84,38 +84,32 @@
 </head>
 <body>
   <div class="header">
-    <h1>⚠️ Migration Issue</h1>
-    <p>Orphaned Account Found on Target PDS</p>
+    <h1><%= t('mailers.orphaned_account_error.heading') %></h1>
     <p>Migration <%= @migration.token %></p>
   </div>
 
   <div class="content">
     <p>Hello,</p>
 
-    <p>Your migration from <strong><%= @migration.old_handle %></strong> to <strong><%= @migration.new_pds_host %></strong> encountered an issue.</p>
+    <p><%= t('mailers.orphaned_account_error.intro', token: @migration.token) %></p>
 
     <div class="error-box">
-      <h3 style="margin-top: 0; color: #991b1b;">🚫 What Happened</h3>
+      <h3 style="margin-top: 0; color: #991b1b;">What Happened</h3>
       <p style="margin-bottom: 0;">
-        An account with your DID (<span class="monospace"><%= @migration.did %></span>) already exists on the target PDS <strong><%= @migration.new_pds_host %></strong>.
-      </p>
-      <p style="margin-top: 10px; margin-bottom: 0;">
-        This orphaned account is likely from a previous failed migration attempt and must be removed before your migration can proceed.
+        <%= t('mailers.orphaned_account_error.explanation') %>
       </p>
     </div>
 
     <div class="info-box">
-      <h3 style="margin-top: 0;">📋 What This Means</h3>
+      <h3 style="margin-top: 0;"><%= t('mailers.orphaned_account_error.what_to_do') %></h3>
       <ul style="margin: 10px 0;">
-        <li>Your migration has been <strong>paused</strong> (not failed permanently)</li>
-        <li>No data has been lost or damaged</li>
-        <li>The target PDS provider needs to remove the orphaned account</li>
-        <li>Once removed, you can retry your migration</li>
+        <li><%= t('mailers.orphaned_account_error.option1', email: @target_pds_support_email) %></li>
+        <li><%= t('mailers.orphaned_account_error.option2', did: @migration.did) %></li>
       </ul>
     </div>
 
     <div class="contact-box">
-      <h3 style="margin-top: 0; color: #F57F29;">📧 Next Steps: Contact PDS Provider</h3>
+      <h3 style="margin-top: 0; color: #F57F29;">Next Steps: Contact PDS Provider</h3>
       <p style="margin-bottom: 15px;">
         Please contact the support team for <strong><%= @migration.new_pds_host %></strong> to request removal of the orphaned account.
       </p>
@@ -124,14 +118,14 @@
       </a>
       <p style="font-size: 14px; color: #666; margin-top: 15px;">
         <strong>Include in your message:</strong><br>
-        • Migration Token: <code><%= @migration.token %></code><br>
-        • DID: <code><%= @migration.did %></code>
+        Migration Token: <code><%= @migration.token %></code><br>
+        DID: <code><%= @migration.did %></code>
       </p>
     </div>
 
     <div class="info-box">
-      <h3 style="margin-top: 0;">⏳ After Support Responds</h3>
-      <p style="margin-bottom: 10px;">Once the orphaned account has been removed:</p>
+      <h3 style="margin-top: 0;">After Support Responds</h3>
+      <p style="margin-bottom: 10px;"><%= t('mailers.orphaned_account_error.option3', url: '').split(':').first %>:</p>
       <ol style="margin: 10px 0;">
         <li>Return to your <a href="<%= @migration_url %>">migration status page</a></li>
         <li>Click the "Retry Migration" button</li>
@@ -147,7 +141,7 @@
       <p>Migration Token: <code><%= @migration.token %></code></p>
       <p>DID: <code><%= @migration.did %></code></p>
       <p>Target PDS: <%= @migration.new_pds_host %></p>
-      <p style="margin-top: 20px;">Eurosky Migration Service</p>
+      <p style="margin-top: 20px;"><%= t('mailers.common.eurosky_migration') %></p>
     </div>
   </div>
 </body>

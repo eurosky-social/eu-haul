@@ -16,23 +16,24 @@
 </head>
 <body>
   <div class="header">
-    <h1 style="margin: 0;">Re-authentication Required</h1>
+    <h1 style="margin: 0;"><%= t('mailers.reauthentication_required.heading') %></h1>
   </div>
 
   <p>Hello,</p>
 
-  <p>Your migration <strong><%= @migration.token %></strong> has been paused because a login session expired. To continue, you need to re-enter your password on the migration status page.</p>
+  <p><%= t('mailers.reauthentication_required.intro', token: @migration.token) %></p>
+  <p><%= t('mailers.reauthentication_required.reason') %></p>
 
   <div class="details">
     <h3 style="margin-top: 0;">Account Details</h3>
     <ul class="info-list">
       <li><strong>Old Handle:</strong> @<%= @migration.old_handle %></li>
       <li><strong>New Handle:</strong> @<%= @migration.new_handle %></li>
-      <li><strong>Failed Step:</strong> <%= @failed_step.to_s.gsub('Job', '').humanize %></li>
+      <li><strong><%= t('mailers.reauthentication_required.step', step: '').split(':').first %>:</strong> <%= @failed_step.to_s.gsub('Job', '').humanize %></li>
     </ul>
   </div>
 
-  <h3>What You Need to Do:</h3>
+  <h3><%= t('mailers.reauthentication_required.what_to_do') %></h3>
   <ol>
     <li>Click the button below to open your migration status page</li>
     <li>Enter your password for <strong>@<%= @migration.old_handle %></strong> to re-authenticate</li>
@@ -48,7 +49,7 @@
 
   <div class="footer">
     <p>Migration Token: <%= @migration.token %></p>
-    <p>This email was sent to <%= @migration.email %> because you initiated an account migration.</p>
+    <p><%= t('mailers.migration_completed.email_footer', email: @migration.email) %></p>
   </div>
 </body>
 </html>

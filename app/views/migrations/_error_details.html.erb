@@ -34,7 +34,7 @@
         <%# Current Status %>
         <div class="bg-white bg-opacity-75 p-3 rounded-2 mb-3">
           <div class="small fw-semibold <%= severity_text_class %> mb-1">
-            Current Status:
+            <%= t('migrations.error_details.current_status') %>
           </div>
           <div class="small text-dark">
             <%= error_context[:current_status] %>
@@ -44,12 +44,12 @@
           <% if error_context[:retry_info] && error_context[:retry_info][:remaining] > 0 %>
             <div class="mt-2 p-2 bg-info-subtle rounded-2">
               <div class="small text-primary">
-                <strong>⏱️ Retry Attempt:</strong> <%= error_context[:retry_info][:attempt] %> / <%= error_context[:retry_info][:max_attempts] %>
+                <strong><%= t('migrations.error_details.retry_attempt') %></strong> <%= error_context[:retry_info][:attempt] %> / <%= error_context[:retry_info][:max_attempts] %>
                 <br>
-                <strong>Remaining Attempts:</strong> <%= error_context[:retry_info][:remaining] %>
+                <strong><%= t('migrations.error_details.remaining_attempts') %></strong> <%= error_context[:retry_info][:remaining] %>
               </div>
               <div id="retry-countdown" class="mt-1 text-primary" style="font-size: 12px;">
-                Next retry in <span id="countdown-timer">calculating...</span>
+                <%= t('migrations.error_details.next_retry') %> <span id="countdown-timer"><%= t('migrations.error_details.calculating') %></span>
               </div>
             </div>
           <% end %>
@@ -60,24 +60,24 @@
       <% if error_context[:show_reauth_form] %>
         <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
           <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
-            Your migration data is safe — just re-enter your password to continue.
+            <%= t('migrations.error_details.reauth_safe') %>
           </h4>
           <p class="text-primary small mb-3">
-            Enter your password for <strong><%= @migration.old_handle %></strong> to restore your session and continue the migration.
+            <%= t('migrations.error_details.reauth_help', handle: @migration.old_handle).html_safe %>
           </p>
           <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
             <div class="mb-3">
               <label for="reauth_password" class="form-label small text-primary fw-semibold mb-1">
-                Password for <%= @migration.old_handle %>
+                <%= t('migrations.error_details.password_for', handle: @migration.old_handle) %>
               </label>
               <input type="password" name="password" id="reauth_password" required
                      autocomplete="current-password"
-                     placeholder="Enter your account password"
+                     placeholder="<%= t('migrations.error_details.enter_password_placeholder') %>"
                      class="form-control">
             </div>
             <button type="submit" class="btn btn-lg btn-gradient">
-              Re-authenticate & Continue Migration
+              <%= t('migrations.error_details.reauth_button') %>
             </button>
           </form>
         </div>
@@ -87,41 +87,40 @@
       <% if error_context[:show_request_new_plc_token] %>
         <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
           <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
-            Your migration data is safe — you just need a fresh PLC token.
+            <%= t('migrations.error_details.plc_safe') %>
           </h4>
 
           <% if @migration.has_old_pds_tokens? %>
             <%# Old PDS session is still valid — can request token automatically %>
             <p class="text-primary small mb-3">
-              Click the button below to request a new PLC token. You'll receive it via email from <strong><%= @migration.old_pds_host %></strong>.
+              <%= t('migrations.error_details.plc_request_help', pds: @migration.old_pds_host).html_safe %>
             </p>
             <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post" class="d-inline">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <button type="submit"
-                      onclick="return confirm('Request a new PLC token from your old PDS?');"
+                      onclick="return confirm('<%= j t('migrations.error_details.request_plc_confirm') %>');"
                       class="btn btn-lg btn-gradient">
-                Request New PLC Token
+                <%= t('migrations.error_details.request_plc_button') %>
               </button>
             </form>
           <% else %>
             <%# Old PDS session expired — need password to re-authenticate %>
             <p class="text-primary small mb-3">
-              Your session with <strong><%= @migration.old_pds_host %></strong> has expired.
-              Enter your password for <strong><%= @migration.old_handle %></strong> to re-connect and request a new PLC token.
+              <%= t('migrations.error_details.plc_session_expired', pds: @migration.old_pds_host, handle: @migration.old_handle).html_safe %>
             </p>
             <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <div class="mb-3">
                 <label for="reauth_plc_password" class="form-label small text-primary fw-semibold mb-1">
-                  Password for <%= @migration.old_handle %>
+                  <%= t('migrations.error_details.password_for', handle: @migration.old_handle) %>
                 </label>
                 <input type="password" name="password" id="reauth_plc_password" required
                        autocomplete="current-password"
-                       placeholder="Enter your account password"
+                       placeholder="<%= t('migrations.error_details.enter_password_placeholder') %>"
                        class="form-control">
               </div>
               <button type="submit" class="btn btn-lg btn-gradient">
-                Re-authenticate & Request PLC Token
+                <%= t('migrations.error_details.reauth_plc_button') %>
               </button>
             </form>
           <% end %>
@@ -131,14 +130,14 @@
       <%# Expandable Details %>
       <details class="error-expandable mb-3">
         <summary class="p-3 bg-light rounded-2 fw-semibold text-dark small" style="cursor: pointer; user-select: none;">
-          📋 What Happened & What To Do
+          <%= t('migrations.error_details.what_happened_title') %>
         </summary>
 
         <div class="p-4 bg-white border rounded-2 mt-2">
           <%# What Happened %>
           <div class="mb-4">
             <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
-              What Happened:
+              <%= t('migrations.error_details.what_happened') %>
             </h4>
             <p class="text-body-secondary small lh-lg">
               <%= error_context[:what_happened] %>
@@ -148,7 +147,7 @@
           <%# What To Do %>
           <div class="mb-4">
             <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
-              What You Can Do:
+              <%= t('migrations.error_details.what_to_do') %>
             </h4>
             <ul class="text-body-secondary small lh-lg ps-4">
               <% error_context[:what_to_do].each do |action| %>
@@ -160,33 +159,33 @@
           <%# Action Buttons %>
           <div class="d-flex flex-wrap gap-2 mt-4 pt-4 border-top">
             <% if error_context[:show_request_new_plc_token] %>
-              <%= button_to "📧 Request New PLC Token", request_new_plc_token_by_token_path(@migration.token),
+              <%= button_to t('migrations.error_details.request_plc_action'), request_new_plc_token_by_token_path(@migration.token),
                   method: :post,
-                  data: { confirm: "Request a new PLC token from your old PDS provider?" },
+                  data: { confirm: t('migrations.error_details.request_plc_confirm') },
                   class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:show_retry_button] %>
-              <%= button_to "🔄 Retry Migration", retry_migration_by_token_path(@migration.token),
+              <%= button_to t('migrations.error_details.retry_migration'), retry_migration_by_token_path(@migration.token),
                   method: :post,
-                  data: { confirm: "Retry this migration from the current stage?" },
+                  data: { confirm: t('migrations.error_details.retry_confirm') },
                   class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:show_new_migration_button] %>
-              <%= link_to "➕ Start New Migration", new_migration_path,
+              <%= link_to t('migrations.error_details.start_new'), new_migration_path,
                   class: "btn btn-success d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:check_url] %>
-              <%= link_to "🔍 Check PDS Status", error_context[:check_url],
+              <%= link_to t('migrations.error_details.check_pds'), error_context[:check_url],
                   target: "_blank",
                   rel: "noopener noreferrer",
                   class: "btn btn-secondary d-inline-flex align-items-center gap-1" %>
             <% end %>
 
             <% if error_context[:show_download_manifest] && @migration.progress_data&.dig('failed_blobs').present? %>
-              <%= link_to "📄 Download Failed Blobs Report", export_recovery_data_migration_by_token_path(@migration.token, format: :txt),
+              <%= link_to t('migrations.error_details.download_report'), export_recovery_data_migration_by_token_path(@migration.token, format: :txt),
                   class: "btn btn-warning d-inline-flex align-items-center gap-1" %>
             <% end %>
 
@@ -196,16 +195,16 @@
           <% if error_context[:show_cleanup_instructions] %>
             <div class="mt-4 p-3 bg-warning-subtle border-start border-4 border-warning rounded-2">
               <h4 class="text-warning-emphasis fw-bold mb-2" style="font-size: 15px;">
-                🛠️ Cleanup Instructions
+                <%= t('migrations.error_details.cleanup_title') %>
               </h4>
               <p class="text-warning-emphasis small mb-2">
-                To clean up the orphaned account, run this command (requires server access):
+                <%= t('migrations.error_details.cleanup_help') %>
               </p>
               <code class="d-block bg-white bg-opacity-75 p-3 rounded-2 font-monospace" style="font-size: 12px; overflow-wrap: break-word;">
                 cd scripts && ./cleanup_orphaned_account_db.sh <%= error_context[:did] %>
               </code>
               <p class="text-warning-emphasis small mt-2 mb-0">
-                Or contact the target PDS administrator to manually delete the orphaned account.
+                <%= t('migrations.error_details.cleanup_contact') %>
               </p>
             </div>
           <% end %>
@@ -213,14 +212,14 @@
           <% if error_context[:show_rotation_key] && @migration.rotation_key.present? %>
             <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
               <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
-                🔑 Your Rotation Key (SAVE THIS)
+                <%= t('migrations.error_details.rotation_key_save') %>
               </h4>
               <div class="bg-white p-3 rounded-2 my-2 font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
                 <%= @migration.rotation_key %>
               </div>
-              <button onclick="navigator.clipboard.writeText('<%= j @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 Copy Rotation Key', 2000)"
+              <button onclick="navigator.clipboard.writeText('<%= j @migration.rotation_key %>'); this.textContent='\u2705 Copied!'; setTimeout(() => this.textContent='<%= j t('migrations.error_details.copy_rotation_key') %>', 2000)"
                       class="btn btn-sm btn-danger fw-semibold">
-                📋 Copy Rotation Key
+                <%= t('migrations.error_details.copy_rotation_key') %>
               </button>
             </div>
           <% end %>
@@ -228,14 +227,14 @@
           <% if error_context[:show_contact_support] %>
             <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
               <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
-                🚨 Contact Support Immediately
+                <%= t('migrations.error_details.contact_support') %>
               </h4>
               <p class="text-danger-emphasis small mb-2">
-                <strong>Support Email:</strong> <%= error_context[:support_email] %><br>
-                <strong>Migration Token:</strong> <code class="bg-white bg-opacity-75 px-1 rounded-1"><%= error_context[:migration_token] %></code>
+                <strong><%= t('migrations.error_details.support_email') %></strong> <%= error_context[:support_email] %><br>
+                <strong><%= t('migrations.error_details.migration_token') %></strong> <code class="bg-white bg-opacity-75 px-1 rounded-1"><%= error_context[:migration_token] %></code>
               </p>
               <p class="text-danger-emphasis small mb-0">
-                Include your migration token in your support request for faster assistance.
+                <%= t('migrations.error_details.include_token') %>
               </p>
             </div>
           <% end %>
@@ -245,31 +244,31 @@
       <%# Technical Details (Collapsed by Default) %>
       <details class="technical-details mb-3">
         <summary class="p-3 bg-light rounded-2 fw-semibold text-muted small" style="cursor: pointer; user-select: none;">
-          🔧 Technical Details (For Debugging)
+          <%= t('migrations.error_details.technical_title') %>
         </summary>
 
         <div class="p-3 rounded-2 mt-2 font-monospace" style="background: #1f2937; color: #f3f4f6; font-size: 12px; overflow-x: auto;">
           <div class="mb-2">
-            <strong class="text-secondary">Error Message:</strong>
+            <strong class="text-secondary"><%= t('migrations.error_details.error_message') %></strong>
           </div>
           <div class="p-2 rounded-2" style="background: rgba(0,0,0,0.3); white-space: pre-wrap; word-break: break-word;"><%= error_context[:technical_details] %></div>
 
           <% if error_context[:job_step] %>
             <div class="mt-3">
-              <strong class="text-secondary">Job Step:</strong> <%= error_context[:job_step] %>
+              <strong class="text-secondary"><%= t('migrations.error_details.job_step') %></strong> <%= error_context[:job_step] %>
             </div>
           <% end %>
 
           <div class="mt-3">
-            <strong class="text-secondary">Migration Status:</strong> <%= @migration.status %>
+            <strong class="text-secondary"><%= t('migrations.error_details.migration_status') %></strong> <%= @migration.status %>
           </div>
 
           <div class="mt-2">
-            <strong class="text-secondary">Migration Token:</strong> <%= @migration.token %>
+            <strong class="text-secondary"><%= t('migrations.error_details.migration_token') %></strong> <%= @migration.token %>
           </div>
 
           <div class="mt-2">
-            <strong class="text-secondary">DID:</strong> <%= @migration.did %>
+            <strong class="text-secondary"><%= t('migrations.error_details.did_label') %></strong> <%= @migration.did %>
           </div>
         </div>
       </details>
@@ -303,7 +302,7 @@
                 remainingSeconds--;
                 setTimeout(updateCountdown, 1000);
               } else {
-                countdownEl.textContent = 'retrying now...';
+                countdownEl.textContent = '<%= j t('migrations.error_details.retrying_now') %>';
               }
             };
 

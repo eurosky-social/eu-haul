@@ -52,6 +52,12 @@ module EuroskyMigration
     # Eager load paths for production
     config.eager_load_paths << Rails.root.join("app", "services")
 
+    # Internationalization
+    config.i18n.available_locales = %i[en bg cs da de el es et fi fr ga hr hu it lt lv mt nb nl pl pt ro sk sl sv uk]
+    config.i18n.default_locale = :en
+    config.i18n.fallbacks = true
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.yml')]
+
     # Active Record Encryption (Rails 7.1 requirement)
     # Load encryption keys from environment variables
     config.active_record.encryption.primary_key = ENV['ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY']
