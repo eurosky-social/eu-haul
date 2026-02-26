@@ -67,7 +67,6 @@ class MigrationsController < ApplicationController
 
     # Normalize PDS host
     pds_host = normalize_pds_host(pds_host)
-    support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
 
     # Check if repo exists on the PDS
     begin
@@ -81,12 +80,12 @@ class MigrationsController < ApplicationController
         parsed = JSON.parse(response.body) rescue {}
         handle = parsed['handle']
         Rails.logger.info("DID #{did} has active repo on #{pds_host} (handle: #{handle})")
-        render json: { exists: true, deactivated: false, handle: handle, support_email: support_email }
+        render json: { exists: true, deactivated: false, handle: handle }
       elsif response.code == 400
         parsed = JSON.parse(response.body) rescue {}
         if parsed['error'] == 'RepoDeactivated'
           Rails.logger.info("DID #{did} has deactivated repo on #{pds_host}")
-          render json: { exists: true, deactivated: true, support_email: support_email }
+          render json: { exists: true, deactivated: true }
         else
           Rails.logger.info("DID #{did} does not exist on #{pds_host}")
           render json: { exists: false }
@@ -294,12 +293,14 @@ class MigrationsController < ApplicationController
     # Check if invite codes are required
     invite_code_required = server_info['inviteCodeRequired'] || false
     available_user_domains = server_info['availableUserDomains'] || []
+    contact_email = server_info.dig('contact', 'email')
 
-    Rails.logger.info("PDS #{pds_host} - Invite code required: #{invite_code_required}")
+    Rails.logger.info("PDS #{pds_host} - Invite code required: #{invite_code_required}, contact: #{contact_email || 'none'}")
 
     render json: {
       invite_code_required: invite_code_required,
-      available_user_domains: available_user_domains
+      available_user_domains: available_user_domains,
+      contact_email: contact_email
     }
   rescue JSON::ParserError => e
     Rails.logger.error("Failed to parse PDS response: #{e.message}")
@@ -403,6 +404,10 @@ class MigrationsController < ApplicationController
       @migration.new_handle = GoatService.clean_handle(@migration.new_handle) if @migration.new_handle.present?
       @migration.email = sanitize_user_input(@migration.email) if @migration.email.present?
       @migration.new_pds_host = sanitize_user_input(@migration.new_pds_host) if @migration.new_pds_host.present?
+
+      # Store the target PDS contact email (fetched from describeServer during wizard)
+      target_contact = params[:migration][:target_pds_contact_email]&.strip
+      @migration.target_pds_contact_email = target_contact if target_contact.present?
 
       # Resolve the old handle to get DID and PDS host
       if @migration.old_handle.present?
@@ -1169,6 +1174,7 @@ class MigrationsController < ApplicationController
     allowed << :old_refresh_token
     allowed << :new_access_token
     allowed << :new_refresh_token
+    allowed << :target_pds_contact_email
     allowed << :invite_code if EuroskyConfig.invite_code_enabled?
 
     params.require(:migration).permit(*allowed)

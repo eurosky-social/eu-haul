@@ -525,7 +525,7 @@
         if (data.exists) {
           wizardData.accountExistsOnTarget = true;
           wizardData.accountDeactivatedOnTarget = data.deactivated || false;
-          wizardData.targetPdsSupportEmail = data.support_email || null;
+          wizardData.targetPdsSupportEmail = wizardData.pdsContactEmail || null;
           wizardData.existingHandleOnTarget = data.handle || null;
           callback(true, data);
         } else {
@@ -662,6 +662,7 @@
         showStatus(statusElement, 'Server verified!', 'success');
 
         wizardData.availableDomains = data.available_user_domains || [];
+        wizardData.pdsContactEmail = data.contact_email || null;
         wizardData.pdsVerified = true;
         wizardData.pdsVerifiedHost = pdsHost;
 
@@ -873,7 +874,7 @@
           }
 
           if (didData.exists) {
-            const supportEmail = didData.support_email || 'support@example.com';
+            const supportEmail = wizardData.pdsContactEmail || '<%= ENV.fetch('SUPPORT_EMAIL', 'support@example.com') %>';
             const errorMessage = `
               <div class="text-start lh-lg">
                 <strong>Account Already Exists on Target Server</strong><br><br>
@@ -959,6 +960,7 @@
       document.getElementById('migration_old_refresh_token').value = wizardData.refreshToken || '';
       document.getElementById('migration_new_access_token').value = wizardData.newPdsAccessToken || '';
       document.getElementById('migration_new_refresh_token').value = wizardData.newPdsRefreshToken || '';
+      document.getElementById('migration_target_pds_contact_email').value = wizardData.pdsContactEmail || '';
 
       passwordField.value = '';
       const targetPwdField = document.getElementById('target-pds-password');
@@ -992,6 +994,7 @@
       <!-- Hidden fields for authentication tokens -->
       <%= hidden_field_tag 'migration[old_access_token]', '', id: 'migration_old_access_token' %>
       <%= hidden_field_tag 'migration[old_refresh_token]', '', id: 'migration_old_refresh_token' %>
+      <%= hidden_field_tag 'migration[target_pds_contact_email]', '', id: 'migration_target_pds_contact_email' %>
 
       <!-- Progress Bar -->
       <div class="step-progress-bar">

@@ -124,7 +124,7 @@ class MigrationMailer < ApplicationMailer
   def orphaned_account_error(migration)
     @migration = migration
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
-    @target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+    @target_pds_support_email = migration.target_pds_contact_email.presence || ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
 
     mail(
       to: migration.email,

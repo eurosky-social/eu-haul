@@ -231,7 +231,7 @@ module MigrationErrorHelper
   end
 
   def self.account_exists_context(migration)
-    target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+    contact_email = migration.target_pds_contact_email.presence || ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
 
     {
       severity: :error,
@@ -241,7 +241,7 @@ module MigrationErrorHelper
       current_status: "Migration paused - orphaned account needs removal by PDS provider",
       what_to_do: [
         "📧 Contact the target PDS provider to remove the orphaned account:",
-        "   Email: #{target_pds_support_email}",
+        "   Email: #{contact_email}",
         "   Include: Migration Token (#{migration.token}) and DID (#{migration.did})",
         "",
         "Once the orphaned account is removed, you can retry this migration.",
@@ -251,7 +251,7 @@ module MigrationErrorHelper
       show_retry_button: false,
       show_retry_info: false,
       show_contact_support: true,
-      support_email: target_pds_support_email,
+      support_email: contact_email,
       migration_token: migration.token,
       help_link: "/docs/troubleshooting#orphaned-accounts",
       did: migration.did

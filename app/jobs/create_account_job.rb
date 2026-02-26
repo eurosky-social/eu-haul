@@ -148,11 +148,11 @@ class CreateAccountJob < ApplicationJob
     # This is a special case - account already exists (likely from failed previous migration)
     # Mark as failed and send notification email to user
     if migration
-      target_pds_support_email = ENV.fetch('TARGET_PDS_SUPPORT_EMAIL', ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
+      contact_email = migration.target_pds_contact_email.presence || ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
 
       migration.mark_failed!(
         "Orphaned account exists on target PDS (#{migration.new_pds_host}). " \
-        "Please contact the PDS provider at #{target_pds_support_email} to remove the orphaned account. " \
+        "Please contact the PDS provider at #{contact_email} to remove the orphaned account. " \
         "Include your migration token (#{migration.token}) and DID (#{migration.did}) in your request. " \
         "Once removed, you can retry this migration.",
         error_code: :account_exists

@@ -81,7 +81,6 @@ services:
       ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
       PDS_DISABLE_SSRF_PROTECTION: "true"
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@example.com}
-      TARGET_PDS_SUPPORT_EMAIL: ${TARGET_PDS_SUPPORT_EMAIL:-support@example.com}
     ports:
       - "3001:3000"  # Changed from 3000 to avoid conflict with u-at-proto
     depends_on:
@@ -120,7 +119,6 @@ services:
       ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
       PDS_DISABLE_SSRF_PROTECTION: "true"
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@example.com}
-      TARGET_PDS_SUPPORT_EMAIL: ${TARGET_PDS_SUPPORT_EMAIL:-support@example.com}
     depends_on:
       eurosky-postgres:
         condition: service_healthy
@@ -158,7 +156,6 @@ services:
       ATP_PLC_HOST: ${ATP_PLC_HOST:-https://plc.directory}
       PDS_DISABLE_SSRF_PROTECTION: "true"
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@example.com}
-      TARGET_PDS_SUPPORT_EMAIL: ${TARGET_PDS_SUPPORT_EMAIL:-support@example.com}
     depends_on:
       eurosky-postgres:
         condition: service_healthy
