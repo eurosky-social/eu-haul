@@ -73,13 +73,33 @@
 </head>
 <body>
   <div class="container">
-    <h1>Your Account Recovery Key</h1>
+    <h1>Action Required: Confirm Your Migration</h1>
 
-    <p>Your migration is almost done! Before we make the final changes to move your account to the new server, we want to make sure you have a <strong>recovery key</strong> for your account.</p>
+    <p>Your migration is almost done! There is <strong>one more step</strong> you need to complete.</p>
+
+    <!-- PLC Confirmation — PROMINENT -->
+    <div style="background-color: #fef2f2; border: 3px solid #ef4444; border-radius: 8px; padding: 24px; margin: 24px 0;">
+      <h2 style="color: #991b1b; margin-top: 0; font-size: 20px;">⚠️ You Will Receive a Confirmation Email</h2>
+      <p>You will shortly receive an email from your <strong>old PDS provider</strong> (<%= @migration.old_pds_host %>) with the subject line:</p>
+      <div style="background-color: #fee2e2; border: 2px solid #fca5a5; border-radius: 6px; padding: 16px; margin: 12px 0; text-align: center;">
+        <strong style="font-size: 18px; color: #991b1b;">"PLC Update Operation Requested"</strong>
+      </div>
+      <p><strong>That email contains a confirmation code</strong> (it looks like <code style="font-size: 16px;">XXXXX-XXXXX</code>).</p>
+      <p>You need to enter this code on your <strong>migration status page</strong> to finalize the migration:</p>
+      <p style="text-align: center; margin: 16px 0;">
+        <a href="<%= @migration_url %>" style="display: inline-block; background-color: #ef4444; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 16px;">Go to Your Migration Status Page</a>
+      </p>
+      <p style="font-size: 14px; color: #991b1b; margin-bottom: 0;"><strong>Important:</strong> The confirmation code expires after 1 hour. If you don't see the email, check your spam folder &mdash; it comes from your old PDS provider, not from us.</p>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+
+    <!-- Recovery Key — second section -->
+    <h2 style="color: #1e40af; font-size: 20px;">🔑 Your Account Recovery Key</h2>
+    <p>Before the final step, we also want to make sure you have a <strong>recovery key</strong> for your account. Think of this as a <strong>master password</strong> &mdash; if you ever lose access to your account or your server goes down, this key lets you recover it.</p>
 
     <div class="key-box">
       <h2>Save This Key Now</h2>
-      <p>Think of this as a <strong>master password for your account</strong>. If you ever lose access to your account or your server goes down, this key lets you recover it.</p>
 
       <% if @rotation_key_private.present? %>
         <p><strong>Your Recovery Key:</strong></p>
@@ -91,12 +111,6 @@
     <div class="info-box">
       <h3 style="margin-top: 0; color: #1e40af;">What can I do with this key?</h3>
       <p style="margin-bottom: 0;">If you ever need to recover your account, go to <strong><a href="https://pdsmoover.com/restore">pdsmoover.com/restore</a></strong> and use this key to restore access. It works even if your server is completely offline.</p>
-    </div>
-
-    <div class="next-steps">
-      <h3 style="margin-top: 0; color: #15803d;">What happens next?</h3>
-      <p>We're now going to update your account to point to the new server (<strong><%= @migration.new_pds_host %></strong>). This is the final step of your migration.</p>
-      <p style="margin-bottom: 0;"><strong>We'll send you one more email</strong> once everything is complete, with your new password and a summary of the migration.</p>
     </div>
 
     <div class="footer">

@@ -51,13 +51,39 @@ View Status Page (available for 10 minutes):
 
 
 ================================================================================
+🔑 HOW TO LOG IN TO YOUR NEW ACCOUNT
+================================================================================
+
+If you haven't done so already, log out of your old account in any
+Bluesky app, then log in with your new handle:
+
+  Handle: <%= @migration.new_handle %>
+
+  ⚠️  IMPORTANT: Make sure to enter "<%= @migration.new_pds_host %>" as your
+  hosting provider at the top of the sign-in form!
+
+Many users miss this step — without the correct hosting provider,
+you won't be able to sign in.
+
+
+================================================================================
+🔒 CHANGE YOUR PASSWORD
+================================================================================
+
+For your security, we strongly recommend changing your password immediately:
+
+  <%= @migration.new_pds_host %>/.well-known/change-password
+
+You can also change it later in your account settings.
+
+
+================================================================================
 WHAT HAPPENS NEXT?
 ================================================================================
 
 ✅ Your account is now live on <%= @migration.new_pds_host %>
 ✅ Your old account on <%= @migration.old_pds_host %> has been deactivated
 ✅ All your posts, follows, and data have been transferred
-✅ You can log in to Bluesky apps with your new handle: <%= @migration.new_handle %>
 ✅ Your followers should automatically see your new location (DID-based)
 
 

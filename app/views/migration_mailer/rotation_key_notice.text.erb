@@ -1,17 +1,37 @@
-YOUR ACCOUNT RECOVERY KEY
+ACTION REQUIRED: CONFIRM YOUR MIGRATION
 ================================================================================
 
-Your migration is almost done! Before we make the final changes to move
-your account to the new server, we want to make sure you have a recovery
-key for your account.
+Your migration is almost done! There is ONE MORE STEP you need to complete.
 
 
-SAVE THIS KEY NOW
+⚠️  YOU WILL RECEIVE A CONFIRMATION EMAIL
 ================================================================================
 
-Think of this as a master password for your account. If you ever lose
-access to your account or your server goes down, this key lets you
-recover it.
+You will shortly receive an email from your OLD PDS provider
+(<%= @migration.old_pds_host %>) with the subject line:
+
+    "PLC Update Operation Requested"
+
+That email contains a CONFIRMATION CODE (it looks like XXXXX-XXXXX).
+
+You need to enter this code on your migration status page to finalize
+the migration:
+
+    <%= @migration_url %>
+
+IMPORTANT: The confirmation code expires after 1 hour. If you don't see
+the email, check your spam folder — it comes from your old PDS provider,
+not from us.
+
+
+================================================================================
+🔑 YOUR ACCOUNT RECOVERY KEY
+================================================================================
+
+Before the final step, we also want to make sure you have a recovery
+key for your account. Think of this as a master password — if you ever
+lose access to your account or your server goes down, this key lets
+you recover it.
 
 <% if @rotation_key_private.present? %>
 Your Recovery Key:
@@ -33,16 +53,6 @@ If you ever need to recover your account, go to:
 
 and use this key to restore access. It works even if your server is
 completely offline.
-
-
-WHAT HAPPENS NEXT?
-================================================================================
-
-We're now going to update your account to point to the new server
-(<%= @migration.new_pds_host %>). This is the final step of your migration.
-
-We'll send you one more email once everything is complete, with your
-new password and a summary of the migration.
 
 
 ---

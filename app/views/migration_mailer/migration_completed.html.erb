@@ -134,6 +134,27 @@
       ⏱️ The status page will be available for 10 minutes, then permanently deleted for your privacy.
     </p>
 
+    <!-- Login Instructions -->
+    <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 6px; padding: 20px; margin: 20px 0;">
+      <h2 style="margin-top: 0; color: #92400e; font-size: 18px;">🔑 How to Log In to Your New Account</h2>
+      <p>If you haven't done so already, <strong>log out of your old account</strong> in any Bluesky app, then log in with your new handle:</p>
+      <div style="background-color: #fffbeb; border: 2px solid #d97706; border-radius: 6px; padding: 16px; margin: 12px 0;">
+        <p style="margin: 0 0 8px 0;"><strong>Handle:</strong> <code style="font-size: 16px; color: #92400e;"><%= @migration.new_handle %></code></p>
+        <p style="margin: 0; color: #92400e; font-weight: 600;">⚠️ Important: Make sure to enter <code style="font-size: 16px;"><%= @migration.new_pds_host %></code> as your hosting provider at the top of the sign-in form!</p>
+      </div>
+      <p style="font-size: 14px; color: #78350f; margin-bottom: 0;">Many users miss this step — without the correct hosting provider, you won't be able to sign in.</p>
+    </div>
+
+    <!-- Change Password -->
+    <div style="background-color: #fef2f2; border: 2px solid #ef4444; border-radius: 6px; padding: 20px; margin: 20px 0;">
+      <h2 style="margin-top: 0; color: #991b1b; font-size: 18px;">🔒 Change Your Password</h2>
+      <p>For your security, we strongly recommend changing your password immediately:</p>
+      <p style="text-align: center; margin: 16px 0;">
+        <a href="<%= @migration.new_pds_host %>/.well-known/change-password" style="display: inline-block; background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Change Your Password Now</a>
+      </p>
+      <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;">You can also change it later in your account settings or by visiting:<br><a href="<%= @migration.new_pds_host %>/.well-known/change-password"><%= @migration.new_pds_host %>/.well-known/change-password</a></p>
+    </div>
+
     <!-- Important Notes -->
     <div class="info-box">
       <h3 style="margin-top: 0; color: #1e40af;">What Happens Next?</h3>
@@ -141,7 +162,6 @@
         <li>Your account is now live on <strong><%= @migration.new_pds_host %></strong></li>
         <li>Your old account on <%= @migration.old_pds_host %> has been deactivated</li>
         <li>All your posts, follows, and data have been transferred</li>
-        <li>You can log in to Bluesky apps with your new handle: <strong><%= @migration.new_handle %></strong></li>
         <li>Your followers should automatically see your new location (DID-based)</li>
       </ul>
     </div>

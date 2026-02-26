@@ -453,6 +453,12 @@
               <% end %>
             </p>
 
+            <div class="bg-primary-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
+              <p class="small mb-0" style="color: #1e40af;">
+                ✉️ <strong>We've sent an email to <%= @migration.email %></strong> with your new account password, login instructions, and a link to change your password. Please check your inbox (and spam folder).
+              </p>
+            </div>
+
             <% if @migration.rotation_key.present? %>
               <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 my-4">
                 <h4 class="fs-5 mb-2" style="color: #92400e;">⚠️ SAVE YOUR ROTATION KEY NOW!</h4>

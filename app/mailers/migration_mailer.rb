@@ -69,7 +69,7 @@ class MigrationMailer < ApplicationMailer
 
     mail(
       to: migration.email,
-      subject: "Important: Your Account Recovery Key (#{migration.token})"
+      subject: "Action Required: Confirm Your Migration with the PLC Code (#{migration.token})"
     )
   end
 
