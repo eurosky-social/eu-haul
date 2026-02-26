@@ -125,7 +125,7 @@ class ImportBlobsJob < ApplicationJob
 
     if migration
       migration.reload
-      migration.mark_failed!("Blob import failed: #{e.message}")
+      migration.mark_failed!("Blob import failed: #{e.message}", error_code: :generic)
     end
 
     raise

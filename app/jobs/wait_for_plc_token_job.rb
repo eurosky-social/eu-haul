@@ -74,7 +74,7 @@ class WaitForPlcTokenJob < ApplicationJob
       Rails.logger.info("User will receive PLC token via email from #{migration.old_pds_host}")
     rescue StandardError => e
       Rails.logger.error("Failed to request PLC token for migration #{migration.token}: #{e.message}")
-      migration.mark_failed!("Failed to request PLC token: #{e.message}")
+      migration.mark_failed!("Failed to request PLC token: #{e.message}", error_code: :generic)
       raise
     end
 

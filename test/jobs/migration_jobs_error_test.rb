@@ -477,8 +477,10 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = WaitForPlcTokenJob.new
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.expects(:request_plc_token)
     GoatService.stubs(:new).returns(service)
+    MigrationMailer.stubs(:rotation_key_notice).returns(stub(deliver_later: true))
 
     job.perform(@migration.id)
 
@@ -496,11 +498,13 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:request_plc_token).raises(
       GoatService::GoatError,
       "Failed to request PLC token"
     )
     GoatService.stubs(:new).returns(service)
+    MigrationMailer.stubs(:rotation_key_notice).returns(stub(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::GoatError) do
@@ -568,7 +572,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     )
     GoatService.stubs(:new).returns(service)
     File.stubs(:read).returns('{"rotationKeys": []}')
-    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
+    MigrationMailer.stubs(:plc_token_failed).returns(stub(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::GoatError) do
@@ -599,7 +603,7 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     )
     GoatService.stubs(:new).returns(service)
     File.stubs(:read).returns('{"rotationKeys": []}')
-    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
+    MigrationMailer.stubs(:plc_token_failed).returns(stub(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::GoatError) do
@@ -627,7 +631,6 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     )
     GoatService.stubs(:new).returns(service)
     File.stubs(:read).returns('{"rotationKeys": []}')
-    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     # Error should be raised to trigger ActiveJob retry mechanism
     assert_raises(GoatService::RateLimitError) do
@@ -652,7 +655,6 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     service.stubs(:submit_plc_operation)
     GoatService.stubs(:new).returns(service)
     File.stubs(:read).returns('{"rotationKeys": []}')
-    MigrationMailer.stubs(:rotation_key_notice).returns(mock(deliver_later: true))
 
     job.perform(@migration.id)
 

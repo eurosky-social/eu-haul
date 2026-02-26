@@ -96,7 +96,7 @@ class UploadRepoJob < ApplicationJob
       if current_retry >= max_attempts - 1
         # All retries exhausted, mark as failed
         logger.error("[UploadRepoJob] All retries exhausted for migration #{migration.token}, marking as failed")
-        migration.mark_failed!("Repo upload failed after #{max_attempts} attempts: #{e.message}")
+        migration.mark_failed!("Repo upload failed after #{max_attempts} attempts: #{e.message}", error_code: :generic)
       else
         # Will retry, just log
         logger.warn("[UploadRepoJob] Will retry (attempt #{current_retry + 1}/#{max_attempts}) for migration #{migration.token}")

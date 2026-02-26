@@ -109,7 +109,8 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
   # ============================================================================
 
   test "submit_plc_token triggers UpdatePlcJob with new token after resend" do
-    # Simulate token resend
+    # Simulate token resend + ensure credentials are present (submit_plc_token validates them)
+    @pending_plc_migration.set_password("test_password")
     @pending_plc_migration.progress_data['plc_token_resent'] = true
     @pending_plc_migration.save!
 

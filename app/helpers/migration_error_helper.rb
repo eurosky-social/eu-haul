@@ -25,8 +25,12 @@ module MigrationErrorHelper
     retry_attempt = migration.current_job_attempt || 0
     max_attempts = migration.current_job_max_attempts || 3
 
-    # Detect error type from message
-    error_type = detect_error_type(error_message)
+    # Prefer structured error_code; fall back to regex detection for old records
+    error_type = if migration.respond_to?(:error_code) && migration.error_code.present?
+      migration.error_code.to_sym
+    else
+      detect_error_type(error_message)
+    end
 
     # Build context based on error type and migration stage
     context = build_error_context(

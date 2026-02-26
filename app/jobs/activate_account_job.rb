@@ -154,20 +154,20 @@ class ActivateAccountJob < ApplicationJob
 
   rescue GoatService::AuthenticationError => e
     Rails.logger.error("Authentication failed for migration #{migration.token}: #{e.message}")
-    migration.mark_failed!("Account activation failed: Authentication error - #{e.message}")
+    migration.mark_failed!("Account activation failed: Authentication error - #{e.message}", error_code: :authentication)
     raise
   rescue GoatService::NetworkError => e
     Rails.logger.error("Network error for migration #{migration.token}: #{e.message}")
-    migration.mark_failed!("Account activation failed: Network error - #{e.message}")
+    migration.mark_failed!("Account activation failed: Network error - #{e.message}", error_code: :network)
     raise
   rescue GoatService::GoatError => e
     Rails.logger.error("Goat error for migration #{migration.token}: #{e.message}")
-    migration.mark_failed!("Account activation failed: #{e.message}")
+    migration.mark_failed!("Account activation failed: #{e.message}", error_code: :generic)
     raise
   rescue StandardError => e
     Rails.logger.error("Unexpected error for migration #{migration&.token || migration_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    migration&.mark_failed!("Account activation failed: #{e.message}")
+    migration&.mark_failed!("Account activation failed: #{e.message}", error_code: :generic)
     raise
   end
 end

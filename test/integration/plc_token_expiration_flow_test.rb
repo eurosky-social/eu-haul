@@ -72,6 +72,9 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
     # Step 8: User receives fresh token via email and submits it
     new_token = "fresh-plc-token-12345"
 
+    # Ensure credentials are valid (submit_plc_token validates them before enqueuing)
+    @migration.set_password("test_password_123")
+
     # Step 9: User submits the new token
     assert_enqueued_with(job: UpdatePlcJob, args: [@migration.id]) do
       post submit_plc_token_by_token_path(@migration.token),

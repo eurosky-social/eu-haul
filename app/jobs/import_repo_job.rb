@@ -149,7 +149,7 @@ class ImportRepoJob < ApplicationJob
     if current_retry >= 2 # 0, 1, 2 = 3 attempts total
       # All retries exhausted, mark as failed
       Rails.logger.error("[ImportRepoJob] All retries exhausted for migration #{migration.token}, marking as failed")
-      migration.mark_failed!(error.message)
+      migration.mark_failed!(error.message, error_code: :generic)
     else
       # Will retry, just log the error
       Rails.logger.info("[ImportRepoJob] Will retry (attempt #{current_retry + 1}/3) for migration #{migration.token}")

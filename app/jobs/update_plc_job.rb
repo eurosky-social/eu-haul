@@ -69,7 +69,7 @@ class UpdatePlcJob < ApplicationJob
         error_msg = "PLC token is missing. Please request a new token."
       end
       Rails.logger.error(error_msg)
-      migration.mark_failed!(error_msg)
+      migration.mark_failed!(error_msg, error_code: :plc_token_expired)
       return
     end
 
@@ -77,7 +77,7 @@ class UpdatePlcJob < ApplicationJob
     if plc_token.nil?
       error_msg = "PLC token is missing. Please request a new token."
       Rails.logger.error(error_msg)
-      migration.mark_failed!(error_msg)
+      migration.mark_failed!(error_msg, error_code: :plc_token_expired)
       return
     end
 
@@ -98,7 +98,7 @@ class UpdatePlcJob < ApplicationJob
     if missing.any?
       error_msg = "Credentials expired: #{missing.join(' and ')} no longer available. Please re-authenticate to continue."
       Rails.logger.error(error_msg)
-      migration.mark_failed!(error_msg)
+      migration.mark_failed!(error_msg, error_code: :credentials_need_reauth)
       return
     end
 
@@ -182,7 +182,7 @@ class UpdatePlcJob < ApplicationJob
       Rails.logger.error("CRITICAL FAILURE: Error AFTER PLC submission for migration #{migration.token}: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
       Rails.logger.error("PLC directory may have been modified - manual intervention required")
-      migration.mark_failed!("CRITICAL: PLC update failed after submission - #{e.message}")
+      migration.mark_failed!("CRITICAL: PLC update failed after submission - #{e.message}", error_code: :critical_plc)
       alert_admin_of_critical_failure(migration, e)
     else
       # PRE-SUBMISSION: The PLC directory was NOT modified — this is recoverable
@@ -194,11 +194,11 @@ class UpdatePlcJob < ApplicationJob
         if e.message.match?(/sign PLC operation.*Token is expired|Token is expired.*sign/i) ||
            e.message.match?(/400 Bad Request.*Token is expired/i)
           error_msg = "PLC confirmation code expired. The code from your old PDS is only valid for a limited time. Please request a new one."
+          migration.mark_failed!(error_msg, error_code: :plc_token_expired)
         else
           error_msg = "PLC update failed (before submission) - #{e.message}"
+          migration.mark_failed!(error_msg, error_code: :plc_pre_submission_failure)
         end
-
-        migration.mark_failed!(error_msg)
         alert_user_of_plc_token_failure(migration, e)
       end
     end

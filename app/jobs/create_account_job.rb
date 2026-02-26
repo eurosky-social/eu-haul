@@ -130,7 +130,8 @@ class CreateAccountJob < ApplicationJob
     if migration
       migration.mark_failed!(
         "The invite code provided for #{migration.new_pds_host} is invalid, expired, or has already been used. " \
-        "Please start a new migration with a valid invite code."
+        "Please start a new migration with a valid invite code.",
+        error_code: :invite_code
       )
 
       begin
@@ -153,7 +154,8 @@ class CreateAccountJob < ApplicationJob
         "Orphaned account exists on target PDS (#{migration.new_pds_host}). " \
         "Please contact the PDS provider at #{target_pds_support_email} to remove the orphaned account. " \
         "Include your migration token (#{migration.token}) and DID (#{migration.did}) in your request. " \
-        "Once removed, you can retry this migration."
+        "Once removed, you can retry this migration.",
+        error_code: :account_exists
       )
 
       # Send orphaned account error email to user
@@ -189,7 +191,7 @@ class CreateAccountJob < ApplicationJob
     if current_retry >= 2 # 0, 1, 2 = 3 attempts total
       # All retries exhausted, mark as failed and send notification
       Rails.logger.error("[CreateAccountJob] All retries exhausted for migration #{migration.token}, marking as failed")
-      migration.mark_failed!(error.message)
+      migration.mark_failed!(error.message, error_code: :generic)
 
       # Send failure notification email
       begin

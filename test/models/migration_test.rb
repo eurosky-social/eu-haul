@@ -227,6 +227,69 @@ class MigrationTest < ActiveSupport::TestCase
     assert_equal 1, migration.retry_count
   end
 
+  test "mark_failed! stores error_code when provided" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_account,
+      password: "test"
+    ))
+
+    migration.mark_failed!("PLC token has expired", error_code: :plc_token_expired)
+
+    assert migration.failed?
+    assert_equal "plc_token_expired", migration.error_code
+    assert_equal "PLC token has expired", migration.last_error
+  end
+
+  test "mark_failed! leaves error_code nil when not provided (backward compat)" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_account,
+      password: "test"
+    ))
+
+    migration.mark_failed!("Some generic error")
+
+    assert migration.failed?
+    assert_nil migration.error_code
+  end
+
+  test "mark_failed! sends reauth email for credentials_need_reauth error_code" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_plc,
+      password: "test"
+    ))
+
+    before_count = ActionMailer::Base.deliveries.size
+    assert_enqueued_with(job: ActionMailer::MailDeliveryJob) do
+      migration.mark_failed!("Credentials expired: old PDS session", error_code: :credentials_need_reauth)
+    end
+  end
+
+  test "mark_failed! does NOT send reauth email for critical_plc error_code" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_plc,
+      password: "test"
+    ))
+
+    assert_no_enqueued_jobs(only: ActionMailer::MailDeliveryJob) do
+      migration.mark_failed!("CRITICAL: PLC update failed", error_code: :critical_plc)
+    end
+  end
+
+  test "mark_complete! clears error_code" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_activation,
+      last_error: "Some previous error",
+      error_code: "plc_token_expired",
+      password: "test"
+    ))
+
+    migration.mark_complete!
+
+    assert migration.completed?
+    assert_nil migration.last_error
+    assert_nil migration.error_code
+  end
+
   test "job retry tracking" do
     migration = Migration.create!(@valid_attributes.merge(password: "test"))
     migration.start_job_attempt!("CreateAccountJob", 3, 1)

@@ -94,7 +94,7 @@ class CreateBackupBundleJob < ApplicationJob
 
     if migration
       migration.reload
-      migration.mark_failed!("Backup bundle creation failed: #{e.message}")
+      migration.mark_failed!("Backup bundle creation failed: #{e.message}", error_code: :generic)
     end
 
     raise

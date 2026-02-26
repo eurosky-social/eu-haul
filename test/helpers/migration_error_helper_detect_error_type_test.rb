@@ -369,6 +369,115 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
       "Test matrix should cover all non-generic error types"
   end
 
+  # ============================================================================
+  # 6. error_code preference — explain_error uses error_code over regex
+  # ============================================================================
+
+  test "explain_error prefers error_code over regex when both present" do
+    migration = migrations(:pending_migration)
+    migration.update!(
+      status: :failed,
+      last_error: "Something completely unrecognizable by regex",
+      error_code: "plc_token_expired",
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com"
+    )
+
+    context = MigrationErrorHelper.explain_error(migration)
+
+    # Should use error_code (:plc_token_expired) NOT regex (:generic)
+    assert_equal "PLC Token Expired", context[:title]
+    assert context[:show_request_new_plc_token],
+      "Should use error_code to determine context, not regex on last_error"
+  end
+
+  test "explain_error prefers error_code even when regex would match differently" do
+    migration = migrations(:pending_migration)
+    # last_error matches :network via regex, but error_code says :plc_token_expired
+    migration.update!(
+      status: :failed,
+      last_error: "Network unreachable: connection timed out",
+      error_code: "plc_token_expired",
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com"
+    )
+
+    context = MigrationErrorHelper.explain_error(migration)
+
+    assert_equal "PLC Token Expired", context[:title],
+      "error_code should take precedence over regex match on last_error"
+  end
+
+  test "explain_error falls back to regex when error_code is nil" do
+    migration = migrations(:pending_migration)
+    migration.update!(
+      status: :failed,
+      last_error: PLC_TOKEN_EXPIRED_WITH_TIMESTAMP,
+      error_code: nil,
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com"
+    )
+
+    context = MigrationErrorHelper.explain_error(migration)
+
+    assert_equal "PLC Token Expired", context[:title],
+      "Should fall back to regex detection when error_code is nil"
+    assert context[:show_request_new_plc_token]
+  end
+
+  test "explain_error falls back to regex when error_code is empty string" do
+    migration = migrations(:pending_migration)
+    migration.update!(
+      status: :failed,
+      last_error: CREDENTIALS_EXPIRED_OLD_SESSION,
+      error_code: "",
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com"
+    )
+
+    context = MigrationErrorHelper.explain_error(migration)
+
+    assert_equal "Session Expired — Re-authentication Required", context[:title],
+      "Should fall back to regex when error_code is empty string"
+    assert context[:show_reauth_form]
+  end
+
+  test "explain_error handles all error_code values" do
+    migration = migrations(:pending_migration)
+    migration.update!(
+      status: :failed,
+      last_error: "irrelevant",
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com",
+      progress_data: {}
+    )
+
+    # Map of error_code -> expected title (validates build_error_context routing)
+    expected_titles = {
+      "plc_token_expired"          => "PLC Token Expired",
+      "plc_pre_submission_failure" => "PLC Update Could Not Complete",
+      "critical_plc"               => "PLC Directory Update Failed",
+      "credentials_need_reauth"    => "Session Expired — Re-authentication Required",
+      "authentication"             => "Authentication Failed",
+      "network"                    => "Network Connection Error",
+      "rate_limit"                 => "Rate Limited by Server",
+      "account_exists"             => "Account Already Exists on Target PDS",
+      "invite_code"                => "Invalid or Expired Invite Code",
+      "blob_not_found"             => "Some Blobs Not Found",
+      "data_corruption"            => "Data Transfer Corruption",
+      "disk_space"                 => "Disk Space Exhausted",
+      "cancelled"                  => "Migration Cancelled",
+      "generic"                    => "Migration Error",
+    }
+
+    expected_titles.each do |code, expected_title|
+      migration.update!(error_code: code)
+      context = MigrationErrorHelper.explain_error(migration)
+      assert_equal expected_title, context[:title],
+        "error_code '#{code}' should produce title '#{expected_title}', got '#{context[:title]}'"
+    end
+  end
+
   private
 
   def detect(message)

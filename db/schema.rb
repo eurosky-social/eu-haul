@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_12_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_26_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,10 +53,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_12_000001) do
     t.text "encrypted_old_refresh_token"
     t.text "encrypted_new_access_token"
     t.text "encrypted_new_refresh_token"
+    t.string "error_code"
     t.index ["backup_expires_at"], name: "index_migrations_on_backup_expires_at"
     t.index ["created_at"], name: "index_migrations_on_created_at"
     t.index ["did"], name: "index_migrations_on_did"
     t.index ["email_verification_token"], name: "index_migrations_on_email_verification_token", unique: true
+    t.index ["error_code"], name: "index_migrations_on_error_code"
     t.index ["invite_code_expires_at"], name: "index_migrations_on_invite_code_expires_at"
     t.index ["migration_type"], name: "index_migrations_on_migration_type"
     t.index ["status"], name: "index_migrations_on_status"

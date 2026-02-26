@@ -699,7 +699,7 @@ class MigrationsController < ApplicationController
     # Clear the old (invalid) PLC token so the show page renders the token entry form
     # instead of the "Updating your identity" processing state.
     if @migration.failed?
-      @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0, encrypted_plc_token: nil)
+      @migration.update!(status: 'pending_plc', last_error: nil, error_code: nil, current_job_attempt: 0, encrypted_plc_token: nil)
       Rails.logger.info("Reset migration #{@migration.token} from failed to pending_plc after PLC token request (cleared stale PLC token)")
     end
 
@@ -766,7 +766,7 @@ class MigrationsController < ApplicationController
       if !@migration.plc_token_expired? && @migration.encrypted_plc_token.present?
         Rails.logger.info("Valid PLC token still present for #{@migration.token} — retrying PLC update directly")
 
-        @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0) if @migration.failed?
+        @migration.update!(status: 'pending_plc', last_error: nil, error_code: nil, current_job_attempt: 0) if @migration.failed?
         UpdatePlcJob.perform_later(@migration.id)
         notice_msg = "Re-authenticated successfully! Your PLC token is still valid — retrying the PLC update now."
       else
@@ -783,7 +783,7 @@ class MigrationsController < ApplicationController
 
         # Reset to pending_plc so the PLC token form appears
         if @migration.failed?
-          @migration.update!(status: 'pending_plc', last_error: nil, current_job_attempt: 0)
+          @migration.update!(status: 'pending_plc', last_error: nil, error_code: nil, current_job_attempt: 0)
         end
       end
 
@@ -849,7 +849,7 @@ class MigrationsController < ApplicationController
     @migration.progress_data.delete('cancellation_requested_at')
     @migration.progress_data['cancelled_at'] = Time.current.iso8601
     @migration.save!
-    @migration.mark_failed!("Migration cancelled by user.")
+    @migration.mark_failed!("Migration cancelled by user.", error_code: :cancelled)
 
     Rails.logger.info("[CancelMigration] Migration #{@migration.token} cancelled by user")
 
@@ -946,6 +946,7 @@ class MigrationsController < ApplicationController
     @migration.update!(
       status: determine_retry_status(@migration.status),
       last_error: nil,
+      error_code: nil,
       current_job_attempt: 0
     )
 

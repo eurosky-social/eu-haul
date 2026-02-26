@@ -131,7 +131,7 @@ class DownloadAllDataJob < ApplicationJob
     # Only update migration if it still exists
     if migration && Migration.exists?(migration_id)
       migration.reload
-      migration.mark_failed!("Download failed: #{e.message}")
+      migration.mark_failed!("Download failed: #{e.message}", error_code: :generic)
     end
 
     raise

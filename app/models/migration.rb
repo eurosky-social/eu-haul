@@ -179,21 +179,26 @@ class Migration < ApplicationRecord
   end
 
   def mark_complete!
-    update!(status: :completed, last_error: nil)
+    update!(status: :completed, last_error: nil, error_code: nil)
   end
 
-  def mark_failed!(error)
+  def mark_failed!(error, error_code: nil)
     update!(
       status: :failed,
       last_error: error.to_s,
+      error_code: error_code&.to_s,
       retry_count: retry_count + 1
     )
 
     # Send re-authentication email for auth/credential failures.
     # CRITICAL PLC failures have their own dedicated email — skip those.
-    if error.to_s.match?(/authentication error|credentials expired/i) && !error.to_s.start_with?("CRITICAL:")
-      MigrationMailer.reauthentication_required(self).deliver_later rescue nil
+    should_send_reauth = if error_code
+      [:credentials_need_reauth, :authentication].include?(error_code.to_sym)
+    else
+      # Fallback to regex for callers that don't pass error_code
+      error.to_s.match?(/authentication error|credentials expired/i) && !error.to_s.start_with?("CRITICAL:")
     end
+    MigrationMailer.reauthentication_required(self).deliver_later rescue nil if should_send_reauth
   end
 
   # Whether this migration can be cancelled by the user.
