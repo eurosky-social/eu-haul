@@ -140,8 +140,9 @@ services:
       - eurosky-internal
       - u-at-proto_default
 
-  # Dedicated Sidekiq process for critical queue (UpdatePlcJob, ActivateAccountJob)
-  # Runs separately to ensure time-sensitive jobs (PLC tokens expire in 1h)
+  # Dedicated Sidekiq process for critical + mailer jobs
+  # Handles UpdatePlcJob, ActivateAccountJob, and email delivery.
+  # Runs separately to ensure time-sensitive jobs and emails
   # are never blocked by long-running blob transfer jobs.
   eurosky-sidekiq-critical:
     build: .

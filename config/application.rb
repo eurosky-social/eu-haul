@@ -46,6 +46,11 @@ module EuroskyMigration
     # Active Job backend (Sidekiq)
     config.active_job.queue_adapter = :sidekiq
 
+    # Route mailer delivery jobs to a dedicated queue so they are never
+    # starved by long-running blob transfer jobs on the migrations queue.
+    # The "mailers" queue is processed by the critical Sidekiq process.
+    config.action_mailer.deliver_later_queue_name = "mailers"
+
     # Time zone
     config.time_zone = "UTC"
 
