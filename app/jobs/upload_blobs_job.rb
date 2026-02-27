@@ -30,7 +30,7 @@ class UploadBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  PARALLEL_UPLOADS = 50
+  PARALLEL_UPLOADS = 5
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
 
