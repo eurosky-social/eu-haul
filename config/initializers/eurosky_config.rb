@@ -36,9 +36,21 @@ module EuroskyConfig
   # PDS Configuration
   DEFAULT_TARGET_PDS = ENV['DEFAULT_TARGET_PDS']&.freeze
 
-  # Legal URLs (optional)
-  PRIVACY_POLICY_URL = ENV['PRIVACY_POLICY_URL']&.freeze
-  TERMS_OF_SERVICE_URL = ENV['TERMS_OF_SERVICE_URL']&.freeze
+  # Legal URLs
+  # If set to an external URL (e.g. https://...), those are used directly.
+  # If not set, defaults to internal routes that render ERB templates with ENV values.
+  PRIVACY_POLICY_URL = ENV.fetch('PRIVACY_POLICY_URL', '/privacy-policy').freeze
+  TERMS_OF_SERVICE_URL = ENV.fetch('TERMS_OF_SERVICE_URL', '/terms-of-service').freeze
+
+  # Legal page content (used by internal ERB templates at /privacy-policy and /terms-of-service)
+  OPERATOR_NAME = ENV.fetch('OPERATOR_NAME', 'UNCONFIGURED').freeze
+  OPERATOR_EMAIL = ENV.fetch('OPERATOR_EMAIL') { ENV.fetch('SUPPORT_EMAIL', 'support@example.com') }.freeze
+  OPERATOR_ADDRESS = ENV['OPERATOR_ADDRESS']&.freeze
+  EFFECTIVE_DATE = ENV.fetch('EFFECTIVE_DATE', 'UNCONFIGURED').freeze
+  GOVERNING_JURISDICTION = ENV.fetch('GOVERNING_JURISDICTION', 'UNCONFIGURED').freeze
+  LIABILITY_CAP = ENV.fetch('LIABILITY_CAP', 'EUR 0 (this is a free service)').freeze
+  LOG_RETENTION_DAYS = ENV.fetch('LOG_RETENTION_DAYS', '30').freeze
+  REPO_URL = ENV.fetch('REPO_URL', 'https://github.com/eurosky-social/u-haul').freeze
 
   # Validation
   class ConfigurationError < StandardError; end
