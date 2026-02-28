@@ -111,12 +111,9 @@ RSpec.describe ImportBlobsJob, type: :job do
       end
     end
 
-    context 'when concurrency limit is reached' do
+    context 'with many concurrent migrations' do
       before do
-        # Create MAX_CONCURRENT_BLOB_MIGRATIONS migrations in pending_blobs status
-        stub_const("#{described_class}::MAX_CONCURRENT_BLOB_MIGRATIONS", 2)
-
-        2.times do |i|
+        20.times do |i|
           Migration.create!(
             email: "concurrent#{i}@example.com",
             did: "did:plc:concurrent#{i}",
@@ -129,22 +126,19 @@ RSpec.describe ImportBlobsJob, type: :job do
         end
       end
 
-      it 'does not process blobs' do
-        expect(goat_service).not_to receive(:list_blobs)
-        described_class.perform_now(migration.id)
-      end
+      it 'still processes blobs without blocking' do
+        expect(goat_service).to receive(:list_blobs).and_return({ 'cids' => ['blob1'], 'cursor' => nil })
+        expect(goat_service).to receive(:login_new_pds)
+        expect(goat_service).to receive(:download_blob).with('blob1').and_return('/tmp/blob1')
+        expect(goat_service).to receive(:upload_blob).with('/tmp/blob1')
+        allow(goat_service).to receive(:get_account_status).and_return({ 'expectedBlobs' => 1, 'importedBlobs' => 1 })
+        allow(File).to receive(:size).and_return(1024)
+        allow(FileUtils).to receive(:rm_f)
 
-      it 're-enqueues job with delay' do
-        expect {
-          described_class.perform_now(migration.id)
-        }.to have_enqueued_job(described_class).with(migration.id).at(30.seconds.from_now)
-      end
-
-      it 'does not advance migration status' do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_blobs')
+        expect(migration.status).to eq('pending_prefs')
       end
     end
 
@@ -322,16 +316,8 @@ RSpec.describe ImportBlobsJob, type: :job do
   end
 
   describe 'constants' do
-    it 'uses appropriate requeue delay' do
-      expect(described_class::REQUEUE_DELAY).to eq(30.seconds)
-    end
-
     it 'defines progress update interval' do
       expect(described_class::PROGRESS_UPDATE_INTERVAL).to eq(10)
-    end
-
-    it 'defines parallel blob transfer count' do
-      expect(described_class::PARALLEL_BLOB_TRANSFERS).to eq(50)
     end
   end
 end

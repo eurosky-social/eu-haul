@@ -9,7 +9,7 @@
 # 1. Verify local blobs directory exists
 # 2. Login to new PDS
 # 3. List all local blob files
-# 4. Upload blobs in parallel (50 at a time)
+# 4. Upload blobs in parallel (5 threads per migration, no global limit)
 # 5. Track progress and update after each batch
 # 6. Advance to pending_prefs status
 #
@@ -30,11 +30,9 @@ class UploadBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  PARALLEL_UPLOADS = 5
+  PARALLEL_BLOBS = 5
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
-
-  REQUEUE_DELAY = 30.seconds
 
   # Retry configuration
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
@@ -48,29 +46,6 @@ class UploadBlobsJob < ApplicationJob
     if migration.status != 'pending_blobs'
       logger.info("Migration #{migration.token} is already at status '#{migration.status}', skipping blob upload")
       return
-    end
-
-    # Concurrency check
-    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
-    if at_heavy_io_limit?(max_concurrent, exclude_id: migration.id)
-      logger.info("Heavy I/O concurrency limit reached (#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
-      migration.progress_data ||= {}
-      migration.update_columns(
-        progress_data: migration.progress_data.merge(
-          'queued' => true,
-          'queued_reason' => 'Waiting for other migrations to finish transferring data',
-          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
-        )
-      )
-      self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
-      return
-    end
-
-    # Clear queued state now that we're starting
-    if migration.progress_data&.dig('queued')
-      migration.update_columns(
-        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
-      )
     end
 
     # Step 1: Verify local blobs directory exists
@@ -115,15 +90,8 @@ class UploadBlobsJob < ApplicationJob
 
   private
 
-  # Check if we're at the concurrency limit for heavy I/O jobs.
-  def at_heavy_io_limit?(max_concurrent, exclude_id: nil)
-    heavy_statuses = [:pending_download, :pending_blobs]
-    scope = Migration.where(status: heavy_statuses)
-    scope = scope.where.not(id: exclude_id) if exclude_id
-    scope.count >= max_concurrent
-  end
-
-  # Upload all blobs using thread pool pattern for maximum throughput
+  # Upload all blobs using a thread pool (PARALLEL_BLOBS threads per migration).
+  # Every migration runs its own pool independently — no global gating.
   def upload_all_blobs(migration, goat, blob_files)
     total_blobs = blob_files.length
     uploaded_count = 0
@@ -137,8 +105,13 @@ class UploadBlobsJob < ApplicationJob
     # Add all blob files to the queue
     blob_files.each_with_index { |blob_file, index| queue << [blob_file, index] }
 
+    # Release the main thread's DB connection before entering the thread pool.
+    # It's idle during uploads (just waiting on thread joins) and holding
+    # it would waste a pooled connection for the entire duration.
+    ActiveRecord::Base.connection_pool.release_connection
+
     # Create worker threads (thread pool)
-    threads = PARALLEL_UPLOADS.times.map do
+    threads = PARALLEL_BLOBS.times.map do
       Thread.new do
         loop do
           # Get next blob from queue (non-blocking)
@@ -166,10 +139,13 @@ class UploadBlobsJob < ApplicationJob
 
             logger.info("Uploaded blob #{index + 1}/#{total_blobs}: #{cid} (#{format_bytes(blob_size)})")
 
-            # Update progress periodically
+            # Update progress periodically.
+            # Use with_connection to borrow and return a DB connection immediately.
             if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
-                update_upload_progress(migration, uploaded_count, total_blobs, total_bytes)
+                ActiveRecord::Base.connection_pool.with_connection do
+                  update_upload_progress(migration, uploaded_count, total_blobs, total_bytes)
+                end
               end
             end
 

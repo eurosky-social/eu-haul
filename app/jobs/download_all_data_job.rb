@@ -15,7 +15,7 @@ require 'net/http'
 # 1. Create local storage directory for this migration
 # 2. Download repository as CAR file
 # 3. List all blobs from old PDS
-# 4. Download blobs in parallel (50 at a time, streamed to disk)
+# 4. Download blobs in parallel (5 threads per migration, no global limit)
 # 5. Update progress tracking
 # 6. Advance to pending_backup status
 #
@@ -40,11 +40,9 @@ class DownloadAllDataJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  PARALLEL_DOWNLOADS = 50
+  PARALLEL_BLOBS = 5
   MAX_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10
-
-  REQUEUE_DELAY = 30.seconds
 
   # Retry configuration
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
@@ -58,29 +56,6 @@ class DownloadAllDataJob < ApplicationJob
     if migration.status != 'pending_download'
       logger.info("Migration #{migration.token} is already at status '#{migration.status}', skipping download")
       return
-    end
-
-    # Concurrency check
-    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
-    if at_heavy_io_limit?(max_concurrent, exclude_id: migration.id)
-      logger.info("Heavy I/O concurrency limit reached (#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
-      migration.progress_data ||= {}
-      migration.update_columns(
-        progress_data: migration.progress_data.merge(
-          'queued' => true,
-          'queued_reason' => 'Waiting for other migrations to finish transferring data',
-          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
-        )
-      )
-      self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
-      return
-    end
-
-    # Clear queued state now that we're starting
-    if migration.progress_data&.dig('queued')
-      migration.update_columns(
-        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
-      )
     end
 
     # Step 1: Create local storage directory
@@ -108,7 +83,7 @@ class DownloadAllDataJob < ApplicationJob
     }
     migration.save!
 
-    # Step 5: Download all blobs using HTTParty with thread pool (10 parallel downloads)
+    # Step 5: Download all blobs in parallel (PARALLEL_BLOBS threads per migration)
     start_time = Time.current
     logger.info("Starting blob download at #{start_time.iso8601} (#{all_blobs.length} blobs)")
 
@@ -138,14 +113,6 @@ class DownloadAllDataJob < ApplicationJob
   end
 
   private
-
-  # Check if we're at the concurrency limit for heavy I/O jobs.
-  def at_heavy_io_limit?(max_concurrent, exclude_id: nil)
-    heavy_statuses = [:pending_download, :pending_blobs]
-    scope = Migration.where(status: heavy_statuses)
-    scope = scope.where.not(id: exclude_id) if exclude_id
-    scope.count >= max_concurrent
-  end
 
   # Create local storage directory for this migration
   def create_storage_directory(migration)
@@ -198,9 +165,8 @@ class DownloadAllDataJob < ApplicationJob
     all_blobs
   end
 
-  # Download all blobs using a thread pool pattern
-  # This ensures we always have PARALLEL_DOWNLOADS threads running,
-  # starting a new download as soon as one completes (no waiting for batches)
+  # Download all blobs using a thread pool (PARALLEL_BLOBS threads per migration).
+  # Every migration runs its own pool independently — no global gating.
   def download_all_blobs(migration, goat, blobs, storage_dir)
     total_blobs = blobs.length
     downloaded_count = 0
@@ -214,8 +180,13 @@ class DownloadAllDataJob < ApplicationJob
     # Add all blob CIDs to the queue
     blobs.each_with_index { |cid, index| queue << [cid, index] }
 
+    # Release the main thread's DB connection before entering the thread pool.
+    # It's idle during downloads (just waiting on thread joins) and holding
+    # it would waste a pooled connection for the entire duration.
+    ActiveRecord::Base.connection_pool.release_connection
+
     # Create worker threads (thread pool)
-    threads = PARALLEL_DOWNLOADS.times.map do
+    threads = PARALLEL_BLOBS.times.map do
       Thread.new do
         loop do
           # Get next blob from queue (blocks if empty, returns nil when queue is closed)
@@ -242,10 +213,14 @@ class DownloadAllDataJob < ApplicationJob
 
             logger.info("Downloaded blob #{index + 1}/#{total_blobs}: #{cid} (#{format_bytes(blob_size)})")
 
-            # Update progress periodically
+            # Update progress periodically.
+            # Use with_connection to borrow and return a DB connection immediately,
+            # preventing download threads from hoarding pooled connections.
             if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
-                update_download_progress(migration, downloaded_count, total_blobs, total_bytes)
+                ActiveRecord::Base.connection_pool.with_connection do
+                  update_download_progress(migration, downloaded_count, total_blobs, total_bytes)
+                end
               end
             end
 
@@ -262,7 +237,7 @@ class DownloadAllDataJob < ApplicationJob
     # Wait for all worker threads to complete
     threads.each(&:join)
 
-    # Final progress update
+    # Final progress update (back on main Sidekiq thread, connection already available)
     update_download_progress(migration, downloaded_count, total_blobs, total_bytes)
 
     # Log summary

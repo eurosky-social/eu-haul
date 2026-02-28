@@ -4,8 +4,9 @@
 # (config/sidekiq_critical.yml) to ensure UpdatePlcJob and
 # ActivateAccountJob are never blocked by long-running blob transfers.
 #
-# NOTE: Sidekiq concurrency should be >= MAX_CONCURRENT_BLOB_MIGRATIONS
-# (default 15) to avoid blob jobs waiting for a free thread.
+# All migrations run in parallel with no global limit. Each migration uses
+# 5 threads for blob downloads/uploads. Set Sidekiq concurrency high enough
+# to run all expected migration jobs without queueing at the Sidekiq level.
 
 :concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 35) %>
 :timeout: 30

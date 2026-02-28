@@ -6,26 +6,24 @@
 # blob is limited to the HTTP chunk size (~16KB) regardless of blob size.
 #
 # Critical Features:
-# - Concurrency limiting (configurable via MAX_CONCURRENT_BLOB_MIGRATIONS)
-# - Parallel blob processing (50 blobs at a time) for throughput
+# - Parallel blob processing (5 threads per migration, no global limit)
+# - All migrations run independently — no queuing, no gating
 # - Batched progress updates (every 10 blobs to reduce DB writes)
 # - Individual blob retry with exponential backoff
 # - Post-import reconciliation to fill gaps
 #
 # Flow:
-# 1. Check concurrency limit
-# 2. If at capacity, re-enqueue with 30s delay and return
-# 3. Mark blobs_started_at timestamp
-# 4. List all blobs with pagination (cursor-based, no auth required)
-# 5. Update migration with blob_count
-# 6. Process blobs in parallel (50 threads pulling from a shared queue):
+# 1. Mark blobs_started_at timestamp
+# 2. List all blobs with pagination (cursor-based, no auth required)
+# 3. Update migration with blob_count
+# 4. Process blobs in parallel (5 threads per migration):
 #    - Download blob (streamed to disk)
 #    - Upload blob (streamed from disk)
 #    - Delete local blob file immediately after upload
 #    - Update progress every 10 blobs
-# 7. Reconcile - verify all blobs were imported and fill gaps
-# 8. Mark blobs_completed_at timestamp
-# 9. Advance to pending_prefs status
+# 5. Reconcile - verify all blobs were imported and fill gaps
+# 6. Mark blobs_completed_at timestamp
+# 7. Advance to pending_prefs status
 #
 # Error Handling:
 # - Rate-limit errors: longer exponential backoff (8s, 16s, 32s), max 3 attempts per blob
@@ -45,10 +43,9 @@ class ImportBlobsJob < ApplicationJob
   queue_as :migrations
 
   # Constants
-  REQUEUE_DELAY = 30.seconds
+  PARALLEL_BLOBS = 5
   MAX_BLOB_RETRIES = 3
   PROGRESS_UPDATE_INTERVAL = 10 # Update progress every N blobs
-  PARALLEL_BLOB_TRANSFERS = 50 # Number of blobs to transfer in parallel
 
   # Retry configuration (3 attempts with exponential backoff)
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
@@ -66,57 +63,34 @@ class ImportBlobsJob < ApplicationJob
       return
     end
 
-    # Step 1: Check concurrency limit
-    max_concurrent = DynamicConcurrencyService.max_concurrent_heavy_io
-    if at_concurrency_limit?(max_concurrent, exclude_id: migration.id)
-      current_count = Migration.where(status: [:pending_download, :pending_blobs]).where.not(id: migration.id).count
-      logger.info("Concurrency limit reached (#{current_count}/#{max_concurrent}), re-enqueuing in #{REQUEUE_DELAY}s")
-      migration.update_columns(
-        progress_data: migration.progress_data.merge(
-          'queued' => true,
-          'queued_reason' => 'Waiting for other migrations to finish transferring data',
-          'queued_since' => migration.progress_data['queued_since'] || Time.current.iso8601
-        )
-      )
-      self.class.set(wait: REQUEUE_DELAY).perform_later(migration)
-      return
-    end
-
-    # Clear queued state now that we're starting
-    if migration.progress_data&.dig('queued')
-      migration.update_columns(
-        progress_data: migration.progress_data.except('queued', 'queued_reason', 'queued_since')
-      )
-    end
-
-    # Step 2: Mark blobs_started_at
+    # Step 1: Mark blobs_started_at
     mark_blobs_started(migration)
 
-    # Step 3: Initialize GoatService
+    # Step 2: Initialize GoatService
     goat = GoatService.new(migration)
 
-    # Step 4: List all blobs with pagination (no authentication required for public sync endpoints)
+    # Step 3: List all blobs with pagination (no authentication required for public sync endpoints)
     all_blobs = collect_all_blobs(goat)
 
     logger.info("Found #{all_blobs.length} total blobs to transfer")
 
-    # Step 5: Update migration with blob count
+    # Step 4: Update migration with blob count
     migration.update!(
       progress_data: migration.progress_data.merge('blob_count' => all_blobs.length)
     )
 
-    # Step 6: Process blobs in parallel
+    # Step 5: Process blobs in parallel
     process_blobs(migration, goat, all_blobs)
 
-    # Step 7: Reconcile - verify all blobs were imported and fill gaps
+    # Step 6: Reconcile - verify all blobs were imported and fill gaps
     reconcile_blobs(migration, goat)
 
-    # Step 8: Mark blobs_completed_at
+    # Step 7: Mark blobs_completed_at
     mark_blobs_completed(migration)
 
     logger.info("Blob import completed for migration #{migration.token}")
 
-    # Step 9: Advance to next stage
+    # Step 8: Advance to next stage
     migration.advance_to_pending_prefs!
 
   rescue StandardError => e
@@ -132,15 +106,6 @@ class ImportBlobsJob < ApplicationJob
   end
 
   private
-
-  # Check if we're at the concurrency limit for heavy I/O migrations.
-  # Excludes the given migration ID from the count so the job doesn't block itself.
-  def at_concurrency_limit?(max_concurrent, exclude_id: nil)
-    heavy_statuses = [:pending_download, :pending_blobs]
-    scope = Migration.where(status: heavy_statuses)
-    scope = scope.where.not(id: exclude_id) if exclude_id
-    scope.count >= max_concurrent
-  end
 
   # Mark the start time for blob transfer
   def mark_blobs_started(migration)
@@ -176,8 +141,8 @@ class ImportBlobsJob < ApplicationJob
     all_blobs
   end
 
-  # Process all blobs using thread pool pattern for maximum throughput.
-  # Threads pick up new work as soon as they finish, no waiting for batches.
+  # Process all blobs using a thread pool (PARALLEL_BLOBS threads per migration).
+  # Every migration runs its own pool independently — no global gating.
   def process_blobs(migration, goat, blobs)
     # Login to new PDS for uploads
     goat.login_new_pds
@@ -193,8 +158,13 @@ class ImportBlobsJob < ApplicationJob
     # Add all blobs to the queue
     blobs.each_with_index { |cid, index| queue << [cid, index] }
 
+    # Release the main thread's DB connection before entering the thread pool.
+    # It's idle during blob transfers (just waiting on thread joins) and holding
+    # it would waste a pooled connection for the entire duration.
+    ActiveRecord::Base.connection_pool.release_connection
+
     # Create worker threads (thread pool)
-    threads = PARALLEL_BLOB_TRANSFERS.times.map do
+    threads = PARALLEL_BLOBS.times.map do
       Thread.new do
         loop do
           # Get next blob from queue (non-blocking)
@@ -227,10 +197,14 @@ class ImportBlobsJob < ApplicationJob
             # Delete local file immediately
             FileUtils.rm_f(blob_path)
 
-            # Update progress periodically
+            # Update progress periodically.
+            # Use with_connection to borrow and return a DB connection immediately,
+            # preventing worker threads from hoarding pooled connections.
             if (index + 1) % PROGRESS_UPDATE_INTERVAL == 0
               mutex.synchronize do
-                update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
+                ActiveRecord::Base.connection_pool.with_connection do
+                  update_blob_progress(migration, successful_count, blobs.length, total_bytes_transferred)
+                end
               end
             end
 
