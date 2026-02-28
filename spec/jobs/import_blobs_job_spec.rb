@@ -24,7 +24,7 @@ RSpec.describe ImportBlobsJob, type: :job do
   end
 
   describe '#perform' do
-    context 'when concurrency limit is not reached' do
+    context 'successful blob transfer' do
       before do
         # Mock blob listing
         allow(goat_service).to receive(:list_blobs).with(nil).and_return(
@@ -111,9 +111,9 @@ RSpec.describe ImportBlobsJob, type: :job do
       end
     end
 
-    context 'with many concurrent migrations' do
+    context 'with many concurrent migrations (no global limit)' do
       before do
-        20.times do |i|
+        30.times do |i|
           Migration.create!(
             email: "concurrent#{i}@example.com",
             did: "did:plc:concurrent#{i}",
@@ -121,12 +121,12 @@ RSpec.describe ImportBlobsJob, type: :job do
             old_pds_host: "https://old.pds.example",
             new_handle: "test#{i}.new.bsky.social",
             new_pds_host: "https://new.pds.example",
-            status: :pending_blobs
+            status: [:pending_download, :pending_blobs].sample
           )
         end
       end
 
-      it 'still processes blobs without blocking' do
+      it 'proceeds immediately without blocking' do
         expect(goat_service).to receive(:list_blobs).and_return({ 'cids' => ['blob1'], 'cursor' => nil })
         expect(goat_service).to receive(:login_new_pds)
         expect(goat_service).to receive(:download_blob).with('blob1').and_return('/tmp/blob1')
@@ -139,6 +139,21 @@ RSpec.describe ImportBlobsJob, type: :job do
 
         migration.reload
         expect(migration.status).to eq('pending_prefs')
+      end
+
+      it 'does not set queued state' do
+        expect(goat_service).to receive(:list_blobs).and_return({ 'cids' => ['blob1'], 'cursor' => nil })
+        expect(goat_service).to receive(:login_new_pds)
+        expect(goat_service).to receive(:download_blob).with('blob1').and_return('/tmp/blob1')
+        expect(goat_service).to receive(:upload_blob).with('/tmp/blob1')
+        allow(goat_service).to receive(:get_account_status).and_return({ 'expectedBlobs' => 1, 'importedBlobs' => 1 })
+        allow(File).to receive(:size).and_return(1024)
+        allow(FileUtils).to receive(:rm_f)
+
+        described_class.perform_now(migration.id)
+
+        migration.reload
+        expect(migration.progress_data).not_to have_key('queued')
       end
     end
 
@@ -316,6 +331,10 @@ RSpec.describe ImportBlobsJob, type: :job do
   end
 
   describe 'constants' do
+    it 'limits parallel blob transfers to 5' do
+      expect(described_class::PARALLEL_BLOBS).to eq(5)
+    end
+
     it 'defines progress update interval' do
       expect(described_class::PROGRESS_UPDATE_INTERVAL).to eq(10)
     end

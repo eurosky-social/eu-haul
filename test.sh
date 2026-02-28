@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# # Quick test runner using rbenv exec to force Ruby 3.2.2
+# Run tests inside the eurosky-web Docker container
 
-# cd "$(dirname "$0")"
+set -e
+cd "$(dirname "$0")"
 
-# # Create storage directory
-# mkdir -p storage
+DB_URL="postgresql://postgres:\${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_test"
 
-# # Use rbenv to run with Ruby 3.2.2
-# echo "Running tests locally (SQLite) with Ruby 3.2.2..."
-# rbenv exec -v 3.2.2 bundle exec rails test RAILS_ENV=test "$@"
+echo "==> Ensuring test database exists..."
+docker compose exec eurosky-web bash -c "RAILS_ENV=test DATABASE_URL=\"$DB_URL\" bundle exec rails db:create 2>/dev/null || true"
 
-docker compose exec eurosky-web bash -c 'RAILS_ENV=test DATABASE_URL="postgresql://postgres:${POSTGRES_PASSWORD}@eurosky-postgres:5432/eurosky_migration_test" bundle exec rails test'
+echo "==> Running test database migrations..."
+docker compose exec eurosky-web bash -c "RAILS_ENV=test DATABASE_URL=\"$DB_URL\" bundle exec rails db:migrate"
+
+echo "==> Running tests..."
+docker compose exec eurosky-web bash -c "RAILS_ENV=test DATABASE_URL=\"$DB_URL\" bundle exec rails test $*"
