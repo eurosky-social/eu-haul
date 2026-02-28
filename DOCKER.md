@@ -133,7 +133,7 @@ The application uses Docker Compose to orchestrate the following services:
 - `PORT`: Web server port (default: 3000, internal only)
 
 ### Optional
-- `MAX_CONCURRENT_MIGRATIONS`: Number of concurrent migrations (default: 5)
+- `MAX_CONCURRENT_MIGRATIONS`: Anti-abuse limit on total active migrations (default: 100)
 - `SMTP_*`: Email configuration for notifications
 - `SENTRY_DSN`: Error tracking
 - `PLAUSIBLE_DOMAIN`: Analytics

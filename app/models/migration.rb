@@ -494,6 +494,13 @@ class Migration < ApplicationRecord
     email_verified_at.present?
   end
 
+  # Regenerate verification code and persist (for resend)
+  def regenerate_email_verification_token!
+    self.email_verification_token = nil
+    generate_email_verification_token
+    save!
+  end
+
   private
 
   # Token generation - EURO-XXXXXXXXXXXXXXXX format (16 chars = ~47 bits entropy)
@@ -523,13 +530,6 @@ class Migration < ApplicationRecord
       self.email_verification_token = candidate
       break unless Migration.exists?(email_verification_token: candidate)
     end
-  end
-
-  # Regenerate verification code and persist (for resend)
-  def regenerate_email_verification_token!
-    self.email_verification_token = nil
-    generate_email_verification_token
-    save!
   end
 
   # Store the user's locale at migration creation time

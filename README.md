@@ -139,7 +139,7 @@ EMAIL=admin@yourdomain.com
 
 ```bash
 # Migration Settings
-MAX_CONCURRENT_MIGRATIONS=5  # Adjust based on available RAM
+MAX_CONCURRENT_MIGRATIONS=100  # Anti-abuse limit on total active migrations
 
 # SMTP (for email notifications)
 SMTP_ADDRESS=smtp.example.com
@@ -288,11 +288,11 @@ Share this URL to check progress from any device (token is unguessable for secur
 
 ### Memory Requirements
 
-- **Minimum**: 4GB RAM (handles 1-2 concurrent migrations)
-- **Recommended**: 8GB RAM (handles 5 concurrent migrations)
-- **Optimal**: 16GB+ RAM (handles 10-15 concurrent migrations)
+- **Minimum**: 4GB RAM
+- **Recommended**: 8GB RAM
+- **Optimal**: 16GB+ RAM
 
-The application processes blobs sequentially to avoid memory exhaustion. Adjust `MAX_CONCURRENT_MIGRATIONS` based on your available RAM.
+All migrations run in parallel with no global limit. Each migration uses 5 threads for blob transfers, and blobs are streamed to/from disk so memory usage is constant (~16KB per thread) regardless of blob size. `MAX_CONCURRENT_MIGRATIONS` is an anti-abuse gate that limits how many migrations can be active simultaneously (default: 100).
 
 ### Monitoring
 

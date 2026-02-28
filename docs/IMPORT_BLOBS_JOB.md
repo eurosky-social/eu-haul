@@ -12,13 +12,13 @@ app/jobs/import_blobs_job.rb
 
 ## Key Features
 
-### 1. Concurrency Control
-- **Maximum concurrent blob migrations**: Configurable via `MAX_CONCURRENT_BLOB_MIGRATIONS` (default 15)
-- **Enforcement**: Checks count of migrations in `pending_download` or `pending_blobs` status
-- **Behavior**: If at capacity, re-enqueues job with 30-second delay
+### 1. Unlimited Parallel Migrations
+- **No global limit**: Every migration runs independently with no gating or queuing
+- **Fixed per-migration threads**: 5 parallel blob transfers per migration (`PARALLEL_BLOBS`)
+- **Resource isolation**: Blob jobs run on the `migrations` queue; critical jobs (emails, PLC updates) run on a separate `critical` queue so they're never blocked
 
 ### 2. Parallel Processing
-- 50 worker threads pull blobs from a shared queue
+- 5 worker threads pull blobs from a shared queue per migration
 - Each thread: Download → Upload → Cleanup
 - Streaming I/O means memory is constant regardless of parallelism
 - Throughput limited by network and PDS rate limits, not memory
@@ -29,6 +29,7 @@ app/jobs/import_blobs_job.rb
 
 ### 4. Batched Progress Updates
 - Database updates occur every **10 blobs** (not every blob)
+- Uses `with_connection` to borrow and return DB connections immediately
 - Reduces DB write load significantly
 - Tracks:
   - `blobs_completed`: Number of blobs transferred
@@ -51,27 +52,25 @@ app/jobs/import_blobs_job.rb
 ## Data Flow
 
 ```
-1. Check concurrency limit
+1. Mark blobs_started_at timestamp
    ↓
-2. Mark blobs_started_at timestamp
+2. List all blobs (cursor-based pagination, no auth required)
    ↓
-3. List all blobs (cursor-based pagination, no auth required)
+3. Update migration record with blob_count
    ↓
-4. Update migration record with blob_count
+4. Login to new PDS
    ↓
-5. Login to new PDS
-   ↓
-6. Process blobs in parallel (50 threads):
+5. Process blobs in parallel (5 threads):
    ├─ Download to tmp/goat/{did}/blobs/{cid} (streamed to disk)
    ├─ Upload to new PDS (streamed from disk)
    ├─ Delete local file
    └─ Update progress (every 10th blob)
    ↓
-7. Reconcile - verify all blobs imported, fill gaps
+6. Reconcile - verify all blobs imported, fill gaps
    ↓
-8. Mark blobs_completed_at timestamp
+7. Mark blobs_completed_at timestamp
    ↓
-9. Advance to pending_prefs status
+8. Advance to pending_prefs status
 ```
 
 ## Progress Tracking
@@ -95,10 +94,9 @@ The job stores detailed progress information in the `progress_data` JSONB field:
 
 | Constant | Value | Purpose |
 |----------|-------|---------|
-| `REQUEUE_DELAY` | 30 seconds | Delay before re-enqueuing when at capacity |
+| `PARALLEL_BLOBS` | 5 | Parallel blob transfer threads per migration |
 | `MAX_BLOB_RETRIES` | 3 | Maximum retry attempts per blob |
 | `PROGRESS_UPDATE_INTERVAL` | 10 | Update DB every N blobs |
-| `PARALLEL_BLOB_TRANSFERS` | 50 | Number of concurrent worker threads |
 
 ## Error Scenarios
 
@@ -112,12 +110,7 @@ The job stores detailed progress information in the `progress_data` JSONB field:
 - **Job-level**: 5 retries with polynomial backoff
 - **Impact**: Slows transfer, does not fail
 
-### 3. Concurrency Limit Reached
-- **Behavior**: Job re-enqueues itself with 30s delay
-- **Retry**: Infinite until capacity available
-- **Impact**: Job waits, does not fail
-
-### 4. Job Failure
+### 3. Job Failure
 - **Behavior**: Marks migration as `failed` with error message
 - **Retry**: 3 attempts via ActiveJob
 - **Impact**: Migration enters failed state after all retries exhausted
@@ -140,11 +133,8 @@ The job stores detailed progress information in the `progress_data` JSONB field:
 ## Monitoring Queries
 
 ```ruby
-# Check concurrent blob migrations
+# Check active blob transfer migrations
 Migration.where(status: [:pending_download, :pending_blobs]).count
-
-# Check concurrency diagnostics
-DynamicConcurrencyService.diagnostics
 
 # Check failed blobs for a migration
 migration.progress_data['failed_blobs']
@@ -159,6 +149,5 @@ success_rate = (completed.to_f / total * 100).round(2)
 
 - `app/models/migration.rb` - Migration model with progress tracking
 - `app/services/goat_service.rb` - ATProto client wrapper (streaming I/O)
-- `app/services/dynamic_concurrency_service.rb` - Concurrency limit configuration
 - `app/jobs/import_repo_job.rb` - Previous step (repository import)
 - `app/jobs/import_prefs_job.rb` - Next step (preferences import)
