@@ -308,6 +308,13 @@
             <li><%= t('migrations.show.check_email_correct', email: @migration.email).html_safe %></li>
             <li><%= t('migrations.show.email_delay') %></li>
           </ul>
+          <div class="mt-2 pt-2 border-top" style="border-color: rgba(146, 64, 14, 0.2) !important;">
+            <%= form_with url: resend_verification_by_token_path(@migration.token), method: :post, local: true do %>
+              <button type="submit" class="btn btn-sm btn-warning text-white fw-semibold">
+                <%= t('migrations.show.resend_code') %>
+              </button>
+            <% end %>
+          </div>
         </div>
 
       <% else %>

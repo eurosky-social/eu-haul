@@ -213,6 +213,7 @@ en:
       check_spam: "Check your spam or junk folder"
       check_email_correct: "Make sure <strong>%{email}</strong> is correct"
       email_delay: "The email may take a few minutes to arrive"
+      resend_code: "Resend Verification Code"
 
       # Queue
       in_queue: "In Queue"
@@ -401,6 +402,8 @@ en:
       email_verified: "Email verified! Your migration has started."
       invalid_code: "Invalid verification code. Please check the code in your email and try again."
       enter_code: "Please enter the verification code from your email."
+      verification_resent: "A new verification code has been sent to %{email}."
+      resend_too_soon: "Please wait at least 60 seconds before requesting another code."
       # PLC token
       plc_submitted: "PLC token submitted! Your DID will be updated shortly."
       plc_blank: "PLC token cannot be blank"

@@ -27,7 +27,7 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
-  before_action :set_migration, only: [:show, :verify_email, :submit_plc_token, :request_new_plc_token, :reauthenticate, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs, :confirm_delete]
+  before_action :set_migration, only: [:show, :verify_email, :resend_verification, :submit_plc_token, :request_new_plc_token, :reauthenticate, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs, :confirm_delete]
   before_action :set_security_headers
 
   # GET /migrations/new
@@ -549,6 +549,34 @@ class MigrationsController < ApplicationController
       redirect_to migration_by_token_path(@migration.token),
                   alert: I18n.t('controllers.migrations.invalid_code')
     end
+  end
+
+  # POST /migrate/:token/resend_verification
+  # Resend the email verification code
+  #
+  # Rate-limited to one resend per 60 seconds. Generates a fresh code each time.
+  def resend_verification
+    unless @migration.email_verification_token.present? && !@migration.email_verified?
+      redirect_to migration_by_token_path(@migration.token)
+      return
+    end
+
+    # Rate limit: 60 seconds between resends
+    last_sent = @migration.progress_data&.dig('verification_email_last_sent_at')
+    if last_sent.present? && Time.parse(last_sent) > 60.seconds.ago
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: I18n.t('controllers.migrations.resend_too_soon')
+      return
+    end
+
+    @migration.regenerate_email_verification_token!
+    @migration.update!(progress_data: @migration.progress_data.merge('verification_email_last_sent_at' => Time.current.iso8601))
+
+    MigrationMailer.email_verification(@migration).deliver_later
+    Rails.logger.info("Verification email resent for migration #{@migration.token}")
+
+    redirect_to migration_by_token_path(@migration.token),
+                notice: I18n.t('controllers.migrations.verification_resent', email: @migration.email)
   end
 
   # GET /migrations/:id

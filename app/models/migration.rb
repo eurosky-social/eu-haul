@@ -527,6 +527,13 @@ class Migration < ApplicationRecord
     end
   end
 
+  # Regenerate verification code and persist (for resend)
+  def regenerate_email_verification_token!
+    self.email_verification_token = nil
+    generate_email_verification_token
+    save!
+  end
+
   # Store the user's locale at migration creation time
   def set_locale
     self.locale ||= I18n.locale.to_s
