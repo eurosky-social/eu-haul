@@ -13,13 +13,13 @@
 #   4. UpdatePlcJob is enqueued automatically
 #
 # Retries: false (this job is idempotent and does nothing)
-# Queue: :migrations
+# Queue: :critical (processed by dedicated Sidekiq process, never blocked by blob jobs)
 #
 # Note: This job exists to maintain consistency in the migration flow
 # and provide clear logging that the system is waiting for user action.
 
 class WaitForPlcTokenJob < ApplicationJob
-  queue_as :migrations
+  queue_as :critical
   # No retries needed - this job just logs and requests token
 
   def perform(migration_id)

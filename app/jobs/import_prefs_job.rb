@@ -7,7 +7,7 @@
 #   pending_prefs -> pending_plc
 #
 # Retries: 3 times (preferences are idempotent)
-# Queue: :migrations (medium priority)
+# Queue: :critical (processed by dedicated Sidekiq process, never blocked by blob jobs)
 #
 # Error Handling:
 #   - Retries on transient network failures
@@ -20,7 +20,7 @@
 #   - preferences_imported_at: timestamp
 
 class ImportPrefsJob < ApplicationJob
-  queue_as :migrations
+  queue_as :critical
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   # Special handling for rate-limiting errors with longer backoff

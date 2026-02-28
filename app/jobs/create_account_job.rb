@@ -18,11 +18,11 @@
 # - Handles GoatService exceptions (AuthenticationError, NetworkError, GoatError)
 # - Logs all operations for debugging
 #
-# Queue: migrations (priority 2)
+# Queue: critical (processed by dedicated Sidekiq process, never blocked by blob jobs)
 # Retry: 3 attempts with exponential backoff
 
 class CreateAccountJob < ApplicationJob
-  queue_as :migrations
+  queue_as :critical
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   # Special handling for rate-limiting errors with longer backoff

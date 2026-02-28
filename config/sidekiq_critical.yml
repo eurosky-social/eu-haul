@@ -1,8 +1,11 @@
 ## Dedicated Sidekiq process for critical + mailer jobs
 #
-# This process handles UpdatePlcJob, ActivateAccountJob, and all mailer
-# delivery jobs. It ensures time-sensitive jobs (PLC tokens expire in 1h)
-# and email delivery are never blocked by long-running blob transfer jobs.
+# This process handles all quick, time-sensitive jobs and email delivery:
+#   critical queue: CreateAccountJob, ImportPrefsJob, WaitForPlcTokenJob,
+#                   UpdatePlcJob, ActivateAccountJob
+#   mailers queue:  All ActionMailer deliveries
+#
+# These jobs are never blocked by long-running blob transfer jobs.
 #
 # Run with: bundle exec sidekiq -C config/sidekiq_critical.yml
 
