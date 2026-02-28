@@ -156,8 +156,8 @@
     }
   }
 
-  # Migration status pages - Moderate rate limiting
-  # Max 100 requests per IP per hour to prevent token enumeration attacks
+  # Migration status pages - Allow frequent polling (every 2s)
+  # Max 60 requests per IP per minute (~1/sec, comfortably covers 2s polling)
   @migration_status {
     method GET
     path_regexp status /migrate/.*
@@ -166,8 +166,8 @@
     rate_limit {
       zone migration_status {
         key {remote_host}
-        events 100
-        window 1h
+        events 60
+        window 1m
       }
     }
     reverse_proxy eurosky-web-{$PARTITION:production}:3000 {
