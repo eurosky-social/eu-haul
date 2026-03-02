@@ -371,7 +371,8 @@ class MigrationsController < ApplicationController
     render json: { error: I18n.t('controllers.migrations.resolve_failed') }, status: :not_found
   rescue AuthenticationError => e
     Rails.logger.error("Authentication failed for handle #{handle}: #{e.message}")
-    render json: { error: I18n.t('controllers.migrations.auth_check_failed') }, status: :unauthorized
+    error_msg = e.message == I18n.t('controllers.migrations.app_password_not_allowed') ? e.message : I18n.t('controllers.migrations.auth_check_failed')
+    render json: { error: error_msg }, status: :unauthorized
   rescue StandardError => e
     Rails.logger.error("Unexpected error during handle lookup: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
@@ -1447,10 +1448,19 @@ class MigrationsController < ApplicationController
 
     session_data = JSON.parse(response.body)
 
+    # Decode the JWT payload to check auth scope — app passwords lack
+    # the privileges needed to request service auth tokens for createAccount.
+    jwt_payload = JSON.parse(Base64.urlsafe_decode64(session_data['accessJwt'].split('.')[1]))
+    scope = jwt_payload['scope']
+
+    if scope != 'com.atproto.access'
+      raise AuthenticationError, I18n.t('controllers.migrations.app_password_not_allowed')
+    end
+
     email = session_data['email']
     handle = session_data['handle']
 
-    Rails.logger.info("Successfully authenticated #{identifier}, email: #{email.present? ? 'present' : 'not available'}")
+    Rails.logger.info("Successfully authenticated #{identifier}, email: #{email.present? ? 'present' : 'not available'}, scope: #{scope}")
 
     {
       handle: handle,

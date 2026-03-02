@@ -1,4 +1,4 @@
-# u-haul 🚚
+# eu-haul 🚚
 
 > Self-hosted ATProto account migration tool for Bluesky and the AT Protocol ecosystem
 
@@ -6,7 +6,7 @@
 [![Ruby 3.2.2](https://img.shields.io/badge/ruby-3.2.2-ruby.svg)](https://www.ruby-lang.org/)
 [![Rails 7.1.3](https://img.shields.io/badge/rails-7.1.3-red.svg)](https://rubyonrails.org/)
 
-**u-haul** is a standalone web application that helps you migrate your Bluesky/ATProto account from one Personal Data Server (PDS) to another. It provides a simple web interface to handle the entire migration process, including repository export/import, blob transfer, preferences migration, and PLC directory updates.
+**eu-haul** is a standalone web application that helps you migrate your Bluesky/ATProto account from one Personal Data Server (PDS) to another. It provides a simple web interface to handle the entire migration process, including repository export/import, blob transfer, preferences migration, and PLC directory updates.
 
 ## Table of Contents
 
