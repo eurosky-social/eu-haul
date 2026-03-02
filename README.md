@@ -301,6 +301,47 @@ All migrations run in parallel with no global limit. Each migration uses 5 threa
 - **Application logs**: `docker compose logs -f web`
 - **Rails console**: `docker compose exec web rails console`
 
+### Safe Restarts
+
+Restarting containers while migrations are running requires care. The `UpdatePlcJob` modifies the PLC directory (an irreversible operation) and **must not be interrupted mid-execution**. Use the provided script to gracefully drain Sidekiq workers before restarting:
+
+```bash
+# Restart all services (drains Sidekiq first)
+./scripts/safe-restart.sh
+
+# Restart only the web server (safe anytime, no drain needed)
+./scripts/safe-restart.sh web
+
+# Restart only the critical Sidekiq worker (graceful drain)
+./scripts/safe-restart.sh critical
+
+# Restart both Sidekiq workers
+./scripts/safe-restart.sh sidekiq
+
+# Custom drain timeout (default: 60s) and skip confirmation
+./scripts/safe-restart.sh -t 120 -y all
+```
+
+The script:
+1. Sends `TSTP` to Sidekiq (stops fetching new jobs, keeps processing current ones)
+2. Waits for in-flight jobs to finish (with configurable timeout)
+3. Stops and restarts the containers
+
+If you need to restart manually without the script:
+```bash
+# Step 1: Quiet Sidekiq (stop fetching new jobs)
+docker compose kill -s TSTP eurosky-sidekiq-critical
+
+# Step 2: Watch logs until idle
+docker compose logs -f eurosky-sidekiq-critical
+
+# Step 3: Stop and restart
+docker compose stop eurosky-sidekiq-critical
+docker compose start eurosky-sidekiq-critical
+```
+
+**Important**: Never force-kill (`docker compose kill`) the `eurosky-sidekiq-critical` container while `UpdatePlcJob` is running. If the job is interrupted after submitting the PLC operation but before updating the migration status, the migration will be left in an inconsistent state requiring manual recovery.
+
 ### Scheduled Jobs (Security)
 
 The application automatically runs scheduled cleanup jobs via Sidekiq:
