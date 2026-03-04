@@ -66,6 +66,7 @@ lv:
         two_factor_title: "Divfaktoru autentifikācija"
         two_factor_help: "Pieteikšanās kods ir nosūtīts uz jūsu e-pastu. Ievadiet to zemāk."
         two_factor_placeholder: "Ievadiet pieteikšanās kodu"
+        legal_consent_html: 'Esmu izlasījis/usi un piekrītu <a href="%{tos_url}" target="_blank" rel="noopener">Pakalpojuma noteikumiem</a> un atzīstu <a href="%{privacy_url}" target="_blank" rel="noopener">Privātuma politiku</a>'
         continue: "Turpināt"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ lv:
       # Step 5
       confirm_email_html: "Kad noklikšķināsiet <strong>Turpināt</strong>, mēs nosūtīsim apstiprinājuma e-pastu uz <strong>{email}</strong>. Migrācija sāksies tikai pēc apstiprināšanas ar šo e-pastu."
       confirm_no_usage: "Lūdzu, apstipriniet, ka saprotat, ka migrācijas laikā nedrīkstat izmantot savu kontu."
+      confirm_legal_consent: "Lūdzu, apstipriniet, ka esat izlasījis un piekrītat Pakalpojuma noteikumiem un Privātuma politikai."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ lv:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Lai turpinātu, jums jāpiekrīt Pakalpojuma noteikumiem un jāatzīst Privātuma politika."
       verification_sent: "Mēs nosūtījām verifikācijas kodu uz %{email}. Ievadiet to nākamajā lapā, lai uzsāktu migrāciju."
       # Verify email
       email_verified: "E-pasts verificēts! Jūsu migrācija ir sākusies."

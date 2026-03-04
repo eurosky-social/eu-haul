@@ -66,6 +66,7 @@ mt:
         two_factor_title: "Awtentikazzjoni b'Żewġ Fatturi"
         two_factor_help: "Kodiċi tad-dħul intbagħat lill-email tiegħek. Daħħlu hawn taħt."
         two_factor_placeholder: "Daħħal il-kodiċi tad-dħul tiegħek"
+        legal_consent_html: 'Qrajt u naqbel mat-<a href="%{tos_url}" target="_blank" rel="noopener">Termini tas-Servizz</a> u nirrikonoxxi l-<a href="%{privacy_url}" target="_blank" rel="noopener">Politika tal-Privatezza</a>'
         continue: "Kompli"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ mt:
       # Step 5
       confirm_email_html: "Meta tagħfas <strong>Kompli</strong>, se nibagħtu email ta' konferma lil <strong>{email}</strong>. Il-migrazzjoni tibda biss meta tikkonferma permezz ta' dak l-email."
       confirm_no_usage: "Jekk jogħġbok ikkonferma li tifhem li m'għandekx tuża l-kont tiegħek waqt il-migrazzjoni."
+      confirm_legal_consent: "Jekk jogħġbok ikkonferma li qrajt u taqbel mat-Termini tas-Servizz u l-Politika tal-Privatezza."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ mt:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Trid taqbel mat-Termini tas-Servizz u tirrikonoxxi l-Politika tal-Privatezza biex tkompli."
       verification_sent: "Bgħatna kodiċi ta' verifika lil %{email}. Daħħlu fil-paġna li jmiss biex tibda l-migrazzjoni tiegħek."
       # Verify email
       email_verified: "Email ivverifikat! Il-migrazzjoni tiegħek bdiet."

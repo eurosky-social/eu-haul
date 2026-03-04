@@ -66,6 +66,7 @@ hu:
         two_factor_title: "Ketfaktoros hitelesites"
         two_factor_help: "Bejelentkezesi kodot kuldtunk az e-mail cimere. Adja meg alabb."
         two_factor_placeholder: "Adja meg a bejelentkezesi kodot"
+        legal_consent_html: 'Elolvastam és elfogadom a <a href="%{tos_url}" target="_blank" rel="noopener">Szolgáltatási feltételeket</a> és tudomásul veszem az <a href="%{privacy_url}" target="_blank" rel="noopener">Adatvédelmi irányelveket</a>'
         continue: "Tovabb"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ hu:
       # Step 5
       confirm_email_html: "Amikor a <strong>Tovabb</strong> gombra kattint, megerosito e-mailt kuldunk a(z) <strong>{email}</strong> cimre. A migracio csak az e-mailben torteno megerosites utan indul el."
       confirm_no_usage: "Kerem, erositse meg, hogy megertette: nem szabad hasznalnia a fiokjat a migracio soran."
+      confirm_legal_consent: "Kérjük, erősítse meg, hogy elolvasta és elfogadja a Szolgáltatási feltételeket és az Adatvédelmi irányelveket."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ hu:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "A folytatáshoz el kell fogadnia a Szolgáltatási feltételeket és tudomásul kell vennie az Adatvédelmi irányelveket."
       verification_sent: "Ellenorzo kodot kuldtunk a(z) %{email} cimre. Adja meg a kovetkezo oldalon a migracio inditasahoz."
       # Verify email
       email_verified: "E-mail megerositeve! A migracio elkezdodott."

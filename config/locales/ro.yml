@@ -66,6 +66,7 @@ ro:
         two_factor_title: "Autentificare cu doi factori"
         two_factor_help: "Un cod de autentificare a fost trimis pe email. Introduceți-l mai jos."
         two_factor_placeholder: "Introduceți codul de autentificare"
+        legal_consent_html: 'Am citit și sunt de acord cu <a href="%{tos_url}" target="_blank" rel="noopener">Termenii Serviciului</a> și iau la cunoștință <a href="%{privacy_url}" target="_blank" rel="noopener">Politica de Confidențialitate</a>'
         continue: "Continuare"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ ro:
       # Step 5
       confirm_email_html: "Când faceți clic pe <strong>Continuare</strong>, vom trimite un email de confirmare la <strong>{email}</strong>. Migrarea va începe doar după confirmarea prin acel email."
       confirm_no_usage: "Vă rugăm să confirmați că înțelegeți că nu trebuie să utilizați contul în timpul migrării."
+      confirm_legal_consent: "Vă rugăm să confirmați că ați citit și sunteți de acord cu Termenii Serviciului și Politica de Confidențialitate."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ ro:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Trebuie să fiți de acord cu Termenii Serviciului și să luați la cunoștință Politica de Confidențialitate pentru a continua."
       verification_sent: "Am trimis un cod de verificare la %{email}. Introduceți-l pe pagina următoare pentru a porni migrarea."
       # Verify email
       email_verified: "Email verificat! Migrarea a pornit."

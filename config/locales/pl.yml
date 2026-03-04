@@ -66,6 +66,7 @@ pl:
         two_factor_title: "Uwierzytelnianie dwuskładnikowe"
         two_factor_help: "Kod logowania został wysłany na Twój adres e-mail. Wpisz go poniżej."
         two_factor_placeholder: "Wpisz swój kod logowania"
+        legal_consent_html: 'Przeczytałem/am i akceptuję <a href="%{tos_url}" target="_blank" rel="noopener">Warunki korzystania z usługi</a> oraz przyjmuję do wiadomości <a href="%{privacy_url}" target="_blank" rel="noopener">Politykę prywatności</a>'
         continue: "Kontynuuj"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ pl:
       # Step 5
       confirm_email_html: "Po kliknięciu <strong>Kontynuuj</strong> wyślemy e-mail z potwierdzeniem na adres <strong>{email}</strong>. Migracja rozpocznie się dopiero po potwierdzeniu za pośrednictwem tego e-maila."
       confirm_no_usage: "Proszę potwierdzić, że rozumiesz, iż nie należy korzystać ze swojego konta podczas migracji."
+      confirm_legal_consent: "Proszę potwierdzić, że przeczytałeś/aś i akceptujesz Warunki korzystania z usługi oraz Politykę prywatności."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ pl:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Musisz zaakceptować Warunki korzystania z usługi i przyjąć do wiadomości Politykę prywatności, aby kontynuować."
       verification_sent: "Wysłaliśmy kod weryfikacyjny na adres %{email}. Wpisz go na następnej stronie, aby rozpocząć migrację."
       # Verify email
       email_verified: "E-mail zweryfikowany! Twoja migracja została rozpoczęta."

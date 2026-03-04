@@ -66,6 +66,7 @@ sk:
         two_factor_title: "Dvojfaktorové overenie"
         two_factor_help: "Prihlasovací kód bol odoslaný na váš e-mail. Zadajte ho nižšie."
         two_factor_placeholder: "Zadajte prihlasovací kód"
+        legal_consent_html: 'Prečítal/a som si a súhlasím s <a href="%{tos_url}" target="_blank" rel="noopener">Podmienkami služby</a> a beriem na vedomie <a href="%{privacy_url}" target="_blank" rel="noopener">Zásady ochrany osobných údajov</a>'
         continue: "Pokračovať"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ sk:
       # Step 5
       confirm_email_html: "Keď kliknete na <strong>Pokračovať</strong>, odošleme potvrdzovací e-mail na <strong>{email}</strong>. Migrácia začne až po potvrdení prostredníctvom tohto e-mailu."
       confirm_no_usage: "Prosím, potvrďte, že rozumiete, že počas migrácie nesmiete používať svoj účet."
+      confirm_legal_consent: "Potvrďte prosím, že ste si prečítali a súhlasíte s Podmienkami služby a Zásadami ochrany osobných údajov."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ sk:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Pre pokračovanie musíte súhlasiť s Podmienkami služby a vziať na vedomie Zásady ochrany osobných údajov."
       verification_sent: "Odoslali sme overovací kód na %{email}. Zadajte ho na ďalšej stránke pre spustenie migrácie."
       # Verify email
       email_verified: "E-mail overený! Vaša migrácia začala."

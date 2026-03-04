@@ -66,6 +66,7 @@ sv:
         two_factor_title: "Tvåfaktorsautentisering"
         two_factor_help: "En inloggningskod har skickats till din e-post. Ange den nedan."
         two_factor_placeholder: "Ange din inloggningskod"
+        legal_consent_html: 'Jag har läst och godkänner <a href="%{tos_url}" target="_blank" rel="noopener">Användarvillkoren</a> och bekräftar <a href="%{privacy_url}" target="_blank" rel="noopener">Integritetspolicyn</a>'
         continue: "Fortsätt"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ sv:
       # Step 5
       confirm_email_html: "När du klickar på <strong>Fortsätt</strong> skickar vi ett bekräftelsemeddelande till <strong>{email}</strong>. Flytten startar först efter att du bekräftar via det meddelandet."
       confirm_no_usage: "Vänligen bekräfta att du förstår att du inte får använda ditt konto under flytten."
+      confirm_legal_consent: "Bekräfta att du har läst och godkänner Användarvillkoren och Integritetspolicyn."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ sv:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Du måste godkänna Användarvillkoren och bekräfta Integritetspolicyn för att fortsätta."
       verification_sent: "Vi har skickat en verifieringskod till %{email}. Ange den på nästa sida för att starta din flytt."
       # Verify email
       email_verified: "E-post verifierad! Din flytt har startat."
