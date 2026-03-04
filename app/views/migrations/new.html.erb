@@ -216,6 +216,13 @@
         return;
       }
 
+      const legalCheckbox = document.getElementById('legal-consent');
+      if (!legalCheckbox.checked) {
+        showStatus(status, i18n('confirm_legal_consent'), 'error');
+        legalCheckbox.focus();
+        return;
+      }
+
       // If already authenticated and fields are readonly, proceed to step 2
       if (wizardData.authenticated) {
         showStep(2);
@@ -1059,7 +1066,17 @@
           <input type="text" id="two_factor_code" class="form-control form-control-lg text-center font-monospace" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
         </div>
 
-        <div class="d-grid mt-4">
+        <div class="form-check mt-3 mb-0 small">
+          <input type="checkbox" name="migration[legal_consent]" id="legal-consent"
+                 class="form-check-input" value="1">
+          <label class="form-check-label" for="legal-consent">
+            <%= t('migrations.new.step1.legal_consent_html',
+                  tos_url: EuroskyConfig::TERMS_OF_SERVICE_URL,
+                  privacy_url: EuroskyConfig::PRIVACY_POLICY_URL) %>
+          </label>
+        </div>
+
+        <div class="d-grid mt-3">
           <button type="button" id="step1-next" class="btn btn-lg btn-gradient"><%= t('migrations.new.step1.continue') %></button>
         </div>
       </div>

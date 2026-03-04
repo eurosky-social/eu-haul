@@ -29,3 +29,9 @@
       class: CleanupExpiredCredentialsJob
       queue: low
       description: "Purge expired credentials from database (security)"
+
+    stuck_migration_sweeper:
+      every: '5m'
+      class: StuckMigrationSweeperJob
+      queue: low
+      description: "Re-enqueue jobs for migrations stuck without an active Sidekiq job"

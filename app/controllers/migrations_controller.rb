@@ -503,9 +503,26 @@ class MigrationsController < ApplicationController
         @migration.invite_code_expires_at = 48.hours.from_now
       end
 
+      # Require legal consent (GDPR compliance — must not be pre-ticked, must be explicit)
+      unless params[:migration][:legal_consent] == "1"
+        @migration.errors.add(:base, I18n.t('controllers.migrations.legal_consent_required'))
+        render :new, status: :unprocessable_entity
+        return
+      end
+
       if @migration.save
         # Migration saved successfully, token generated
         # Password email is deferred until migration completes (sent from ActivateAccountJob)
+
+        # Record legal consent (separate table, survives migration deletion for GDPR compliance)
+        LegalConsent.create!(
+          did: @migration.did,
+          migration_token: @migration.token,
+          tos_snapshot: LegalSnapshot.current('terms_of_service'),
+          privacy_policy_snapshot: LegalSnapshot.current('privacy_policy'),
+          ip_address: request.remote_ip,
+          accepted_at: Time.current
+        )
 
         redirect_to migration_by_token_path(@migration.token),
                     notice: I18n.t('controllers.migrations.verification_sent', email: @migration.email)
@@ -1230,6 +1247,8 @@ class MigrationsController < ApplicationController
     allowed << :new_refresh_token
     allowed << :target_pds_contact_email
     allowed << :invite_code if EuroskyConfig.invite_code_enabled?
+    # Note: legal_consent is intentionally excluded — it's not a model attribute.
+    # It's checked directly via params[:migration][:legal_consent] in the create action.
 
     params.require(:migration).permit(*allowed)
   end

@@ -10,9 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_26_100001) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_03_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "legal_consents", force: :cascade do |t|
+    t.string "did", null: false
+    t.string "migration_token"
+    t.bigint "tos_snapshot_id", null: false
+    t.bigint "privacy_policy_snapshot_id", null: false
+    t.text "ip_address_ciphertext"
+    t.datetime "accepted_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["did"], name: "index_legal_consents_on_did"
+    t.index ["migration_token"], name: "index_legal_consents_on_migration_token"
+    t.index ["privacy_policy_snapshot_id"], name: "index_legal_consents_on_privacy_policy_snapshot_id"
+    t.index ["tos_snapshot_id"], name: "index_legal_consents_on_tos_snapshot_id"
+  end
+
+  create_table "legal_snapshots", force: :cascade do |t|
+    t.string "document_type", null: false
+    t.string "content_hash", null: false
+    t.text "rendered_content", null: false
+    t.string "version_label", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_type", "content_hash"], name: "index_legal_snapshots_on_document_type_and_content_hash", unique: true
+    t.index ["document_type", "created_at"], name: "index_legal_snapshots_on_document_type_and_created_at"
+  end
 
   create_table "migrations", force: :cascade do |t|
     t.string "did", null: false
@@ -67,4 +93,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_26_100001) do
     t.index ["token"], name: "index_migrations_on_token", unique: true
   end
 
+  add_foreign_key "legal_consents", "legal_snapshots", column: "privacy_policy_snapshot_id"
+  add_foreign_key "legal_consents", "legal_snapshots", column: "tos_snapshot_id"
 end

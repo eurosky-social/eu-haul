@@ -129,52 +129,48 @@ class Migration < ApplicationRecord
   scope :with_expired_backups, -> { where('backup_expires_at IS NOT NULL AND backup_expires_at < ?', Time.current) }
 
   # State machine transitions
+  #
+  # All advance_to_* methods use advance_with_job! to ensure atomicity:
+  # if the job enqueue fails (e.g., Redis hiccup), the status is reverted
+  # so the calling job's retry can re-attempt from the correct state.
   def advance_to_pending_backup!
-    update!(status: :pending_backup)
-    CreateBackupBundleJob.perform_later(id)
+    advance_with_job!(:pending_backup) { CreateBackupBundleJob.perform_later(id) }
   end
 
   def advance_to_backup_ready!
-    update!(status: :backup_ready)
-    # Automatically proceed to account creation after backup is ready
-    CreateAccountJob.perform_later(id)
+    advance_with_job!(:backup_ready) { CreateAccountJob.perform_later(id) }
   end
 
   def advance_to_pending_repo!
-    update!(status: :pending_repo)
-    if create_backup_bundle && downloaded_data_path.present?
-      # Upload from local files if backup was enabled
-      UploadRepoJob.perform_later(id)
-    else
-      # Stream download-upload if backup was disabled
-      ImportRepoJob.perform_later(id)
+    advance_with_job!(:pending_repo) do
+      if create_backup_bundle && downloaded_data_path.present?
+        UploadRepoJob.perform_later(id)
+      else
+        ImportRepoJob.perform_later(id)
+      end
     end
   end
 
   def advance_to_pending_blobs!
-    update!(status: :pending_blobs)
-    if create_backup_bundle && downloaded_data_path.present?
-      # Upload from local files if backup was enabled
-      UploadBlobsJob.perform_later(id)
-    else
-      # Stream download-upload if backup was disabled
-      ImportBlobsJob.perform_later(id)
+    advance_with_job!(:pending_blobs) do
+      if create_backup_bundle && downloaded_data_path.present?
+        UploadBlobsJob.perform_later(id)
+      else
+        ImportBlobsJob.perform_later(id)
+      end
     end
   end
 
   def advance_to_pending_prefs!
-    update!(status: :pending_prefs)
-    ImportPrefsJob.perform_later(id)
+    advance_with_job!(:pending_prefs) { ImportPrefsJob.perform_later(id) }
   end
 
   def advance_to_pending_plc!
-    update!(status: :pending_plc)
-    WaitForPlcTokenJob.perform_later(id)
+    advance_with_job!(:pending_plc) { WaitForPlcTokenJob.perform_later(id) }
   end
 
   def advance_to_pending_activation!
-    update!(status: :pending_activation)
-    ActivateAccountJob.perform_later(id)
+    advance_with_job!(:pending_activation) { ActivateAccountJob.perform_later(id) }
   end
 
   def mark_complete!
@@ -557,14 +553,27 @@ class Migration < ApplicationRecord
 
   def schedule_first_job
     if create_backup_bundle
-      # Start with download if backup is enabled
-      update!(status: :pending_download)
-      DownloadAllDataJob.perform_later(id)
+      advance_with_job!(:pending_download) { DownloadAllDataJob.perform_later(id) }
     else
-      # Skip download and backup if disabled
-      update!(status: :pending_account)
-      CreateAccountJob.perform_later(id)
+      advance_with_job!(:pending_account) { CreateAccountJob.perform_later(id) }
     end
+  end
+
+  # Atomically advance status and enqueue the next job.
+  # If the enqueue fails (e.g., Redis connection error), the status is
+  # reverted so the calling job's retry mechanism can re-attempt from
+  # the correct state instead of skipping via idempotency check.
+  def advance_with_job!(new_status)
+    previous_status = status
+    update!(status: new_status)
+    yield
+  rescue => e
+    Rails.logger.error(
+      "[Migration] Failed to enqueue job after advancing #{token} to #{new_status}: #{e.message}. " \
+      "Reverting status to #{previous_status}."
+    )
+    update!(status: previous_status)
+    raise
   end
 
   # Helper for download percentage calculation

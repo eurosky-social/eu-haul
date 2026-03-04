@@ -95,6 +95,7 @@
       <li><strong>PLC token</strong> – the one-time verification token emailed to you; stored encrypted and expires within 1 hour.</li>
       <li><strong>Migration token</strong> – an unguessable identifier (e.g. <code>EURO-ABC12345</code>) generated to let you track migration progress. No personal data is embedded in this token.</li>
       <li><strong>Technical log data</strong> – server logs may contain IP addresses and timestamps for operational purposes.</li>
+      <li><strong>Consent record</strong> – when you accept the Terms of Service and Privacy Policy, we store: your DID (a public identifier), a timestamp of your acceptance, a reference to the document versions you accepted, and your IP address (encrypted with AES-256-GCM). This is required by GDPR Art.&nbsp;7(1) to demonstrate that consent was given.</li>
     </ul>
     <p>We do <strong>not</strong> collect: browsing history, analytics beyond those disclosed below, or any data unrelated to the migration.</p>
 
@@ -114,6 +115,7 @@
       <li><strong>Email address</strong>: Retained only for the duration of the migration. Contact us to request deletion.</li>
       <li><strong>Backup bundles</strong> (if requested): Available for download for 24 hours, then automatically deleted from our server.</li>
       <li><strong>Server logs</strong>: Retained for up to <%= EuroskyConfig::LOG_RETENTION_DAYS %> days for operational security, then purged.</li>
+      <li><strong>Consent records</strong>: Retained for up to 6 years as required by applicable EU statutes of limitations. These records contain only your DID (public), acceptance timestamp, document version references, and your encrypted IP address.</li>
     </ul>
 
     <h2>5. Data Sharing</h2>
