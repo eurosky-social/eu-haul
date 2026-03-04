@@ -399,6 +399,73 @@ class MigrationTest < ActiveSupport::TestCase
   end
 
   # ============================================================================
+  # advance_with_job! - Status revert on enqueue failure
+  # Ensures migrations don't get stuck when perform_later fails
+  # ============================================================================
+
+  test "advance_to_pending_blobs! reverts status when perform_later fails" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_repo,
+      password: "test"
+    ))
+
+    ImportBlobsJob.stubs(:perform_later).raises(Redis::CannotConnectError, "Connection refused")
+
+    assert_raises(Redis::CannotConnectError) do
+      migration.advance_to_pending_blobs!
+    end
+
+    migration.reload
+    assert_equal "pending_repo", migration.status, "Status should be reverted to pending_repo after enqueue failure"
+  end
+
+  test "advance_to_pending_repo! reverts status when perform_later fails" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :account_created,
+      password: "test"
+    ))
+
+    ImportRepoJob.stubs(:perform_later).raises(RuntimeError, "Redis connection pool exhausted")
+
+    assert_raises(RuntimeError) do
+      migration.advance_to_pending_repo!
+    end
+
+    migration.reload
+    assert_equal "account_created", migration.status, "Status should be reverted to account_created after enqueue failure"
+  end
+
+  test "advance_to_pending_prefs! reverts status when perform_later fails" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_blobs,
+      password: "test"
+    ))
+
+    ImportPrefsJob.stubs(:perform_later).raises(RuntimeError, "Redis unavailable")
+
+    assert_raises(RuntimeError) do
+      migration.advance_to_pending_prefs!
+    end
+
+    migration.reload
+    assert_equal "pending_blobs", migration.status, "Status should be reverted to pending_blobs after enqueue failure"
+  end
+
+  test "advance_to_pending_blobs! commits status when perform_later succeeds" do
+    migration = Migration.create!(@valid_attributes.merge(
+      status: :pending_repo,
+      password: "test"
+    ))
+
+    assert_enqueued_with(job: ImportBlobsJob, args: [migration.id]) do
+      migration.advance_to_pending_blobs!
+    end
+
+    migration.reload
+    assert_equal "pending_blobs", migration.status
+  end
+
+  # ============================================================================
   # Stage 5: Import Preferences
   # Errors: Export/import failure, auth failure, invalid format
   # ============================================================================
