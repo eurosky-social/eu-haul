@@ -66,6 +66,7 @@ et:
         two_factor_title: "Kaheastmeline autentimine"
         two_factor_help: "Sisselogimiskood on saadetud teie e-postile. Sisestage see allpool."
         two_factor_placeholder: "Sisestage oma sisselogimiskood"
+        legal_consent_html: 'Olen lugenud ja nõustun <a href="%{tos_url}" target="_blank" rel="noopener">Teenuse tingimustega</a> ning kinnitan <a href="%{privacy_url}" target="_blank" rel="noopener">Privaatsuspoliitika</a> teadmiseks võtmist'
         continue: "Jätka"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ et:
       # Step 5
       confirm_email_html: "Kui klõpsate nuppu <strong>Jätka</strong>, saadame kinnitusmeili aadressile <strong>{email}</strong>. Migreerimine algab alles pärast selle e-kirja kinnitamist."
       confirm_no_usage: "Palun kinnitage, et saate aru, et te ei tohi migreerimise ajal oma kontot kasutada."
+      confirm_legal_consent: "Palun kinnitage, et olete lugenud ja nõustute Teenuse tingimuste ja Privaatsuspoliitikaga."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ et:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Jätkamiseks peate nõustuma Teenuse tingimustega ja kinnitama Privaatsuspoliitika teadmiseks võtmist."
       verification_sent: "Saatsime kinnituskoodi aadressile %{email}. Sisestage see järgmisel lehel, et alustada migreerimist."
       # Verify email
       email_verified: "E-post kinnitatud! Teie migreerimine on alanud."

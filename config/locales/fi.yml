@@ -66,6 +66,7 @@ fi:
         two_factor_title: "Kaksivaiheinen tunnistautuminen"
         two_factor_help: "Kirjautumiskoodi on lähetetty sähköpostiisi. Syötä se alle."
         two_factor_placeholder: "Syötä kirjautumiskoodi"
+        legal_consent_html: 'Olen lukenut ja hyväksyn <a href="%{tos_url}" target="_blank" rel="noopener">Käyttöehdot</a> ja otan huomioon <a href="%{privacy_url}" target="_blank" rel="noopener">Tietosuojakäytännön</a>'
         continue: "Jatka"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ fi:
       # Step 5
       confirm_email_html: "Kun napsautat <strong>Jatka</strong>, lähetämme vahvistussähköpostin osoitteeseen <strong>{email}</strong>. Siirto alkaa vasta, kun vahvistat sähköpostin kautta."
       confirm_no_usage: "Vahvista, että ymmärrät, ettet saa käyttää tiliäsi siirron aikana."
+      confirm_legal_consent: "Vahvista, että olet lukenut ja hyväksynyt Käyttöehdot ja Tietosuojakäytännön."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ fi:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Sinun on hyväksyttävä Käyttöehdot ja otettava huomioon Tietosuojakäytäntö jatkaaksesi."
       verification_sent: "Olemme lähettäneet vahvistuskoodin osoitteeseen %{email}. Syötä se seuraavalla sivulla aloittaaksesi siirron."
       # Verify email
       email_verified: "Sähköposti vahvistettu! Siirtosi on alkanut."

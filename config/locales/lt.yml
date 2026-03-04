@@ -66,6 +66,7 @@ lt:
         two_factor_title: "Dviejų veiksnių autentifikacija"
         two_factor_help: "Prisijungimo kodas išsiųstas jūsų el. paštu. Įveskite jį žemiau."
         two_factor_placeholder: "Įveskite prisijungimo kodą"
+        legal_consent_html: 'Perskaičiau ir sutinku su <a href="%{tos_url}" target="_blank" rel="noopener">Paslaugų teikimo sąlygomis</a> ir susipažinau su <a href="%{privacy_url}" target="_blank" rel="noopener">Privatumo politika</a>'
         continue: "Tęsti"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ lt:
       # Step 5
       confirm_email_html: "Kai paspausite <strong>Tęsti</strong>, išsiųsime patvirtinimo el. laišką adresu <strong>{email}</strong>. Perkėlimas prasidės tik po patvirtinimo tuo el. laišku."
       confirm_no_usage: "Patvirtinkite, kad suprantate, jog perkėlimo metu negalite naudoti savo paskyros."
+      confirm_legal_consent: "Patvirtinkite, kad perskaitėte ir sutinkate su Paslaugų teikimo sąlygomis ir Privatumo politika."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ lt:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Norėdami tęsti, turite sutikti su Paslaugų teikimo sąlygomis ir susipažinti su Privatumo politika."
       verification_sent: "Išsiuntėme patvirtinimo kodą adresu %{email}. Įveskite jį kitame puslapyje, kad pradėtumėte perkėlimą."
       # Verify email
       email_verified: "El. paštas patvirtintas! Perkėlimas prasidėjo."

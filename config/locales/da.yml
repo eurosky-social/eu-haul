@@ -66,6 +66,7 @@ da:
         two_factor_title: "Tofaktorgodkendelse"
         two_factor_help: "En loginkode er sendt til din e-mail. Indtast den nedenfor."
         two_factor_placeholder: "Indtast din loginkode"
+        legal_consent_html: 'Jeg har læst og accepterer <a href="%{tos_url}" target="_blank" rel="noopener">Servicevilkårene</a> og anerkender <a href="%{privacy_url}" target="_blank" rel="noopener">Privatlivspolitikken</a>'
         continue: "Fortsæt"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ da:
       # Step 5
       confirm_email_html: "Når du klikker på <strong>Fortsæt</strong>, sender vi en bekræftelses-e-mail til <strong>{email}</strong>. Migreringen starter først, når du bekræfter via den e-mail."
       confirm_no_usage: "Bekræft venligst, at du forstår, at du ikke må bruge din konto under migreringen."
+      confirm_legal_consent: "Bekræft venligst, at du har læst og accepterer Servicevilkårene og Privatlivspolitikken."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ da:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Du skal acceptere Servicevilkårene og anerkende Privatlivspolitikken for at fortsætte."
       verification_sent: "Vi har sendt en bekræftelseskode til %{email}. Indtast den på næste side for at starte din migrering."
       # Verify email
       email_verified: "E-mail bekræftet! Din migrering er startet."

@@ -66,6 +66,7 @@ es:
         two_factor_title: "Autenticación de dos factores"
         two_factor_help: "Se ha enviado un código de inicio de sesión a su correo electrónico. Introdúzcalo a continuación."
         two_factor_placeholder: "Introduzca su código de inicio de sesión"
+        legal_consent_html: 'He leído y acepto los <a href="%{tos_url}" target="_blank" rel="noopener">Términos de Servicio</a> y reconozco la <a href="%{privacy_url}" target="_blank" rel="noopener">Política de Privacidad</a>'
         continue: "Continuar"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ es:
       # Step 5
       confirm_email_html: "Al hacer clic en <strong>Continuar</strong>, enviaremos un correo electrónico de confirmación a <strong>{email}</strong>. La migración solo comenzará una vez que confirme a través de ese correo electrónico."
       confirm_no_usage: "Por favor, confirme que entiende que no debe utilizar su cuenta durante la migración."
+      confirm_legal_consent: "Por favor, confirme que ha leído y acepta los Términos de Servicio y la Política de Privacidad."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ es:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Debe aceptar los Términos de Servicio y reconocer la Política de Privacidad para continuar."
       verification_sent: "Hemos enviado un código de verificación a %{email}. Introdúzcalo en la siguiente página para iniciar su migración."
       # Verify email
       email_verified: "Correo electrónico verificado. Su migración ha comenzado."

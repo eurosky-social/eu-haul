@@ -66,6 +66,7 @@ ga:
         two_factor_title: "Fíordheimhniú Dhá Fhachtóir"
         two_factor_help: "Seoladh cód logála isteach chuig do ríomhphost. Cuir isteach thíos é."
         two_factor_placeholder: "Cuir isteach do chód logála isteach"
+        legal_consent_html: 'Léigh mé agus aontaím leis na <a href="%{tos_url}" target="_blank" rel="noopener">Téarmaí Seirbhíse</a> agus admhaím an <a href="%{privacy_url}" target="_blank" rel="noopener">Polasaí Príobháideachais</a>'
         continue: "Lean ar aghaidh"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ ga:
       # Step 5
       confirm_email_html: "Nuair a chliceálann tú ar <strong>Lean ar aghaidh</strong>, seolfaimid ríomhphost deimhnithe chuig <strong>{email}</strong>. Ní thosóidh an imirce ach amháin nuair a dheimhníonn tú tríd an ríomhphost sin."
       confirm_no_usage: "Deimhnigh le do thoil go dtuigeann tú nach ceart duit do chuntas a úsáid le linn na himirce."
+      confirm_legal_consent: "Deimhnigh le do thoil go bhfuil na Téarmaí Seirbhíse agus an Polasaí Príobháideachais léite agat agus go n-aontaíonn tú leo."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ ga:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Ní mór duit aontú leis na Téarmaí Seirbhíse agus an Polasaí Príobháideachais a admháil chun leanúint ar aghaidh."
       verification_sent: "Sheol muid cód deimhnithe chuig %{email}. Cuir isteach ar an gcéad leathanach eile é chun d'imirce a thosú."
       # Verify email
       email_verified: "Ríomhphost deimhnithe! Tá d'imirce tosaithe."

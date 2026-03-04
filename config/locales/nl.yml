@@ -66,6 +66,7 @@ nl:
         two_factor_title: "Tweefactorauthenticatie"
         two_factor_help: "Er is een aanmeldcode naar uw e-mailadres gestuurd. Voer deze hieronder in."
         two_factor_placeholder: "Voer uw aanmeldcode in"
+        legal_consent_html: 'Ik heb de <a href="%{tos_url}" target="_blank" rel="noopener">Servicevoorwaarden</a> gelezen en ga ermee akkoord en neem kennis van het <a href="%{privacy_url}" target="_blank" rel="noopener">Privacybeleid</a>'
         continue: "Doorgaan"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ nl:
       # Step 5
       confirm_email_html: "Wanneer u op <strong>Doorgaan</strong> klikt, sturen we een bevestigingsmail naar <strong>{email}</strong>. De migratie start pas nadat u via die e-mail bevestigt."
       confirm_no_usage: "Bevestig dat u begrijpt dat u uw account niet moet gebruiken tijdens de migratie."
+      confirm_legal_consent: "Bevestig dat u de Servicevoorwaarden en het Privacybeleid hebt gelezen en ermee akkoord gaat."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ nl:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "U moet akkoord gaan met de Servicevoorwaarden en het Privacybeleid erkennen om door te gaan."
       verification_sent: "We hebben een verificatiecode gestuurd naar %{email}. Voer deze in op de volgende pagina om uw migratie te starten."
       # Verify email
       email_verified: "E-mail geverifieerd! Uw migratie is gestart."

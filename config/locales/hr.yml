@@ -66,6 +66,7 @@ hr:
         two_factor_title: "Dvofaktorska autentifikacija"
         two_factor_help: "Kod za prijavu poslan je na vasu e-postu. Unesite ga ispod."
         two_factor_placeholder: "Unesite kod za prijavu"
+        legal_consent_html: 'Pročitao/la sam i prihvaćam <a href="%{tos_url}" target="_blank" rel="noopener">Uvjete korištenja</a> i potvrđujem <a href="%{privacy_url}" target="_blank" rel="noopener">Politiku privatnosti</a>'
         continue: "Nastavi"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ hr:
       # Step 5
       confirm_email_html: "Kada kliknete <strong>Nastavi</strong>, poslat cemo potvrdnu e-poruku na <strong>{email}</strong>. Migracija ce zapoceti tek nakon sto potvrdite putem te e-poruke."
       confirm_no_usage: "Potvrdite da razumijete kako ne smijete koristiti svoj racun tijekom migracije."
+      confirm_legal_consent: "Potvrdite da ste pročitali i prihvaćate Uvjete korištenja i Politiku privatnosti."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ hr:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Morate prihvatiti Uvjete korištenja i potvrditi Politiku privatnosti za nastavak."
       verification_sent: "Poslali smo potvrdni kod na %{email}. Unesite ga na sljedecoj stranici za pokretanje migracije."
       # Verify email
       email_verified: "E-posta potvrdena! Vasa migracija je zapocela."

@@ -66,6 +66,7 @@ sl:
         two_factor_title: "Dvostopenjska avtentikacija"
         two_factor_help: "Prijavna koda je bila poslana na vaš e-poštni naslov. Vnesite jo spodaj."
         two_factor_placeholder: "Vnesite prijavno kodo"
+        legal_consent_html: 'Prebral/a sem in se strinjam s <a href="%{tos_url}" target="_blank" rel="noopener">Pogoji uporabe</a> ter potrjujem <a href="%{privacy_url}" target="_blank" rel="noopener">Pravilnik o zasebnosti</a>'
         continue: "Naprej"
 
       # Step 2: Email
@@ -194,6 +195,7 @@ sl:
       # Step 5
       confirm_email_html: "Ko kliknete <strong>Naprej</strong>, bomo poslali potrditveno e-pošto na <strong>{email}</strong>. Selitev se bo začela šele po potrditvi prek te e-pošte."
       confirm_no_usage: "Prosimo, potrdite, da razumete, da med selitvijo ne smete uporabljati svojega računa."
+      confirm_legal_consent: "Potrdite, da ste prebrali in se strinjate s Pogoji uporabe in Pravilnikom o zasebnosti."
 
     # ──────────────────────────────────────────
     # Status page (migrations/show)
@@ -396,6 +398,7 @@ sl:
   controllers:
     migrations:
       # Create
+      legal_consent_required: "Za nadaljevanje se morate strinjati s Pogoji uporabe in potrditi Pravilnik o zasebnosti."
       verification_sent: "Poslali smo potrditveno kodo na %{email}. Vnesite jo na naslednji strani za začetek selitve."
       # Verify email
       email_verified: "E-pošta potrjena! Vaša selitev se je začela."
