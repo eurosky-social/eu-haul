@@ -576,7 +576,18 @@
                   <li><%= t('migrations.show.plc_from_bluesky') %></li>
                   <li><%= t('migrations.show.plc_expires') %></li>
                 </ul>
-                <% unless @migration.has_old_pds_tokens? %>
+                <% if @migration.has_old_pds_tokens? %>
+                  <p class="small mb-2" style="color: #78350f;">
+                    <%= t('migrations.show.plc_resend_help') %>
+                  </p>
+                  <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
+                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                    <button type="submit"
+                            class="btn btn-sm btn-warning text-white fw-semibold">
+                      <%= t('migrations.show.request_new_code') %>
+                    </button>
+                  </form>
+                <% else %>
                   <p class="small mb-2" style="color: #78350f;">
                     <%= t('migrations.show.plc_new_code_help') %>
                   </p>
