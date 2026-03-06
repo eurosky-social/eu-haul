@@ -1,0 +1,29 @@
+<%= t('mailers.plc_token_reminder.heading') %>
+================================================================================
+
+<%= t('mailers.plc_token_reminder.intro', handle: @migration.old_handle) %>
+
+
+<%= t('mailers.plc_token_reminder.action_title') %>
+================================================================================
+
+<%= t('mailers.plc_token_reminder.action_help', pds: @migration.old_pds_host) %>
+
+Go to your migration page:
+
+    <%= @migration_url %>
+
+
+<%= t('mailers.plc_token_reminder.help_title') %>
+================================================================================
+
+- <%= t('mailers.plc_token_reminder.help_check_spam') %>
+- <%= t('mailers.plc_token_reminder.help_from_old_pds', pds: @migration.old_pds_host) %>
+- <%= t('mailers.plc_token_reminder.help_code_format') %>
+- <%= t('mailers.plc_token_reminder.help_request_new') %>
+
+
+---
+Migration Token: <%= @migration.token %>
+
+<%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

@@ -639,6 +639,19 @@ en:
       error_detail: "Error: %{error}"
       step: "Failed Step: %{step}"
 
+    plc_token_reminder:
+      subject: "Reminder: Complete Your Migration - Enter PLC Code (%{token})"
+      heading: "REMINDER: YOUR MIGRATION IS WAITING"
+      intro: "Your migration for @%{handle} is waiting for you to enter a confirmation code. Your data has been transferred, but the migration cannot complete without this final step."
+      action_title: "Enter Your Confirmation Code"
+      action_help: "Check your email for a code from your old PDS provider (%{pds}) — it looks like XXXXX-XXXXX. Enter it on your migration page to finalize the migration."
+      go_to_page: "Go to Migration Page"
+      help_title: "Can't find the email?"
+      help_check_spam: "Check your spam or junk folder"
+      help_from_old_pds: "The email comes from %{pds}, not from us"
+      help_code_format: "The code looks like XXXXX-XXXXX"
+      help_request_new: "If it expired, you can request a new code from the migration page"
+
     cancellation_confirmation:
       subject: "Confirm Migration Cancellation (%{token})"
       heading: "CONFIRM CANCELLATION"

@@ -168,6 +168,20 @@ class MigrationMailer < ApplicationMailer
     end
   end
 
+  def plc_token_reminder(migration)
+    @migration = migration
+    @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @requested_at = migration.progress_data['plc_token_requested_at']
+    @reminder_count = migration.progress_data['plc_reminder_count'].to_i + 1
+
+    I18n.with_locale(migration.locale || :en) do
+      mail(
+        to: migration.email,
+        subject: I18n.t('mailers.plc_token_reminder.subject', token: migration.token)
+      )
+    end
+  end
+
   def cancellation_confirmation(migration)
     @migration = migration
     @confirm_url = confirm_cancellation_by_token_url(

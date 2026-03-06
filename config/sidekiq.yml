@@ -8,7 +8,7 @@
 # 5 threads for blob downloads/uploads. Set Sidekiq concurrency high enough
 # to run all expected migration jobs without queueing at the Sidekiq level.
 
-:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 35) %>
+:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 60) %>
 :timeout: 30
 
 :queues:
@@ -35,3 +35,9 @@
       class: StuckMigrationSweeperJob
       queue: low
       description: "Re-enqueue jobs for migrations stuck without an active Sidekiq job"
+
+    plc_token_reminder:
+      cron: '0 */6 * * *'  # Every 6 hours
+      class: PlcTokenReminderJob
+      queue: low
+      description: "Send reminder emails to users stuck at pending_plc step"
