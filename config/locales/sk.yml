@@ -244,6 +244,17 @@ sk:
       backup_expired: "Záloha vypršala"
       backup_expired_detail: "vaša záloha bola vymazaná z našich serverov."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Čaká na váš vstup"
+      progress_waiting_for_you: "Vyžadovaná akcia — pozri nižšie ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Vyžadovaná akcia — Skontrolujte svoj e-mail!"
+      action_required_detail: "Vaša migrácia je takmer dokončená, ale <strong>nemôže pokračovať automaticky</strong>. Na dokončenie prenosu musíte zadať potvrdzovací kód."
+      action_required_check_email: "Skontrolujte teraz svoju e-mailovú schránku (a priečinok so spamom)"
+      action_required_look_for: "Hľadajte e-mail od <strong>%{pds}</strong> (vášho starého servera) s potvrdzovacím kódom"
+      action_required_not_same_email: "Ide o iný e-mail ako overovací kód, ktorý ste zadali skôr"
+
       # PLC pending
       updating_identity: "Aktualizácia vašej identity"
       plc_accepted: "Váš potvrdzovací kód bol prijatý. Teraz aktualizujeme váš záznam v adresári PLC, aby ukazoval na <strong>%{pds}</strong>. Môže to chvíľu trvať."
@@ -257,8 +268,8 @@ sk:
 
       # Completed
       completed_title: "Migrácia úspešne dokončená!"
-      completed_migrated_to: "Váš účet bol úspešne migrovaný na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť s novým handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Váš účet bol úspešne migrovaný späť na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť so svojím handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Váš účet bol úspešne migrovaný na Eurosky. Teraz sa môžete prihlásiť s novým handle: <strong>%{handle}</strong> na Bluesky alebo vo vašej preferovanej aplikácii."
+      completed_migrated_back: "Váš účet bol úspešne migrovaný späť na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť so svojím handle: <strong>%{handle}</strong> na Bluesky alebo vo vašej preferovanej aplikácii."
       email_sent_html: "Odoslali sme e-mail na %{email} s novým heslom účtu, pokynmi na prihlásenie a odkazom na zmenu hesla. Prosím, skontrolujte si priečinok doručenej pošty (aj spam)."
       save_rotation_key: "ULOŽTE SI ROTAČNÝ KĽÚČ!"
       page_auto_delete: "Táto stránka bude automaticky vymazaná o 2 dni."

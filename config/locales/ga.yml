@@ -244,6 +244,17 @@ ga:
       backup_expired: "Cóip chúltaca imithe in éag"
       backup_expired_detail: "scriosadh do phacáiste cóip chúltaca ónár bhfreastalaithe."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Ag fanacht ar do fhreagra"
+      progress_waiting_for_you: "Gníomh ag teastáil — féach thíos ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Gníomh ag teastáil — Seiceáil do ríomhphost!"
+      action_required_detail: "Tá d'imirce beagnach críochnaithe, ach <strong>ní féidir leanúint ar aghaidh go huathoibríoch</strong>. Ní mór duit cód dearbhaithe a chur isteach chun an aistriú a chríochnú."
+      action_required_check_email: "Seiceáil do bhosca isteach (agus fillteán spam) anois"
+      action_required_look_for: "Bí ag lorg ríomhphost ó <strong>%{pds}</strong> (do sheanfhreastalaí) le cód dearbhaithe"
+      action_required_not_same_email: "Ríomhphost difriúil é seo ón gcód fíorúcháin a chuir tú isteach roimhe seo"
+
       # PLC pending
       updating_identity: "Ag nuashonrú d'aitheantas"
       plc_accepted: "Glacadh le do chód deimhnithe. Táimid anois ag nuashonrú d'iontráil san eolaire PLC chun díriú ar <strong>%{pds}</strong>. D'fhéadfadh sé seo nóiméad a thógáil."
@@ -257,8 +268,8 @@ ga:
 
       # Completed
       completed_title: "D'éirigh leis an imirce!"
-      completed_migrated_to: "D'éirigh le himirce do chuntais go <strong>%{pds}</strong>. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong>"
-      completed_migrated_back: "D'éirigh le himirce do chuntais ar ais go <strong>%{pds}</strong>. Is féidir leat logáil isteach anois le do handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "D'éirigh le himirce do chuntais go Eurosky. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
+      completed_migrated_back: "D'éirigh le himirce do chuntais ar ais go <strong>%{pds}</strong>. Is féidir leat logáil isteach anois le do handle: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
       email_sent_html: "Sheol muid ríomhphost chuig %{email} le pasfhocal nua do chuntais, treoracha logála isteach, agus nasc chun do phasfhocal a athrú. Seiceáil do bhosca isteach (agus d'fhillteán dramhphoist) le do thoil."
       save_rotation_key: "SÁBHÁIL D'EOCHAIR ROTHLAITHE!"
       page_auto_delete: "Scriosfar an leathanach seo go huathoibríoch i gceann 2 lá."

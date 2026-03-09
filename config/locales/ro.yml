@@ -244,6 +244,17 @@ ro:
       backup_expired: "Copia de siguranță a expirat"
       backup_expired_detail: "copia de siguranță a fost ștearsă de pe serverele noastre."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Se așteaptă răspunsul dvs."
+      progress_waiting_for_you: "Acțiune necesară — vezi mai jos ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Acțiune necesară — Verificați-vă email-ul!"
+      action_required_detail: "Migrarea dvs. este aproape finalizată, dar <strong>nu poate continua automat</strong>. Trebuie să introduceți un cod de confirmare pentru a finaliza transferul."
+      action_required_check_email: "Verificați-vă inbox-ul (și folderul spam) acum"
+      action_required_look_for: "Căutați un email de la <strong>%{pds}</strong> (serverul dvs. vechi) cu un cod de confirmare"
+      action_required_not_same_email: "Acesta este un email diferit de codul de verificare pe care l-ați introdus anterior"
+
       # PLC pending
       updating_identity: "Se actualizează identitatea"
       plc_accepted: "Codul de confirmare a fost acceptat. Actualizăm acum intrarea din directorul PLC pentru a indica către <strong>%{pds}</strong>. Aceasta poate dura un moment."
@@ -257,8 +268,8 @@ ro:
 
       # Completed
       completed_title: "Migrare finalizată cu succes!"
-      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la <strong>%{pds}</strong>. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Contul dumneavoastră a fost migrat cu succes înapoi la <strong>%{pds}</strong>. Acum vă puteți autentifica cu handle-ul: <strong>%{handle}</strong>"
+      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la Eurosky. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
+      completed_migrated_back: "Contul dumneavoastră a fost migrat cu succes înapoi la <strong>%{pds}</strong>. Acum vă puteți autentifica cu handle-ul: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
       email_sent_html: "Am trimis un email la %{email} cu noua parolă a contului, instrucțiuni de autentificare și un link pentru schimbarea parolei. Vă rugăm să verificați căsuța de primire (și folderul de spam)."
       save_rotation_key: "SALVAȚI CHEIA DE ROTAȚIE!"
       page_auto_delete: "Această pagină va fi ștearsă automat în 2 zile."

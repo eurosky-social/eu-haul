@@ -244,6 +244,17 @@ de:
       backup_expired: "Sicherungskopie abgelaufen"
       backup_expired_detail: "Ihre Sicherungskopie wurde von unseren Servern gelöscht."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Wartet auf Ihre Eingabe"
+      progress_waiting_for_you: "Aktion erforderlich — siehe unten ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Aktion erforderlich — Prüfen Sie Ihre E-Mails!"
+      action_required_detail: "Ihre Migration ist fast abgeschlossen, kann aber <strong>nicht automatisch fortgesetzt werden</strong>. Sie müssen einen Bestätigungscode eingeben, um die Übertragung abzuschließen."
+      action_required_check_email: "Prüfen Sie jetzt Ihren E-Mail-Posteingang (und Spam-Ordner)"
+      action_required_look_for: "Suchen Sie nach einer E-Mail von <strong>%{pds}</strong> (Ihrem alten Server) mit einem Bestätigungscode"
+      action_required_not_same_email: "Dies ist eine andere E-Mail als der Verifizierungscode, den Sie zuvor eingegeben haben"
+
       # PLC pending
       updating_identity: "Ihre Identität wird aktualisiert"
       plc_accepted: "Ihr Bestätigungscode wurde akzeptiert. Wir aktualisieren jetzt Ihren PLC-Verzeichniseintrag, um auf <strong>%{pds}</strong> zu verweisen. Dies kann einen Moment dauern."
@@ -257,8 +268,8 @@ de:
 
       # Completed
       completed_title: "Migration erfolgreich abgeschlossen!"
-      completed_migrated_to: "Ihr Konto wurde erfolgreich zu <strong>%{pds}</strong> migriert. Sie können sich jetzt mit Ihrem neuen Handle anmelden: <strong>%{handle}</strong>"
-      completed_migrated_back: "Ihr Konto wurde erfolgreich zurück zu <strong>%{pds}</strong> migriert. Sie können sich jetzt mit Ihrem Handle anmelden: <strong>%{handle}</strong>"
+      completed_migrated_to: "Ihr Konto wurde erfolgreich zu Eurosky migriert. Sie können sich jetzt mit Ihrem neuen Handle anmelden: <strong>%{handle}</strong> auf Bluesky oder Ihrer bevorzugten App."
+      completed_migrated_back: "Ihr Konto wurde erfolgreich zurück zu <strong>%{pds}</strong> migriert. Sie können sich jetzt mit Ihrem Handle anmelden: <strong>%{handle}</strong> auf Bluesky oder Ihrer bevorzugten App."
       email_sent_html: "Wir haben eine E-Mail an %{email} mit Ihrem neuen Kontopasswort, Anmeldeanweisungen und einem Link zur Passwortänderung gesendet. Bitte überprüfen Sie Ihren Posteingang (und Spam-Ordner)."
       save_rotation_key: "SPEICHERN SIE IHREN ROTATIONSSCHLÜSSEL!"
       page_auto_delete: "Diese Seite wird in 2 Tagen automatisch gelöscht."

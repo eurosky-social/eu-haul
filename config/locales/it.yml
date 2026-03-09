@@ -244,6 +244,17 @@ it:
       backup_expired: "Backup scaduto"
       backup_expired_detail: "il tuo backup è stato eliminato dai nostri server."
 
+      # PLC pending — header status
+      status_waiting_for_you: "In attesa del tuo input"
+      progress_waiting_for_you: "Azione richiesta — vedi sotto ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Azione richiesta — Controlla la tua email!"
+      action_required_detail: "La migrazione è quasi completa, ma <strong>non può continuare automaticamente</strong>. Devi inserire un codice di conferma per finalizzare il trasferimento."
+      action_required_check_email: "Controlla la tua casella di posta (e la cartella spam) adesso"
+      action_required_look_for: "Cerca un'email da <strong>%{pds}</strong> (il tuo vecchio server) con un codice di conferma"
+      action_required_not_same_email: "Questa è un'email diversa dal codice di verifica inserito in precedenza"
+
       # PLC pending
       updating_identity: "Aggiornamento della tua identità"
       plc_accepted: "Il tuo codice di conferma è stato accettato. Stiamo aggiornando la voce nella directory PLC affinché punti a <strong>%{pds}</strong>. Potrebbe richiedere un momento."
@@ -257,8 +268,8 @@ it:
 
       # Completed
       completed_title: "Migrazione completata con successo!"
-      completed_migrated_to: "Il tuo account è stato migrato con successo su <strong>%{pds}</strong>. Ora puoi accedere con il tuo nuovo handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Il tuo account è stato migrato con successo su <strong>%{pds}</strong>. Ora puoi accedere con il tuo handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Il tuo account è stato migrato con successo su Eurosky. Ora puoi accedere con il tuo nuovo handle: <strong>%{handle}</strong> su Bluesky o la tua app preferita."
+      completed_migrated_back: "Il tuo account è stato migrato con successo su <strong>%{pds}</strong>. Ora puoi accedere con il tuo handle: <strong>%{handle}</strong> su Bluesky o la tua app preferita."
       email_sent_html: "Abbiamo inviato un'e-mail a %{email} con la nuova password dell'account, le istruzioni di accesso e un link per cambiare la password. Controlla la posta in arrivo (e la cartella spam)."
       save_rotation_key: "SALVA LA TUA CHIAVE DI ROTAZIONE!"
       page_auto_delete: "Questa pagina verrà eliminata automaticamente tra 2 giorni."

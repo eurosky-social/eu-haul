@@ -244,6 +244,17 @@ el:
       backup_expired: "Το αντίγραφο ασφαλείας έληξε"
       backup_expired_detail: "το αντίγραφο ασφαλείας σας διαγράφηκε από τους διακομιστές μας."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Αναμονή για την απάντησή σας"
+      progress_waiting_for_you: "Απαιτείται ενέργεια — δείτε παρακάτω ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Απαιτείται ενέργεια — Ελέγξτε το email σας!"
+      action_required_detail: "Η μετεγκατάστασή σας είναι σχεδόν ολοκληρωμένη, αλλά <strong>δεν μπορεί να συνεχίσει αυτόματα</strong>. Πρέπει να εισαγάγετε έναν κωδικό επιβεβαίωσης για να ολοκληρώσετε τη μεταφορά."
+      action_required_check_email: "Ελέγξτε τα εισερχόμενά σας (και τον φάκελο spam) τώρα"
+      action_required_look_for: "Αναζητήστε ένα email από <strong>%{pds}</strong> (τον παλιό σας διακομιστή) με κωδικό επιβεβαίωσης"
+      action_required_not_same_email: "Αυτό είναι διαφορετικό email από τον κωδικό επαλήθευσης που εισαγάγατε νωρίτερα"
+
       # PLC pending
       updating_identity: "Ενημέρωση της ταυτότητάς σας"
       plc_accepted: "Ο κωδικός επιβεβαίωσής σας έγινε αποδεκτός. Ενημερώνουμε τώρα την καταχώρησή σας στον κατάλογο PLC ώστε να δείχνει στο <strong>%{pds}</strong>. Αυτό μπορεί να διαρκέσει λίγο."
@@ -257,8 +268,8 @@ el:
 
       # Completed
       completed_title: "Η μετεγκατάσταση ολοκληρώθηκε επιτυχώς!"
-      completed_migrated_to: "Ο λογαριασμός σας μετεγκαταστάθηκε επιτυχώς στο <strong>%{pds}</strong>. Μπορείτε τώρα να συνδεθείτε με το νέο σας handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Ο λογαριασμός σας μετεγκαταστάθηκε επιτυχώς πίσω στο <strong>%{pds}</strong>. Μπορείτε τώρα να συνδεθείτε με το handle σας: <strong>%{handle}</strong>"
+      completed_migrated_to: "Ο λογαριασμός σας μετεγκαταστάθηκε επιτυχώς στο Eurosky. Μπορείτε τώρα να συνδεθείτε με το νέο σας handle: <strong>%{handle}</strong> στο Bluesky ή στην αγαπημένη σας εφαρμογή."
+      completed_migrated_back: "Ο λογαριασμός σας μετεγκαταστάθηκε επιτυχώς πίσω στο <strong>%{pds}</strong>. Μπορείτε τώρα να συνδεθείτε με το handle σας: <strong>%{handle}</strong> στο Bluesky ή στην αγαπημένη σας εφαρμογή."
       email_sent_html: "Στείλαμε ένα e-mail στο %{email} με τον νέο κωδικό πρόσβασης του λογαριασμού σας, οδηγίες σύνδεσης και σύνδεσμο αλλαγής κωδικού. Παρακαλώ ελέγξτε τα εισερχόμενά σας (και τον φάκελο ανεπιθύμητης αλληλογραφίας)."
       save_rotation_key: "ΑΠΟΘΗΚΕΥΣΤΕ ΤΟ ΚΛΕΙΔΙ ΕΝΑΛΛΑΓΗΣ!"
       page_auto_delete: "Αυτή η σελίδα θα διαγραφεί αυτόματα σε 2 ημέρες."

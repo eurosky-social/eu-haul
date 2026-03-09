@@ -244,6 +244,17 @@ fi:
       backup_expired: "Varmuuskopio vanhentunut"
       backup_expired_detail: "varmuuskopiopakettisi on poistettu palvelimiltamme."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Odottaa vastaustasi"
+      progress_waiting_for_you: "Toimia vaaditaan — katso alta ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Toimia vaaditaan — Tarkista sähköpostisi!"
+      action_required_detail: "Siirtosi on melkein valmis, mutta se <strong>ei voi jatkua automaattisesti</strong>. Sinun on syötettävä vahvistuskoodi siirron viimeistelemiseksi."
+      action_required_check_email: "Tarkista postilaatikkosi (ja roskaposti) nyt"
+      action_required_look_for: "Etsi sähköposti osoitteesta <strong>%{pds}</strong> (vanha palvelimesi) vahvistuskoodilla"
+      action_required_not_same_email: "Tämä on eri sähköposti kuin aiemmin syöttämäsi vahvistuskoodi"
+
       # PLC pending
       updating_identity: "Päivitetään identiteettiäsi"
       plc_accepted: "Vahvistuskoodisi on hyväksytty. Päivitämme nyt PLC-hakemistomerkintääsi osoittamaan palvelimeen <strong>%{pds}</strong>. Tämä voi kestää hetken."
@@ -257,8 +268,8 @@ fi:
 
       # Completed
       completed_title: "Siirto suoritettu onnistuneesti!"
-      completed_migrated_to: "Tilisi on siirretty onnistuneesti palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään uudella handlellasi: <strong>%{handle}</strong>"
-      completed_migrated_back: "Tilisi on siirretty onnistuneesti takaisin palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään handlellasi: <strong>%{handle}</strong>"
+      completed_migrated_to: "Tilisi on siirretty onnistuneesti Euroskyyn. Voit nyt kirjautua sisään uudella handlellasi: <strong>%{handle}</strong> Blueskyssa tai haluamassasi sovelluksessa."
+      completed_migrated_back: "Tilisi on siirretty onnistuneesti takaisin palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään handlellasi: <strong>%{handle}</strong> Blueskyssa tai haluamassasi sovelluksessa."
       email_sent_html: "Olemme lähettäneet sähköpostin osoitteeseen %{email} uuden tilisi salasanan, kirjautumisohjeet ja linkin salasanan vaihtamiseen. Tarkista saapuneet-kansiosi (ja roskapostikansio)."
       save_rotation_key: "TALLENNA ROTAATIOAVAIMESI!"
       page_auto_delete: "Tämä sivu poistetaan automaattisesti 2 päivän kuluttua."

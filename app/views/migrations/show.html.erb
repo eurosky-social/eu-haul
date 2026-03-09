@@ -161,6 +161,15 @@
     .status-failed { color: #dc2626; }
     .status-in-progress { color: #3b82f6; }
 
+    .progress-bar-waiting {
+      animation: pulse-waiting 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-waiting {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
     /* Header-specific overrides: white text on gradient */
     .header-eurosky .status-completed,
     .header-eurosky .status-failed,
@@ -249,7 +258,7 @@
           <div>
             <span class="small" style="opacity: 0.7;"><%= t('migrations.show.status_label') %></span>
             <span id="status-value" class="fw-semibold status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>" data-status="<%= @migration.status %>">
-              <span id="status-text"><%= @migration.status.humanize %></span>
+              <span id="status-text"><%= @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) ? t('migrations.show.status_waiting_for_you') : @migration.status.humanize %></span>
             </span>
           </div>
           <div id="retry-info" class="small" style="<%= 'display:none;' unless @migration.job_retrying? && @migration.current_job_step %>">
@@ -259,9 +268,10 @@
           </div>
         </div>
 
+        <% plc_waiting = @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
         <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
-          <div id="progress-bar" class="progress-bar-fill" style="width: <%= @migration.progress_percentage %>%">
-            <%= @migration.progress_percentage %>%
+          <div id="progress-bar" class="progress-bar-fill<%= ' progress-bar-waiting' if plc_waiting %>" style="width: <%= @migration.progress_percentage %>%">
+            <%= plc_waiting ? t('migrations.show.progress_waiting_for_you') : "#{@migration.progress_percentage}%" %>
           </div>
         </div>
       <% else %>
@@ -432,6 +442,21 @@
             </div>
 
           <% else %>
+            <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-3 px-3 mb-3" style="background: #fef9c3;">
+              <div class="d-flex align-items-center mb-2">
+                <span class="fs-4 me-2">✉️</span>
+                <h3 class="fs-5 mb-0 fw-bold" style="color: #92400e;"><%= t('migrations.show.action_required_title') %></h3>
+              </div>
+              <p class="mb-2 small" style="color: #78350f;">
+                <%= t('migrations.show.action_required_detail').html_safe %>
+              </p>
+              <ul class="mb-0 ps-3 small lh-lg" style="color: #78350f;">
+                <li><%= t('migrations.show.action_required_check_email') %></li>
+                <li><%= t('migrations.show.action_required_look_for', pds: @migration.old_pds_host).html_safe %></li>
+                <li><%= t('migrations.show.action_required_not_same_email') %></li>
+              </ul>
+            </div>
+
             <div class="text-center mb-3">
               <h3 class="fs-5 mb-1 text-dark"><%= t('migrations.show.enter_confirmation') %></h3>
               <p class="text-body-secondary small mb-0">
@@ -713,6 +738,8 @@
       var pollUrl = '<%= migration_by_token_path(@migration.token, format: :json) %>';
       var currentStatus = '<%= @migration.status %>';
       var emailVerified = <%= @migration.email_verified? %>;
+      var statusWaitingText = '<%= j t('migrations.show.status_waiting_for_you') %>';
+      var barWaitingText = '<%= j t('migrations.show.progress_waiting_for_you') %>';
 
       function poll() {
         fetch(pollUrl, { headers: { 'Accept': 'application/json' } })
@@ -740,15 +767,22 @@
             // In-place updates for progress
             var bar = document.getElementById('progress-bar');
             var barContainer = document.getElementById('progress-bar-container');
+            var isPendingPlc = data.status === 'pending_plc';
             if (bar && barContainer) {
               bar.style.width = data.progress_percentage + '%';
-              bar.textContent = data.progress_percentage + '%';
+              if (isPendingPlc) {
+                bar.textContent = barWaitingText;
+                bar.classList.add('progress-bar-waiting');
+              } else {
+                bar.textContent = data.progress_percentage + '%';
+                bar.classList.remove('progress-bar-waiting');
+              }
               barContainer.setAttribute('aria-valuenow', data.progress_percentage);
             }
 
             var statusText = document.getElementById('status-text');
             if (statusText) {
-              statusText.textContent = data.status_humanized;
+              statusText.textContent = isPendingPlc ? statusWaitingText : data.status_humanized;
             }
 
             var statusValue = document.getElementById('status-value');

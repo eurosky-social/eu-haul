@@ -244,6 +244,17 @@ hu:
       backup_expired: "Biztonsagi mentes lejart"
       backup_expired_detail: "a biztonsagi mentese torolve lett a szervereinkrol."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Várakozás az Ön válaszára"
+      progress_waiting_for_you: "Beavatkozás szükséges — lásd lent ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Beavatkozás szükséges — Ellenőrizze az e-mailjeit!"
+      action_required_detail: "A migrációja majdnem kész, de <strong>nem tud automatikusan folytatódni</strong>. Meg kell adnia egy megerősítő kódot az áthelyezés befejezéséhez."
+      action_required_check_email: "Ellenőrizze a postaládáját (és a spam mappát) most"
+      action_required_look_for: "Keressen egy e-mailt a(z) <strong>%{pds}</strong> (régi szervere) címről megerősítő kóddal"
+      action_required_not_same_email: "Ez egy másik e-mail, mint a korábban megadott ellenőrző kód"
+
       # PLC pending
       updating_identity: "Szemelyazonossag frissitese"
       plc_accepted: "A megerosito kodja elfogadva. Most frissitjuk a PLC konyvtarbejegyzeset, hogy a(z) <strong>%{pds}</strong> cimre mutasson. Ez egy pillanatot igenybevehet."
@@ -257,8 +268,8 @@ hu:
 
       # Completed
       completed_title: "Migracio sikeresen befejezve!"
-      completed_migrated_to: "Fiokja sikeresen atkoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet az uj handlevel: <strong>%{handle}</strong>"
-      completed_migrated_back: "Fiokja sikeresen visszakoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet a handlevel: <strong>%{handle}</strong>"
+      completed_migrated_to: "Fiokja sikeresen atkoltoztetve az Eurosky szerverre. Most bejelentkezhet az uj handlevel: <strong>%{handle}</strong> a Bluesky-on vagy a kedvenc alkalmazásában."
+      completed_migrated_back: "Fiokja sikeresen visszakoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet a handlevel: <strong>%{handle}</strong> a Bluesky-on vagy a kedvenc alkalmazásában."
       email_sent_html: "E-mailt kuldtunk a(z) %{email} cimre az uj fiokjelszavval, bejelentkezesi utmutatoval es jelszomodoitasi hivatkozassal. Kerem, ellenorizze a beerkezett leveleket (es a spam mappat)."
       save_rotation_key: "MENTSE EL A ROTACIOS KULCSOT!"
       page_auto_delete: "Ez az oldal automatikusan torlodik 2 nap mulva."

@@ -244,6 +244,17 @@ lv:
       backup_expired: "Rezerves kopija ir beigusies"
       backup_expired_detail: "jūsu rezerves kopija ir dzēsta no mūsu serveriem."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Gaida jūsu atbildi"
+      progress_waiting_for_you: "Nepieciešama darbība — skatiet zemāk ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Nepieciešama darbība — Pārbaudiet savu e-pastu!"
+      action_required_detail: "Jūsu migrācija ir gandrīz pabeigta, bet tā <strong>nevar turpināties automātiski</strong>. Lai pabeigtu pārsūtīšanu, jums jāievada apstiprinājuma kods."
+      action_required_check_email: "Pārbaudiet savu iesūtni (un surogātpasta mapi) tagad"
+      action_required_look_for: "Meklējiet e-pastu no <strong>%{pds}</strong> (jūsu vecā servera) ar apstiprinājuma kodu"
+      action_required_not_same_email: "Šis ir cits e-pasts nekā verifikācijas kods, ko ievadījāt iepriekš"
+
       # PLC pending
       updating_identity: "Jūsu identitātes atjaunināšana"
       plc_accepted: "Jūsu apstiprinājuma kods ir pieņemts. Mēs atjauninām jūsu PLC kataloga ierakstu, lai norādītu uz <strong>%{pds}</strong>. Tas var aizņemt brīdi."
@@ -257,8 +268,8 @@ lv:
 
       # Completed
       completed_title: "Migrācija veiksmīgi pabeigta!"
-      completed_migrated_to: "Jūsu konts ir veiksmīgi migrēts uz <strong>%{pds}</strong>. Tagad varat pieteikties ar jauno handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Jūsu konts ir veiksmīgi migrēts atpakaļ uz <strong>%{pds}</strong>. Tagad varat pieteikties ar savu handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Jūsu konts ir veiksmīgi migrēts uz Eurosky. Tagad varat pieteikties ar jauno handle: <strong>%{handle}</strong> Bluesky vai jūsu iecienītajā lietotnē."
+      completed_migrated_back: "Jūsu konts ir veiksmīgi migrēts atpakaļ uz <strong>%{pds}</strong>. Tagad varat pieteikties ar savu handle: <strong>%{handle}</strong> Bluesky vai jūsu iecienītajā lietotnē."
       email_sent_html: "Mēs nosūtījām e-pastu uz %{email} ar jauno konta paroli, pieteikšanās instrukcijām un saiti paroles maiņai. Lūdzu, pārbaudiet iesūtni (un surogātpasta mapi)."
       save_rotation_key: "SAGLABĀJIET SAVU ROTĀCIJAS ATSLĒGU!"
       page_auto_delete: "Šī lapa tiks automātiski dzēsta pēc 2 dienām."

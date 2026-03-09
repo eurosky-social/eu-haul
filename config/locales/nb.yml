@@ -244,6 +244,17 @@ nb:
       backup_expired: "Sikkerhetskopi utløpt"
       backup_expired_detail: "sikkerhetskopipakken din er slettet fra serverne våre."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Venter på din respons"
+      progress_waiting_for_you: "Handling kreves — se nedenfor ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Handling kreves — Sjekk e-posten din!"
+      action_required_detail: "Migreringen er nesten fullført, men den <strong>kan ikke fortsette automatisk</strong>. Du må oppgi en bekreftelseskode for å fullføre overføringen."
+      action_required_check_email: "Sjekk innboksen din (og søppelpost) nå"
+      action_required_look_for: "Se etter en e-post fra <strong>%{pds}</strong> (din gamle server) med en bekreftelseskode"
+      action_required_not_same_email: "Dette er en annen e-post enn verifiseringskoden du skrev inn tidligere"
+
       # PLC pending
       updating_identity: "Oppdaterer identiteten din"
       plc_accepted: "Bekreftelseskoden din er godtatt. Vi oppdaterer nå PLC-katalogoppføringen din til å peke til <strong>%{pds}</strong>. Dette kan ta et øyeblikk."
@@ -257,8 +268,8 @@ nb:
 
       # Completed
       completed_title: "Migrering fullført!"
-      completed_migrated_to: "Kontoen din er migrert til <strong>%{pds}</strong>. Du kan nå logge inn med din nye handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Kontoen din er migrert tilbake til <strong>%{pds}</strong>. Du kan nå logge inn med din handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Kontoen din er migrert til Eurosky. Du kan nå logge inn med din nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
+      completed_migrated_back: "Kontoen din er migrert tilbake til <strong>%{pds}</strong>. Du kan nå logge inn med din handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       email_sent_html: "Vi har sendt en e-post til %{email} med ditt nye kontopassord, innloggingsinstruksjoner og en lenke for å endre passordet ditt. Vennligst sjekk innboksen din (og spam-mappen)."
       save_rotation_key: "LAGRE ROTASJONSNØKKELEN DIN!"
       page_auto_delete: "Denne siden slettes automatisk om 2 dager."

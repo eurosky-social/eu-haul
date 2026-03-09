@@ -244,6 +244,17 @@ mt:
       backup_expired: "Il-backup skada"
       backup_expired_detail: "il-pakkett tal-backup tiegħek tħassar mis-servers tagħna."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Qed jistenna r-risposta tiegħek"
+      progress_waiting_for_you: "Azzjoni meħtieġa — ara hawn taħt ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Azzjoni meħtieġa — Iċċekkja l-email tiegħek!"
+      action_required_detail: "Il-migrazzjoni tiegħek kważi lesta, iżda <strong>ma tistax tkompli awtomatikament</strong>. Għandek bżonn iddaħħal kodiċi ta' konferma biex tlesti t-trasferiment."
+      action_required_check_email: "Iċċekkja l-inbox tiegħek (u l-folder tal-ispam) issa"
+      action_required_look_for: "Fittex email minn <strong>%{pds}</strong> (is-server l-antik tiegħek) b'kodiċi ta' konferma"
+      action_required_not_same_email: "Dan huwa email differenti mill-kodiċi ta' verifika li ddaħħalt qabel"
+
       # PLC pending
       updating_identity: "Qed Jaġġorna l-Identita Tiegħek"
       plc_accepted: "Il-kodiċi ta' konferma tiegħek ġie aċċettat. Issa qed naġġornaw l-entrata tad-direttorju PLC tiegħek biex tipponta lejn <strong>%{pds}</strong>. Dan jista' jieħu ftit."
@@ -257,8 +268,8 @@ mt:
 
       # Completed
       completed_title: "Il-Migrazzjoni Tlestiet b'Suċċess!"
-      completed_migrated_to: "Il-kont tiegħek ġie mmigrat b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle ġdid tiegħek: <strong>%{handle}</strong>"
-      completed_migrated_back: "Il-kont tiegħek ġie mmigrat lura b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle tiegħek: <strong>%{handle}</strong>"
+      completed_migrated_to: "Il-kont tiegħek ġie mmigrat b'suċċess lejn Eurosky. Issa tista' tidħol bil-handle ġdid tiegħek: <strong>%{handle}</strong> fuq Bluesky jew l-app preferita tiegħek."
+      completed_migrated_back: "Il-kont tiegħek ġie mmigrat lura b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle tiegħek: <strong>%{handle}</strong> fuq Bluesky jew l-app preferita tiegħek."
       email_sent_html: "Bgħatna email lil %{email} bil-password ġdida tal-kont tiegħek, struzzjonijiet tad-dħul, u link biex tbiddel il-password tiegħek. Jekk jogħġbok iċċekkja l-inbox tiegħek (u l-folder tal-ispam)."
       save_rotation_key: "ĦAŻEN IR-ROTATION KEY TIEGĦEK!"
       page_auto_delete: "Din il-paġna titħassar awtomatikament fi żmien jumejn."

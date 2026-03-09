@@ -244,6 +244,17 @@ nl:
       backup_expired: "Back-up verlopen"
       backup_expired_detail: "uw back-uppakket is verwijderd van onze servers."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Wacht op uw invoer"
+      progress_waiting_for_you: "Actie vereist — zie hieronder ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Actie vereist — Controleer uw e-mail!"
+      action_required_detail: "Uw migratie is bijna voltooid, maar kan <strong>niet automatisch doorgaan</strong>. U moet een bevestigingscode invoeren om de overdracht te voltooien."
+      action_required_check_email: "Controleer nu uw inbox (en spammap)"
+      action_required_look_for: "Zoek naar een e-mail van <strong>%{pds}</strong> (uw oude server) met een bevestigingscode"
+      action_required_not_same_email: "Dit is een andere e-mail dan de verificatiecode die u eerder heeft ingevoerd"
+
       # PLC pending
       updating_identity: "Uw identiteit bijwerken"
       plc_accepted: "Uw bevestigingscode is geaccepteerd. We werken nu uw PLC-catalogusvermelding bij om te verwijzen naar <strong>%{pds}</strong>. Dit kan even duren."
@@ -257,8 +268,8 @@ nl:
 
       # Completed
       completed_title: "Migratie succesvol voltooid!"
-      completed_migrated_to: "Uw account is succesvol gemigreerd naar <strong>%{pds}</strong>. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Uw account is succesvol terug gemigreerd naar <strong>%{pds}</strong>. U kunt nu inloggen met uw handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Uw account is succesvol gemigreerd naar Eurosky. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
+      completed_migrated_back: "Uw account is succesvol terug gemigreerd naar <strong>%{pds}</strong>. U kunt nu inloggen met uw handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
       email_sent_html: "We hebben een e-mail gestuurd naar %{email} met uw nieuwe accountwachtwoord, inloginstructies en een link om uw wachtwoord te wijzigen. Controleer uw inbox (en spammap)."
       save_rotation_key: "BEWAAR UW ROTATIESLEUTEL!"
       page_auto_delete: "Deze pagina wordt automatisch verwijderd over 2 dagen."

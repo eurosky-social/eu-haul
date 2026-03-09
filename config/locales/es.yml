@@ -244,6 +244,17 @@ es:
       backup_expired: "Copia de seguridad expirada"
       backup_expired_detail: "su paquete de copia de seguridad ha sido eliminado de nuestros servidores."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Esperando su respuesta"
+      progress_waiting_for_you: "Acción requerida — ver abajo ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Acción requerida — ¡Revise su correo electrónico!"
+      action_required_detail: "Su migración está casi completa, pero <strong>no puede continuar automáticamente</strong>. Debe ingresar un código de confirmación para finalizar la transferencia."
+      action_required_check_email: "Revise su bandeja de entrada (y carpeta de spam) ahora"
+      action_required_look_for: "Busque un correo de <strong>%{pds}</strong> (su antiguo servidor) con un código de confirmación"
+      action_required_not_same_email: "Este es un correo diferente al código de verificación que ingresó anteriormente"
+
       # PLC pending
       updating_identity: "Actualizando su identidad"
       plc_accepted: "Su código de confirmación ha sido aceptado. Estamos actualizando su entrada en el directorio PLC para apuntar a <strong>%{pds}</strong>. Esto puede tardar un momento."
@@ -257,8 +268,8 @@ es:
 
       # Completed
       completed_title: "Migración completada con éxito."
-      completed_migrated_to: "Su cuenta ha sido migrada correctamente a <strong>%{pds}</strong>. Ahora puede iniciar sesión con su nuevo handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Su cuenta ha sido migrada de vuelta correctamente a <strong>%{pds}</strong>. Ahora puede iniciar sesión con su handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Su cuenta ha sido migrada correctamente a Eurosky. Ahora puede iniciar sesión con su nuevo handle: <strong>%{handle}</strong> en Bluesky o su aplicación preferida."
+      completed_migrated_back: "Su cuenta ha sido migrada de vuelta correctamente a <strong>%{pds}</strong>. Ahora puede iniciar sesión con su handle: <strong>%{handle}</strong> en Bluesky o su aplicación preferida."
       email_sent_html: "Hemos enviado un correo electrónico a %{email} con la nueva contraseña de su cuenta, instrucciones de inicio de sesión y un enlace para cambiar su contraseña. Por favor, revise su bandeja de entrada (y la carpeta de spam)."
       save_rotation_key: "GUARDE SU CLAVE DE ROTACIÓN."
       page_auto_delete: "Esta página se eliminará automáticamente en 2 días."

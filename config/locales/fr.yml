@@ -244,6 +244,17 @@ fr:
       backup_expired: "Sauvegarde expirée"
       backup_expired_detail: "votre paquet de sauvegarde a été supprimé de nos serveurs."
 
+      # PLC pending — header status
+      status_waiting_for_you: "En attente de votre saisie"
+      progress_waiting_for_you: "Action requise — voir ci-dessous ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Action requise — Vérifiez vos e-mails !"
+      action_required_detail: "Votre migration est presque terminée, mais elle <strong>ne peut pas continuer automatiquement</strong>. Vous devez entrer un code de confirmation pour finaliser le transfert."
+      action_required_check_email: "Vérifiez votre boîte de réception (et dossier spam) maintenant"
+      action_required_look_for: "Cherchez un e-mail de <strong>%{pds}</strong> (votre ancien serveur) avec un code de confirmation"
+      action_required_not_same_email: "Il s'agit d'un e-mail différent du code de vérification que vous avez entré précédemment"
+
       # PLC pending
       updating_identity: "Mise à jour de votre identité"
       plc_accepted: "Votre code de confirmation a été accepté. Nous mettons maintenant à jour votre entrée dans le répertoire PLC pour pointer vers <strong>%{pds}</strong>. Cela peut prendre un moment."
@@ -257,8 +268,8 @@ fr:
 
       # Completed
       completed_title: "Migration terminée avec succès !"
-      completed_migrated_to: "Votre compte a été migré avec succès vers <strong>%{pds}</strong>. Vous pouvez maintenant vous connecter avec votre nouveau handle : <strong>%{handle}</strong>"
-      completed_migrated_back: "Votre compte a été migré avec succès vers <strong>%{pds}</strong>. Vous pouvez maintenant vous connecter avec votre handle : <strong>%{handle}</strong>"
+      completed_migrated_to: "Votre compte a été migré avec succès vers Eurosky. Vous pouvez maintenant vous connecter avec votre nouveau handle : <strong>%{handle}</strong> sur Bluesky ou votre application préférée."
+      completed_migrated_back: "Votre compte a été migré avec succès vers <strong>%{pds}</strong>. Vous pouvez maintenant vous connecter avec votre handle : <strong>%{handle}</strong> sur Bluesky ou votre application préférée."
       email_sent_html: "Nous avons envoyé un e-mail à %{email} avec le nouveau mot de passe de votre compte, les instructions de connexion et un lien pour changer votre mot de passe. Veuillez vérifier votre boîte de réception (et votre dossier spam)."
       save_rotation_key: "SAUVEGARDEZ VOTRE CLÉ DE ROTATION !"
       page_auto_delete: "Cette page sera automatiquement supprimée dans 2 jours."

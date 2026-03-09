@@ -244,6 +244,17 @@ da:
       backup_expired: "Sikkerhedskopi udløbet"
       backup_expired_detail: "din sikkerhedskopi er slettet fra vores servere."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Venter på dit input"
+      progress_waiting_for_you: "Handling påkrævet — se nedenfor ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Handling påkrævet — Tjek din e-mail!"
+      action_required_detail: "Din migrering er næsten færdig, men den <strong>kan ikke fortsætte automatisk</strong>. Du skal indtaste en bekræftelseskode for at afslutte overførslen."
+      action_required_check_email: "Tjek din indbakke (og spammappe) nu"
+      action_required_look_for: "Se efter en e-mail fra <strong>%{pds}</strong> (din gamle server) med en bekræftelseskode"
+      action_required_not_same_email: "Dette er en anden e-mail end den verifikationskode, du indtastede tidligere"
+
       # PLC pending
       updating_identity: "Opdaterer din identitet"
       plc_accepted: "Din bekræftelseskode er accepteret. Vi opdaterer nu din PLC-postering til at pege på <strong>%{pds}</strong>. Dette kan tage et øjeblik."
@@ -257,8 +268,8 @@ da:
 
       # Completed
       completed_title: "Migrering gennemført!"
-      completed_migrated_to: "Din konto er blevet migreret til <strong>%{pds}</strong>. Du kan nu logge ind med dit nye handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Din konto er blevet migreret tilbage til <strong>%{pds}</strong>. Du kan nu logge ind med dit handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Din konto er blevet migreret til Eurosky. Du kan nu logge ind med dit nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
+      completed_migrated_back: "Din konto er blevet migreret tilbage til <strong>%{pds}</strong>. Du kan nu logge ind med dit handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       email_sent_html: "Vi har sendt en e-mail til %{email} med din nye kontoadgangskode, logininstruktioner og et link til at ændre din adgangskode. Tjek venligst din indbakke (og spam-mappe)."
       save_rotation_key: "GEM DIN ROTATIONSNØGLE!"
       page_auto_delete: "Denne side slettes automatisk om 2 dage."

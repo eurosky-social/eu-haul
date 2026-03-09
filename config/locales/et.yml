@@ -244,6 +244,17 @@ et:
       backup_expired: "Varukoopia aegunud"
       backup_expired_detail: "teie varukoopiapakk on meie serveritest kustutatud."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Ootab teie vastust"
+      progress_waiting_for_you: "Tegevus vajalik — vaata allpool ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Tegevus vajalik — Kontrollige oma e-posti!"
+      action_required_detail: "Teie migratsioon on peaaegu lõppenud, kuid see <strong>ei saa automaatselt jätkuda</strong>. Ülekande lõpuleviimiseks peate sisestama kinnituskoodi."
+      action_required_check_email: "Kontrollige oma postkasti (ja rämpsposti kausta) kohe"
+      action_required_look_for: "Otsige e-kirja aadressilt <strong>%{pds}</strong> (teie vana server) kinnituskoodiga"
+      action_required_not_same_email: "See on erinev e-kiri kui varem sisestatud kinnituskood"
+
       # PLC pending
       updating_identity: "Teie identiteedi uuendamine"
       plc_accepted: "Teie kinnituskood on vastu võetud. Uuendame nüüd teie PLC kataloogi kirjet, et see osutaks serverile <strong>%{pds}</strong>. See võib võtta hetke."
@@ -257,8 +268,8 @@ et:
 
       # Completed
       completed_title: "Migreerimine edukalt lõpetatud!"
-      completed_migrated_to: "Teie konto on edukalt migreeritud serverisse <strong>%{pds}</strong>. Nüüd saate sisse logida oma uue handle'iga: <strong>%{handle}</strong>"
-      completed_migrated_back: "Teie konto on edukalt tagasi migreeritud serverisse <strong>%{pds}</strong>. Nüüd saate sisse logida oma handle'iga: <strong>%{handle}</strong>"
+      completed_migrated_to: "Teie konto on edukalt migreeritud Euroskysse. Nüüd saate sisse logida oma uue handle'iga: <strong>%{handle}</strong> Bluesky's või oma eelistatud rakenduses."
+      completed_migrated_back: "Teie konto on edukalt tagasi migreeritud serverisse <strong>%{pds}</strong>. Nüüd saate sisse logida oma handle'iga: <strong>%{handle}</strong> Bluesky's või oma eelistatud rakenduses."
       email_sent_html: "Saatsime e-kirja aadressile %{email} teie uue konto parooli, sisselogimise juhiste ja parooli muutmise lingiga. Palun kontrollige oma postkasti (ja rämpsposti kausta)."
       save_rotation_key: "SALVESTAGE OMA ROTATSIOONIVÕTI!"
       page_auto_delete: "See leht kustutatakse automaatselt 2 päeva pärast."

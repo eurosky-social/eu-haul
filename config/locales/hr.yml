@@ -244,6 +244,17 @@ hr:
       backup_expired: "Sigurnosna kopija istekla"
       backup_expired_detail: "vasa sigurnosna kopija izbrisana je s nasih posluzitelja."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Čeka vaš unos"
+      progress_waiting_for_you: "Potrebna radnja — pogledajte dolje ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Potrebna radnja — Provjerite svoju e-poštu!"
+      action_required_detail: "Vaša migracija je gotovo završena, ali <strong>ne može nastaviti automatski</strong>. Morate unijeti potvrdni kod za dovršetak prijenosa."
+      action_required_check_email: "Provjerite sada svoju pristiglu poštu (i mapu za neželjenu poštu)"
+      action_required_look_for: "Potražite e-mail od <strong>%{pds}</strong> (vašeg starog poslužitelja) s potvrdnim kodom"
+      action_required_not_same_email: "Ovo je drugačiji e-mail od verifikacijskog koda koji ste ranije unijeli"
+
       # PLC pending
       updating_identity: "Azuriranje vaseg identiteta"
       plc_accepted: "Vas potvrdni kod je prihvacen. Azuriramo vas unos u PLC direktoriju da pokazuje na <strong>%{pds}</strong>. Ovo moze potrajati trenutak."
@@ -257,8 +268,8 @@ hr:
 
       # Completed
       completed_title: "Migracija uspjesno dovrsena!"
-      completed_migrated_to: "Vas racun je uspjesno migriran na <strong>%{pds}</strong>. Sada se mozete prijaviti s novim handleom: <strong>%{handle}</strong>"
-      completed_migrated_back: "Vas racun je uspjesno migriran natrag na <strong>%{pds}</strong>. Sada se mozete prijaviti sa svojim handleom: <strong>%{handle}</strong>"
+      completed_migrated_to: "Vas racun je uspjesno migriran na Eurosky. Sada se mozete prijaviti s novim handleom: <strong>%{handle}</strong> na Bluesky ili vašoj omiljenoj aplikaciji."
+      completed_migrated_back: "Vas racun je uspjesno migriran natrag na <strong>%{pds}</strong>. Sada se mozete prijaviti sa svojim handleom: <strong>%{handle}</strong> na Bluesky ili vašoj omiljenoj aplikaciji."
       email_sent_html: "Poslali smo e-poruku na %{email} s novom lozinkom racuna, uputama za prijavu i poveznicom za promjenu lozinke. Provjerite pristiglu postu (i mapu za nezeljenu postu)."
       save_rotation_key: "SACUVAJTE SVOJ ROTACIJSKI KLJUC!"
       page_auto_delete: "Ova stranica ce biti automatski izbrisana za 2 dana."

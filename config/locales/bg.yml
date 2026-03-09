@@ -244,6 +244,17 @@ bg:
       backup_expired: "Резервното копие е изтекло"
       backup_expired_detail: "резервното Ви копие е изтрито от нашите сървъри."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Очаква вашия отговор"
+      progress_waiting_for_you: "Необходимо действие — вижте по-долу ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Необходимо действие — Проверете имейла си!"
+      action_required_detail: "Миграцията Ви е почти завършена, но <strong>не може да продължи автоматично</strong>. Трябва да въведете код за потвърждение, за да завършите прехвърлянето."
+      action_required_check_email: "Проверете входящата си поща (и папката за спам) сега"
+      action_required_look_for: "Потърсете имейл от <strong>%{pds}</strong> (стария Ви сървър) с код за потвърждение"
+      action_required_not_same_email: "Това е различен имейл от кода за верификация, който въведохте по-рано"
+
       # PLC pending
       updating_identity: "Актуализиране на Вашата самоличност"
       plc_accepted: "Кодът Ви за потвърждение е приет. Актуализираме записа Ви в PLC директорията, за да сочи към <strong>%{pds}</strong>. Това може да отнеме малко време."
@@ -257,8 +268,8 @@ bg:
 
       # Completed
       completed_title: "Миграцията е завършена успешно!"
-      completed_migrated_to: "Акаунтът Ви е успешно мигриран към <strong>%{pds}</strong>. Вече можете да влезете с новия си handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Акаунтът Ви е успешно мигриран обратно към <strong>%{pds}</strong>. Вече можете да влезете с Вашия handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Акаунтът Ви е успешно мигриран към Eurosky. Вече можете да влезете с новия си handle: <strong>%{handle}</strong> в Bluesky или предпочитаното ви приложение."
+      completed_migrated_back: "Акаунтът Ви е успешно мигриран обратно към <strong>%{pds}</strong>. Вече можете да влезете с Вашия handle: <strong>%{handle}</strong> в Bluesky или предпочитаното ви приложение."
       email_sent_html: "Изпратихме имейл на %{email} с новата Ви парола за акаунта, инструкции за вход и линк за смяна на паролата. Моля, проверете входящата си поща (и папката за спам)."
       save_rotation_key: "ЗАПАЗЕТЕ КЛЮЧА СИ ЗА РОТАЦИЯ!"
       page_auto_delete: "Тази страница ще бъде автоматично изтрита след 2 дни."

@@ -244,6 +244,17 @@ lt:
       backup_expired: "Atsarginė kopija nebegalioja"
       backup_expired_detail: "jūsų atsarginė kopija pašalinta iš mūsų serverių."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Laukiama jūsų atsakymo"
+      progress_waiting_for_you: "Reikalingas veiksmas — žiūrėkite žemiau ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Reikalingas veiksmas — Patikrinkite savo el. paštą!"
+      action_required_detail: "Jūsų perkėlimas beveik baigtas, bet <strong>negali tęstis automatiškai</strong>. Turite įvesti patvirtinimo kodą, kad užbaigtumėte perkėlimą."
+      action_required_check_email: "Patikrinkite savo pašto dėžutę (ir šlamšto aplanką) dabar"
+      action_required_look_for: "Ieškokite el. laiško iš <strong>%{pds}</strong> (jūsų senojo serverio) su patvirtinimo kodu"
+      action_required_not_same_email: "Tai yra kitoks el. laiškas nei patvirtinimo kodas, kurį įvedėte anksčiau"
+
       # PLC pending
       updating_identity: "Atnaujinamas jūsų identitetas"
       plc_accepted: "Jūsų patvirtinimo kodas priimtas. Atnaujiname PLC katalogo įrašą, kad rodytų į <strong>%{pds}</strong>. Tai gali užtrukti akimirką."
@@ -257,8 +268,8 @@ lt:
 
       # Completed
       completed_title: "Perkėlimas sėkmingai užbaigtas!"
-      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Jūsų paskyra sėkmingai perkelta atgal į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami savo handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į Eurosky. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
+      completed_migrated_back: "Jūsų paskyra sėkmingai perkelta atgal į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami savo handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
       email_sent_html: "Išsiuntėme el. laišką adresu %{email} su nauju paskyros slaptažodžiu, prisijungimo instrukcijomis ir nuoroda slaptažodžiui pakeisti. Patikrinkite gautus laiškus (ir brukalų aplanką)."
       save_rotation_key: "IŠSAUGOKITE SAVO ROTACIJOS RAKTĄ!"
       page_auto_delete: "Šis puslapis bus automatiškai ištrintas po 2 dienų."

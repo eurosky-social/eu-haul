@@ -244,6 +244,17 @@ sv:
       backup_expired: "Säkerhetskopian har gått ut"
       backup_expired_detail: "din säkerhetskopia har raderats från våra servrar."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Väntar på din input"
+      progress_waiting_for_you: "Åtgärd krävs — se nedan ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Åtgärd krävs — Kontrollera din e-post!"
+      action_required_detail: "Din migrering är nästan klar, men den <strong>kan inte fortsätta automatiskt</strong>. Du behöver ange en bekräftelsekod för att slutföra överföringen."
+      action_required_check_email: "Kontrollera din inkorg (och skräppost) nu"
+      action_required_look_for: "Leta efter ett e-postmeddelande från <strong>%{pds}</strong> (din gamla server) med en bekräftelsekod"
+      action_required_not_same_email: "Det här är ett annat e-postmeddelande än verifieringskoden du angav tidigare"
+
       # PLC pending
       updating_identity: "Uppdaterar din identitet"
       plc_accepted: "Din bekräftelsekod har accepterats. Vi uppdaterar nu din PLC-katalogpost för att peka mot <strong>%{pds}</strong>. Detta kan ta en stund."
@@ -257,8 +268,8 @@ sv:
 
       # Completed
       completed_title: "Flytt slutförd!"
-      completed_migrated_to: "Ditt konto har flyttats till <strong>%{pds}</strong>. Du kan nu logga in med ditt nya handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Ditt konto har flyttats tillbaka till <strong>%{pds}</strong>. Du kan nu logga in med ditt handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Ditt konto har flyttats till Eurosky. Du kan nu logga in med ditt nya handle: <strong>%{handle}</strong> på Bluesky eller din föredragna app."
+      completed_migrated_back: "Ditt konto har flyttats tillbaka till <strong>%{pds}</strong>. Du kan nu logga in med ditt handle: <strong>%{handle}</strong> på Bluesky eller din föredragna app."
       email_sent_html: "Vi har skickat ett e-postmeddelande till %{email} med ditt nya kontolösenord, inloggningsinstruktioner och en länk för att byta lösenord. Vänligen kontrollera din inkorg (och skräppostmapp)."
       save_rotation_key: "SPARA DIN ROTATIONSNYCKEL!"
       page_auto_delete: "Denna sida raderas automatiskt om 2 dagar."

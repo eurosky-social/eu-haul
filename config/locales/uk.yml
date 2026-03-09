@@ -244,6 +244,17 @@ uk:
       backup_expired: "Резервна копія застаріла"
       backup_expired_detail: "вашу резервну копію було видалено з наших серверів."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Очікує вашої відповіді"
+      progress_waiting_for_you: "Потрібна дія — дивіться нижче ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Потрібна дія — Перевірте свою електронну пошту!"
+      action_required_detail: "Ваша міграція майже завершена, але вона <strong>не може продовжитися автоматично</strong>. Вам потрібно ввести код підтвердження для завершення переносу."
+      action_required_check_email: "Перевірте свою поштову скриньку (та папку спаму) зараз"
+      action_required_look_for: "Шукайте електронний лист від <strong>%{pds}</strong> (вашого старого сервера) з кодом підтвердження"
+      action_required_not_same_email: "Це інший лист, ніж код верифікації, який ви вводили раніше"
+
       # PLC pending
       updating_identity: "Оновлення вашої ідентичності"
       plc_accepted: "Ваш код підтвердження прийнято. Зараз ми оновлюємо ваш запис у каталозі PLC, щоб він вказував на <strong>%{pds}</strong>. Це може зайняти деякий час."
@@ -257,8 +268,8 @@ uk:
 
       # Completed
       completed_title: "Міграцію успішно завершено!"
-      completed_migrated_to: "Ваш обліковий запис успішно перенесено на <strong>%{pds}</strong>. Тепер ви можете увійти з новим handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Ваш обліковий запис успішно перенесено назад на <strong>%{pds}</strong>. Тепер ви можете увійти зі своїм handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Ваш обліковий запис успішно перенесено на Eurosky. Тепер ви можете увійти з новим handle: <strong>%{handle}</strong> у Bluesky або у вашому улюбленому додатку."
+      completed_migrated_back: "Ваш обліковий запис успішно перенесено назад на <strong>%{pds}</strong>. Тепер ви можете увійти зі своїм handle: <strong>%{handle}</strong> у Bluesky або у вашому улюбленому додатку."
       email_sent_html: "Ми надіслали листа на %{email} з новим паролем облікового запису, інструкціями для входу та посиланням для зміни пароля. Будь ласка, перевірте вхідні повідомлення (та папку зі спамом)."
       save_rotation_key: "ЗБЕРЕЖІТЬ КЛЮЧ РОТАЦІЇ!"
       page_auto_delete: "Ця сторінка буде автоматично видалена через 2 дні."

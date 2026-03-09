@@ -244,6 +244,17 @@ sl:
       backup_expired: "Varnostna kopija je potekla"
       backup_expired_detail: "vaša varnostna kopija je bila izbrisana z naših strežnikov."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Čaka na vaš vnos"
+      progress_waiting_for_you: "Zahtevano dejanje — glejte spodaj ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Zahtevano dejanje — Preverite svojo e-pošto!"
+      action_required_detail: "Vaša selitev je skoraj končana, vendar <strong>ne more nadaljevati samodejno</strong>. Za dokončanje prenosa morate vnesti potrditveno kodo."
+      action_required_check_email: "Preverite zdaj svojo prejeto pošto (in mapo z neželeno pošto)"
+      action_required_look_for: "Poiščite e-pošto od <strong>%{pds}</strong> (vašega starega strežnika) s potrditveno kodo"
+      action_required_not_same_email: "To je drugačna e-pošta kot preveritvena koda, ki ste jo vnesli prej"
+
       # PLC pending
       updating_identity: "Posodabljanje vaše identitete"
       plc_accepted: "Vaša potrditvena koda je bila sprejeta. Zdaj posodabljamo vaš vnos v imeniku PLC, da kaže na <strong>%{pds}</strong>. To lahko traja nekaj trenutkov."
@@ -257,8 +268,8 @@ sl:
 
       # Completed
       completed_title: "Selitev uspešno dokončana!"
-      completed_migrated_to: "Vaš račun je bil uspešno preseljen na <strong>%{pds}</strong>. Zdaj se lahko prijavite z novim handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Vaš račun je bil uspešno preseljen nazaj na <strong>%{pds}</strong>. Zdaj se lahko prijavite s svojim handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Vaš račun je bil uspešno preseljen na Eurosky. Zdaj se lahko prijavite z novim handle: <strong>%{handle}</strong> na Bluesky ali vaši priljubljeni aplikaciji."
+      completed_migrated_back: "Vaš račun je bil uspešno preseljen nazaj na <strong>%{pds}</strong>. Zdaj se lahko prijavite s svojim handle: <strong>%{handle}</strong> na Bluesky ali vaši priljubljeni aplikaciji."
       email_sent_html: "Poslali smo e-pošto na %{email} z novim geslom računa, navodili za prijavo in povezavo za spremembo gesla. Prosimo, preverite prejeto pošto (in mapo z neželeno pošto)."
       save_rotation_key: "SHRANITE ROTACIJSKI KLJUČ!"
       page_auto_delete: "Ta stran bo samodejno izbrisana čez 2 dni."

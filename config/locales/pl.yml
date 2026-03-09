@@ -244,6 +244,17 @@ pl:
       backup_expired: "Kopia zapasowa wygasła"
       backup_expired_detail: "Twój pakiet kopii zapasowej został usunięty z naszych serwerów."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Oczekiwanie na Twoją odpowiedź"
+      progress_waiting_for_you: "Wymagana akcja — zobacz poniżej ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Wymagana akcja — Sprawdź swoją pocztę!"
+      action_required_detail: "Migracja jest prawie zakończona, ale <strong>nie może kontynuować automatycznie</strong>. Musisz wprowadzić kod potwierdzający, aby sfinalizować transfer."
+      action_required_check_email: "Sprawdź teraz swoją skrzynkę odbiorczą (i folder spam)"
+      action_required_look_for: "Poszukaj e-maila od <strong>%{pds}</strong> (Twojego starego serwera) z kodem potwierdzającym"
+      action_required_not_same_email: "To jest inny e-mail niż kod weryfikacyjny, który wprowadziłeś wcześniej"
+
       # PLC pending
       updating_identity: "Aktualizacja Twojej tożsamości"
       plc_accepted: "Twój kod potwierdzający został zaakceptowany. Aktualizujemy teraz wpis w katalogu PLC, aby wskazywał na <strong>%{pds}</strong>. To może chwilę potrwać."
@@ -257,8 +268,8 @@ pl:
 
       # Completed
       completed_title: "Migracja zakończona pomyślnie!"
-      completed_migrated_to: "Twoje konto zostało pomyślnie przeniesione na <strong>%{pds}</strong>. Możesz teraz zalogować się swoim nowym handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Twoje konto zostało pomyślnie przeniesione z powrotem na <strong>%{pds}</strong>. Możesz teraz zalogować się swoim handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Twoje konto zostało pomyślnie przeniesione na Eurosky. Możesz teraz zalogować się swoim nowym handle: <strong>%{handle}</strong> na Bluesky lub w preferowanej aplikacji."
+      completed_migrated_back: "Twoje konto zostało pomyślnie przeniesione z powrotem na <strong>%{pds}</strong>. Możesz teraz zalogować się swoim handle: <strong>%{handle}</strong> na Bluesky lub w preferowanej aplikacji."
       email_sent_html: "Wysłaliśmy e-mail na adres %{email} z nowym hasłem do konta, instrukcjami logowania i linkiem do zmiany hasła. Proszę sprawdzić skrzynkę odbiorczą (i folder spam)."
       save_rotation_key: "ZAPISZ SWÓJ KLUCZ ROTACYJNY!"
       page_auto_delete: "Ta strona zostanie automatycznie usunięta za 2 dni."

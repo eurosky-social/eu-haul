@@ -245,6 +245,17 @@ en:
       backup_expired: "Backup expired"
       backup_expired_detail: "your backup bundle has been deleted from our servers."
 
+      # PLC pending — header status
+      status_waiting_for_you: "Waiting for your input"
+      progress_waiting_for_you: "Action required — see below ↓"
+
+      # PLC pending — action required banner
+      action_required_title: "Action Required — Check Your Email!"
+      action_required_detail: "Your migration is almost complete, but it <strong>cannot continue automatically</strong>. You need to enter a confirmation code to finalize the transfer."
+      action_required_check_email: "Check your email inbox (and spam folder) right now"
+      action_required_look_for: "Look for an email from <strong>%{pds}</strong> (your old server) with a confirmation code"
+      action_required_not_same_email: "This is a different email than the verification code you entered earlier"
+
       # PLC pending
       updating_identity: "Updating Your Identity"
       plc_accepted: "Your confirmation code has been accepted. We're now updating your PLC directory entry to point to <strong>%{pds}</strong>. This may take a moment."
@@ -258,8 +269,8 @@ en:
 
       # Completed
       completed_title: "Migration Completed Successfully!"
-      completed_migrated_to: "Your account has been successfully migrated to <strong>%{pds}</strong>. You can now log in with your new handle: <strong>%{handle}</strong>"
-      completed_migrated_back: "Your account has been successfully migrated back to <strong>%{pds}</strong>. You can now log in with your handle: <strong>%{handle}</strong>"
+      completed_migrated_to: "Your account has been successfully migrated to Eurosky. You can now log in with your new handle: <strong>%{handle}</strong> on Bluesky or your preferred app."
+      completed_migrated_back: "Your account has been successfully migrated back to <strong>%{pds}</strong>. You can now log in with your handle: <strong>%{handle}</strong> on Bluesky or your preferred app."
       email_sent_html: "We've sent an email to %{email} with your new account password, login instructions, and a link to change your password. Please check your inbox (and spam folder)."
       save_rotation_key: "SAVE YOUR ROTATION KEY!"
       page_auto_delete: "This page will be automatically deleted in 2 days."
