@@ -555,7 +555,66 @@
         <% if show_zone3 %>
           <hr class="section-divider">
 
-          <%# Rotation key (collapsible, open by default) %>
+          <%# "Didn't receive the email?" + Technical details (first, most important for pending_plc) %>
+          <% if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
+            <details class="mb-3" open>
+              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
+                <%= t('migrations.show.didnt_receive_plc') %>
+              </summary>
+              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
+                <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
+                  <li><%= t('migrations.show.plc_check_spam') %></li>
+                  <li><%= t('migrations.show.plc_from_bluesky') %></li>
+                  <li><%= t('migrations.show.plc_expires') %></li>
+                </ul>
+                <% if @migration.has_old_pds_tokens? %>
+                  <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
+                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                    <button type="submit"
+                            class="btn btn-sm btn-warning text-white fw-semibold">
+                      <%= t('migrations.show.request_new_code') %>
+                    </button>
+                  </form>
+                <% else %>
+                  <p class="small mb-2" style="color: #78350f;">
+                    <%= t('migrations.show.plc_new_code_help') %>
+                  </p>
+                  <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                    <div class="d-flex gap-2">
+                      <input type="password" name="password" required
+                             autocomplete="current-password"
+                             placeholder="<%= t('migrations.show.plc_password_placeholder', handle: @migration.old_handle) %>"
+                             class="form-control form-control-sm border-2 border-warning flex-grow-1">
+                      <button type="submit"
+                              class="btn btn-sm btn-warning text-white fw-semibold text-nowrap">
+                        <%= t('migrations.show.request_new_code') %>
+                      </button>
+                    </div>
+                  </form>
+                <% end %>
+              </div>
+            </details>
+
+            <details class="mb-3">
+              <summary class="text-body-secondary small fw-medium" style="cursor: pointer;">
+                <%= t('migrations.show.technical_details') %>
+              </summary>
+              <div class="bg-body-tertiary border rounded-3 p-3 mt-2 small text-body-secondary lh-lg">
+                <p class="mb-2">
+                  <%= t('migrations.show.plc_explanation').html_safe %>
+                </p>
+                <p class="mb-2">
+                  <%= t('migrations.show.plc_irreversible', new_pds: @migration.new_pds_host, old_pds: @migration.old_pds_host).html_safe %>
+                </p>
+                <p class="mb-0">
+                  <%= t('migrations.show.plc_expiry_note') %>
+                </p>
+              </div>
+            </details>
+          <% end %>
+
+          <%# Rotation key (collapsible, after the email help) %>
           <% if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
             <details class="mb-3">
               <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
@@ -591,57 +650,6 @@
                     </p>
                   </div>
                 </details>
-              </div>
-            </details>
-          <% end %>
-
-          <%# "Didn't receive the email?" + Technical details (collapsed, only for pending_plc without token) %>
-          <% if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
-            <details class="mb-3">
-              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                <%= t('migrations.show.didnt_receive_plc') %>
-              </summary>
-              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
-                <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
-                  <li><%= t('migrations.show.plc_check_spam') %></li>
-                  <li><%= t('migrations.show.plc_from_bluesky') %></li>
-                  <li><%= t('migrations.show.plc_expires') %></li>
-                </ul>
-                <% unless @migration.has_old_pds_tokens? %>
-                  <p class="small mb-2" style="color: #78350f;">
-                    <%= t('migrations.show.plc_new_code_help') %>
-                  </p>
-                  <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
-                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                    <div class="d-flex gap-2">
-                      <input type="password" name="password" required
-                             autocomplete="current-password"
-                             placeholder="<%= t('migrations.show.plc_password_placeholder', handle: @migration.old_handle) %>"
-                             class="form-control form-control-sm border-2 border-warning flex-grow-1">
-                      <button type="submit"
-                              class="btn btn-sm btn-warning text-white fw-semibold text-nowrap">
-                        <%= t('migrations.show.request_new_code') %>
-                      </button>
-                    </div>
-                  </form>
-                <% end %>
-              </div>
-            </details>
-
-            <details class="mb-3">
-              <summary class="text-body-secondary small fw-medium" style="cursor: pointer;">
-                <%= t('migrations.show.technical_details') %>
-              </summary>
-              <div class="bg-body-tertiary border rounded-3 p-3 mt-2 small text-body-secondary lh-lg">
-                <p class="mb-2">
-                  <%= t('migrations.show.plc_explanation').html_safe %>
-                </p>
-                <p class="mb-2">
-                  <%= t('migrations.show.plc_irreversible', new_pds: @migration.new_pds_host, old_pds: @migration.old_pds_host).html_safe %>
-                </p>
-                <p class="mb-0">
-                  <%= t('migrations.show.plc_expiry_note') %>
-                </p>
               </div>
             </details>
           <% end %>

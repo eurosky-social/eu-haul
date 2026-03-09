@@ -1399,6 +1399,7 @@ class MigrationsController < ApplicationController
   # Verify that an account exists on a PDS (for migration_in validation)
   # Returns { exists: boolean, deactivated: boolean, handle: string }
   def verify_account_exists_on_pds(pds_host, did)
+    pds_host = "https://#{pds_host}" unless pds_host.start_with?('http://', 'https://')
     url = "#{pds_host}/xrpc/com.atproto.repo.describeRepo?repo=#{did}"
 
     response = HTTParty.get(url, timeout: 30)
