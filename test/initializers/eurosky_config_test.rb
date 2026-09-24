@@ -1,0 +1,52 @@
+require "test_helper"
+
+class EuroskyConfigTest < ActiveSupport::TestCase
+  test "blank TARGET_PDS_OPTIONS falls back to the built-in destinations" do
+    assert_equal EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS, EuroskyConfig.parse_target_pds_options(nil)
+    assert_equal EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS, EuroskyConfig.parse_target_pds_options("  ")
+    assert_equal %w[https://eurosky.social https://blacksky.app https://myatproto.social https://bsky.social],
+                 EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS.map { |o| o[:url] }
+  end
+
+  test "parses a JSON destination list in order" do
+    options = EuroskyConfig.parse_target_pds_options(<<~JSON)
+      [{"label": "Eurosky (eurosky.social)", "url": "https://eurosky.social"},
+       {"label": " oso (oso.social) ", "url": "https://pds.oso.social/"}]
+    JSON
+
+    assert_equal [
+      { label: "Eurosky (eurosky.social)", url: "https://eurosky.social" },
+      { label: "oso (oso.social)", url: "https://pds.oso.social" }
+    ], options
+  end
+
+  test "an empty array leaves only the custom entry" do
+    assert_equal [], EuroskyConfig.parse_target_pds_options("[]")
+  end
+
+  test "rejects invalid JSON" do
+    error = assert_raises(EuroskyConfig::ConfigurationError) do
+      EuroskyConfig.parse_target_pds_options("[{label: nope}]")
+    end
+    assert_match(/not valid JSON/, error.message)
+  end
+
+  test "rejects a non-array" do
+    assert_raises(EuroskyConfig::ConfigurationError) do
+      EuroskyConfig.parse_target_pds_options('{"label": "x", "url": "https://x.example"}')
+    end
+  end
+
+  test "rejects entries without a label or a bare server URL" do
+    [
+      '[{"url": "https://pds.example.com"}]',
+      '[{"label": "", "url": "https://pds.example.com"}]',
+      '[{"label": "x"}]',
+      '[{"label": "x", "url": "pds.example.com"}]',
+      '[{"label": "x", "url": "https://pds.example.com/xrpc"}]',
+      '["https://pds.example.com"]'
+    ].each do |raw|
+      assert_raises(EuroskyConfig::ConfigurationError, raw) { EuroskyConfig.parse_target_pds_options(raw) }
+    end
+  end
+end

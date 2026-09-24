@@ -161,6 +161,10 @@ CONVERT_LEGACY_BLOBS=false  # Enable if migrating pre-2023 accounts
 DEPLOYMENT_MODE=standalone  # or "bound" to lock to specific PDS
 TARGET_PDS_HOST=https://your-pds.example.com  # Required if mode=bound
 
+# Destination servers in the wizard dropdown (JSON; default: Eurosky, Blacksky,
+# myatproto, Bluesky). A "Custom Server..." entry is always appended.
+TARGET_PDS_OPTIONS='[{"label":"Eurosky (eurosky.social)","url":"https://eurosky.social"}]'
+
 # Invite Code
 INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 

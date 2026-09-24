@@ -1457,10 +1457,9 @@
           <label for="pds-select" class="form-label"><%= t('migrations.new.step3.server_label') %></label>
           <select id="pds-select" class="form-select form-select-lg">
             <option value=""><%= t('migrations.new.step3.server_placeholder') %></option>
-            <option value="https://eurosky.social"><%= t('migrations.new.step3.server_eurosky') %></option>
-            <option value="https://blacksky.app"><%= t('migrations.new.step3.server_blacksky') %></option>
-            <option value="https://myatproto.social"><%= t('migrations.new.step3.server_myatproto') %></option>
-            <option value="https://bsky.social"><%= t('migrations.new.step3.server_bluesky') %></option>
+            <% EuroskyConfig.target_pds_options.each do |option| %>
+              <option value="<%= option[:url] %>"><%= option[:label] %></option>
+            <% end %>
             <option value="custom"><%= t('migrations.new.step3.server_custom') %></option>
           </select>
           <div class="form-text"><%= t('migrations.new.step3.server_help') %></div>

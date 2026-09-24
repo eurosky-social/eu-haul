@@ -36,6 +36,17 @@ module EuroskyConfig
   # PDS Configuration
   DEFAULT_TARGET_PDS = ENV['DEFAULT_TARGET_PDS']&.freeze
 
+  # Destination servers offered in the wizard's server dropdown. A "Custom
+  # Server..." entry is always appended after them. Override with
+  # TARGET_PDS_OPTIONS, a JSON array of {"label": ..., "url": ...} objects.
+  # Labels are shown as-is in every locale.
+  DEFAULT_TARGET_PDS_OPTIONS = [
+    { label: 'Eurosky (eurosky.social)', url: 'https://eurosky.social' },
+    { label: 'Blacksky (blacksky.app)', url: 'https://blacksky.app' },
+    { label: 'myatproto (myatproto.social)', url: 'https://myatproto.social' },
+    { label: 'Bluesky (bsky.social)', url: 'https://bsky.social' }
+  ].map(&:freeze).freeze
+
   # Legal URLs
   # If set to an external URL (e.g. https://...), those are used directly.
   # If not set, defaults to internal routes that render ERB templates with ENV values.
@@ -100,6 +111,12 @@ module EuroskyConfig
     validate_color!(PRIMARY_COLOR, 'PRIMARY_COLOR')
     validate_color!(SECONDARY_COLOR, 'SECONDARY_COLOR')
 
+    # Parse the destination list now so a bad TARGET_PDS_OPTIONS fails the boot
+    options = target_pds_options
+    if DEFAULT_TARGET_PDS.present? && options.none? { |o| o[:url] == DEFAULT_TARGET_PDS }
+      Rails.logger.warn("DEFAULT_TARGET_PDS #{DEFAULT_TARGET_PDS} is not in the destination list; nothing will be pre-selected")
+    end
+
     Rails.logger.info("EuroskyConfig loaded: mode=#{DEPLOYMENT_MODE}, invite_codes=#{INVITE_CODE_MODE}")
   end
 
@@ -126,6 +143,40 @@ module EuroskyConfig
 
   def self.invite_code_enabled?
     !invite_code_hidden?
+  end
+
+  # Destination servers for the wizard dropdown: TARGET_PDS_OPTIONS if set,
+  # otherwise DEFAULT_TARGET_PDS_OPTIONS.
+  def self.target_pds_options
+    @target_pds_options ||= parse_target_pds_options(ENV['TARGET_PDS_OPTIONS'])
+  end
+
+  # Parse a TARGET_PDS_OPTIONS value into [{label:, url:}, ...]. Blank means the
+  # built-in default list.
+  def self.parse_target_pds_options(raw)
+    return DEFAULT_TARGET_PDS_OPTIONS if raw.blank?
+
+    entries = begin
+      JSON.parse(raw)
+    rescue JSON::ParserError => e
+      raise ConfigurationError, "TARGET_PDS_OPTIONS is not valid JSON: #{e.message}"
+    end
+
+    unless entries.is_a?(Array)
+      raise ConfigurationError, 'TARGET_PDS_OPTIONS must be a JSON array of {"label": ..., "url": ...} objects'
+    end
+
+    entries.each_with_index.map do |entry, i|
+      label = entry['label'] if entry.is_a?(Hash)
+      url = entry['url'] if entry.is_a?(Hash)
+
+      unless label.is_a?(String) && label.present? && url.is_a?(String) && url.match?(%r{\Ahttps?://[^/\s]+/?\z})
+        raise ConfigurationError,
+              "TARGET_PDS_OPTIONS entry #{i} must have a non-empty \"label\" and a \"url\" like https://pds.example.com, got: #{entry.inspect}"
+      end
+
+      { label: label.strip, url: url.chomp('/') }.freeze
+    end.freeze
   end
 
   # Get CSS gradient string for backgrounds
