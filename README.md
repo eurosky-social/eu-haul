@@ -165,6 +165,11 @@ TARGET_PDS_HOST=https://your-pds.example.com  # Required if mode=bound
 # myatproto, Bluesky). A "Custom Server..." entry is always appended.
 TARGET_PDS_OPTIONS='[{"label":"Eurosky (eurosky.social)","url":"https://eurosky.social"}]'
 
+# Handle domains owned by their PDS, treated as non-transferable when migrating
+# away (comma-separated; default: .bsky.social,.blacksky.app,.staging.bsky.dev,
+# .test.bsky.network). Replaces the default list.
+PDS_HOSTED_HANDLE_SUFFIXES=.bsky.social,.blacksky.app,.oso.social
+
 # Invite Code
 INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 

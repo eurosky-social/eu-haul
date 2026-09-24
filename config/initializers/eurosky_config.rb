@@ -47,6 +47,19 @@ module EuroskyConfig
     { label: 'Bluesky (bsky.social)', url: 'https://bsky.social' }
   ].map(&:freeze).freeze
 
+  # Handle domains a PDS hands out to its users (user.bsky.social). A source
+  # handle ending in one of these is PDS-owned and can't be kept, even though
+  # the PDS answers its DNS/well-known lookups. Needed wherever the PDS hostname
+  # isn't itself the handle domain (pds.oso.social serves *.oso.social), since
+  # GoatService.handle_matches_source_pds? only catches user.<pds-hostname>.
+  # Override with PDS_HOSTED_HANDLE_SUFFIXES, comma-separated (.bsky.social,.oso.social).
+  DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES = %w[
+    .bsky.social
+    .blacksky.app
+    .staging.bsky.dev
+    .test.bsky.network
+  ].map(&:freeze).freeze
+
   # Legal URLs
   # If set to an external URL (e.g. https://...), those are used directly.
   # If not set, defaults to internal routes that render ERB templates with ENV values.
@@ -111,7 +124,9 @@ module EuroskyConfig
     validate_color!(PRIMARY_COLOR, 'PRIMARY_COLOR')
     validate_color!(SECONDARY_COLOR, 'SECONDARY_COLOR')
 
-    # Parse the destination list now so a bad TARGET_PDS_OPTIONS fails the boot
+    # Parse the lists now so a bad TARGET_PDS_OPTIONS or
+    # PDS_HOSTED_HANDLE_SUFFIXES fails the boot
+    pds_hosted_handle_suffixes
     options = target_pds_options
     if DEFAULT_TARGET_PDS.present? && options.none? { |o| o[:url] == DEFAULT_TARGET_PDS }
       Rails.logger.warn("DEFAULT_TARGET_PDS #{DEFAULT_TARGET_PDS} is not in the destination list; nothing will be pre-selected")
@@ -177,6 +192,30 @@ module EuroskyConfig
 
       { label: label.strip, url: url.chomp('/') }.freeze
     end.freeze
+  end
+
+  # Handle suffixes treated as PDS-owned: PDS_HOSTED_HANDLE_SUFFIXES if set,
+  # otherwise DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES.
+  def self.pds_hosted_handle_suffixes
+    @pds_hosted_handle_suffixes ||= parse_pds_hosted_handle_suffixes(ENV['PDS_HOSTED_HANDLE_SUFFIXES'])
+  end
+
+  # Parse a comma-separated PDS_HOSTED_HANDLE_SUFFIXES value into lowercase
+  # suffixes with a leading dot. Blank means the built-in default list.
+  def self.parse_pds_hosted_handle_suffixes(raw)
+    return DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES if raw.blank?
+
+    raw.split(',').map(&:strip).reject(&:empty?).map do |entry|
+      suffix = entry.downcase
+      suffix = ".#{suffix}" unless suffix.start_with?('.')
+
+      unless suffix.match?(/\A(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?){2,}\z/)
+        raise ConfigurationError,
+              "PDS_HOSTED_HANDLE_SUFFIXES entry #{entry.inspect} must be a domain like .pds.example.com"
+      end
+
+      suffix.freeze
+    end.uniq.freeze
   end
 
   # Get CSS gradient string for backgrounds

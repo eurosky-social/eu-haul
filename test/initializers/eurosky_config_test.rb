@@ -50,3 +50,22 @@ class EuroskyConfigTest < ActiveSupport::TestCase
     end
   end
 end
+
+class EuroskyConfigHandleSuffixesTest < ActiveSupport::TestCase
+  test "blank PDS_HOSTED_HANDLE_SUFFIXES falls back to the built-in suffixes" do
+    assert_equal %w[.bsky.social .blacksky.app .staging.bsky.dev .test.bsky.network],
+                 EuroskyConfig.parse_pds_hosted_handle_suffixes(nil)
+    assert_equal EuroskyConfig::DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES, EuroskyConfig.parse_pds_hosted_handle_suffixes(" ")
+  end
+
+  test "normalizes case, whitespace, the leading dot and duplicates" do
+    assert_equal %w[.bsky.social .oso.social],
+                 EuroskyConfig.parse_pds_hosted_handle_suffixes(" .bsky.social, OSO.social ,,.oso.social")
+  end
+
+  test "rejects a bare TLD or a non-domain" do
+    [".social", "social", "oso social", ".oso..social", "https://oso.social"].each do |raw|
+      assert_raises(EuroskyConfig::ConfigurationError, raw) { EuroskyConfig.parse_pds_hosted_handle_suffixes(raw) }
+    end
+  end
+end

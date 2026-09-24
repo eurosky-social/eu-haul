@@ -1504,16 +1504,9 @@ class GoatService
     # Normalize handle
     domain = handle
 
-    # Check for common PDS-hosted domain patterns
-    pds_hosted_suffixes = [
-      '.bsky.social',
-      '.blacksky.app',
-      '.staging.bsky.dev',
-      '.test.bsky.network'
-    ]
-
     # If handle ends with known PDS-hosted suffix, it's definitely PDS-hosted
-    if pds_hosted_suffixes.any? { |suffix| domain.end_with?(suffix) }
+    # (EuroskyConfig.pds_hosted_handle_suffixes, PDS_HOSTED_HANDLE_SUFFIXES)
+    if EuroskyConfig.pds_hosted_handle_suffixes.any? { |suffix| domain.end_with?(suffix) }
       Rails.logger.info("Handle #{handle} identified as PDS-hosted (known suffix)")
       return {
         type: 'pds_hosted',
