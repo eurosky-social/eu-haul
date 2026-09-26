@@ -161,6 +161,16 @@ CONVERT_LEGACY_BLOBS=false  # Enable if migrating pre-2023 accounts
 DEPLOYMENT_MODE=standalone  # or "bound" to lock to specific PDS
 TARGET_PDS_HOST=https://your-pds.example.com  # Required if mode=bound
 
+# Destination servers in the wizard dropdown (JSON; default: Eurosky, Blacksky,
+# myatproto, Bluesky). A "Custom Server..." entry is always appended.
+TARGET_PDS_OPTIONS='[{"label":"Eurosky (eurosky.social)","url":"https://eurosky.social"}]'
+
+# Extra handle domains owned by their PDS, treated as non-transferable when
+# migrating away (comma-separated). Added to the built-in .bsky.social,
+# .blacksky.app, .staging.bsky.dev, .test.bsky.network. Rarely needed: the source
+# PDS's own handle domains (describeServer) are checked as well.
+PDS_HOSTED_HANDLE_SUFFIXES=.oso.social
+
 # Invite Code
 INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 
