@@ -461,6 +461,8 @@ fr:
       two_factor_required: "L'authentification à deux facteurs est requise. Consultez votre e-mail pour un code de connexion."
       wrong_password: "Mot de passe incorrect pour votre compte sur %{pds}. Veuillez saisir le mot de passe que vous utilisez sur ce serveur."
       new_handle_not_on_domains: "Le handle %{handle} ne peut pas être créé sur ce serveur. Choisissez un nom sans points sur l'un de ses domaines : %{domains}."
+      same_server: "Votre compte se trouve déjà sur ce serveur (%{pds}) : il n'y a rien à migrer. Passer à un handle sur un autre de ses domaines est un changement de handle, pas une migration."
+      handle_owned_by_old_server: "%{handle} appartient à votre serveur actuel et cessera de fonctionner après la migration. Revenez en arrière et choisissez un nouveau handle."
       auth_failed: "Échec de l'authentification : %{error}"
       invalid_pds_response: "Réponse invalide du PDS cible"
       pds_connect_failed: "Impossible de se connecter au PDS cible. Veuillez réessayer."

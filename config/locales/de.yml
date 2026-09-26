@@ -461,6 +461,8 @@ de:
       two_factor_required: "Zwei-Faktor-Authentifizierung erforderlich. Überprüfen Sie Ihre E-Mails auf einen Anmeldecode."
       wrong_password: "Falsches Passwort für Ihr Konto auf %{pds}. Bitte geben Sie das Passwort ein, das Sie auf diesem Server verwenden."
       new_handle_not_on_domains: "Das Handle %{handle} kann auf diesem Server nicht angelegt werden. Wählen Sie einen Namen ohne Punkte auf einer seiner Domains: %{domains}."
+      same_server: "Auf diesem Server (%{pds}) liegt Ihr Konto bereits, es gibt also nichts umzuziehen. Ein Handle auf einer anderen Domain desselben Servers ist eine Handle-Änderung, kein Umzug."
+      handle_owned_by_old_server: "%{handle} gehört Ihrem aktuellen Server und funktioniert nach dem Umzug nicht mehr. Gehen Sie zurück und wählen Sie ein neues Handle."
       auth_failed: "Authentifizierung fehlgeschlagen: %{error}"
       invalid_pds_response: "Ungültige Antwort vom Ziel-PDS"
       pds_connect_failed: "Verbindung zum Ziel-PDS fehlgeschlagen. Bitte versuchen Sie es erneut."

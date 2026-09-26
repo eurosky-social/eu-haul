@@ -461,6 +461,8 @@ da:
       two_factor_required: "Tofaktorgodkendelse påkrævet. Tjek din e-mail for en loginkode."
       wrong_password: "Forkert adgangskode til din konto på %{pds}. Indtast venligst den adgangskode, du bruger på den server."
       new_handle_not_on_domains: "Handlet %{handle} kan ikke oprettes på denne server. Vælg et navn uden punktummer på et af dens domæner: %{domains}."
+      same_server: "Din konto ligger allerede på denne server (%{pds}), så der er intet at flytte. At skifte til et handle på et af serverens andre domæner er en ændring af handle, ikke en migrering."
+      handle_owned_by_old_server: "%{handle} tilhører din nuværende server og holder op med at virke efter flytningen. Gå tilbage og vælg et nyt handle."
       auth_failed: "Godkendelse mislykkedes: %{error}"
       invalid_pds_response: "Ugyldigt svar fra destinations-PDS"
       pds_connect_failed: "Kunne ikke oprette forbindelse til destinations-PDS. Prøv venligst igen."

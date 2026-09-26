@@ -53,8 +53,24 @@ RSpec.describe MigrationsController, type: :controller do
       expect(error_for(migration('alice.pds.oso.social', new_pds_host: 'https://pds.oso.social'))).to be_present
     end
 
-    it 'accepts the kept old handle without asking the target' do
+    it 'accepts a kept custom-domain handle without asking the target' do
+      allow(GoatService).to receive(:handle_matches_source_pds?).with('alice.example.com', when_unknown: false).and_return(false)
+
       expect(error_for(migration('alice.example.com', old_handle: 'alice.example.com'))).to be_nil
+    end
+
+    it 'refuses keeping a handle the old server owns' do
+      allow(GoatService).to receive(:handle_matches_source_pds?)
+        .with('iustitia100.latinsky.app', when_unknown: false).and_return(true)
+
+      error = error_for(migration('iustitia100.latinsky.app', old_handle: 'iustitia100.latinsky.app'))
+      expect(error).to include('iustitia100.latinsky.app belongs to your current server')
+    end
+
+    it 'refuses keeping a handle on a built-in server domain without asking anyone' do
+      expect(GoatService).not_to receive(:handle_matches_source_pds?)
+
+      expect(error_for(migration('alice.bsky.social', old_handle: 'alice.bsky.social'))).to be_present
     end
 
     it 'leaves the decision to createAccount when the target cannot be asked' do

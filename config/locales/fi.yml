@@ -461,6 +461,8 @@ fi:
       two_factor_required: "Kaksivaiheinen tunnistautuminen vaaditaan. Tarkista sähköpostistasi kirjautumiskoodi."
       wrong_password: "Väärä salasana tilillesi palvelimella %{pds}. Syötä salasana, jota käytät kyseisellä palvelimella."
       new_handle_not_on_domains: "Handlea %{handle} ei voi luoda tälle palvelimelle. Valitse nimi ilman pisteitä jollekin sen verkkotunnuksista: %{domains}."
+      same_server: "Tilisi on jo tällä palvelimella (%{pds}), joten siirrettävää ei ole. Vaihto saman palvelimen toisen verkkotunnuksen handleen on handlen vaihto, ei siirto."
+      handle_owned_by_old_server: "%{handle} kuuluu nykyiselle palvelimellesi eikä toimi enää siirron jälkeen. Palaa takaisin ja valitse uusi handle."
       auth_failed: "Tunnistautuminen epäonnistui: %{error}"
       invalid_pds_response: "Virheellinen vastaus kohde-PDS:ltä"
       pds_connect_failed: "Yhdistäminen kohde-PDS:ään epäonnistui. Yritä uudelleen."

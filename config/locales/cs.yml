@@ -461,6 +461,8 @@ cs:
       two_factor_required: "Je vyžadováno dvoufaktorové ověření. Zkontrolujte svůj e-mail, zda neobsahuje přihlašovací kód."
       wrong_password: "Špatné heslo k vašemu účtu na %{pds}. Zadejte prosím heslo, které na tomto serveru používáte."
       new_handle_not_on_domains: "Handle %{handle} nelze na tomto serveru vytvořit. Zvolte jméno bez teček na jedné z jeho domén: %{domains}."
+      same_server: "Váš účet už je na tomto serveru (%{pds}), takže není co migrovat. Přechod na handle v jiné doméně téhož serveru je změna handle, ne migrace."
+      handle_owned_by_old_server: "%{handle} patří vašemu současnému serveru a po migraci přestane fungovat. Vraťte se a zvolte nový handle."
       auth_failed: "Ověření se nezdařilo: %{error}"
       invalid_pds_response: "Neplatná odpověď z cílového PDS"
       pds_connect_failed: "Připojení k cílovému PDS se nezdařilo. Zkuste to prosím znovu."

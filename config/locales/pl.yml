@@ -461,6 +461,8 @@ pl:
       two_factor_required: "Wymagane uwierzytelnianie dwuskładnikowe. Sprawdź pocztę e-mail w poszukiwaniu kodu logowania."
       wrong_password: "Nieprawidłowe hasło do Twojego konta na %{pds}. Proszę wpisać hasło używane na tym serwerze."
       new_handle_not_on_domains: "Nie można utworzyć handle %{handle} na tym serwerze. Wybierz nazwę bez kropek w jednej z jego domen: %{domains}."
+      same_server: "Twoje konto już znajduje się na tym serwerze (%{pds}), więc nie ma czego przenosić. Zmiana na handle w innej domenie tego serwera to zmiana handle, a nie migracja."
+      handle_owned_by_old_server: "%{handle} należy do Twojego obecnego serwera i przestanie działać po przeniesieniu. Wróć i wybierz nowy handle."
       auth_failed: "Uwierzytelnianie nie powiodło się: %{error}"
       invalid_pds_response: "Nieprawidłowa odpowiedź z docelowego PDS"
       pds_connect_failed: "Nie udało się połączyć z docelowym PDS. Proszę spróbować ponownie."

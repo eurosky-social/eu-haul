@@ -461,6 +461,8 @@ es:
       two_factor_required: "Se requiere autenticación de dos factores. Revise su correo electrónico para obtener un código de inicio de sesión."
       wrong_password: "Contraseña incorrecta para su cuenta en %{pds}. Por favor, introduzca la contraseña que usa en ese servidor."
       new_handle_not_on_domains: "El handle %{handle} no se puede crear en este servidor. Elija un nombre sin puntos en uno de sus dominios: %{domains}."
+      same_server: "Su cuenta ya está en este servidor (%{pds}), así que no hay nada que migrar. Cambiar a un handle en otro de sus dominios es un cambio de handle, no una migración."
+      handle_owned_by_old_server: "%{handle} pertenece a su servidor actual y dejará de funcionar tras la migración. Vuelva atrás y elija un nuevo handle."
       auth_failed: "Error de autenticación: %{error}"
       invalid_pds_response: "Respuesta no válida del PDS de destino"
       pds_connect_failed: "No se pudo conectar al PDS de destino. Por favor, inténtelo de nuevo."

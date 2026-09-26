@@ -720,6 +720,24 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     assert @migration.completed?
   end
 
+  test "ActivateAccountJob never deactivates the account it just activated" do
+    # A move onto the same server (old rows; create refuses these now)
+    @migration.update!(status: :pending_activation, new_pds_host: @migration.old_pds_host)
+    @migration.set_password("test_password")
+
+    service = mock('goat_service')
+    service.expects(:activate_account)
+    service.expects(:deactivate_account).never
+    GoatService.stubs(:new).returns(service)
+    MigrationMailer.stubs(:migration_completed).with(anything, anything).returns(mock(deliver_later: true))
+
+    ActivateAccountJob.new.perform(@migration.id)
+
+    @migration.reload
+    assert @migration.completed?
+    assert_nil @migration.progress_data['account_deactivated_at']
+  end
+
   test "ActivateAccountJob cleans up credentials on success" do
     @migration.update!(status: :pending_activation)
     @migration.set_password("test_password")

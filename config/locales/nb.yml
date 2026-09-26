@@ -461,6 +461,8 @@ nb:
       two_factor_required: "Tofaktorautentisering påkrevd. Sjekk e-posten din for en innloggingskode."
       wrong_password: "Feil passord for kontoen din på %{pds}. Vennligst skriv inn passordet du bruker på den serveren."
       new_handle_not_on_domains: "Handlen %{handle} kan ikke opprettes på denne serveren. Velg et navn uten punktum på ett av domenene dens: %{domains}."
+      same_server: "Kontoen din ligger allerede på denne serveren (%{pds}), så det er ingenting å flytte. Å bytte til en handle på et annet av serverens domener er en endring av handle, ikke en migrering."
+      handle_owned_by_old_server: "%{handle} tilhører din nåværende server og slutter å virke etter flyttingen. Gå tilbake og velg en ny handle."
       auth_failed: "Autentisering mislyktes: %{error}"
       invalid_pds_response: "Ugyldig svar fra mål-PDS"
       pds_connect_failed: "Kunne ikke koble til mål-PDS. Vennligst prøv igjen."

@@ -283,6 +283,14 @@ class MigrationsController < ApplicationController
     # Normalize PDS host (add https:// if missing)
     pds_host = normalize_pds_host(pds_host)
 
+    # The server the account already lives on, possibly under another name, is
+    # not a destination (create refuses it too)
+    source_pds_host = params[:source_pds_host]&.strip
+    if source_pds_host.present? && GoatService.same_pds?(source_pds_host, pds_host)
+      render json: { error: I18n.t('controllers.migrations.same_server', pds: pds_host) }, status: :unprocessable_entity
+      return
+    end
+
     # Query the PDS describeServer endpoint
     describe_url = "#{pds_host}/xrpc/com.atproto.server.describeServer"
 
@@ -503,6 +511,14 @@ class MigrationsController < ApplicationController
         @migration.old_pds_host = resolution[:pds_host]
 
         Rails.logger.info("Resolved handle #{@migration.old_handle}: DID=#{@migration.did}, PDS=#{@migration.old_pds_host}")
+      end
+
+      # The account already lives on the target: nothing to move, and the
+      # pipeline would end by deactivating the account it just "activated".
+      if @migration.old_pds_host.present? && GoatService.same_pds?(@migration.old_pds_host, @migration.new_pds_host)
+        @migration.errors.add(:base, I18n.t('controllers.migrations.same_server', pds: @migration.new_pds_host))
+        render :new, status: :unprocessable_entity
+        return
       end
 
       # Detect migration type based on whether the user authenticated with an existing
@@ -1777,8 +1793,18 @@ class MigrationsController < ApplicationController
   # single name on one of the target's handle domains; anything else used to
   # pass here and only fail at createAccount, after email verification. When
   # the target can't be asked, createAccount stays the judge.
+  #
+  # Keeping the old handle is refused when it is known to belong to the old
+  # PDS (the wizard never offers it then); if that PDS can't be asked, the
+  # wizard's own check, which refuses on doubt, has already decided.
   def new_handle_domain_error(migration)
-    return nil if migration.new_handle.blank? || migration.new_handle == migration.old_handle
+    return nil if migration.new_handle.blank?
+
+    if migration.new_handle == migration.old_handle
+      return nil unless GoatService.pds_owned_handle?(migration.old_handle, when_unknown: false)
+
+      return I18n.t('controllers.migrations.handle_owned_by_old_server', handle: migration.old_handle)
+    end
 
     domains = GoatService.pds_handle_domains(normalize_pds_host(migration.new_pds_host))
     return nil if domains.blank? || GoatService.single_name_on_domains?(migration.new_handle, domains)

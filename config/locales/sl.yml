@@ -461,6 +461,8 @@ sl:
       two_factor_required: "Zahtevana je dvostopenjska avtentikacija. Preverite e-pošto za prijavno kodo."
       wrong_password: "Napačno geslo za vaš račun na %{pds}. Prosimo, vnesite geslo, ki ga uporabljate na tem strežniku."
       new_handle_not_on_domains: "Handla %{handle} na tem strežniku ni mogoče ustvariti. Izberite ime brez pik na eni od njegovih domen: %{domains}."
+      same_server: "Vaš račun je že na tem strežniku (%{pds}), zato ni ničesar za preseliti. Prehod na handle na drugi domeni istega strežnika je sprememba handla, ne selitev."
+      handle_owned_by_old_server: "%{handle} pripada vašemu trenutnemu strežniku in po selitvi ne bo več deloval. Vrnite se in izberite nov handle."
       auth_failed: "Avtentikacija neuspešna: %{error}"
       invalid_pds_response: "Neveljaven odgovor ciljnega PDS"
       pds_connect_failed: "Povezave s ciljnim PDS ni bilo mogoče vzpostaviti. Prosimo, poskusite znova."

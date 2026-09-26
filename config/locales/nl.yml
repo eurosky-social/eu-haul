@@ -461,6 +461,8 @@ nl:
       two_factor_required: "Tweefactorauthenticatie vereist. Controleer uw e-mail voor een aanmeldcode."
       wrong_password: "Onjuist wachtwoord voor uw account op %{pds}. Voer het wachtwoord in dat u op die server gebruikt."
       new_handle_not_on_domains: "De handle %{handle} kan op deze server niet worden aangemaakt. Kies een naam zonder punten op een van de domeinen: %{domains}."
+      same_server: "Uw account staat al op deze server (%{pds}), er valt dus niets te migreren. Overstappen naar een handle op een ander domein van deze server is een handlewijziging, geen migratie."
+      handle_owned_by_old_server: "%{handle} hoort bij uw huidige server en werkt niet meer na de migratie. Ga terug en kies een nieuwe handle."
       auth_failed: "Authenticatie mislukt: %{error}"
       invalid_pds_response: "Ongeldig antwoord van doel-PDS"
       pds_connect_failed: "Kon geen verbinding maken met doel-PDS. Probeer het opnieuw."

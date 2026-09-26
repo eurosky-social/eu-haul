@@ -1669,6 +1669,47 @@ class GoatService
     end
   end
 
+  # Whether a handle sits on a domain its PDS hands out (the checks
+  # detect_handle_type runs before DNS/well-known), answering when_unknown
+  # when the PDS can't be asked.
+  def self.pds_owned_handle?(handle, when_unknown: true)
+    handle = clean_handle(handle)
+    EuroskyConfig.pds_hosted_handle_suffixes.any? { |suffix| handle.end_with?(suffix) } ||
+      handle_matches_source_pds?(handle, when_unknown: when_unknown)
+  end
+
+  # Whether two PDS addresses are the same server: the same host, or two
+  # names for one server, told apart by describeServer (myatproto.social and
+  # blacksky.app are both did:web:blacksky.app). Moving an account onto the
+  # PDS it already lives on would end with ActivateAccountJob deactivating it.
+  def self.same_pds?(host_a, host_b)
+    return true if same_pds_host?(host_a, host_b)
+
+    did_a = describe_server(normalize_pds_url(host_a))&.dig('did')
+    did_a.present? && did_a == describe_server(normalize_pds_url(host_b))&.dig('did')
+  end
+
+  # Whether two PDS addresses name the same host; scheme-less input, a
+  # trailing slash and case don't matter. No network.
+  def self.same_pds_host?(host_a, host_b)
+    key_a = pds_host_key(host_a)
+    key_a.present? && key_a == pds_host_key(host_b)
+  end
+
+  def self.normalize_pds_url(host)
+    url = host.to_s.strip.chomp('/')
+    url.match?(%r{\Ahttps?://}i) ? url : "https://#{url}"
+  end
+
+  def self.pds_host_key(host)
+    return nil if host.blank?
+
+    uri = URI.parse(normalize_pds_url(host))
+    uri.host && "#{uri.host.downcase}:#{uri.port}"
+  rescue URI::InvalidURIError
+    nil
+  end
+
   # Convenience method to resolve handle directly to PDS host
   # Returns a hash with { did: '...', pds_host: '...' }
   def self.resolve_handle(handle)

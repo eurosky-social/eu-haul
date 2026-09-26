@@ -461,6 +461,8 @@ mt:
       two_factor_required: "Awtentikazzjoni b'żewġ fatturi meħtieġa. Iċċekkja l-email tiegħek għal kodiċi tad-dħul."
       wrong_password: "Password ħażina għall-kont tiegħek fuq %{pds}. Jekk jogħġbok daħħal il-password li tuża fuq dak is-server."
       new_handle_not_on_domains: "Il-handle %{handle} ma jistax jinħoloq fuq dan is-server. Agħżel isem mingħajr tikek fuq wieħed mid-dominji tiegħu: %{domains}."
+      same_server: "Il-kont tiegħek diġà jinsab fuq dan is-server (%{pds}), għalhekk m'hemm xejn x'jiġi mmigrat. Il-bidla għal handle fuq dominju ieħor tal-istess server hija bidla tal-handle, mhux migrazzjoni."
+      handle_owned_by_old_server: "%{handle} jappartjeni lis-server attwali tiegħek u ma jibqax jaħdem wara l-migrazzjoni. Mur lura u agħżel handle ġdid."
       auth_failed: "L-awtentikazzjoni falliet: %{error}"
       invalid_pds_response: "Risposta invalida mill-PDS fil-mira"
       pds_connect_failed: "Ma rnexxiex tikkonnettja mal-PDS fil-mira. Jekk jogħġbok erġa' pprova."

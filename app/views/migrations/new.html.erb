@@ -1001,7 +1001,7 @@
           'Content-Type': 'application/json',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
         },
-        body: JSON.stringify({ pds_host: pdsHost })
+        body: JSON.stringify({ pds_host: pdsHost, source_pds_host: wizardData.oldPdsHost })
       })
       .then(response => response.json())
       .then(data => {

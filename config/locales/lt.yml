@@ -461,6 +461,8 @@ lt:
       two_factor_required: "Reikalinga dviejų veiksnių autentifikacija. Patikrinkite el. paštą dėl prisijungimo kodo."
       wrong_password: "Neteisingas jūsų paskyros slaptažodis serveryje %{pds}. Įveskite slaptažodį, kurį naudojate tame serveryje."
       new_handle_not_on_domains: "Handle %{handle} negalima sukurti šiame serveryje. Pasirinkite vardą be taškų viename iš jo domenų: %{domains}."
+      same_server: "Jūsų paskyra jau yra šiame serveryje (%{pds}), todėl nėra ką perkelti. Perėjimas prie handle kitame to paties serverio domene yra handle keitimas, o ne perkėlimas."
+      handle_owned_by_old_server: "%{handle} priklauso jūsų dabartiniam serveriui ir po perkėlimo nebeveiks. Grįžkite ir pasirinkite naują handle."
       auth_failed: "Autentifikacija nepavyko: %{error}"
       invalid_pds_response: "Netinkamas atsakymas iš paskirties PDS"
       pds_connect_failed: "Nepavyko prisijungti prie paskirties PDS. Bandykite dar kartą."

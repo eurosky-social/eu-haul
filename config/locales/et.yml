@@ -461,6 +461,8 @@ et:
       two_factor_required: "Kaheastmeline autentimine on nõutud. Kontrollige oma e-posti sisselogimiskoodi saamiseks."
       wrong_password: "Vale parool teie konto jaoks serveris %{pds}. Palun sisestage parool, mida selles serveris kasutate."
       new_handle_not_on_domains: "Handle'it %{handle} ei saa selles serveris luua. Valige punktideta nimi mõnel selle domeenil: %{domains}."
+      same_server: "Teie konto on juba selles serveris (%{pds}), seega pole midagi kolida. Sama serveri teise domeeni handle'ile üleminek on handle'i muutmine, mitte kolimine."
+      handle_owned_by_old_server: "%{handle} kuulub teie praegusele serverile ega tööta pärast kolimist enam. Minge tagasi ja valige uus handle."
       auth_failed: "Autentimine ebaõnnestus: %{error}"
       invalid_pds_response: "Kehtetu vastus siht-PDS-ilt"
       pds_connect_failed: "Siht-PDS-iga ühenduse loomine ebaõnnestus. Palun proovige uuesti."

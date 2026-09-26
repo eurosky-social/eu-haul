@@ -461,6 +461,8 @@ sv:
       two_factor_required: "Tvåfaktorsautentisering krävs. Kontrollera din e-post för en inloggningskod."
       wrong_password: "Fel lösenord för ditt konto på %{pds}. Vänligen ange lösenordet du använder på den servern."
       new_handle_not_on_domains: "Handlet %{handle} kan inte skapas på den här servern. Välj ett namn utan punkter på någon av dess domäner: %{domains}."
+      same_server: "Ditt konto finns redan på den här servern (%{pds}), så det finns inget att flytta. Att byta till ett handle på en annan av serverns domäner är ett byte av handle, inte en migrering."
+      handle_owned_by_old_server: "%{handle} tillhör din nuvarande server och slutar fungera efter flytten. Gå tillbaka och välj ett nytt handle."
       auth_failed: "Autentisering misslyckades: %{error}"
       invalid_pds_response: "Ogiltigt svar från destinations-PDS"
       pds_connect_failed: "Kunde inte ansluta till destinations-PDS. Vänligen försök igen."

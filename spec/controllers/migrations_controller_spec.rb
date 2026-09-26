@@ -29,10 +29,14 @@ RSpec.describe MigrationsController, type: :controller do
   end
 
   describe "POST #create" do
-    # create checks a new account's handle against the target's handle domains
+    # create checks a new account's handle against the target's handle domains,
+    # and that the target isn't the old server under another name
     before do
       stub_request(:get, "#{valid_attributes[:new_pds_host]}/xrpc/com.atproto.server.describeServer")
-        .to_return(status: 200, body: { availableUserDomains: [".example.com"] }.to_json,
+        .to_return(status: 200, body: { did: "did:web:pds.example.com", availableUserDomains: [".example.com"] }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+      stub_request(:get, "#{resolved_pds_host}/xrpc/com.atproto.server.describeServer")
+        .to_return(status: 200, body: { did: "did:web:bsky.social", availableUserDomains: [".bsky.social"] }.to_json,
                    headers: { 'Content-Type' => 'application/json' })
     end
 

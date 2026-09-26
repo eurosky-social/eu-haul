@@ -461,6 +461,8 @@ ro:
       two_factor_required: "Autentificarea cu doi factori este necesară. Verificați emailul pentru un cod de autentificare."
       wrong_password: "Parolă incorectă pentru contul dvs. de pe %{pds}. Vă rugăm să introduceți parola pe care o folosiți pe acel server."
       new_handle_not_on_domains: "Handle-ul %{handle} nu poate fi creat pe acest server. Alegeți un nume fără puncte pe unul dintre domeniile sale: %{domains}."
+      same_server: "Contul dvs. se află deja pe acest server (%{pds}), deci nu este nimic de migrat. Trecerea la un handle pe alt domeniu al aceluiași server este o schimbare de handle, nu o migrare."
+      handle_owned_by_old_server: "%{handle} aparține serverului dvs. actual și nu va mai funcționa după migrare. Reveniți și alegeți un handle nou."
       auth_failed: "Autentificare eșuată: %{error}"
       invalid_pds_response: "Răspuns invalid de la PDS-ul de destinație"
       pds_connect_failed: "Nu s-a putut conecta la PDS-ul de destinație. Vă rugăm să încercați din nou."

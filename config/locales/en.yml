@@ -476,6 +476,8 @@ en:
       two_factor_required: "Two-factor authentication required. Check your email for a sign-in code."
       wrong_password: "Wrong password for your account on %{pds}. Please enter the password you use on that server."
       new_handle_not_on_domains: "The handle %{handle} can't be created on this server. Choose a name without dots on one of its domains: %{domains}."
+      same_server: "This is the server your account already lives on (%{pds}), so there is nothing to move. Switching to a handle on another of its domains is a handle change, not a migration."
+      handle_owned_by_old_server: "%{handle} belongs to your current server and stops working once you move. Go back and choose a new handle."
       auth_failed: "Authentication failed: %{error}"
       invalid_pds_response: "Invalid response from target PDS"
       pds_connect_failed: "Failed to connect to target PDS. Please try again."

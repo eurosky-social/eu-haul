@@ -461,6 +461,8 @@ lv:
       two_factor_required: "Nepieciešama divfaktoru autentifikācija. Pārbaudiet e-pastu, lai iegūtu pieteikšanās kodu."
       wrong_password: "Nepareiza jūsu konta parole serverī %{pds}. Lūdzu, ievadiet paroli, ko izmantojat šajā serverī."
       new_handle_not_on_domains: "Handle %{handle} šajā serverī nevar izveidot. Izvēlieties vārdu bez punktiem kādā no tā domēniem: %{domains}."
+      same_server: "Jūsu konts jau atrodas šajā serverī (%{pds}), tāpēc nav ko pārcelt. Pāreja uz handle cita tā paša servera domēnā ir handle maiņa, nevis migrācija."
+      handle_owned_by_old_server: "%{handle} pieder jūsu pašreizējam serverim un pēc pārcelšanas vairs nedarbosies. Atgriezieties un izvēlieties jaunu handle."
       auth_failed: "Autentifikācija neizdevās: %{error}"
       invalid_pds_response: "Nederīga atbilde no galamērķa PDS"
       pds_connect_failed: "Neizdevās pieslēgties galamērķa PDS. Lūdzu, mēģiniet vēlreiz."

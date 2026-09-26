@@ -461,6 +461,8 @@ ga:
       two_factor_required: "Tá fíordheimhniú dhá fhachtóir ag teastáil. Seiceáil do ríomhphost le haghaidh cóid logála isteach."
       wrong_password: "Pasfhocal mícheart do do chuntas ar %{pds}. Cuir isteach an pasfhocal a úsáideann tú ar an bhfreastalaí sin le do thoil."
       new_handle_not_on_domains: "Ní féidir an handle %{handle} a chruthú ar an bhfreastalaí seo. Roghnaigh ainm gan poncanna ar cheann dá fhearainn: %{domains}."
+      same_server: "Tá do chuntas ar an bhfreastalaí seo cheana féin (%{pds}), mar sin níl aon rud le bogadh. Is athrú handle é aistriú go handle ar fhearann eile den fhreastalaí céanna, ní imirce."
+      handle_owned_by_old_server: "Baineann %{handle} le do fhreastalaí reatha agus stopfaidh sé ag obair tar éis na himirce. Téigh ar ais agus roghnaigh handle nua."
       auth_failed: "Theip ar fhíordheimhniú: %{error}"
       invalid_pds_response: "Freagra neamhbhailí ón PDS sprice"
       pds_connect_failed: "Theip ar cheangal leis an PDS sprice. Bain triail eile as le do thoil."
