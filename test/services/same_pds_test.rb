@@ -9,7 +9,7 @@ class SamePdsTest < ActiveSupport::TestCase
 
     assert GoatService.same_pds?("https://eurosky.social", "https://eurosky.social")
     assert GoatService.same_pds?("https://eurosky.social/", "EUROSKY.social")
-    assert GoatService.same_pds_host?("eurosky.social", "https://eurosky.social:443")
+    assert GoatService.same_pds_by_address?("eurosky.social", "https://eurosky.social:443")
   end
 
   test "two names for one server are the same server" do
@@ -18,7 +18,18 @@ class SamePdsTest < ActiveSupport::TestCase
     stub_describe_server("https://blacksky.app", did: "did:web:blacksky.app")
 
     assert GoatService.same_pds?("https://blacksky.app", "https://myatproto.social")
-    refute GoatService.same_pds_host?("https://blacksky.app", "https://myatproto.social")
+    refute GoatService.same_pds_by_address?("https://blacksky.app", "https://myatproto.social")
+  end
+
+  test "bsky.social and the Bluesky PDSes behind it are one server, without asking" do
+    # truffle.us-east.host.bsky.network describes itself as its own did, and
+    # bsky.social as did:web:bsky.social, yet bsky.social answers for its accounts
+    HTTParty.expects(:get).never
+
+    assert GoatService.same_pds?("https://truffle.us-east.host.bsky.network", "https://bsky.social")
+    assert GoatService.same_pds_by_address?("https://bsky.social", "morel.us-east.host.bsky.network")
+    refute GoatService.same_pds_by_address?("https://eurosky.social", "https://bsky.social")
+    refute GoatService.same_pds_by_address?("https://host.bsky.network.example.com", "https://bsky.social")
   end
 
   test "different servers are not the same" do
@@ -32,8 +43,8 @@ class SamePdsTest < ActiveSupport::TestCase
     HTTParty.stubs(:get).raises(Net::OpenTimeout)
 
     refute GoatService.same_pds?("https://eurosky.social", "https://blacksky.app")
-    refute GoatService.same_pds_host?("https://pds.example.com:8443", "https://pds.example.com")
-    refute GoatService.same_pds_host?(nil, nil)
+    refute GoatService.same_pds_by_address?("https://pds.example.com:8443", "https://pds.example.com")
+    refute GoatService.same_pds_by_address?(nil, nil)
   end
 
   test "a handle on a built-in suffix is PDS-owned without asking anyone" do

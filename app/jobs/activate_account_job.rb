@@ -69,8 +69,8 @@ class ActivateAccountJob < ApplicationJob
     # Step 2: Deactivate account on old PDS - never when it is the account just
     # activated. create refuses same-server moves (including a server's second
     # name); this address-only check covers rows created before it did.
-    if GoatService.same_pds_host?(migration.old_pds_host, migration.new_pds_host)
-      Rails.logger.warn("Old and new PDS are the same host for migration #{migration.token}; not deactivating")
+    if GoatService.same_pds_by_address?(migration.old_pds_host, migration.new_pds_host)
+      Rails.logger.warn("Old and new PDS are the same server for migration #{migration.token}; not deactivating")
     else
       begin
         Rails.logger.info("Deactivating account on old PDS: #{migration.old_pds_host}")

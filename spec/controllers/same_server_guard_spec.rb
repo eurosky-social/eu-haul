@@ -29,6 +29,12 @@ RSpec.describe MigrationsController, type: :controller do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
+    it 'refuses bsky.social for an account on a Bluesky PDS behind it' do
+      post :check_pds, params: { pds_host: 'https://bsky.social', source_pds_host: 'https://truffle.us-east.host.bsky.network' }, format: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
     it 'checks a different server as before' do
       stub_describe_server('https://blacksky.app', did: 'did:web:blacksky.app')
       stub_describe_server('https://eurosky.social', did: 'did:web:eurosky.social', domains: ['.eurosky.social', '.mu.social'])

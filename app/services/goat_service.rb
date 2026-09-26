@@ -1683,17 +1683,32 @@ class GoatService
   # blacksky.app are both did:web:blacksky.app). Moving an account onto the
   # PDS it already lives on would end with ActivateAccountJob deactivating it.
   def self.same_pds?(host_a, host_b)
-    return true if same_pds_host?(host_a, host_b)
+    return true if same_pds_by_address?(host_a, host_b)
 
     did_a = describe_server(normalize_pds_url(host_a))&.dig('did')
     did_a.present? && did_a == describe_server(normalize_pds_url(host_b))&.dig('did')
   end
 
-  # Whether two PDS addresses name the same host; scheme-less input, a
-  # trailing slash and case don't matter. No network.
-  def self.same_pds_host?(host_a, host_b)
+  # Bluesky's accounts live on *.host.bsky.network PDSes behind the bsky.social
+  # entryway, which answers for every one of them (describeRepo, login) under
+  # its own describeServer did - so neither the host nor the did matches.
+  BLUESKY_ENTRYWAY_HOST = 'bsky.social'.freeze
+  BLUESKY_PDS_HOST_SUFFIX = '.host.bsky.network'.freeze
+
+  # Whether two PDS addresses are known to be the same server without asking
+  # either: the same host (scheme-less input, a trailing slash and case don't
+  # matter), or both Bluesky-hosted.
+  def self.same_pds_by_address?(host_a, host_b)
     key_a = pds_host_key(host_a)
-    key_a.present? && key_a == pds_host_key(host_b)
+    key_b = pds_host_key(host_b)
+    return false if key_a.blank? || key_b.blank?
+
+    key_a == key_b || (bluesky_hosted?(key_a) && bluesky_hosted?(key_b))
+  end
+
+  def self.bluesky_hosted?(host_key)
+    name = host_key.split(':').first
+    name == BLUESKY_ENTRYWAY_HOST || name.end_with?(BLUESKY_PDS_HOST_SUFFIX)
   end
 
   def self.normalize_pds_url(host)

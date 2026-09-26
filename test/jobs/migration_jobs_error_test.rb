@@ -721,8 +721,9 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
   end
 
   test "ActivateAccountJob never deactivates the account it just activated" do
-    # A move onto the same server (old rows; create refuses these now)
-    @migration.update!(status: :pending_activation, new_pds_host: @migration.old_pds_host)
+    # A bsky.social account "moved" to bsky.social (old rows; create refuses these now)
+    @migration.update!(status: :pending_activation, old_pds_host: "https://truffle.us-east.host.bsky.network",
+                       new_pds_host: "https://bsky.social")
     @migration.set_password("test_password")
 
     service = mock('goat_service')
