@@ -274,7 +274,7 @@ it:
 
       # Completed
       completed_title: "Migrazione completata con successo!"
-      completed_migrated_to: "Il tuo account è stato migrato con successo su Eurosky. Ora puoi accedere con il tuo nuovo handle: <strong>%{handle}</strong> su Bluesky o la tua app preferita."
+      completed_migrated_to: "Il tuo account è stato migrato con successo su %{pds}. Ora puoi accedere con il tuo nuovo handle: <strong>%{handle}</strong> su Bluesky o la tua app preferita."
       completed_migrated_back: "Il tuo account è stato migrato con successo su <strong>%{pds}</strong>. Ora puoi accedere con il tuo handle: <strong>%{handle}</strong> su Bluesky o la tua app preferita."
       email_sent_html: "Abbiamo inviato un'e-mail a %{email} con la nuova password dell'account, le istruzioni di accesso e un link per cambiare la password. Controlla la posta in arrivo (e la cartella spam)."
       save_rotation_key: "SALVA LA TUA CHIAVE DI ROTAZIONE!"
@@ -308,7 +308,7 @@ it:
       # PLC help section
       didnt_receive_plc: "Non hai ricevuto l'e-mail?"
       plc_check_spam: "Controlla la cartella spam o posta indesiderata"
-      plc_from_bluesky: "L'e-mail proviene da Bluesky, non da noi"
+      plc_from_old_pds: "L'e-mail proviene dal tuo server attuale (%{pds}), non da noi"
       plc_expires: "Il codice scade dopo 1 ora"
       plc_new_code_help: "Se hai bisogno di un nuovo codice, inserisci la password qui sotto e ne richiederemo uno:"
       plc_password_placeholder: "Password per %{handle}"
@@ -459,7 +459,7 @@ it:
       app_password_not_allowed: "Le password delle app non possono essere utilizzate per la migrazione. Utilizza la password completa del tuo account."
       pds_did_password_required: "Indirizzo PDS, DID e password sono obbligatori"
       two_factor_required: "Autenticazione a due fattori richiesta. Controlla la tua e-mail per il codice di accesso."
-      wrong_password: "Password errata per il tuo account Bluesky. Inserisci la password utilizzata su bsky.social."
+      wrong_password: "Password errata per il tuo account su %{pds}. Inserisci la password che usi su quel server."
       new_handle_not_on_domains: "L'handle %{handle} non può essere creato su questo server. Scegli un nome senza punti su uno dei suoi domini: %{domains}."
       auth_failed: "Autenticazione non riuscita: %{error}"
       invalid_pds_response: "Risposta non valida dal PDS di destinazione"

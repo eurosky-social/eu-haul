@@ -274,7 +274,7 @@ mt:
 
       # Completed
       completed_title: "Il-Migrazzjoni Tlestiet b'Suċċess!"
-      completed_migrated_to: "Il-kont tiegħek ġie mmigrat b'suċċess lejn Eurosky. Issa tista' tidħol bil-handle ġdid tiegħek: <strong>%{handle}</strong> fuq Bluesky jew l-app preferita tiegħek."
+      completed_migrated_to: "Il-kont tiegħek ġie mmigrat b'suċċess lejn %{pds}. Issa tista' tidħol bil-handle ġdid tiegħek: <strong>%{handle}</strong> fuq Bluesky jew l-app preferita tiegħek."
       completed_migrated_back: "Il-kont tiegħek ġie mmigrat lura b'suċċess lejn <strong>%{pds}</strong>. Issa tista' tidħol bil-handle tiegħek: <strong>%{handle}</strong> fuq Bluesky jew l-app preferita tiegħek."
       email_sent_html: "Bgħatna email lil %{email} bil-password ġdida tal-kont tiegħek, struzzjonijiet tad-dħul, u link biex tbiddel il-password tiegħek. Jekk jogħġbok iċċekkja l-inbox tiegħek (u l-folder tal-ispam)."
       save_rotation_key: "ĦAŻEN IR-ROTATION KEY TIEGĦEK!"
@@ -308,7 +308,7 @@ mt:
       # PLC help section
       didnt_receive_plc: "Ma rċevejtx l-email?"
       plc_check_spam: "Iċċekkja l-folder tal-ispam jew junk tiegħek"
-      plc_from_bluesky: "L-email ġejja minn Bluesky, mhux minna"
+      plc_from_old_pds: "L-email ġejja mis-server attwali tiegħek (%{pds}), mhux minna"
       plc_expires: "Il-kodiċi jiskadi wara siegħa"
       plc_new_code_help: "Jekk teħtieġ kodiċi ġdid, daħħal il-password tiegħek hawn taħt u nitolbu wieħed:"
       plc_password_placeholder: "Password għal %{handle}"
@@ -459,7 +459,7 @@ mt:
       app_password_not_allowed: "Il-passwords tal-app ma jistgħux jintużaw għall-migrazzjoni. Jekk jogħġbok uża l-password sħiħa tal-kont tiegħek."
       pds_did_password_required: "Il-host tal-PDS, DID, u password huma meħtieġa"
       two_factor_required: "Awtentikazzjoni b'żewġ fatturi meħtieġa. Iċċekkja l-email tiegħek għal kodiċi tad-dħul."
-      wrong_password: "Password ħażina għall-kont Bluesky tiegħek. Jekk jogħġbok daħħal il-password li użajt fuq bsky.social."
+      wrong_password: "Password ħażina għall-kont tiegħek fuq %{pds}. Jekk jogħġbok daħħal il-password li tuża fuq dak is-server."
       new_handle_not_on_domains: "Il-handle %{handle} ma jistax jinħoloq fuq dan is-server. Agħżel isem mingħajr tikek fuq wieħed mid-dominji tiegħu: %{domains}."
       auth_failed: "L-awtentikazzjoni falliet: %{error}"
       invalid_pds_response: "Risposta invalida mill-PDS fil-mira"

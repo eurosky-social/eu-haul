@@ -274,7 +274,7 @@ ro:
 
       # Completed
       completed_title: "Migrare finalizată cu succes!"
-      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la Eurosky. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
+      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la %{pds}. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
       completed_migrated_back: "Contul dumneavoastră a fost migrat cu succes înapoi la <strong>%{pds}</strong>. Acum vă puteți autentifica cu handle-ul: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
       email_sent_html: "Am trimis un email la %{email} cu noua parolă a contului, instrucțiuni de autentificare și un link pentru schimbarea parolei. Vă rugăm să verificați căsuța de primire (și folderul de spam)."
       save_rotation_key: "SALVAȚI CHEIA DE ROTAȚIE!"
@@ -308,7 +308,7 @@ ro:
       # PLC help section
       didnt_receive_plc: "Nu ați primit emailul?"
       plc_check_spam: "Verificați folderul de spam sau junk"
-      plc_from_bluesky: "Emailul vine de la Bluesky, nu de la noi"
+      plc_from_old_pds: "Emailul vine de la serverul dvs. actual (%{pds}), nu de la noi"
       plc_expires: "Codul expiră după 1 oră"
       plc_new_code_help: "Dacă aveți nevoie de un cod nou, introduceți parola mai jos și vom solicita unul:"
       plc_password_placeholder: "Parola pentru %{handle}"
@@ -459,7 +459,7 @@ ro:
       app_password_not_allowed: "Parolele de aplicație nu pot fi folosite pentru migrare. Vă rugăm să folosiți parola completă a contului."
       pds_did_password_required: "Gazda PDS, DID-ul și parola sunt obligatorii"
       two_factor_required: "Autentificarea cu doi factori este necesară. Verificați emailul pentru un cod de autentificare."
-      wrong_password: "Parolă incorectă pentru contul Bluesky. Vă rugăm să introduceți parola folosită pe bsky.social."
+      wrong_password: "Parolă incorectă pentru contul dvs. de pe %{pds}. Vă rugăm să introduceți parola pe care o folosiți pe acel server."
       new_handle_not_on_domains: "Handle-ul %{handle} nu poate fi creat pe acest server. Alegeți un nume fără puncte pe unul dintre domeniile sale: %{domains}."
       auth_failed: "Autentificare eșuată: %{error}"
       invalid_pds_response: "Răspuns invalid de la PDS-ul de destinație"

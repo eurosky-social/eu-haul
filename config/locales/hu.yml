@@ -274,7 +274,7 @@ hu:
 
       # Completed
       completed_title: "Migracio sikeresen befejezve!"
-      completed_migrated_to: "Fiokja sikeresen atkoltoztetve az Eurosky szerverre. Most bejelentkezhet az uj handlevel: <strong>%{handle}</strong> a Bluesky-on vagy a kedvenc alkalmazásában."
+      completed_migrated_to: "Fiokja sikeresen atkoltoztetve a(z) %{pds} szerverre. Most bejelentkezhet az uj handlevel: <strong>%{handle}</strong> a Bluesky-on vagy a kedvenc alkalmazásában."
       completed_migrated_back: "Fiokja sikeresen visszakoltoztetve a(z) <strong>%{pds}</strong> szerverre. Most bejelentkezhet a handlevel: <strong>%{handle}</strong> a Bluesky-on vagy a kedvenc alkalmazásában."
       email_sent_html: "E-mailt kuldtunk a(z) %{email} cimre az uj fiokjelszavval, bejelentkezesi utmutatoval es jelszomodoitasi hivatkozassal. Kerem, ellenorizze a beerkezett leveleket (es a spam mappat)."
       save_rotation_key: "MENTSE EL A ROTACIOS KULCSOT!"
@@ -308,7 +308,7 @@ hu:
       # PLC help section
       didnt_receive_plc: "Nem kapta meg az e-mailt?"
       plc_check_spam: "Ellenorizze a spam vagy levelszemetmappat"
-      plc_from_bluesky: "Az e-mailt a Bluesky kuldi, nem mi"
+      plc_from_old_pds: "Az e-mailt a jelenlegi szervere (%{pds}) küldi, nem mi"
       plc_expires: "A kod 1 ora utan lejar"
       plc_new_code_help: "Ha uj kodra van szuksege, adja meg jelszavat alabb, es kerunket:"
       plc_password_placeholder: "Jelszo a(z) %{handle} fiokhoz"
@@ -459,7 +459,7 @@ hu:
       app_password_not_allowed: "Az alkalmazásjelszavak nem használhatók a migrációhoz. Kérjük, használja a teljes fiókjelszavát."
       pds_did_password_required: "A PDS cim, a DID es a jelszo megadasa kotelezo"
       two_factor_required: "Ketfaktoros hitelesites szukseges. Ellenorizze e-mailjeit a bejelentkezesi kodert."
-      wrong_password: "Helytelen jelszo a Bluesky fiokjahoz. Kerem, adja meg a bsky.social-on hasznalt jelszavat."
+      wrong_password: "Helytelen jelszó a(z) %{pds} szerveren lévő fiókjához. Kérem, adja meg az ezen a szerveren használt jelszavát."
       new_handle_not_on_domains: "A(z) %{handle} handle nem hozható létre ezen a szerveren. Válasszon pontok nélküli nevet valamelyik domainjén: %{domains}."
       auth_failed: "A hitelesites nem sikerult: %{error}"
       invalid_pds_response: "Ervenytelen valasz a cel-PDS-tol"

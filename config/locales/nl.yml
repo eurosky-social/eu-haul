@@ -274,7 +274,7 @@ nl:
 
       # Completed
       completed_title: "Migratie succesvol voltooid!"
-      completed_migrated_to: "Uw account is succesvol gemigreerd naar Eurosky. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
+      completed_migrated_to: "Uw account is succesvol gemigreerd naar %{pds}. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
       completed_migrated_back: "Uw account is succesvol terug gemigreerd naar <strong>%{pds}</strong>. U kunt nu inloggen met uw handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
       email_sent_html: "We hebben een e-mail gestuurd naar %{email} met uw nieuwe accountwachtwoord, inloginstructies en een link om uw wachtwoord te wijzigen. Controleer uw inbox (en spammap)."
       save_rotation_key: "BEWAAR UW ROTATIESLEUTEL!"
@@ -308,7 +308,7 @@ nl:
       # PLC help section
       didnt_receive_plc: "E-mail niet ontvangen?"
       plc_check_spam: "Controleer uw spam- of ongewenste-e-mailmap"
-      plc_from_bluesky: "De e-mail komt van Bluesky, niet van ons"
+      plc_from_old_pds: "De e-mail komt van uw huidige server (%{pds}), niet van ons"
       plc_expires: "De code verloopt na 1 uur"
       plc_new_code_help: "Als u een nieuwe code nodig hebt, voer dan hieronder uw wachtwoord in en we vragen er een aan:"
       plc_password_placeholder: "Wachtwoord voor %{handle}"
@@ -459,7 +459,7 @@ nl:
       app_password_not_allowed: "App-wachtwoorden kunnen niet worden gebruikt voor migratie. Gebruik alstublieft uw volledige accountwachtwoord."
       pds_did_password_required: "PDS-host, DID en wachtwoord zijn vereist"
       two_factor_required: "Tweefactorauthenticatie vereist. Controleer uw e-mail voor een aanmeldcode."
-      wrong_password: "Onjuist wachtwoord voor uw Bluesky-account. Voer het wachtwoord in dat u op bsky.social gebruikte."
+      wrong_password: "Onjuist wachtwoord voor uw account op %{pds}. Voer het wachtwoord in dat u op die server gebruikt."
       new_handle_not_on_domains: "De handle %{handle} kan op deze server niet worden aangemaakt. Kies een naam zonder punten op een van de domeinen: %{domains}."
       auth_failed: "Authenticatie mislukt: %{error}"
       invalid_pds_response: "Ongeldig antwoord van doel-PDS"

@@ -274,7 +274,7 @@ sv:
 
       # Completed
       completed_title: "Flytt slutförd!"
-      completed_migrated_to: "Ditt konto har flyttats till Eurosky. Du kan nu logga in med ditt nya handle: <strong>%{handle}</strong> på Bluesky eller din föredragna app."
+      completed_migrated_to: "Ditt konto har flyttats till %{pds}. Du kan nu logga in med ditt nya handle: <strong>%{handle}</strong> på Bluesky eller din föredragna app."
       completed_migrated_back: "Ditt konto har flyttats tillbaka till <strong>%{pds}</strong>. Du kan nu logga in med ditt handle: <strong>%{handle}</strong> på Bluesky eller din föredragna app."
       email_sent_html: "Vi har skickat ett e-postmeddelande till %{email} med ditt nya kontolösenord, inloggningsinstruktioner och en länk för att byta lösenord. Vänligen kontrollera din inkorg (och skräppostmapp)."
       save_rotation_key: "SPARA DIN ROTATIONSNYCKEL!"
@@ -308,7 +308,7 @@ sv:
       # PLC help section
       didnt_receive_plc: "Fick du inte e-postmeddelandet?"
       plc_check_spam: "Kontrollera din skräppost- eller junkmapp"
-      plc_from_bluesky: "E-postmeddelandet kommer från Bluesky, inte från oss"
+      plc_from_old_pds: "E-postmeddelandet kommer från din nuvarande server (%{pds}), inte från oss"
       plc_expires: "Koden upphör efter 1 timme"
       plc_new_code_help: "Om du behöver en ny kod, ange ditt lösenord nedan så begär vi en:"
       plc_password_placeholder: "Lösenord för %{handle}"
@@ -459,7 +459,7 @@ sv:
       app_password_not_allowed: "Applösenord kan inte användas för migrering. Vänligen använd ditt fullständiga kontolösenord istället."
       pds_did_password_required: "PDS-värd, DID och lösenord krävs"
       two_factor_required: "Tvåfaktorsautentisering krävs. Kontrollera din e-post för en inloggningskod."
-      wrong_password: "Fel lösenord för ditt Bluesky-konto. Vänligen ange lösenordet du använde på bsky.social."
+      wrong_password: "Fel lösenord för ditt konto på %{pds}. Vänligen ange lösenordet du använder på den servern."
       new_handle_not_on_domains: "Handlet %{handle} kan inte skapas på den här servern. Välj ett namn utan punkter på någon av dess domäner: %{domains}."
       auth_failed: "Autentisering misslyckades: %{error}"
       invalid_pds_response: "Ogiltigt svar från destinations-PDS"

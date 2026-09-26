@@ -274,7 +274,7 @@ sl:
 
       # Completed
       completed_title: "Selitev uspešno dokončana!"
-      completed_migrated_to: "Vaš račun je bil uspešno preseljen na Eurosky. Zdaj se lahko prijavite z novim handle: <strong>%{handle}</strong> na Bluesky ali vaši priljubljeni aplikaciji."
+      completed_migrated_to: "Vaš račun je bil uspešno preseljen na %{pds}. Zdaj se lahko prijavite z novim handle: <strong>%{handle}</strong> na Bluesky ali vaši priljubljeni aplikaciji."
       completed_migrated_back: "Vaš račun je bil uspešno preseljen nazaj na <strong>%{pds}</strong>. Zdaj se lahko prijavite s svojim handle: <strong>%{handle}</strong> na Bluesky ali vaši priljubljeni aplikaciji."
       email_sent_html: "Poslali smo e-pošto na %{email} z novim geslom računa, navodili za prijavo in povezavo za spremembo gesla. Prosimo, preverite prejeto pošto (in mapo z neželeno pošto)."
       save_rotation_key: "SHRANITE ROTACIJSKI KLJUČ!"
@@ -308,7 +308,7 @@ sl:
       # PLC help section
       didnt_receive_plc: "Niste prejeli e-pošte?"
       plc_check_spam: "Preverite mapo z neželeno pošto"
-      plc_from_bluesky: "E-pošta prihaja od Bluesky, ne od nas"
+      plc_from_old_pds: "E-pošta prihaja z vašega trenutnega strežnika (%{pds}), ne od nas"
       plc_expires: "Koda poteče po 1 uri"
       plc_new_code_help: "Če potrebujete novo kodo, vnesite geslo spodaj in jo bomo zahtevali:"
       plc_password_placeholder: "Geslo za %{handle}"
@@ -459,7 +459,7 @@ sl:
       app_password_not_allowed: "Gesla za aplikacije se ne morejo uporabiti za selitev. Prosimo, uporabite svoje polno geslo računa."
       pds_did_password_required: "Gostitelj PDS, DID in geslo so obvezni"
       two_factor_required: "Zahtevana je dvostopenjska avtentikacija. Preverite e-pošto za prijavno kodo."
-      wrong_password: "Napačno geslo za račun Bluesky. Prosimo, vnesite geslo, ki ste ga uporabili na bsky.social."
+      wrong_password: "Napačno geslo za vaš račun na %{pds}. Prosimo, vnesite geslo, ki ga uporabljate na tem strežniku."
       new_handle_not_on_domains: "Handla %{handle} na tem strežniku ni mogoče ustvariti. Izberite ime brez pik na eni od njegovih domen: %{domains}."
       auth_failed: "Avtentikacija neuspešna: %{error}"
       invalid_pds_response: "Neveljaven odgovor ciljnega PDS"

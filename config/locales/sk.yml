@@ -274,7 +274,7 @@ sk:
 
       # Completed
       completed_title: "Migrácia úspešne dokončená!"
-      completed_migrated_to: "Váš účet bol úspešne migrovaný na Eurosky. Teraz sa môžete prihlásiť s novým handle: <strong>%{handle}</strong> na Bluesky alebo vo vašej preferovanej aplikácii."
+      completed_migrated_to: "Váš účet bol úspešne migrovaný na %{pds}. Teraz sa môžete prihlásiť s novým handle: <strong>%{handle}</strong> na Bluesky alebo vo vašej preferovanej aplikácii."
       completed_migrated_back: "Váš účet bol úspešne migrovaný späť na <strong>%{pds}</strong>. Teraz sa môžete prihlásiť so svojím handle: <strong>%{handle}</strong> na Bluesky alebo vo vašej preferovanej aplikácii."
       email_sent_html: "Odoslali sme e-mail na %{email} s novým heslom účtu, pokynmi na prihlásenie a odkazom na zmenu hesla. Prosím, skontrolujte si priečinok doručenej pošty (aj spam)."
       save_rotation_key: "ULOŽTE SI ROTAČNÝ KĽÚČ!"
@@ -308,7 +308,7 @@ sk:
       # PLC help section
       didnt_receive_plc: "Nedostali ste e-mail?"
       plc_check_spam: "Skontrolujte priečinok so spamom alebo nevyžiadanou poštou"
-      plc_from_bluesky: "E-mail prichádza od Bluesky, nie od nás"
+      plc_from_old_pds: "E-mail prichádza z vášho súčasného servera (%{pds}), nie od nás"
       plc_expires: "Kód vyprší po 1 hodine"
       plc_new_code_help: "Ak potrebujete nový kód, zadajte heslo nižšie a vyžiadame ho:"
       plc_password_placeholder: "Heslo pre %{handle}"
@@ -459,7 +459,7 @@ sk:
       app_password_not_allowed: "Heslá aplikácií nie je možné použiť na migráciu. Použite prosím svoje úplné heslo účtu."
       pds_did_password_required: "Hostiteľ PDS, DID a heslo sú povinné"
       two_factor_required: "Vyžaduje sa dvojfaktorové overenie. Skontrolujte e-mail pre prihlasovací kód."
-      wrong_password: "Nesprávne heslo pre účet Bluesky. Prosím, zadajte heslo, ktoré ste použili na bsky.social."
+      wrong_password: "Nesprávne heslo pre váš účet na %{pds}. Prosím, zadajte heslo, ktoré na tomto serveri používate."
       new_handle_not_on_domains: "Handle %{handle} nie je možné na tomto serveri vytvoriť. Zvoľte meno bez bodiek na jednej z jeho domén: %{domains}."
       auth_failed: "Overenie zlyhalo: %{error}"
       invalid_pds_response: "Neplatná odpoveď z cieľového PDS"

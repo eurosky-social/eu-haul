@@ -274,7 +274,7 @@ ga:
 
       # Completed
       completed_title: "D'éirigh leis an imirce!"
-      completed_migrated_to: "D'éirigh le himirce do chuntais go Eurosky. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
+      completed_migrated_to: "D'éirigh le himirce do chuntais go %{pds}. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
       completed_migrated_back: "D'éirigh le himirce do chuntais ar ais go <strong>%{pds}</strong>. Is féidir leat logáil isteach anois le do handle: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
       email_sent_html: "Sheol muid ríomhphost chuig %{email} le pasfhocal nua do chuntais, treoracha logála isteach, agus nasc chun do phasfhocal a athrú. Seiceáil do bhosca isteach (agus d'fhillteán dramhphoist) le do thoil."
       save_rotation_key: "SÁBHÁIL D'EOCHAIR ROTHLAITHE!"
@@ -308,7 +308,7 @@ ga:
       # PLC help section
       didnt_receive_plc: "Ní bhfuair tú an ríomhphost?"
       plc_check_spam: "Seiceáil d'fhillteán dramhphoist"
-      plc_from_bluesky: "Tagann an ríomhphost ó Bluesky, ní uainne"
+      plc_from_old_pds: "Tagann an ríomhphost ó do fhreastalaí reatha (%{pds}), ní uainne"
       plc_expires: "Téann an cód in éag tar éis 1 uair"
       plc_new_code_help: "Más gá cód nua a fháil, cuir isteach do phasfhocal thíos agus iarrfaimid ceann:"
       plc_password_placeholder: "Pasfhocal do %{handle}"
@@ -459,7 +459,7 @@ ga:
       app_password_not_allowed: "Ní féidir pasfhocail aip a úsáid le haghaidh imirce. Úsáid do phasfhocal iomlán cuntais le do thoil."
       pds_did_password_required: "Tá óstach PDS, DID, agus pasfhocal ag teastáil"
       two_factor_required: "Tá fíordheimhniú dhá fhachtóir ag teastáil. Seiceáil do ríomhphost le haghaidh cóid logála isteach."
-      wrong_password: "Pasfhocal mícheart do do chuntas Bluesky. Cuir isteach an pasfhocal a d'úsáid tú ar bsky.social le do thoil."
+      wrong_password: "Pasfhocal mícheart do do chuntas ar %{pds}. Cuir isteach an pasfhocal a úsáideann tú ar an bhfreastalaí sin le do thoil."
       new_handle_not_on_domains: "Ní féidir an handle %{handle} a chruthú ar an bhfreastalaí seo. Roghnaigh ainm gan poncanna ar cheann dá fhearainn: %{domains}."
       auth_failed: "Theip ar fhíordheimhniú: %{error}"
       invalid_pds_response: "Freagra neamhbhailí ón PDS sprice"

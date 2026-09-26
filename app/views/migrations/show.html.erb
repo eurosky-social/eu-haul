@@ -514,9 +514,9 @@
             <h3 class="fs-4 mb-3">✅ <%= t('migrations.show.completed_title') %></h3>
             <p class="fs-6">
               <% if @migration.returning_to_existing_pds? %>
-                <%= t('migrations.show.completed_migrated_back', pds: @migration.new_pds_host, handle: @migration.new_handle).html_safe %>
+                <%= t('migrations.show.completed_migrated_back', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
               <% else %>
-                <%= t('migrations.show.completed_migrated_to', pds: @migration.new_pds_host, handle: @migration.new_handle).html_safe %>
+                <%= t('migrations.show.completed_migrated_to', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
               <% end %>
             </p>
 
@@ -596,7 +596,7 @@
               <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
                 <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
                   <li><%= t('migrations.show.plc_check_spam') %></li>
-                  <li><%= t('migrations.show.plc_from_bluesky') %></li>
+                  <li><%= t('migrations.show.plc_from_old_pds', pds: @migration.old_pds_host) %></li>
                   <li><%= t('migrations.show.plc_expires') %></li>
                 </ul>
                 <% if @migration.has_old_pds_tokens? %>

@@ -274,7 +274,7 @@ lv:
 
       # Completed
       completed_title: "Migrācija veiksmīgi pabeigta!"
-      completed_migrated_to: "Jūsu konts ir veiksmīgi migrēts uz Eurosky. Tagad varat pieteikties ar jauno handle: <strong>%{handle}</strong> Bluesky vai jūsu iecienītajā lietotnē."
+      completed_migrated_to: "Jūsu konts ir veiksmīgi migrēts uz serveri %{pds}. Tagad varat pieteikties ar jauno handle: <strong>%{handle}</strong> Bluesky vai jūsu iecienītajā lietotnē."
       completed_migrated_back: "Jūsu konts ir veiksmīgi migrēts atpakaļ uz <strong>%{pds}</strong>. Tagad varat pieteikties ar savu handle: <strong>%{handle}</strong> Bluesky vai jūsu iecienītajā lietotnē."
       email_sent_html: "Mēs nosūtījām e-pastu uz %{email} ar jauno konta paroli, pieteikšanās instrukcijām un saiti paroles maiņai. Lūdzu, pārbaudiet iesūtni (un surogātpasta mapi)."
       save_rotation_key: "SAGLABĀJIET SAVU ROTĀCIJAS ATSLĒGU!"
@@ -308,7 +308,7 @@ lv:
       # PLC help section
       didnt_receive_plc: "Nesaņēmāt e-pastu?"
       plc_check_spam: "Pārbaudiet surogātpasta vai nevēlamā pasta mapi"
-      plc_from_bluesky: "E-pastu sūta Bluesky, nevis mēs"
+      plc_from_old_pds: "E-pastu sūta jūsu pašreizējais serveris (%{pds}), nevis mēs"
       plc_expires: "Koda derīguma termiņš beidzas pēc 1 stundas"
       plc_new_code_help: "Ja nepieciešams jauns kods, ievadiet paroli zemāk un mēs to pieprasīsim:"
       plc_password_placeholder: "Parole %{handle}"
@@ -459,7 +459,7 @@ lv:
       app_password_not_allowed: "Lietotņu paroles nevar izmantot migrācijai. Lūdzu, izmantojiet savu pilno konta paroli."
       pds_did_password_required: "PDS adrese, DID un parole ir obligāti"
       two_factor_required: "Nepieciešama divfaktoru autentifikācija. Pārbaudiet e-pastu, lai iegūtu pieteikšanās kodu."
-      wrong_password: "Nepareiza Bluesky konta parole. Lūdzu, ievadiet paroli, ko izmantojāt bsky.social."
+      wrong_password: "Nepareiza jūsu konta parole serverī %{pds}. Lūdzu, ievadiet paroli, ko izmantojat šajā serverī."
       new_handle_not_on_domains: "Handle %{handle} šajā serverī nevar izveidot. Izvēlieties vārdu bez punktiem kādā no tā domēniem: %{domains}."
       auth_failed: "Autentifikācija neizdevās: %{error}"
       invalid_pds_response: "Nederīga atbilde no galamērķa PDS"

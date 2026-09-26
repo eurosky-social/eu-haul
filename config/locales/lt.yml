@@ -274,7 +274,7 @@ lt:
 
       # Completed
       completed_title: "Perkėlimas sėkmingai užbaigtas!"
-      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į Eurosky. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
+      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į serverį %{pds}. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
       completed_migrated_back: "Jūsų paskyra sėkmingai perkelta atgal į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami savo handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
       email_sent_html: "Išsiuntėme el. laišką adresu %{email} su nauju paskyros slaptažodžiu, prisijungimo instrukcijomis ir nuoroda slaptažodžiui pakeisti. Patikrinkite gautus laiškus (ir brukalų aplanką)."
       save_rotation_key: "IŠSAUGOKITE SAVO ROTACIJOS RAKTĄ!"
@@ -308,7 +308,7 @@ lt:
       # PLC help section
       didnt_receive_plc: "Negavote el. laiško?"
       plc_check_spam: "Patikrinkite brukalų ar nepageidaujamo pašto aplanką"
-      plc_from_bluesky: "El. laišką siunčia Bluesky, ne mes"
+      plc_from_old_pds: "El. laišką siunčia jūsų dabartinis serveris (%{pds}), ne mes"
       plc_expires: "Kodas nebegalioja po 1 valandos"
       plc_new_code_help: "Jei reikia naujo kodo, įveskite slaptažodį žemiau ir mes paprašysime:"
       plc_password_placeholder: "Slaptažodis %{handle}"
@@ -459,7 +459,7 @@ lt:
       app_password_not_allowed: "Programėlių slaptažodžiai negali būti naudojami migracijai. Naudokite savo pilną paskyros slaptažodį."
       pds_did_password_required: "PDS adresas, DID ir slaptažodis yra privalomi"
       two_factor_required: "Reikalinga dviejų veiksnių autentifikacija. Patikrinkite el. paštą dėl prisijungimo kodo."
-      wrong_password: "Neteisingas Bluesky paskyros slaptažodis. Įveskite slaptažodį, kurį naudojote bsky.social."
+      wrong_password: "Neteisingas jūsų paskyros slaptažodis serveryje %{pds}. Įveskite slaptažodį, kurį naudojate tame serveryje."
       new_handle_not_on_domains: "Handle %{handle} negalima sukurti šiame serveryje. Pasirinkite vardą be taškų viename iš jo domenų: %{domains}."
       auth_failed: "Autentifikacija nepavyko: %{error}"
       invalid_pds_response: "Netinkamas atsakymas iš paskirties PDS"

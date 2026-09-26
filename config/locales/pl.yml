@@ -274,7 +274,7 @@ pl:
 
       # Completed
       completed_title: "Migracja zakończona pomyślnie!"
-      completed_migrated_to: "Twoje konto zostało pomyślnie przeniesione na Eurosky. Możesz teraz zalogować się swoim nowym handle: <strong>%{handle}</strong> na Bluesky lub w preferowanej aplikacji."
+      completed_migrated_to: "Twoje konto zostało pomyślnie przeniesione na %{pds}. Możesz teraz zalogować się swoim nowym handle: <strong>%{handle}</strong> na Bluesky lub w preferowanej aplikacji."
       completed_migrated_back: "Twoje konto zostało pomyślnie przeniesione z powrotem na <strong>%{pds}</strong>. Możesz teraz zalogować się swoim handle: <strong>%{handle}</strong> na Bluesky lub w preferowanej aplikacji."
       email_sent_html: "Wysłaliśmy e-mail na adres %{email} z nowym hasłem do konta, instrukcjami logowania i linkiem do zmiany hasła. Proszę sprawdzić skrzynkę odbiorczą (i folder spam)."
       save_rotation_key: "ZAPISZ SWÓJ KLUCZ ROTACYJNY!"
@@ -308,7 +308,7 @@ pl:
       # PLC help section
       didnt_receive_plc: "Nie otrzymałeś/aś e-maila?"
       plc_check_spam: "Sprawdź folder spam lub śmieci"
-      plc_from_bluesky: "E-mail pochodzi od Bluesky, nie od nas"
+      plc_from_old_pds: "E-mail pochodzi z Twojego obecnego serwera (%{pds}), nie od nas"
       plc_expires: "Kod wygasa po 1 godzinie"
       plc_new_code_help: "Jeśli potrzebujesz nowego kodu, wpisz poniżej swoje hasło, a my go zamówimy:"
       plc_password_placeholder: "Hasło dla %{handle}"
@@ -459,7 +459,7 @@ pl:
       app_password_not_allowed: "Hasła aplikacji nie mogą być używane do migracji. Proszę użyć pełnego hasła konta."
       pds_did_password_required: "Host PDS, DID i hasło są wymagane"
       two_factor_required: "Wymagane uwierzytelnianie dwuskładnikowe. Sprawdź pocztę e-mail w poszukiwaniu kodu logowania."
-      wrong_password: "Nieprawidłowe hasło do Twojego konta Bluesky. Proszę wpisać hasło używane na bsky.social."
+      wrong_password: "Nieprawidłowe hasło do Twojego konta na %{pds}. Proszę wpisać hasło używane na tym serwerze."
       new_handle_not_on_domains: "Nie można utworzyć handle %{handle} na tym serwerze. Wybierz nazwę bez kropek w jednej z jego domen: %{domains}."
       auth_failed: "Uwierzytelnianie nie powiodło się: %{error}"
       invalid_pds_response: "Nieprawidłowa odpowiedź z docelowego PDS"

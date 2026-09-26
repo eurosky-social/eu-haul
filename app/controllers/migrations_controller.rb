@@ -151,7 +151,7 @@ class MigrationsController < ApplicationController
       error_msg = error_body['message'] || error_body['error'] || 'Authentication failed'
 
       if error_msg.include?('Invalid identifier or password')
-        render json: { error: I18n.t('controllers.migrations.wrong_password') }, status: :unauthorized
+        render json: { error: I18n.t('controllers.migrations.wrong_password', pds: pds_host) }, status: :unauthorized
       else
         render json: { error: I18n.t('controllers.migrations.auth_failed', error: error_msg) }, status: :unauthorized
       end

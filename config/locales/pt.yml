@@ -274,7 +274,7 @@ pt:
 
       # Completed
       completed_title: "Migração concluída com sucesso!"
-      completed_migrated_to: "A sua conta foi migrada com sucesso para Eurosky. Pode agora iniciar sessão com o seu novo handle: <strong>%{handle}</strong> no Bluesky ou na sua aplicação preferida."
+      completed_migrated_to: "A sua conta foi migrada com sucesso para %{pds}. Pode agora iniciar sessão com o seu novo handle: <strong>%{handle}</strong> no Bluesky ou na sua aplicação preferida."
       completed_migrated_back: "A sua conta foi migrada com sucesso de volta para <strong>%{pds}</strong>. Pode agora iniciar sessão com o seu handle: <strong>%{handle}</strong> no Bluesky ou na sua aplicação preferida."
       email_sent_html: "Enviámos um e-mail para %{email} com a sua nova palavra-passe de conta, instruções de início de sessão e uma ligação para alterar a sua palavra-passe. Por favor, verifique a sua caixa de entrada (e pasta de spam)."
       save_rotation_key: "GUARDE A SUA CHAVE DE ROTAÇÃO!"
@@ -308,7 +308,7 @@ pt:
       # PLC help section
       didnt_receive_plc: "Não recebeu o e-mail?"
       plc_check_spam: "Verifique a pasta de spam ou lixo"
-      plc_from_bluesky: "O e-mail é enviado pelo Bluesky, não por nós"
+      plc_from_old_pds: "O e-mail é enviado pelo seu servidor atual (%{pds}), não por nós"
       plc_expires: "O código expira após 1 hora"
       plc_new_code_help: "Se precisar de um novo código, introduza a sua palavra-passe abaixo e solicitaremos um:"
       plc_password_placeholder: "Palavra-passe para %{handle}"
@@ -459,7 +459,7 @@ pt:
       app_password_not_allowed: "As senhas de aplicativo não podem ser usadas para migração. Por favor, use sua senha completa da conta."
       pds_did_password_required: "O host do PDS, DID e palavra-passe são obrigatórios"
       two_factor_required: "Autenticação de dois fatores necessária. Verifique o seu e-mail para um código de início de sessão."
-      wrong_password: "Palavra-passe incorreta para a sua conta Bluesky. Por favor, introduza a palavra-passe que utilizou em bsky.social."
+      wrong_password: "Palavra-passe incorreta para a sua conta em %{pds}. Por favor, introduza a palavra-passe que utiliza nesse servidor."
       new_handle_not_on_domains: "O handle %{handle} não pode ser criado neste servidor. Escolha um nome sem pontos num dos seus domínios: %{domains}."
       auth_failed: "Falha na autenticação: %{error}"
       invalid_pds_response: "Resposta inválida do PDS de destino"

@@ -274,7 +274,7 @@ nb:
 
       # Completed
       completed_title: "Migrering fullført!"
-      completed_migrated_to: "Kontoen din er migrert til Eurosky. Du kan nå logge inn med din nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
+      completed_migrated_to: "Kontoen din er migrert til %{pds}. Du kan nå logge inn med din nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       completed_migrated_back: "Kontoen din er migrert tilbake til <strong>%{pds}</strong>. Du kan nå logge inn med din handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       email_sent_html: "Vi har sendt en e-post til %{email} med ditt nye kontopassord, innloggingsinstruksjoner og en lenke for å endre passordet ditt. Vennligst sjekk innboksen din (og spam-mappen)."
       save_rotation_key: "LAGRE ROTASJONSNØKKELEN DIN!"
@@ -308,7 +308,7 @@ nb:
       # PLC help section
       didnt_receive_plc: "Mottok du ikke e-posten?"
       plc_check_spam: "Sjekk spam- eller søppelpostmappen din"
-      plc_from_bluesky: "E-posten kommer fra Bluesky, ikke fra oss"
+      plc_from_old_pds: "E-posten kommer fra din nåværende server (%{pds}), ikke fra oss"
       plc_expires: "Koden utløper etter 1 time"
       plc_new_code_help: "Hvis du trenger en ny kode, skriv inn passordet ditt nedenfor, så ber vi om en:"
       plc_password_placeholder: "Passord for %{handle}"
@@ -459,7 +459,7 @@ nb:
       app_password_not_allowed: "App-passord kan ikke brukes til migrering. Vennligst bruk ditt fulle kontopassord i stedet."
       pds_did_password_required: "PDS-vert, DID og passord er påkrevd"
       two_factor_required: "Tofaktorautentisering påkrevd. Sjekk e-posten din for en innloggingskode."
-      wrong_password: "Feil passord for Bluesky-kontoen din. Vennligst skriv inn passordet du brukte på bsky.social."
+      wrong_password: "Feil passord for kontoen din på %{pds}. Vennligst skriv inn passordet du bruker på den serveren."
       new_handle_not_on_domains: "Handlen %{handle} kan ikke opprettes på denne serveren. Velg et navn uten punktum på ett av domenene dens: %{domains}."
       auth_failed: "Autentisering mislyktes: %{error}"
       invalid_pds_response: "Ugyldig svar fra mål-PDS"
