@@ -115,6 +115,7 @@ fi:
         keep_handle: "Säilytä nykyinen handle"
         new_handle_label: "Uusi handle"
         new_handle_placeholder: "käyttäjänimi"
+        domain_label: "Handlen verkkotunnus"
         new_handle_help: "Valitse uusi handle (voi olla vanha) kohdepalvelimella"
         back: "Takaisin"
         continue: "Jatka"
@@ -173,6 +174,8 @@ fi:
       # Step 4
       custom_domain_help: "Handle {handle} on mukautettu verkkotunnus. Voit jatkaa sen käyttöä uudella palvelimella."
       enter_handle_short: "Syötä handle"
+      handle_name_no_dots: "Kirjoita pelkkä nimi ilman pisteitä. {domain} lisätään automaattisesti."
+      handle_domains_hint: "Tämä palvelin tarjoaa handlellesi useamman päätteen: {domains}. Valitse omasi kentän lopussa olevasta luettelosta."
       checking_availability: "Tarkistetaan saatavuutta..."
       checking_handle: "Tarkistetaan, onko handle saatavilla..."
       handle_taken: "Tämä handle on jo varattu. Valitse toinen."
@@ -272,7 +275,7 @@ fi:
 
       # Completed
       completed_title: "Siirto suoritettu onnistuneesti!"
-      completed_migrated_to: "Tilisi on siirretty onnistuneesti Euroskyyn. Voit nyt kirjautua sisään uudella handlellasi: <strong>%{handle}</strong> Blueskyssa tai haluamassasi sovelluksessa."
+      completed_migrated_to: "Tilisi on siirretty onnistuneesti palvelimelle %{pds}. Voit nyt kirjautua sisään uudella handlellasi: <strong>%{handle}</strong> Blueskyssa tai haluamassasi sovelluksessa."
       completed_migrated_back: "Tilisi on siirretty onnistuneesti takaisin palvelimelle <strong>%{pds}</strong>. Voit nyt kirjautua sisään handlellasi: <strong>%{handle}</strong> Blueskyssa tai haluamassasi sovelluksessa."
       email_sent_html: "Olemme lähettäneet sähköpostin osoitteeseen %{email} uuden tilisi salasanan, kirjautumisohjeet ja linkin salasanan vaihtamiseen. Tarkista saapuneet-kansiosi (ja roskapostikansio)."
       save_rotation_key: "TALLENNA ROTAATIOAVAIMESI!"
@@ -306,7 +309,7 @@ fi:
       # PLC help section
       didnt_receive_plc: "Etkö saanut sähköpostia?"
       plc_check_spam: "Tarkista roskapostikansio"
-      plc_from_bluesky: "Sähköposti tulee Blueskyltä, ei meiltä"
+      plc_from_old_pds: "Sähköposti tulee nykyiseltä palvelimeltasi (%{pds}), ei meiltä"
       plc_expires: "Koodi vanhenee 1 tunnin kuluttua"
       plc_new_code_help: "Jos tarvitset uuden koodin, syötä salasanasi alle ja pyydämme uuden:"
       plc_password_placeholder: "Salasana käyttäjälle %{handle}"
@@ -457,7 +460,10 @@ fi:
       app_password_not_allowed: "Sovellussalasanoja ei voi käyttää migraatioon. Käytä sen sijaan täyttä tilisi salasanaa."
       pds_did_password_required: "PDS-isäntä, DID ja salasana vaaditaan"
       two_factor_required: "Kaksivaiheinen tunnistautuminen vaaditaan. Tarkista sähköpostistasi kirjautumiskoodi."
-      wrong_password: "Väärä salasana Bluesky-tilillesi. Syötä salasana, jota käytit palvelussa bsky.social."
+      wrong_password: "Väärä salasana tilillesi palvelimella %{pds}. Syötä salasana, jota käytät kyseisellä palvelimella."
+      new_handle_not_on_domains: "Handlea %{handle} ei voi luoda tälle palvelimelle. Valitse nimi ilman pisteitä jollekin sen verkkotunnuksista: %{domains}."
+      same_server: "Tilisi on jo tällä palvelimella (%{pds}), joten siirrettävää ei ole. Vaihto saman palvelimen toisen verkkotunnuksen handleen on handlen vaihto, ei siirto."
+      handle_owned_by_old_server: "%{handle} kuuluu nykyiselle palvelimellesi eikä toimi enää siirron jälkeen. Palaa takaisin ja valitse uusi handle."
       auth_failed: "Tunnistautuminen epäonnistui: %{error}"
       invalid_pds_response: "Virheellinen vastaus kohde-PDS:ltä"
       pds_connect_failed: "Yhdistäminen kohde-PDS:ään epäonnistui. Yritä uudelleen."

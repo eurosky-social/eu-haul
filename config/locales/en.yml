@@ -116,6 +116,7 @@ en:
         keep_handle: "Keep my current handle"
         new_handle_label: "Your New Handle"
         new_handle_placeholder: "username"
+        domain_label: "Handle domain"
         new_handle_help: "Choose your new handle (can be your old) on the destination Server"
         back: "Back"
         continue: "Continue"
@@ -182,6 +183,8 @@ en:
       # Step 4
       custom_domain_help: "Your handle {handle} is a custom domain. You can keep using it on the new server."
       enter_handle_short: "Please enter a handle"
+      handle_name_no_dots: "Enter just a name, without dots. {domain} is added automatically."
+      handle_domains_hint: "This server offers more than one ending for your handle: {domains}. Choose yours in the list at the end of the field."
       checking_availability: "Checking availability..."
       checking_handle: "Checking if handle is available..."
       handle_taken: "This handle is already taken. Please choose another."
@@ -282,7 +285,7 @@ en:
 
       # Completed
       completed_title: "Migration Completed Successfully!"
-      completed_migrated_to: "Your account has been successfully migrated to Eurosky. You can now log in with your new handle: <strong>%{handle}</strong> on Bluesky or your preferred app."
+      completed_migrated_to: "Your account has been successfully migrated to %{pds}. You can now log in with your new handle: <strong>%{handle}</strong> on Bluesky or your preferred app."
       completed_migrated_back: "Your account has been successfully migrated back to <strong>%{pds}</strong>. You can now log in with your handle: <strong>%{handle}</strong> on Bluesky or your preferred app."
       email_sent_html: "We've sent an email to %{email} with your new account password, login instructions, and a link to change your password. Please check your inbox (and spam folder)."
       save_rotation_key: "SAVE YOUR ROTATION KEY!"
@@ -316,7 +319,7 @@ en:
       # PLC help section
       didnt_receive_plc: "Didn't receive the email?"
       plc_check_spam: "Check your spam or junk folder"
-      plc_from_bluesky: "The email comes from Bluesky, not from us"
+      plc_from_old_pds: "The email comes from your current server (%{pds}), not from us"
       plc_expires: "The code expires after 1 hour"
       plc_new_code_help: "If you need a new code, enter your password below and we'll request one:"
       plc_password_placeholder: "Password for %{handle}"
@@ -472,7 +475,10 @@ en:
       app_password_not_allowed: "App passwords cannot be used for migration. Please use your full account password instead."
       pds_did_password_required: "PDS host, DID, and password are required"
       two_factor_required: "Two-factor authentication required. Check your email for a sign-in code."
-      wrong_password: "Wrong password for your Bluesky account. Please enter the password you used on bsky.social."
+      wrong_password: "Wrong password for your account on %{pds}. Please enter the password you use on that server."
+      new_handle_not_on_domains: "The handle %{handle} can't be created on this server. Choose a name without dots on one of its domains: %{domains}."
+      same_server: "This is the server your account already lives on (%{pds}), so there is nothing to move. Switching to a handle on another of its domains is a handle change, not a migration."
+      handle_owned_by_old_server: "%{handle} belongs to your current server and stops working once you move. Go back and choose a new handle."
       auth_failed: "Authentication failed: %{error}"
       invalid_pds_response: "Invalid response from target PDS"
       pds_connect_failed: "Failed to connect to target PDS. Please try again."

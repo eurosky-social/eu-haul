@@ -115,6 +115,7 @@ ga:
         keep_handle: "Coinnigh mo handle reatha"
         new_handle_label: "Do handle nua"
         new_handle_placeholder: "ainmúsáideora"
+        domain_label: "Fearann an handle"
         new_handle_help: "Roghnaigh do handle nua (is féidir an ceann sean a úsáid) ar an bhfreastalaí ceann scríbe"
         back: "Siar"
         continue: "Lean ar aghaidh"
@@ -173,6 +174,8 @@ ga:
       # Step 4
       custom_domain_help: "Is fearann saincheaptha é do handle {handle}. Is féidir leat leanúint á úsáid ar an bhfreastalaí nua."
       enter_handle_short: "Cuir isteach handle le do thoil"
+      handle_name_no_dots: "Cuir isteach ainm amháin, gan poncanna. Cuirtear {domain} leis go huathoibríoch."
+      handle_domains_hint: "Tairgeann an freastalaí seo níos mó ná críoch amháin do do handle: {domains}. Roghnaigh do cheann féin sa liosta ag deireadh an réimse."
       checking_availability: "Ag seiceáil infhaighteachta..."
       checking_handle: "Ag seiceáil an bhfuil an handle ar fáil..."
       handle_taken: "Tá an handle seo tógtha cheana féin. Roghnaigh ceann eile le do thoil."
@@ -272,7 +275,7 @@ ga:
 
       # Completed
       completed_title: "D'éirigh leis an imirce!"
-      completed_migrated_to: "D'éirigh le himirce do chuntais go Eurosky. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
+      completed_migrated_to: "D'éirigh le himirce do chuntais go %{pds}. Is féidir leat logáil isteach anois le do handle nua: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
       completed_migrated_back: "D'éirigh le himirce do chuntais ar ais go <strong>%{pds}</strong>. Is féidir leat logáil isteach anois le do handle: <strong>%{handle}</strong> ar Bluesky nó d'aip is fearr leat."
       email_sent_html: "Sheol muid ríomhphost chuig %{email} le pasfhocal nua do chuntais, treoracha logála isteach, agus nasc chun do phasfhocal a athrú. Seiceáil do bhosca isteach (agus d'fhillteán dramhphoist) le do thoil."
       save_rotation_key: "SÁBHÁIL D'EOCHAIR ROTHLAITHE!"
@@ -306,7 +309,7 @@ ga:
       # PLC help section
       didnt_receive_plc: "Ní bhfuair tú an ríomhphost?"
       plc_check_spam: "Seiceáil d'fhillteán dramhphoist"
-      plc_from_bluesky: "Tagann an ríomhphost ó Bluesky, ní uainne"
+      plc_from_old_pds: "Tagann an ríomhphost ó do fhreastalaí reatha (%{pds}), ní uainne"
       plc_expires: "Téann an cód in éag tar éis 1 uair"
       plc_new_code_help: "Más gá cód nua a fháil, cuir isteach do phasfhocal thíos agus iarrfaimid ceann:"
       plc_password_placeholder: "Pasfhocal do %{handle}"
@@ -457,7 +460,10 @@ ga:
       app_password_not_allowed: "Ní féidir pasfhocail aip a úsáid le haghaidh imirce. Úsáid do phasfhocal iomlán cuntais le do thoil."
       pds_did_password_required: "Tá óstach PDS, DID, agus pasfhocal ag teastáil"
       two_factor_required: "Tá fíordheimhniú dhá fhachtóir ag teastáil. Seiceáil do ríomhphost le haghaidh cóid logála isteach."
-      wrong_password: "Pasfhocal mícheart do do chuntas Bluesky. Cuir isteach an pasfhocal a d'úsáid tú ar bsky.social le do thoil."
+      wrong_password: "Pasfhocal mícheart do do chuntas ar %{pds}. Cuir isteach an pasfhocal a úsáideann tú ar an bhfreastalaí sin le do thoil."
+      new_handle_not_on_domains: "Ní féidir an handle %{handle} a chruthú ar an bhfreastalaí seo. Roghnaigh ainm gan poncanna ar cheann dá fhearainn: %{domains}."
+      same_server: "Tá do chuntas ar an bhfreastalaí seo cheana féin (%{pds}), mar sin níl aon rud le bogadh. Is athrú handle é aistriú go handle ar fhearann eile den fhreastalaí céanna, ní imirce."
+      handle_owned_by_old_server: "Baineann %{handle} le do fhreastalaí reatha agus stopfaidh sé ag obair tar éis na himirce. Téigh ar ais agus roghnaigh handle nua."
       auth_failed: "Theip ar fhíordheimhniú: %{error}"
       invalid_pds_response: "Freagra neamhbhailí ón PDS sprice"
       pds_connect_failed: "Theip ar cheangal leis an PDS sprice. Bain triail eile as le do thoil."

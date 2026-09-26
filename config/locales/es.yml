@@ -115,6 +115,7 @@ es:
         keep_handle: "Mantener mi handle actual"
         new_handle_label: "Su nuevo handle"
         new_handle_placeholder: "nombreusuario"
+        domain_label: "Dominio del handle"
         new_handle_help: "Elija su nuevo handle (puede ser el anterior) en el servidor de destino"
         back: "Atrás"
         continue: "Continuar"
@@ -173,6 +174,8 @@ es:
       # Step 4
       custom_domain_help: "Su handle {handle} es un dominio personalizado. Puede seguir usándolo en el nuevo servidor."
       enter_handle_short: "Por favor, introduzca un handle"
+      handle_name_no_dots: "Introduzca solo un nombre, sin puntos. {domain} se añade automáticamente."
+      handle_domains_hint: "Este servidor ofrece varias terminaciones para su handle: {domains}. Elija la suya en la lista al final del campo."
       checking_availability: "Comprobando disponibilidad..."
       checking_handle: "Comprobando si el handle está disponible..."
       handle_taken: "Este handle ya está en uso. Por favor, elija otro."
@@ -272,7 +275,7 @@ es:
 
       # Completed
       completed_title: "Migración completada con éxito."
-      completed_migrated_to: "Su cuenta ha sido migrada correctamente a Eurosky. Ahora puede iniciar sesión con su nuevo handle: <strong>%{handle}</strong> en Bluesky o su aplicación preferida."
+      completed_migrated_to: "Su cuenta ha sido migrada correctamente a %{pds}. Ahora puede iniciar sesión con su nuevo handle: <strong>%{handle}</strong> en Bluesky o su aplicación preferida."
       completed_migrated_back: "Su cuenta ha sido migrada de vuelta correctamente a <strong>%{pds}</strong>. Ahora puede iniciar sesión con su handle: <strong>%{handle}</strong> en Bluesky o su aplicación preferida."
       email_sent_html: "Hemos enviado un correo electrónico a %{email} con la nueva contraseña de su cuenta, instrucciones de inicio de sesión y un enlace para cambiar su contraseña. Por favor, revise su bandeja de entrada (y la carpeta de spam)."
       save_rotation_key: "GUARDE SU CLAVE DE ROTACIÓN."
@@ -306,7 +309,7 @@ es:
       # PLC help section
       didnt_receive_plc: "¿No recibió el correo electrónico?"
       plc_check_spam: "Revise su carpeta de correo no deseado o spam"
-      plc_from_bluesky: "El correo electrónico proviene de Bluesky, no de nosotros"
+      plc_from_old_pds: "El correo electrónico proviene de su servidor actual (%{pds}), no de nosotros"
       plc_expires: "El código expira después de 1 hora"
       plc_new_code_help: "Si necesita un nuevo código, introduzca su contraseña a continuación y solicitaremos uno:"
       plc_password_placeholder: "Contraseña de %{handle}"
@@ -457,7 +460,10 @@ es:
       app_password_not_allowed: "Las contraseñas de aplicación no se pueden usar para la migración. Por favor, usa tu contraseña completa de cuenta."
       pds_did_password_required: "Se requieren el host del PDS, el DID y la contraseña"
       two_factor_required: "Se requiere autenticación de dos factores. Revise su correo electrónico para obtener un código de inicio de sesión."
-      wrong_password: "Contraseña incorrecta para su cuenta de Bluesky. Por favor, introduzca la contraseña que usó en bsky.social."
+      wrong_password: "Contraseña incorrecta para su cuenta en %{pds}. Por favor, introduzca la contraseña que usa en ese servidor."
+      new_handle_not_on_domains: "El handle %{handle} no se puede crear en este servidor. Elija un nombre sin puntos en uno de sus dominios: %{domains}."
+      same_server: "Su cuenta ya está en este servidor (%{pds}), así que no hay nada que migrar. Cambiar a un handle en otro de sus dominios es un cambio de handle, no una migración."
+      handle_owned_by_old_server: "%{handle} pertenece a su servidor actual y dejará de funcionar tras la migración. Vuelva atrás y elija un nuevo handle."
       auth_failed: "Error de autenticación: %{error}"
       invalid_pds_response: "Respuesta no válida del PDS de destino"
       pds_connect_failed: "No se pudo conectar al PDS de destino. Por favor, inténtelo de nuevo."

@@ -115,6 +115,7 @@ nl:
         keep_handle: "Mijn huidige handle behouden"
         new_handle_label: "Uw nieuwe handle"
         new_handle_placeholder: "gebruikersnaam"
+        domain_label: "Handle-domein"
         new_handle_help: "Kies uw nieuwe handle (kan uw oude zijn) op de doelserver"
         back: "Terug"
         continue: "Doorgaan"
@@ -173,6 +174,8 @@ nl:
       # Step 4
       custom_domain_help: "Uw handle {handle} is een aangepast domein. U kunt het blijven gebruiken op de nieuwe server."
       enter_handle_short: "Voer een handle in"
+      handle_name_no_dots: "Voer alleen een naam in, zonder punten. {domain} wordt automatisch toegevoegd."
+      handle_domains_hint: "Deze server biedt meerdere eindes voor uw handle: {domains}. Kies het uwe in de lijst aan het eind van het veld."
       checking_availability: "Beschikbaarheid controleren..."
       checking_handle: "Controleren of handle beschikbaar is..."
       handle_taken: "Deze handle is al bezet. Kies een andere."
@@ -272,7 +275,7 @@ nl:
 
       # Completed
       completed_title: "Migratie succesvol voltooid!"
-      completed_migrated_to: "Uw account is succesvol gemigreerd naar Eurosky. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
+      completed_migrated_to: "Uw account is succesvol gemigreerd naar %{pds}. U kunt nu inloggen met uw nieuwe handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
       completed_migrated_back: "Uw account is succesvol terug gemigreerd naar <strong>%{pds}</strong>. U kunt nu inloggen met uw handle: <strong>%{handle}</strong> op Bluesky of uw favoriete app."
       email_sent_html: "We hebben een e-mail gestuurd naar %{email} met uw nieuwe accountwachtwoord, inloginstructies en een link om uw wachtwoord te wijzigen. Controleer uw inbox (en spammap)."
       save_rotation_key: "BEWAAR UW ROTATIESLEUTEL!"
@@ -306,7 +309,7 @@ nl:
       # PLC help section
       didnt_receive_plc: "E-mail niet ontvangen?"
       plc_check_spam: "Controleer uw spam- of ongewenste-e-mailmap"
-      plc_from_bluesky: "De e-mail komt van Bluesky, niet van ons"
+      plc_from_old_pds: "De e-mail komt van uw huidige server (%{pds}), niet van ons"
       plc_expires: "De code verloopt na 1 uur"
       plc_new_code_help: "Als u een nieuwe code nodig hebt, voer dan hieronder uw wachtwoord in en we vragen er een aan:"
       plc_password_placeholder: "Wachtwoord voor %{handle}"
@@ -457,7 +460,10 @@ nl:
       app_password_not_allowed: "App-wachtwoorden kunnen niet worden gebruikt voor migratie. Gebruik alstublieft uw volledige accountwachtwoord."
       pds_did_password_required: "PDS-host, DID en wachtwoord zijn vereist"
       two_factor_required: "Tweefactorauthenticatie vereist. Controleer uw e-mail voor een aanmeldcode."
-      wrong_password: "Onjuist wachtwoord voor uw Bluesky-account. Voer het wachtwoord in dat u op bsky.social gebruikte."
+      wrong_password: "Onjuist wachtwoord voor uw account op %{pds}. Voer het wachtwoord in dat u op die server gebruikt."
+      new_handle_not_on_domains: "De handle %{handle} kan op deze server niet worden aangemaakt. Kies een naam zonder punten op een van de domeinen: %{domains}."
+      same_server: "Uw account staat al op deze server (%{pds}), er valt dus niets te migreren. Overstappen naar een handle op een ander domein van deze server is een handlewijziging, geen migratie."
+      handle_owned_by_old_server: "%{handle} hoort bij uw huidige server en werkt niet meer na de migratie. Ga terug en kies een nieuwe handle."
       auth_failed: "Authenticatie mislukt: %{error}"
       invalid_pds_response: "Ongeldig antwoord van doel-PDS"
       pds_connect_failed: "Kon geen verbinding maken met doel-PDS. Probeer het opnieuw."

@@ -115,6 +115,7 @@ da:
         keep_handle: "Behold mit nuværende handle"
         new_handle_label: "Dit nye Handle"
         new_handle_placeholder: "brugernavn"
+        domain_label: "Handle-domæne"
         new_handle_help: "Vælg dit nye handle (kan være dit gamle) på destinationsserveren"
         back: "Tilbage"
         continue: "Fortsæt"
@@ -173,6 +174,8 @@ da:
       # Step 4
       custom_domain_help: "Dit handle {handle} er et brugerdefineret domæne. Du kan fortsætte med at bruge det på den nye server."
       enter_handle_short: "Indtast venligst et handle"
+      handle_name_no_dots: "Indtast kun et navn uden punktummer. {domain} tilføjes automatisk."
+      handle_domains_hint: "Denne server tilbyder flere endelser til dit handle: {domains}. Vælg din på listen for enden af feltet."
       checking_availability: "Kontrollerer tilgængelighed..."
       checking_handle: "Kontrollerer om handle er tilgængeligt..."
       handle_taken: "Dette handle er allerede taget. Vælg venligst et andet."
@@ -272,7 +275,7 @@ da:
 
       # Completed
       completed_title: "Migrering gennemført!"
-      completed_migrated_to: "Din konto er blevet migreret til Eurosky. Du kan nu logge ind med dit nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
+      completed_migrated_to: "Din konto er blevet migreret til %{pds}. Du kan nu logge ind med dit nye handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       completed_migrated_back: "Din konto er blevet migreret tilbage til <strong>%{pds}</strong>. Du kan nu logge ind med dit handle: <strong>%{handle}</strong> på Bluesky eller din foretrukne app."
       email_sent_html: "Vi har sendt en e-mail til %{email} med din nye kontoadgangskode, logininstruktioner og et link til at ændre din adgangskode. Tjek venligst din indbakke (og spam-mappe)."
       save_rotation_key: "GEM DIN ROTATIONSNØGLE!"
@@ -306,7 +309,7 @@ da:
       # PLC help section
       didnt_receive_plc: "Modtog du ikke e-mailen?"
       plc_check_spam: "Tjek din spam- eller uønsket post-mappe"
-      plc_from_bluesky: "E-mailen kommer fra Bluesky, ikke fra os"
+      plc_from_old_pds: "E-mailen kommer fra din nuværende server (%{pds}), ikke fra os"
       plc_expires: "Koden udløber efter 1 time"
       plc_new_code_help: "Hvis du har brug for en ny kode, indtast din adgangskode nedenfor, og vi anmoder om en:"
       plc_password_placeholder: "Adgangskode til %{handle}"
@@ -457,7 +460,10 @@ da:
       app_password_not_allowed: "App-adgangskoder kan ikke bruges til migrering. Brug venligst din fulde kontoadgangskode i stedet."
       pds_did_password_required: "PDS-vært, DID og adgangskode er påkrævet"
       two_factor_required: "Tofaktorgodkendelse påkrævet. Tjek din e-mail for en loginkode."
-      wrong_password: "Forkert adgangskode til din Bluesky-konto. Indtast venligst den adgangskode, du brugte på bsky.social."
+      wrong_password: "Forkert adgangskode til din konto på %{pds}. Indtast venligst den adgangskode, du bruger på den server."
+      new_handle_not_on_domains: "Handlet %{handle} kan ikke oprettes på denne server. Vælg et navn uden punktummer på et af dens domæner: %{domains}."
+      same_server: "Din konto ligger allerede på denne server (%{pds}), så der er intet at flytte. At skifte til et handle på et af serverens andre domæner er en ændring af handle, ikke en migrering."
+      handle_owned_by_old_server: "%{handle} tilhører din nuværende server og holder op med at virke efter flytningen. Gå tilbage og vælg et nyt handle."
       auth_failed: "Godkendelse mislykkedes: %{error}"
       invalid_pds_response: "Ugyldigt svar fra destinations-PDS"
       pds_connect_failed: "Kunne ikke oprette forbindelse til destinations-PDS. Prøv venligst igen."

@@ -115,6 +115,7 @@ lt:
         keep_handle: "Palikti dabartinį handle"
         new_handle_label: "Jūsų naujas handle"
         new_handle_placeholder: "vartotojas"
+        domain_label: "Handle domenas"
         new_handle_help: "Pasirinkite naują handle (gali būti senas) paskirties serveryje"
         back: "Atgal"
         continue: "Tęsti"
@@ -173,6 +174,8 @@ lt:
       # Step 4
       custom_domain_help: "Jūsų handle {handle} yra pasirinktinis domenas. Galite toliau jį naudoti naujame serveryje."
       enter_handle_short: "Įveskite handle"
+      handle_name_no_dots: "Įveskite tik vardą, be taškų. {domain} pridedamas automatiškai."
+      handle_domains_hint: "Šis serveris siūlo kelias jūsų handle pabaigas: {domains}. Pasirinkite savąją sąraše lauko gale."
       checking_availability: "Tikrinamas prieinamumas..."
       checking_handle: "Tikrinamas handle prieinamumas..."
       handle_taken: "Šis handle jau užimtas. Pasirinkite kitą."
@@ -272,7 +275,7 @@ lt:
 
       # Completed
       completed_title: "Perkėlimas sėkmingai užbaigtas!"
-      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į Eurosky. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
+      completed_migrated_to: "Jūsų paskyra sėkmingai perkelta į serverį %{pds}. Dabar galite prisijungti naudodami naują handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
       completed_migrated_back: "Jūsų paskyra sėkmingai perkelta atgal į <strong>%{pds}</strong>. Dabar galite prisijungti naudodami savo handle: <strong>%{handle}</strong> Bluesky arba jūsų mėgstamoje programėlėje."
       email_sent_html: "Išsiuntėme el. laišką adresu %{email} su nauju paskyros slaptažodžiu, prisijungimo instrukcijomis ir nuoroda slaptažodžiui pakeisti. Patikrinkite gautus laiškus (ir brukalų aplanką)."
       save_rotation_key: "IŠSAUGOKITE SAVO ROTACIJOS RAKTĄ!"
@@ -306,7 +309,7 @@ lt:
       # PLC help section
       didnt_receive_plc: "Negavote el. laiško?"
       plc_check_spam: "Patikrinkite brukalų ar nepageidaujamo pašto aplanką"
-      plc_from_bluesky: "El. laišką siunčia Bluesky, ne mes"
+      plc_from_old_pds: "El. laišką siunčia jūsų dabartinis serveris (%{pds}), ne mes"
       plc_expires: "Kodas nebegalioja po 1 valandos"
       plc_new_code_help: "Jei reikia naujo kodo, įveskite slaptažodį žemiau ir mes paprašysime:"
       plc_password_placeholder: "Slaptažodis %{handle}"
@@ -457,7 +460,10 @@ lt:
       app_password_not_allowed: "Programėlių slaptažodžiai negali būti naudojami migracijai. Naudokite savo pilną paskyros slaptažodį."
       pds_did_password_required: "PDS adresas, DID ir slaptažodis yra privalomi"
       two_factor_required: "Reikalinga dviejų veiksnių autentifikacija. Patikrinkite el. paštą dėl prisijungimo kodo."
-      wrong_password: "Neteisingas Bluesky paskyros slaptažodis. Įveskite slaptažodį, kurį naudojote bsky.social."
+      wrong_password: "Neteisingas jūsų paskyros slaptažodis serveryje %{pds}. Įveskite slaptažodį, kurį naudojate tame serveryje."
+      new_handle_not_on_domains: "Handle %{handle} negalima sukurti šiame serveryje. Pasirinkite vardą be taškų viename iš jo domenų: %{domains}."
+      same_server: "Jūsų paskyra jau yra šiame serveryje (%{pds}), todėl nėra ką perkelti. Perėjimas prie handle kitame to paties serverio domene yra handle keitimas, o ne perkėlimas."
+      handle_owned_by_old_server: "%{handle} priklauso jūsų dabartiniam serveriui ir po perkėlimo nebeveiks. Grįžkite ir pasirinkite naują handle."
       auth_failed: "Autentifikacija nepavyko: %{error}"
       invalid_pds_response: "Netinkamas atsakymas iš paskirties PDS"
       pds_connect_failed: "Nepavyko prisijungti prie paskirties PDS. Bandykite dar kartą."

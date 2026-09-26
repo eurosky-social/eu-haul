@@ -115,6 +115,7 @@ hr:
         keep_handle: "Zadrzi trenutni handle"
         new_handle_label: "Vas novi handle"
         new_handle_placeholder: "korisnickoime"
+        domain_label: "Domena handlea"
         new_handle_help: "Odaberite svoj novi handle (moze biti stari) na odredisnom posluzitelju"
         back: "Natrag"
         continue: "Nastavi"
@@ -173,6 +174,8 @@ hr:
       # Step 4
       custom_domain_help: "Vas handle {handle} je prilagodena domena. Mozete ga nastaviti koristiti na novom posluzitelju."
       enter_handle_short: "Unesite handle"
+      handle_name_no_dots: "Unesite samo ime, bez točaka. {domain} se dodaje automatski."
+      handle_domains_hint: "Ovaj poslužitelj nudi više završetaka za vaš handle: {domains}. Odaberite svoj na popisu na kraju polja."
       checking_availability: "Provjera dostupnosti..."
       checking_handle: "Provjera dostupnosti handlea..."
       handle_taken: "Ovaj handle je vec zauzet. Odaberite drugi."
@@ -272,7 +275,7 @@ hr:
 
       # Completed
       completed_title: "Migracija uspjesno dovrsena!"
-      completed_migrated_to: "Vas racun je uspjesno migriran na Eurosky. Sada se mozete prijaviti s novim handleom: <strong>%{handle}</strong> na Bluesky ili vašoj omiljenoj aplikaciji."
+      completed_migrated_to: "Vas racun je uspjesno migriran na %{pds}. Sada se mozete prijaviti s novim handleom: <strong>%{handle}</strong> na Bluesky ili vašoj omiljenoj aplikaciji."
       completed_migrated_back: "Vas racun je uspjesno migriran natrag na <strong>%{pds}</strong>. Sada se mozete prijaviti sa svojim handleom: <strong>%{handle}</strong> na Bluesky ili vašoj omiljenoj aplikaciji."
       email_sent_html: "Poslali smo e-poruku na %{email} s novom lozinkom racuna, uputama za prijavu i poveznicom za promjenu lozinke. Provjerite pristiglu postu (i mapu za nezeljenu postu)."
       save_rotation_key: "SACUVAJTE SVOJ ROTACIJSKI KLJUC!"
@@ -306,7 +309,7 @@ hr:
       # PLC help section
       didnt_receive_plc: "Niste primili e-poruku?"
       plc_check_spam: "Provjerite mapu za nezeljenu postu"
-      plc_from_bluesky: "E-poruka dolazi od Blueskyja, ne od nas"
+      plc_from_old_pds: "E-poruka dolazi s vašeg trenutnog poslužitelja (%{pds}), ne od nas"
       plc_expires: "Kod istjece nakon 1 sata"
       plc_new_code_help: "Ako trebate novi kod, unesite lozinku ispod i zatrazit cemo ga:"
       plc_password_placeholder: "Lozinka za %{handle}"
@@ -457,7 +460,10 @@ hr:
       app_password_not_allowed: "Lozinke za aplikacije ne mogu se koristiti za migraciju. Molimo koristite svoju punu lozinku računa."
       pds_did_password_required: "PDS adresa, DID i lozinka su obavezni"
       two_factor_required: "Potrebna je dvofaktorska autentifikacija. Provjerite e-postu za kod za prijavu."
-      wrong_password: "Pogresna lozinka za vas Bluesky racun. Unesite lozinku koju ste koristili na bsky.social."
+      wrong_password: "Pogrešna lozinka za vaš račun na %{pds}. Unesite lozinku koju koristite na tom poslužitelju."
+      new_handle_not_on_domains: "Handle %{handle} ne može se stvoriti na ovom poslužitelju. Odaberite ime bez točaka na jednoj od njegovih domena: %{domains}."
+      same_server: "Vaš račun već se nalazi na ovom poslužitelju (%{pds}), pa nema ništa za premjestiti. Prelazak na handle na drugoj domeni istog poslužitelja promjena je handlea, a ne migracija."
+      handle_owned_by_old_server: "%{handle} pripada vašem trenutnom poslužitelju i prestat će raditi nakon migracije. Vratite se i odaberite novi handle."
       auth_failed: "Autentifikacija neuspjesna: %{error}"
       invalid_pds_response: "Nevaljani odgovor od odredisnog PDS-a"
       pds_connect_failed: "Povezivanje s odredisnim PDS-om nije uspjelo. Pokusajte ponovo."

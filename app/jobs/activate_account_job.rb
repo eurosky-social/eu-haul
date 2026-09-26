@@ -66,25 +66,31 @@ class ActivateAccountJob < ApplicationJob
 
     Rails.logger.info("Account activated on new PDS for migration #{migration.token}")
 
-    # Step 2: Deactivate account on old PDS
-    begin
-      Rails.logger.info("Deactivating account on old PDS: #{migration.old_pds_host}")
-      service.deactivate_account
+    # Step 2: Deactivate account on old PDS - never when it is the account just
+    # activated. create refuses same-server moves (including a server's second
+    # name); this address-only check covers rows created before it did.
+    if GoatService.same_pds_by_address?(migration.old_pds_host, migration.new_pds_host)
+      Rails.logger.warn("Old and new PDS are the same server for migration #{migration.token}; not deactivating")
+    else
+      begin
+        Rails.logger.info("Deactivating account on old PDS: #{migration.old_pds_host}")
+        service.deactivate_account
 
-      # Update progress
-      migration.progress_data['account_deactivated_at'] = Time.current.iso8601
-      migration.save!
+        # Update progress
+        migration.progress_data['account_deactivated_at'] = Time.current.iso8601
+        migration.save!
 
-      Rails.logger.info("Account deactivated on old PDS for migration #{migration.token}")
-    rescue StandardError => e
-      # Log the error but don't fail the migration
-      # The new PDS is active, which is what matters most
-      Rails.logger.warn("Failed to deactivate account on old PDS for migration #{migration.token}: #{e.message}")
-      Rails.logger.warn("Migration will proceed as complete - new PDS is active")
+        Rails.logger.info("Account deactivated on old PDS for migration #{migration.token}")
+      rescue StandardError => e
+        # Log the error but don't fail the migration
+        # The new PDS is active, which is what matters most
+        Rails.logger.warn("Failed to deactivate account on old PDS for migration #{migration.token}: #{e.message}")
+        Rails.logger.warn("Migration will proceed as complete - new PDS is active")
 
-      # Update progress with error note
-      migration.progress_data['old_pds_deactivation_error'] = e.message
-      migration.save!
+        # Update progress with error note
+        migration.progress_data['old_pds_deactivation_error'] = e.message
+        migration.save!
+      end
     end
 
     # Step 2.1: Clear old PDS tokens (no longer needed after deactivation)

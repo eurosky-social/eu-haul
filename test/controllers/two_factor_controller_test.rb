@@ -179,6 +179,30 @@ class MigrationsControllerTwoFactorTest < ActionDispatch::IntegrationTest
     assert json['success'], "Response should indicate success"
     assert json['access_token'].present?, "Response should include access_token"
     assert json['refresh_token'].present?, "Response should include refresh_token"
+    # The wizard shows this as the handle a returning account comes back with
+    assert_equal @test_handle, json['handle']
+  end
+
+  test "verify_target_credentials names the target server on a wrong password" do
+    target_pds = "https://eurosky.social"
+
+    stub_request(:post, "#{target_pds}/xrpc/com.atproto.server.createSession")
+      .to_return(
+        status: 401,
+        body: { error: "AuthenticationRequired", message: "Invalid identifier or password" }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+
+    post verify_target_credentials_migrations_path, params: {
+      pds_host: target_pds,
+      did: @test_did,
+      password: "wrong"
+    }, as: :json
+
+    assert_response :unauthorized
+    error = JSON.parse(response.body)['error']
+    assert_includes error, target_pds
+    refute_includes error, "bsky.social"
   end
 
   private

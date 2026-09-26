@@ -115,6 +115,7 @@ cs:
         keep_handle: "Ponechat aktuální handle"
         new_handle_label: "Váš nový Handle"
         new_handle_placeholder: "uživatelskéjméno"
+        domain_label: "Doména handle"
         new_handle_help: "Zvolte si nový handle (může být i stávající) na cílovém serveru"
         back: "Zpět"
         continue: "Pokračovat"
@@ -173,6 +174,8 @@ cs:
       # Step 4
       custom_domain_help: "Váš handle {handle} je vlastní doména. Můžete jej nadále používat na novém serveru."
       enter_handle_short: "Zadejte prosím handle"
+      handle_name_no_dots: "Zadejte jen jméno, bez teček. {domain} se doplní automaticky."
+      handle_domains_hint: "Tento server nabízí více koncovek pro váš handle: {domains}. Vyberte si svou v seznamu na konci pole."
       checking_availability: "Kontrola dostupnosti..."
       checking_handle: "Kontrola, zda je handle dostupný..."
       handle_taken: "Tento handle je již obsazený. Zvolte prosím jiný."
@@ -272,7 +275,7 @@ cs:
 
       # Completed
       completed_title: "Migrace byla úspěšně dokončena!"
-      completed_migrated_to: "Váš účet byl úspěšně přemigrován na Eurosky. Nyní se můžete přihlásit s novým handle: <strong>%{handle}</strong> na Bluesky nebo ve vaší preferované aplikaci."
+      completed_migrated_to: "Váš účet byl úspěšně přemigrován na %{pds}. Nyní se můžete přihlásit s novým handle: <strong>%{handle}</strong> na Bluesky nebo ve vaší preferované aplikaci."
       completed_migrated_back: "Váš účet byl úspěšně přemigrován zpět na <strong>%{pds}</strong>. Nyní se můžete přihlásit se svým handle: <strong>%{handle}</strong> na Bluesky nebo ve vaší preferované aplikaci."
       email_sent_html: "Na %{email} jsme odeslali e-mail s novým heslem k účtu, pokyny pro přihlášení a odkazem na změnu hesla. Zkontrolujte prosím svou doručenou poštu (a složku se spamem)."
       save_rotation_key: "ULOŽTE SI ROTAČNÍ KLÍČ!"
@@ -306,7 +309,7 @@ cs:
       # PLC help section
       didnt_receive_plc: "Neobdrželi jste e-mail?"
       plc_check_spam: "Zkontrolujte složku se spamem nebo nevyžádanou poštou"
-      plc_from_bluesky: "E-mail přichází od Bluesky, ne od nás"
+      plc_from_old_pds: "E-mail přichází z vašeho současného serveru (%{pds}), ne od nás"
       plc_expires: "Kód vyprší za 1 hodinu"
       plc_new_code_help: "Pokud potřebujete nový kód, zadejte své heslo níže a vyžádáme jej:"
       plc_password_placeholder: "Heslo pro %{handle}"
@@ -457,7 +460,10 @@ cs:
       app_password_not_allowed: "Hesla aplikací nelze použít pro migraci. Použijte prosím své úplné heslo účtu."
       pds_did_password_required: "PDS hostitel, DID a heslo jsou povinné"
       two_factor_required: "Je vyžadováno dvoufaktorové ověření. Zkontrolujte svůj e-mail, zda neobsahuje přihlašovací kód."
-      wrong_password: "Špatné heslo k vašemu Bluesky účtu. Zadejte prosím heslo, které jste používali na bsky.social."
+      wrong_password: "Špatné heslo k vašemu účtu na %{pds}. Zadejte prosím heslo, které na tomto serveru používáte."
+      new_handle_not_on_domains: "Handle %{handle} nelze na tomto serveru vytvořit. Zvolte jméno bez teček na jedné z jeho domén: %{domains}."
+      same_server: "Váš účet už je na tomto serveru (%{pds}), takže není co migrovat. Přechod na handle v jiné doméně téhož serveru je změna handle, ne migrace."
+      handle_owned_by_old_server: "%{handle} patří vašemu současnému serveru a po migraci přestane fungovat. Vraťte se a zvolte nový handle."
       auth_failed: "Ověření se nezdařilo: %{error}"
       invalid_pds_response: "Neplatná odpověď z cílového PDS"
       pds_connect_failed: "Připojení k cílovému PDS se nezdařilo. Zkuste to prosím znovu."

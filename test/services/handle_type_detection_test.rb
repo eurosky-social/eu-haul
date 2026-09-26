@@ -111,6 +111,17 @@ class HandleTypeDetectionTest < ActiveSupport::TestCase
     assert_equal true, GoatService.handle_matches_source_pds?("iustitia100.latinsky.app", when_unknown: false)
   end
 
+  test "a new handle must be one name on one of the domains" do
+    domains = %w[.eurosky.social .mu.social]
+
+    assert GoatService.single_name_on_domains?("alice.eurosky.social", domains)
+    assert GoatService.single_name_on_domains?("alice.mu.social", domains)
+    refute GoatService.single_name_on_domains?("alice.mu.social.eurosky.social", domains)
+    refute GoatService.single_name_on_domains?("alice.oso.social", domains)
+    refute GoatService.single_name_on_domains?(".mu.social", domains)
+    refute GoatService.single_name_on_domains?("eurosky.social", domains)
+  end
+
   private
 
   # blacksky.app's describeServer availableUserDomains as of 2026-09-26

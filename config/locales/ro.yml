@@ -115,6 +115,7 @@ ro:
         keep_handle: "Păstrează handle-ul actual"
         new_handle_label: "Noul dumneavoastră handle"
         new_handle_placeholder: "utilizator"
+        domain_label: "Domeniul handle-ului"
         new_handle_help: "Alegeți noul handle (poate fi cel vechi) pe serverul de destinație"
         back: "Înapoi"
         continue: "Continuare"
@@ -173,6 +174,8 @@ ro:
       # Step 4
       custom_domain_help: "Handle-ul dumneavoastră {handle} este un domeniu personalizat. Puteți continua să-l folosiți pe noul server."
       enter_handle_short: "Vă rugăm să introduceți un handle"
+      handle_name_no_dots: "Introduceți doar un nume, fără puncte. {domain} se adaugă automat."
+      handle_domains_hint: "Acest server oferă mai multe terminații pentru handle-ul dvs.: {domains}. Alegeți-o pe a dvs. din lista de la capătul câmpului."
       checking_availability: "Se verifică disponibilitatea..."
       checking_handle: "Se verifică dacă handle-ul este disponibil..."
       handle_taken: "Acest handle este deja ocupat. Vă rugăm să alegeți altul."
@@ -272,7 +275,7 @@ ro:
 
       # Completed
       completed_title: "Migrare finalizată cu succes!"
-      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la Eurosky. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
+      completed_migrated_to: "Contul dumneavoastră a fost migrat cu succes la %{pds}. Acum vă puteți autentifica cu noul handle: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
       completed_migrated_back: "Contul dumneavoastră a fost migrat cu succes înapoi la <strong>%{pds}</strong>. Acum vă puteți autentifica cu handle-ul: <strong>%{handle}</strong> pe Bluesky sau în aplicația dvs. preferată."
       email_sent_html: "Am trimis un email la %{email} cu noua parolă a contului, instrucțiuni de autentificare și un link pentru schimbarea parolei. Vă rugăm să verificați căsuța de primire (și folderul de spam)."
       save_rotation_key: "SALVAȚI CHEIA DE ROTAȚIE!"
@@ -306,7 +309,7 @@ ro:
       # PLC help section
       didnt_receive_plc: "Nu ați primit emailul?"
       plc_check_spam: "Verificați folderul de spam sau junk"
-      plc_from_bluesky: "Emailul vine de la Bluesky, nu de la noi"
+      plc_from_old_pds: "Emailul vine de la serverul dvs. actual (%{pds}), nu de la noi"
       plc_expires: "Codul expiră după 1 oră"
       plc_new_code_help: "Dacă aveți nevoie de un cod nou, introduceți parola mai jos și vom solicita unul:"
       plc_password_placeholder: "Parola pentru %{handle}"
@@ -457,7 +460,10 @@ ro:
       app_password_not_allowed: "Parolele de aplicație nu pot fi folosite pentru migrare. Vă rugăm să folosiți parola completă a contului."
       pds_did_password_required: "Gazda PDS, DID-ul și parola sunt obligatorii"
       two_factor_required: "Autentificarea cu doi factori este necesară. Verificați emailul pentru un cod de autentificare."
-      wrong_password: "Parolă incorectă pentru contul Bluesky. Vă rugăm să introduceți parola folosită pe bsky.social."
+      wrong_password: "Parolă incorectă pentru contul dvs. de pe %{pds}. Vă rugăm să introduceți parola pe care o folosiți pe acel server."
+      new_handle_not_on_domains: "Handle-ul %{handle} nu poate fi creat pe acest server. Alegeți un nume fără puncte pe unul dintre domeniile sale: %{domains}."
+      same_server: "Contul dvs. se află deja pe acest server (%{pds}), deci nu este nimic de migrat. Trecerea la un handle pe alt domeniu al aceluiași server este o schimbare de handle, nu o migrare."
+      handle_owned_by_old_server: "%{handle} aparține serverului dvs. actual și nu va mai funcționa după migrare. Reveniți și alegeți un handle nou."
       auth_failed: "Autentificare eșuată: %{error}"
       invalid_pds_response: "Răspuns invalid de la PDS-ul de destinație"
       pds_connect_failed: "Nu s-a putut conecta la PDS-ul de destinație. Vă rugăm să încercați din nou."
