@@ -115,6 +115,7 @@ fr:
         keep_handle: "Conserver mon handle actuel"
         new_handle_label: "Votre nouveau handle"
         new_handle_placeholder: "nomdutilisateur"
+        domain_label: "Domaine du handle"
         new_handle_help: "Choisissez votre nouveau handle (peut être l'ancien) sur le serveur de destination"
         back: "Retour"
         continue: "Continuer"
@@ -173,6 +174,7 @@ fr:
       # Step 4
       custom_domain_help: "Votre handle {handle} est un domaine personnalisé. Vous pouvez continuer à l'utiliser sur le nouveau serveur."
       enter_handle_short: "Veuillez saisir un handle"
+      handle_name_no_dots: "Saisissez uniquement un nom, sans points. {domain} est ajouté automatiquement."
       checking_availability: "Vérification de la disponibilité..."
       checking_handle: "Vérification de la disponibilité du handle..."
       handle_taken: "Ce handle est déjà pris. Veuillez en choisir un autre."
@@ -458,6 +460,7 @@ fr:
       pds_did_password_required: "L'hôte PDS, le DID et le mot de passe sont requis"
       two_factor_required: "L'authentification à deux facteurs est requise. Consultez votre e-mail pour un code de connexion."
       wrong_password: "Mot de passe incorrect pour votre compte Bluesky. Veuillez saisir le mot de passe que vous utilisiez sur bsky.social."
+      new_handle_not_on_domains: "Le handle %{handle} ne peut pas être créé sur ce serveur. Choisissez un nom sans points sur l'un de ses domaines : %{domains}."
       auth_failed: "Échec de l'authentification : %{error}"
       invalid_pds_response: "Réponse invalide du PDS cible"
       pds_connect_failed: "Impossible de se connecter au PDS cible. Veuillez réessayer."

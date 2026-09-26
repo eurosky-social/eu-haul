@@ -115,6 +115,7 @@ lv:
         keep_handle: "Paturēt pašreizējo handle"
         new_handle_label: "Jūsu jaunais handle"
         new_handle_placeholder: "lietotājvārds"
+        domain_label: "Handle domēns"
         new_handle_help: "Izvēlieties jauno handle (var būt arī vecais) galamērķa serverī"
         back: "Atpakaļ"
         continue: "Turpināt"
@@ -173,6 +174,7 @@ lv:
       # Step 4
       custom_domain_help: "Jūsu handle {handle} ir pielāgots domēns. Varat turpināt to izmantot jaunajā serverī."
       enter_handle_short: "Lūdzu, ievadiet handle"
+      handle_name_no_dots: "Ievadiet tikai vārdu, bez punktiem. {domain} tiek pievienots automātiski."
       checking_availability: "Pieejamības pārbaude..."
       checking_handle: "Handle pieejamības pārbaude..."
       handle_taken: "Šis handle jau ir aizņemts. Lūdzu, izvēlieties citu."
@@ -458,6 +460,7 @@ lv:
       pds_did_password_required: "PDS adrese, DID un parole ir obligāti"
       two_factor_required: "Nepieciešama divfaktoru autentifikācija. Pārbaudiet e-pastu, lai iegūtu pieteikšanās kodu."
       wrong_password: "Nepareiza Bluesky konta parole. Lūdzu, ievadiet paroli, ko izmantojāt bsky.social."
+      new_handle_not_on_domains: "Handle %{handle} šajā serverī nevar izveidot. Izvēlieties vārdu bez punktiem kādā no tā domēniem: %{domains}."
       auth_failed: "Autentifikācija neizdevās: %{error}"
       invalid_pds_response: "Nederīga atbilde no galamērķa PDS"
       pds_connect_failed: "Neizdevās pieslēgties galamērķa PDS. Lūdzu, mēģiniet vēlreiz."

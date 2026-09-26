@@ -115,6 +115,7 @@ sk:
         keep_handle: "Ponechať aktuálny handle"
         new_handle_label: "Váš nový handle"
         new_handle_placeholder: "používateľ"
+        domain_label: "Doména handle"
         new_handle_help: "Zvoľte si nový handle (môže byť rovnaký) na cieľovom serveri"
         back: "Späť"
         continue: "Pokračovať"
@@ -173,6 +174,7 @@ sk:
       # Step 4
       custom_domain_help: "Váš handle {handle} je vlastná doména. Môžete ho naďalej používať na novom serveri."
       enter_handle_short: "Prosím, zadajte handle"
+      handle_name_no_dots: "Zadajte len meno, bez bodiek. {domain} sa doplní automaticky."
       checking_availability: "Kontrola dostupnosti..."
       checking_handle: "Kontrola, či je handle dostupný..."
       handle_taken: "Tento handle je už obsadený. Prosím, zvoľte iný."
@@ -458,6 +460,7 @@ sk:
       pds_did_password_required: "Hostiteľ PDS, DID a heslo sú povinné"
       two_factor_required: "Vyžaduje sa dvojfaktorové overenie. Skontrolujte e-mail pre prihlasovací kód."
       wrong_password: "Nesprávne heslo pre účet Bluesky. Prosím, zadajte heslo, ktoré ste použili na bsky.social."
+      new_handle_not_on_domains: "Handle %{handle} nie je možné na tomto serveri vytvoriť. Zvoľte meno bez bodiek na jednej z jeho domén: %{domains}."
       auth_failed: "Overenie zlyhalo: %{error}"
       invalid_pds_response: "Neplatná odpoveď z cieľového PDS"
       pds_connect_failed: "Nepodarilo sa pripojiť k cieľovému PDS. Prosím, skúste to znova."

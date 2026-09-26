@@ -111,7 +111,7 @@ class MigrationsController < ApplicationController
   #   - password: The user's password on the target PDS
   #
   # Response:
-  #   - Success: { success: true, access_token: '...', refresh_token: '...' }
+  #   - Success: { success: true, access_token: '...', refresh_token: '...', handle: '...' }
   #   - Failure: { error: 'message' }
   def verify_target_credentials
     pds_host = params[:pds_host]&.strip
@@ -160,10 +160,14 @@ class MigrationsController < ApplicationController
 
     session_data = JSON.parse(response.body)
 
+    # The handle the target has stored, which the account comes back with
+    # (getRecommendedDidCredentials). describeRepo gives none for a deactivated
+    # account, the usual state of one being returned to.
     render json: {
       success: true,
       access_token: session_data['accessJwt'],
-      refresh_token: session_data['refreshJwt']
+      refresh_token: session_data['refreshJwt'],
+      handle: session_data['handle']
     }
   rescue JSON::ParserError => e
     Rails.logger.error("Failed to parse target PDS response: #{e.message}")
@@ -532,6 +536,13 @@ class MigrationsController < ApplicationController
       else
         @migration.migration_type = 'migration_out'
         Rails.logger.info("Auto-detected migration_out (creating new account on #{@migration.new_pds_host})")
+
+        handle_error = new_handle_domain_error(@migration)
+        if handle_error
+          @migration.errors.add(:base, handle_error)
+          render :new, status: :unprocessable_entity
+          return
+        end
       end
 
       # Retrieve the old PDS tokens from the AJAX authentication (stored in hidden fields)
@@ -1759,6 +1770,20 @@ class MigrationsController < ApplicationController
     end
 
     nil
+  end
+
+  # Returns an error message when a new account's handle can't be created on
+  # the target, nil otherwise. A handle other than the kept old one must be a
+  # single name on one of the target's handle domains; anything else used to
+  # pass here and only fail at createAccount, after email verification. When
+  # the target can't be asked, createAccount stays the judge.
+  def new_handle_domain_error(migration)
+    return nil if migration.new_handle.blank? || migration.new_handle == migration.old_handle
+
+    domains = GoatService.pds_handle_domains(normalize_pds_host(migration.new_pds_host))
+    return nil if domains.blank? || GoatService.single_name_on_domains?(migration.new_handle, domains)
+
+    I18n.t('controllers.migrations.new_handle_not_on_domains', handle: migration.new_handle, domains: domains.join(', '))
   end
 
   def pds_host_responds?(host)

@@ -39,6 +39,11 @@ class LegalConsentFlowTest < ActionDispatch::IntegrationTest
     )
     GoatService.stubs(:clean_handle).with(@old_handle).returns(@old_handle)
     GoatService.stubs(:clean_handle).with(@new_handle).returns(@new_handle)
+
+    # create checks a new account's handle against the target's handle domains
+    stub_request(:get, "#{@new_pds_host}/xrpc/com.atproto.server.describeServer")
+      .to_return(status: 200, body: { availableUserDomains: [".newpds.com"] }.to_json,
+                 headers: { 'Content-Type' => 'application/json' })
   end
 
   def teardown

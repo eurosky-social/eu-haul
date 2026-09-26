@@ -115,6 +115,7 @@ hr:
         keep_handle: "Zadrzi trenutni handle"
         new_handle_label: "Vas novi handle"
         new_handle_placeholder: "korisnickoime"
+        domain_label: "Domena handlea"
         new_handle_help: "Odaberite svoj novi handle (moze biti stari) na odredisnom posluzitelju"
         back: "Natrag"
         continue: "Nastavi"
@@ -173,6 +174,7 @@ hr:
       # Step 4
       custom_domain_help: "Vas handle {handle} je prilagodena domena. Mozete ga nastaviti koristiti na novom posluzitelju."
       enter_handle_short: "Unesite handle"
+      handle_name_no_dots: "Unesite samo ime, bez točaka. {domain} se dodaje automatski."
       checking_availability: "Provjera dostupnosti..."
       checking_handle: "Provjera dostupnosti handlea..."
       handle_taken: "Ovaj handle je vec zauzet. Odaberite drugi."
@@ -458,6 +460,7 @@ hr:
       pds_did_password_required: "PDS adresa, DID i lozinka su obavezni"
       two_factor_required: "Potrebna je dvofaktorska autentifikacija. Provjerite e-postu za kod za prijavu."
       wrong_password: "Pogresna lozinka za vas Bluesky racun. Unesite lozinku koju ste koristili na bsky.social."
+      new_handle_not_on_domains: "Handle %{handle} ne može se stvoriti na ovom poslužitelju. Odaberite ime bez točaka na jednoj od njegovih domena: %{domains}."
       auth_failed: "Autentifikacija neuspjesna: %{error}"
       invalid_pds_response: "Nevaljani odgovor od odredisnog PDS-a"
       pds_connect_failed: "Povezivanje s odredisnim PDS-om nije uspjelo. Pokusajte ponovo."

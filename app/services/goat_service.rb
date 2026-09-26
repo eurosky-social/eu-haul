@@ -1659,6 +1659,16 @@ class GoatService
     domains.filter_map { |domain| EuroskyConfig.normalize_handle_suffix(domain) if domain.is_a?(String) }
   end
 
+  # Whether a handle is one name on one of these domains (alice + .mu.social).
+  # The reference PDS refuses a dot in the name part of a handle on its own
+  # domains, so alice.mu.social.eurosky.social is not a handle it will create.
+  def self.single_name_on_domains?(handle, domains)
+    domains.any? do |domain|
+      name = handle.delete_suffix(domain)
+      name != handle && name.present? && !name.include?('.')
+    end
+  end
+
   # Convenience method to resolve handle directly to PDS host
   # Returns a hash with { did: '...', pds_host: '...' }
   def self.resolve_handle(handle)

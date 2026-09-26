@@ -179,6 +179,8 @@ class MigrationsControllerTwoFactorTest < ActionDispatch::IntegrationTest
     assert json['success'], "Response should indicate success"
     assert json['access_token'].present?, "Response should include access_token"
     assert json['refresh_token'].present?, "Response should include refresh_token"
+    # The wizard shows this as the handle a returning account comes back with
+    assert_equal @test_handle, json['handle']
   end
 
   private

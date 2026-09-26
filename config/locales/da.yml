@@ -115,6 +115,7 @@ da:
         keep_handle: "Behold mit nuværende handle"
         new_handle_label: "Dit nye Handle"
         new_handle_placeholder: "brugernavn"
+        domain_label: "Handle-domæne"
         new_handle_help: "Vælg dit nye handle (kan være dit gamle) på destinationsserveren"
         back: "Tilbage"
         continue: "Fortsæt"
@@ -173,6 +174,7 @@ da:
       # Step 4
       custom_domain_help: "Dit handle {handle} er et brugerdefineret domæne. Du kan fortsætte med at bruge det på den nye server."
       enter_handle_short: "Indtast venligst et handle"
+      handle_name_no_dots: "Indtast kun et navn uden punktummer. {domain} tilføjes automatisk."
       checking_availability: "Kontrollerer tilgængelighed..."
       checking_handle: "Kontrollerer om handle er tilgængeligt..."
       handle_taken: "Dette handle er allerede taget. Vælg venligst et andet."
@@ -458,6 +460,7 @@ da:
       pds_did_password_required: "PDS-vært, DID og adgangskode er påkrævet"
       two_factor_required: "Tofaktorgodkendelse påkrævet. Tjek din e-mail for en loginkode."
       wrong_password: "Forkert adgangskode til din Bluesky-konto. Indtast venligst den adgangskode, du brugte på bsky.social."
+      new_handle_not_on_domains: "Handlet %{handle} kan ikke oprettes på denne server. Vælg et navn uden punktummer på et af dens domæner: %{domains}."
       auth_failed: "Godkendelse mislykkedes: %{error}"
       invalid_pds_response: "Ugyldigt svar fra destinations-PDS"
       pds_connect_failed: "Kunne ikke oprette forbindelse til destinations-PDS. Prøv venligst igen."

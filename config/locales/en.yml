@@ -116,6 +116,7 @@ en:
         keep_handle: "Keep my current handle"
         new_handle_label: "Your New Handle"
         new_handle_placeholder: "username"
+        domain_label: "Handle domain"
         new_handle_help: "Choose your new handle (can be your old) on the destination Server"
         back: "Back"
         continue: "Continue"
@@ -182,6 +183,7 @@ en:
       # Step 4
       custom_domain_help: "Your handle {handle} is a custom domain. You can keep using it on the new server."
       enter_handle_short: "Please enter a handle"
+      handle_name_no_dots: "Enter just a name, without dots. {domain} is added automatically."
       checking_availability: "Checking availability..."
       checking_handle: "Checking if handle is available..."
       handle_taken: "This handle is already taken. Please choose another."
@@ -473,6 +475,7 @@ en:
       pds_did_password_required: "PDS host, DID, and password are required"
       two_factor_required: "Two-factor authentication required. Check your email for a sign-in code."
       wrong_password: "Wrong password for your Bluesky account. Please enter the password you used on bsky.social."
+      new_handle_not_on_domains: "The handle %{handle} can't be created on this server. Choose a name without dots on one of its domains: %{domains}."
       auth_failed: "Authentication failed: %{error}"
       invalid_pds_response: "Invalid response from target PDS"
       pds_connect_failed: "Failed to connect to target PDS. Please try again."

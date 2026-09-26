@@ -115,6 +115,7 @@ el:
         keep_handle: "Διατήρηση του τρέχοντος handle"
         new_handle_label: "Το νέο Handle σας"
         new_handle_placeholder: "όνομαχρήστη"
+        domain_label: "Τομέας του handle"
         new_handle_help: "Επιλέξτε το νέο σας handle (μπορεί να είναι το παλιό) στον διακομιστή προορισμού"
         back: "Πίσω"
         continue: "Συνέχεια"
@@ -173,6 +174,7 @@ el:
       # Step 4
       custom_domain_help: "Το handle σας {handle} είναι προσαρμοσμένο domain. Μπορείτε να συνεχίσετε να το χρησιμοποιείτε στον νέο διακομιστή."
       enter_handle_short: "Παρακαλώ εισαγάγετε ένα handle"
+      handle_name_no_dots: "Εισαγάγετε μόνο ένα όνομα, χωρίς τελείες. Το {domain} προστίθεται αυτόματα."
       checking_availability: "Έλεγχος διαθεσιμότητας..."
       checking_handle: "Έλεγχος αν το handle είναι διαθέσιμο..."
       handle_taken: "Αυτό το handle είναι ήδη κατειλημμένο. Παρακαλώ επιλέξτε ένα άλλο."
@@ -458,6 +460,7 @@ el:
       pds_did_password_required: "Ο PDS host, το DID και ο κωδικός πρόσβασης είναι υποχρεωτικά"
       two_factor_required: "Απαιτείται αυθεντικοποίηση δύο παραγόντων. Ελέγξτε το e-mail σας για κωδικό σύνδεσης."
       wrong_password: "Λάθος κωδικός πρόσβασης για τον λογαριασμό σας στο Bluesky. Παρακαλώ εισαγάγετε τον κωδικό πρόσβασης που χρησιμοποιούσατε στο bsky.social."
+      new_handle_not_on_domains: "Το handle %{handle} δεν μπορεί να δημιουργηθεί σε αυτόν τον διακομιστή. Επιλέξτε ένα όνομα χωρίς τελείες σε έναν από τους τομείς του: %{domains}."
       auth_failed: "Αποτυχία αυθεντικοποίησης: %{error}"
       invalid_pds_response: "Μη έγκυρη απάντηση από τον PDS προορισμού"
       pds_connect_failed: "Αποτυχία σύνδεσης με τον PDS προορισμού. Παρακαλώ δοκιμάστε ξανά."

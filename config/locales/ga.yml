@@ -115,6 +115,7 @@ ga:
         keep_handle: "Coinnigh mo handle reatha"
         new_handle_label: "Do handle nua"
         new_handle_placeholder: "ainmúsáideora"
+        domain_label: "Fearann an handle"
         new_handle_help: "Roghnaigh do handle nua (is féidir an ceann sean a úsáid) ar an bhfreastalaí ceann scríbe"
         back: "Siar"
         continue: "Lean ar aghaidh"
@@ -173,6 +174,7 @@ ga:
       # Step 4
       custom_domain_help: "Is fearann saincheaptha é do handle {handle}. Is féidir leat leanúint á úsáid ar an bhfreastalaí nua."
       enter_handle_short: "Cuir isteach handle le do thoil"
+      handle_name_no_dots: "Cuir isteach ainm amháin, gan poncanna. Cuirtear {domain} leis go huathoibríoch."
       checking_availability: "Ag seiceáil infhaighteachta..."
       checking_handle: "Ag seiceáil an bhfuil an handle ar fáil..."
       handle_taken: "Tá an handle seo tógtha cheana féin. Roghnaigh ceann eile le do thoil."
@@ -458,6 +460,7 @@ ga:
       pds_did_password_required: "Tá óstach PDS, DID, agus pasfhocal ag teastáil"
       two_factor_required: "Tá fíordheimhniú dhá fhachtóir ag teastáil. Seiceáil do ríomhphost le haghaidh cóid logála isteach."
       wrong_password: "Pasfhocal mícheart do do chuntas Bluesky. Cuir isteach an pasfhocal a d'úsáid tú ar bsky.social le do thoil."
+      new_handle_not_on_domains: "Ní féidir an handle %{handle} a chruthú ar an bhfreastalaí seo. Roghnaigh ainm gan poncanna ar cheann dá fhearainn: %{domains}."
       auth_failed: "Theip ar fhíordheimhniú: %{error}"
       invalid_pds_response: "Freagra neamhbhailí ón PDS sprice"
       pds_connect_failed: "Theip ar cheangal leis an PDS sprice. Bain triail eile as le do thoil."

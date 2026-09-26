@@ -29,6 +29,13 @@ RSpec.describe MigrationsController, type: :controller do
   end
 
   describe "POST #create" do
+    # create checks a new account's handle against the target's handle domains
+    before do
+      stub_request(:get, "#{valid_attributes[:new_pds_host]}/xrpc/com.atproto.server.describeServer")
+        .to_return(status: 200, body: { availableUserDomains: [".example.com"] }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+    end
+
     context "with valid params" do
       before do
         # Mock handle resolution

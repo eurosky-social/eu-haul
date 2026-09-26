@@ -82,6 +82,19 @@
     pointer-events: none;
   }
 
+  /* Sits where .handle-suffix does when the server hands out several domains */
+  .handle-domain-select {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 190px;
+    border: 0;
+    background-color: transparent;
+    color: #555;
+    cursor: pointer;
+  }
+
   .typeahead-wrapper {
     position: relative;
   }
@@ -641,8 +654,10 @@
         return;
       }
 
-      // For custom PDS: if not yet verified, check requirements first
-      if (pdsSelect.value === 'custom' && (!wizardData.pdsVerified || wizardData.pdsVerifiedHost !== selectedPds)) {
+      // Check this exact server first unless that already succeeded. Picking a
+      // listed server starts the check, but Continue can be clicked before it
+      // answers or after it failed, and step 4 needs this server's handle domains.
+      if (!wizardData.pdsVerified || wizardData.pdsVerifiedHost !== selectedPds) {
         btn.disabled = true;
         btn.textContent = i18n('checking_server');
         checkPdsRequirements(selectedPds, status, inviteGroup, function(success) {
@@ -741,6 +756,9 @@
           wizardData.targetCredentialsVerified = true;
           wizardData.newPdsAccessToken = data.access_token;
           wizardData.newPdsRefreshToken = data.refresh_token;
+          // A deactivated account has no handle in describeRepo; the login
+          // returns the one it will come back with
+          if (data.handle) wizardData.existingHandleOnTarget = data.handle;
 
           showStatus(targetStatus, i18n('credentials_verified'), 'success');
 
@@ -929,6 +947,7 @@
 
       wizardData.pdsVerified = false;
       wizardData.pdsVerifiedHost = null;
+      wizardData.availableDomains = [];
       wizardData.pdsTosUrl = null;
       wizardData.pdsPrivacyPolicyUrl = null;
       wizardData.pdsIsEurosky = false;
@@ -965,6 +984,7 @@
       if (pdsSelect.value === 'custom') {
         wizardData.pdsVerified = false;
         wizardData.pdsVerifiedHost = null;
+        wizardData.availableDomains = [];
         wizardData.pdsTosUrl = null;
         wizardData.pdsPrivacyPolicyUrl = null;
         wizardData.pdsIsEurosky = false;
@@ -989,6 +1009,8 @@
           showStatus(statusElement, data.error, 'error');
           inviteGroup.style.display = 'none';
           wizardData.pdsVerified = false;
+          wizardData.pdsVerifiedHost = null;
+          wizardData.availableDomains = [];
           if (callback) callback(false);
           return;
         }
@@ -1024,6 +1046,8 @@
         showStatus(statusElement, i18n('failed_verify_pds'), 'error');
         inviteGroup.style.display = 'none';
         wizardData.pdsVerified = false;
+        wizardData.pdsVerifiedHost = null;
+        wizardData.availableDomains = [];
         if (callback) callback(false);
       });
     }
@@ -1035,14 +1059,72 @@
     const newHandleSection = document.getElementById('new-handle-section');
     const preserveCheckbox = document.getElementById('preserve-handle-checkbox');
     const customHandleDisplay = document.getElementById('custom-handle-display');
+    const newHandleDomain = document.getElementById('new-handle-domain');
+
+    // The destination's handle domains, each with a leading dot. A server
+    // that lists none gets its own hostname, which is what a stock PDS hands out.
+    function handleDomains() {
+      const domains = wizardData.availableDomains
+        .filter(domain => typeof domain === 'string' && domain.trim())
+        .map(domain => {
+          domain = domain.trim().toLowerCase();
+          return domain.startsWith('.') ? domain : '.' + domain;
+        });
+      if (domains.length === 0) {
+        try {
+          domains.push('.' + new URL(wizardData.pdsHost).hostname);
+        } catch (e) {
+          domains.push('.' + wizardData.pdsHost.replace(/^https?:\/\//, '').replace(/\/.*$/, ''));
+        }
+      }
+      return domains;
+    }
+
+    // One domain shows as fixed text after the name; several get a picker,
+    // starting on the one matching the server's hostname (blacksky.app ->
+    // .blacksky.app), otherwise the server's first.
+    function showHandleDomains() {
+      const domains = handleDomains();
+      if (domains.length === 1) {
+        newHandleDomain.style.display = 'none';
+        newHandleSuffix.style.display = '';
+        newHandleSuffix.textContent = domains[0];
+        return;
+      }
+
+      let hostDomain = null;
+      try { hostDomain = '.' + new URL(wizardData.pdsHost).hostname; } catch (e) {}
+      newHandleDomain.innerHTML = '';
+      domains.forEach(domain => {
+        const option = document.createElement('option');
+        option.value = domain;
+        option.textContent = domain;
+        newHandleDomain.appendChild(option);
+      });
+      newHandleDomain.value = domains.includes(hostDomain) ? hostDomain : domains[0];
+      newHandleSuffix.style.display = 'none';
+      newHandleSuffix.textContent = '';
+      newHandleDomain.style.display = '';
+    }
+
+    function hideHandleDomains() {
+      newHandleSuffix.textContent = '';
+      newHandleSuffix.style.display = 'none';
+      newHandleDomain.style.display = 'none';
+    }
+
+    function selectedHandleDomain() {
+      return newHandleDomain.style.display === 'none' ? newHandleSuffix.textContent : newHandleDomain.value;
+    }
 
     function setupStep4() {
-      // Existing account on target: show handle as read-only
+      // Existing account on target: show handle as read-only. The account comes
+      // back with the handle the target has stored, so there is nothing to pick.
       if (wizardData.accountExistsOnTarget && wizardData.existingHandleOnTarget) {
         preservationSection.style.display = 'none';
         newHandleSection.style.display = 'block';
         newHandleInput.value = wizardData.existingHandleOnTarget;
-        newHandleSuffix.textContent = '';
+        hideHandleDomains();
         newHandleInput.readOnly = true;
         newHandleInput.style.paddingRight = '12px';
       } else if (wizardData.canPreserveHandle && wizardData.handleType === 'dns_verified') {
@@ -1061,14 +1143,7 @@
         newHandleSection.style.display = 'block';
         newHandleInput.readOnly = false;
         newHandleInput.style.paddingRight = '200px';
-
-        if (wizardData.availableDomains.length > 0) {
-          const domain = wizardData.availableDomains[0];
-          newHandleSuffix.textContent = domain.startsWith('.') ? domain : '.' + domain;
-        } else {
-          const pdsUrl = new URL(wizardData.pdsHost);
-          newHandleSuffix.textContent = '.' + pdsUrl.hostname;
-        }
+        showHandleDomains();
 
         // Pre-fill with the username part of the old handle
         const oldHandleParts = (wizardData.oldHandle || '').split('.');
@@ -1082,14 +1157,7 @@
         newHandleSection.style.display = 'none';
       } else {
         newHandleSection.style.display = 'block';
-
-        if (wizardData.availableDomains.length > 0) {
-          const domain = wizardData.availableDomains[0];
-          newHandleSuffix.textContent = domain.startsWith('.') ? domain : '.' + domain;
-        } else {
-          const pdsUrl = new URL(wizardData.pdsHost);
-          newHandleSuffix.textContent = '.' + pdsUrl.hostname;
-        }
+        showHandleDomains();
         newHandleInput.value = '';
         newHandleInput.focus();
       }
@@ -1132,23 +1200,31 @@
         return;
       }
 
-      const handleUsername = newHandleInput.value.trim();
+      let handleUsername = newHandleInput.value.trim().toLowerCase().replace(/^@/, '').replace(/\.$/, '');
       if (!handleUsername) {
         alert(i18n('enter_handle_short'));
         return;
       }
 
-      const suffix = newHandleSuffix.textContent;
-      const userEndsWithDot = handleUsername.endsWith('.');
-      const suffixStartsWithDot = suffix.startsWith('.');
-
-      if (userEndsWithDot && suffixStartsWithDot) {
-        fullHandle = handleUsername.slice(0, -1) + suffix;
-      } else if (!userEndsWithDot && !suffixStartsWithDot) {
-        fullHandle = handleUsername + '.' + suffix;
-      } else {
-        fullHandle = handleUsername + suffix;
+      // Someone typing the whole handle (alice.mu.social) means that domain
+      let suffix = selectedHandleDomain();
+      const typedDomain = handleDomains().find(domain => handleUsername.endsWith(domain));
+      if (typedDomain) {
+        handleUsername = handleUsername.slice(0, -typedDomain.length);
+        suffix = typedDomain;
+        newHandleInput.value = handleUsername;
+        if (newHandleDomain.style.display !== 'none') newHandleDomain.value = typedDomain;
       }
+
+      // Servers hand out one name per domain: alice.mu on .eurosky.social would
+      // pass every check here and be refused when the account is created
+      if (!handleUsername || handleUsername.includes('.')) {
+        showStatus(status, i18n('handle_name_no_dots', {domain: suffix}), 'error');
+        newHandleInput.focus();
+        return;
+      }
+
+      fullHandle = handleUsername + suffix;
 
       btn.disabled = true;
       btn.textContent = i18n('checking_availability');
@@ -1553,6 +1629,7 @@
           <div class="position-relative">
             <input type="text" id="new-handle-input" class="form-control" placeholder="<%= t('migrations.new.step4.new_handle_placeholder') %>" style="padding-right: 200px;">
             <span id="new-handle-suffix" class="handle-suffix"></span>
+            <select id="new-handle-domain" class="handle-domain-select" aria-label="<%= t('migrations.new.step4.domain_label') %>" style="display: none;"></select>
           </div>
           <div class="form-text"><%= t('migrations.new.step4.new_handle_help') %></div>
           <%= f.hidden_field :new_handle, id: "migration_new_handle" %>

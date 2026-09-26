@@ -115,6 +115,7 @@ bg:
         keep_handle: "Запази текущия ми handle"
         new_handle_label: "Вашият нов Handle"
         new_handle_placeholder: "потребителско_име"
+        domain_label: "Домейн на handle"
         new_handle_help: "Изберете нов handle (може да бъде старият) на целевия сървър"
         back: "Назад"
         continue: "Продължи"
@@ -173,6 +174,7 @@ bg:
       # Step 4
       custom_domain_help: "Вашият handle {handle} е потребителски домейн. Можете да продължите да го използвате на новия сървър."
       enter_handle_short: "Моля, въведете handle"
+      handle_name_no_dots: "Въведете само име, без точки. {domain} се добавя автоматично."
       checking_availability: "Проверка на наличността..."
       checking_handle: "Проверка дали handle е наличен..."
       handle_taken: "Този handle вече е зает. Моля, изберете друг."
@@ -458,6 +460,7 @@ bg:
       pds_did_password_required: "PDS хостът, DID и паролата са задължителни"
       two_factor_required: "Необходима е двуфакторна автентикация. Проверете имейла си за код за вход."
       wrong_password: "Грешна парола за Вашия Bluesky акаунт. Моля, въведете паролата, която сте използвали в bsky.social."
+      new_handle_not_on_domains: "Handle %{handle} не може да бъде създаден на този сървър. Изберете име без точки в някой от неговите домейни: %{domains}."
       auth_failed: "Неуспешна автентикация: %{error}"
       invalid_pds_response: "Невалиден отговор от целевия PDS"
       pds_connect_failed: "Неуспешно свързване с целевия PDS. Моля, опитайте отново."

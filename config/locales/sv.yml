@@ -115,6 +115,7 @@ sv:
         keep_handle: "Behåll mitt nuvarande handle"
         new_handle_label: "Ditt nya handle"
         new_handle_placeholder: "användarnamn"
+        domain_label: "Handle-domän"
         new_handle_help: "Välj ditt nya handle (kan vara ditt gamla) på destinationsservern"
         back: "Tillbaka"
         continue: "Fortsätt"
@@ -173,6 +174,7 @@ sv:
       # Step 4
       custom_domain_help: "Ditt handle {handle} är en anpassad domän. Du kan fortsätta använda det på den nya servern."
       enter_handle_short: "Vänligen ange ett handle"
+      handle_name_no_dots: "Ange bara ett namn, utan punkter. {domain} läggs till automatiskt."
       checking_availability: "Kontrollerar tillgänglighet..."
       checking_handle: "Kontrollerar om handle är tillgängligt..."
       handle_taken: "Detta handle är redan taget. Vänligen välj ett annat."
@@ -458,6 +460,7 @@ sv:
       pds_did_password_required: "PDS-värd, DID och lösenord krävs"
       two_factor_required: "Tvåfaktorsautentisering krävs. Kontrollera din e-post för en inloggningskod."
       wrong_password: "Fel lösenord för ditt Bluesky-konto. Vänligen ange lösenordet du använde på bsky.social."
+      new_handle_not_on_domains: "Handlet %{handle} kan inte skapas på den här servern. Välj ett namn utan punkter på någon av dess domäner: %{domains}."
       auth_failed: "Autentisering misslyckades: %{error}"
       invalid_pds_response: "Ogiltigt svar från destinations-PDS"
       pds_connect_failed: "Kunde inte ansluta till destinations-PDS. Vänligen försök igen."

@@ -115,6 +115,7 @@ nl:
         keep_handle: "Mijn huidige handle behouden"
         new_handle_label: "Uw nieuwe handle"
         new_handle_placeholder: "gebruikersnaam"
+        domain_label: "Handle-domein"
         new_handle_help: "Kies uw nieuwe handle (kan uw oude zijn) op de doelserver"
         back: "Terug"
         continue: "Doorgaan"
@@ -173,6 +174,7 @@ nl:
       # Step 4
       custom_domain_help: "Uw handle {handle} is een aangepast domein. U kunt het blijven gebruiken op de nieuwe server."
       enter_handle_short: "Voer een handle in"
+      handle_name_no_dots: "Voer alleen een naam in, zonder punten. {domain} wordt automatisch toegevoegd."
       checking_availability: "Beschikbaarheid controleren..."
       checking_handle: "Controleren of handle beschikbaar is..."
       handle_taken: "Deze handle is al bezet. Kies een andere."
@@ -458,6 +460,7 @@ nl:
       pds_did_password_required: "PDS-host, DID en wachtwoord zijn vereist"
       two_factor_required: "Tweefactorauthenticatie vereist. Controleer uw e-mail voor een aanmeldcode."
       wrong_password: "Onjuist wachtwoord voor uw Bluesky-account. Voer het wachtwoord in dat u op bsky.social gebruikte."
+      new_handle_not_on_domains: "De handle %{handle} kan op deze server niet worden aangemaakt. Kies een naam zonder punten op een van de domeinen: %{domains}."
       auth_failed: "Authenticatie mislukt: %{error}"
       invalid_pds_response: "Ongeldig antwoord van doel-PDS"
       pds_connect_failed: "Kon geen verbinding maken met doel-PDS. Probeer het opnieuw."

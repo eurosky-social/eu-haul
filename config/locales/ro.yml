@@ -115,6 +115,7 @@ ro:
         keep_handle: "Păstrează handle-ul actual"
         new_handle_label: "Noul dumneavoastră handle"
         new_handle_placeholder: "utilizator"
+        domain_label: "Domeniul handle-ului"
         new_handle_help: "Alegeți noul handle (poate fi cel vechi) pe serverul de destinație"
         back: "Înapoi"
         continue: "Continuare"
@@ -173,6 +174,7 @@ ro:
       # Step 4
       custom_domain_help: "Handle-ul dumneavoastră {handle} este un domeniu personalizat. Puteți continua să-l folosiți pe noul server."
       enter_handle_short: "Vă rugăm să introduceți un handle"
+      handle_name_no_dots: "Introduceți doar un nume, fără puncte. {domain} se adaugă automat."
       checking_availability: "Se verifică disponibilitatea..."
       checking_handle: "Se verifică dacă handle-ul este disponibil..."
       handle_taken: "Acest handle este deja ocupat. Vă rugăm să alegeți altul."
@@ -458,6 +460,7 @@ ro:
       pds_did_password_required: "Gazda PDS, DID-ul și parola sunt obligatorii"
       two_factor_required: "Autentificarea cu doi factori este necesară. Verificați emailul pentru un cod de autentificare."
       wrong_password: "Parolă incorectă pentru contul Bluesky. Vă rugăm să introduceți parola folosită pe bsky.social."
+      new_handle_not_on_domains: "Handle-ul %{handle} nu poate fi creat pe acest server. Alegeți un nume fără puncte pe unul dintre domeniile sale: %{domains}."
       auth_failed: "Autentificare eșuată: %{error}"
       invalid_pds_response: "Răspuns invalid de la PDS-ul de destinație"
       pds_connect_failed: "Nu s-a putut conecta la PDS-ul de destinație. Vă rugăm să încercați din nou."
