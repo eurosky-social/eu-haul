@@ -49,10 +49,11 @@ module EuroskyConfig
 
   # Handle domains a PDS hands out to its users (user.bsky.social). A source
   # handle ending in one of these is PDS-owned and can't be kept, even though
-  # the PDS answers its DNS/well-known lookups. Needed wherever the PDS hostname
-  # isn't itself the handle domain (pds.oso.social serves *.oso.social), since
-  # GoatService.handle_matches_source_pds? only catches user.<pds-hostname>.
-  # Override with PDS_HOSTED_HANDLE_SUFFIXES, comma-separated (.bsky.social,.oso.social).
+  # the PDS answers its DNS/well-known lookups. GoatService.handle_matches_source_pds?
+  # also asks the source PDS for its own list (describeServer availableUserDomains),
+  # so this list is the no-network fast path and the fallback when that PDS
+  # can't be asked. PDS_HOSTED_HANDLE_SUFFIXES (comma-separated, .oso.social)
+  # adds to it.
   DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES = %w[
     .bsky.social
     .blacksky.app
@@ -194,28 +195,36 @@ module EuroskyConfig
     end.freeze
   end
 
-  # Handle suffixes treated as PDS-owned: PDS_HOSTED_HANDLE_SUFFIXES if set,
-  # otherwise DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES.
+  # Handle suffixes treated as PDS-owned: DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES
+  # plus PDS_HOSTED_HANDLE_SUFFIXES.
   def self.pds_hosted_handle_suffixes
     @pds_hosted_handle_suffixes ||= parse_pds_hosted_handle_suffixes(ENV['PDS_HOSTED_HANDLE_SUFFIXES'])
   end
 
-  # Parse a comma-separated PDS_HOSTED_HANDLE_SUFFIXES value into lowercase
-  # suffixes with a leading dot. Blank means the built-in default list.
+  # Parse a comma-separated PDS_HOSTED_HANDLE_SUFFIXES value and add it to the
+  # built-in list. Adding rather than replacing means setting only .oso.social
+  # can't silently drop .bsky.social, which would offer every bsky.social user
+  # to keep a handle they don't own.
   def self.parse_pds_hosted_handle_suffixes(raw)
     return DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES if raw.blank?
 
-    raw.split(',').map(&:strip).reject(&:empty?).map do |entry|
-      suffix = entry.downcase
-      suffix = ".#{suffix}" unless suffix.start_with?('.')
+    configured = raw.split(',').map(&:strip).reject(&:empty?).map do |entry|
+      normalize_handle_suffix(entry) ||
+        raise(ConfigurationError, "PDS_HOSTED_HANDLE_SUFFIXES entry #{entry.inspect} must be a domain like .pds.example.com")
+    end
 
-      unless suffix.match?(/\A(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?){2,}\z/)
-        raise ConfigurationError,
-              "PDS_HOSTED_HANDLE_SUFFIXES entry #{entry.inspect} must be a domain like .pds.example.com"
-      end
+    (DEFAULT_PDS_HOSTED_HANDLE_SUFFIXES + configured).uniq.freeze
+  end
 
-      suffix.freeze
-    end.uniq.freeze
+  # Lowercase a handle domain and give it a leading dot (OSO.social ->
+  # .oso.social). Nil unless it is a domain of at least two labels: a bare
+  # .social would claim every handle on that TLD.
+  def self.normalize_handle_suffix(entry)
+    suffix = entry.to_s.strip.downcase
+    suffix = ".#{suffix}" unless suffix.start_with?('.')
+    return nil unless suffix.match?(/\A(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?){2,}\z/)
+
+    suffix.freeze
   end
 
   # Get CSS gradient string for backgrounds

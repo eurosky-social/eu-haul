@@ -1493,8 +1493,9 @@ class GoatService
   # Detect if a handle is DNS-verified (custom domain) or PDS-hosted
   # Returns a hash with { type: 'dns_verified' | 'pds_hosted', verified_via: 'dns' | 'http_wellknown' | 'pds_api' }
   #
-  # A handle is PDS-hosted if its domain suffix matches the PDS hostname
-  # (e.g., user.pds.example.com is hosted by pds.example.com).
+  # A handle is PDS-hosted if it sits on a domain its PDS hands out: a known
+  # suffix, the PDS hostname (user.pds.example.com on pds.example.com) or one of
+  # the PDS's availableUserDomains (user.mu.social on eurosky.social).
   # A handle is DNS-verified (custom domain) only if the user owns the domain
   # independently of any PDS.
   def self.detect_handle_type(handle)
@@ -1595,10 +1596,11 @@ class GoatService
     }
   end
 
-  # Check if a handle's domain suffix matches its source PDS hostname.
-  # PDS-hosted handles use the PDS hostname as their domain suffix
-  # (e.g., "user.pds.example.com" is hosted by "pds.example.com").
-  # This distinguishes PDS-hosted handles from genuinely user-owned custom domains.
+  # Check if a handle sits on a domain its source PDS hands out, either the PDS
+  # hostname itself ("user.pds.example.com" on pds.example.com) or one of the
+  # PDS's availableUserDomains ("user.mu.social" on eurosky.social,
+  # "user.oso.social" on pds.oso.social). The PDS answers DNS/well-known lookups
+  # for these handles, so without this check they pass for custom domains.
   def self.handle_matches_source_pds?(handle)
     parts = handle.split('.')
     return false if parts.length < 3
@@ -1614,7 +1616,9 @@ class GoatService
 
       # Check if the handle's domain suffix matches the PDS hostname
       # e.g., "euro11-06.pds.local.theeverythingapp.de" ends with "pds.local.theeverythingapp.de"
-      handle.end_with?(".#{pds_hostname}")
+      return true if handle.end_with?(".#{pds_hostname}")
+
+      pds_handle_domains(pds_host).any? { |domain| handle.end_with?(domain) }
     rescue StandardError => e
       Rails.logger.debug("Could not check PDS match for #{handle}: #{e.message}")
 
@@ -1623,6 +1627,28 @@ class GoatService
       suffix = parts[1..].join('.')
       suffix.include?('pds.') || suffix.start_with?('pds.')
     end
+  end
+
+  # Handle domains a PDS hands out to its users, from its describeServer
+  # availableUserDomains, normalized like PDS_HOSTED_HANDLE_SUFFIXES. Empty
+  # when the PDS can't be asked; the handle then goes on to the DNS/well-known
+  # checks as before. The wizard logs in to this same PDS right after, so a PDS
+  # that is down here stops the migration there anyway.
+  def self.pds_handle_domains(pds_host)
+    url = "#{pds_host.chomp('/')}/xrpc/com.atproto.server.describeServer"
+    response = HTTParty.get(url, timeout: 5)
+    unless response.success?
+      Rails.logger.warn("describeServer on #{pds_host} answered #{response.code}; not checking its handle domains")
+      return []
+    end
+
+    domains = JSON.parse(response.body)['availableUserDomains']
+    return [] unless domains.is_a?(Array)
+
+    domains.filter_map { |domain| EuroskyConfig.normalize_handle_suffix(domain) if domain.is_a?(String) }
+  rescue StandardError => e
+    Rails.logger.warn("Could not fetch handle domains from #{pds_host}: #{e.class}: #{e.message}")
+    []
   end
 
   # Convenience method to resolve handle directly to PDS host
