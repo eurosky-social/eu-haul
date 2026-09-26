@@ -175,6 +175,7 @@ et:
       custom_domain_help: "Teie handle {handle} on kohandatud domeen. Saate seda uuel serveril edasi kasutada."
       enter_handle_short: "Palun sisestage handle"
       handle_name_no_dots: "Sisestage ainult nimi, ilma punktideta. {domain} lisatakse automaatselt."
+      handle_domains_hint: "See server pakub teie handle'ile mitut lõppu: {domains}. Valige oma välja lõpus olevast loendist."
       checking_availability: "Saadavuse kontrollimine..."
       checking_handle: "Kontrollimine, kas handle on saadaval..."
       handle_taken: "See handle on juba võetud. Palun valige teine."

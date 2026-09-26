@@ -175,6 +175,7 @@ ga:
       custom_domain_help: "Is fearann saincheaptha é do handle {handle}. Is féidir leat leanúint á úsáid ar an bhfreastalaí nua."
       enter_handle_short: "Cuir isteach handle le do thoil"
       handle_name_no_dots: "Cuir isteach ainm amháin, gan poncanna. Cuirtear {domain} leis go huathoibríoch."
+      handle_domains_hint: "Tairgeann an freastalaí seo níos mó ná críoch amháin do do handle: {domains}. Roghnaigh do cheann féin sa liosta ag deireadh an réimse."
       checking_availability: "Ag seiceáil infhaighteachta..."
       checking_handle: "Ag seiceáil an bhfuil an handle ar fáil..."
       handle_taken: "Tá an handle seo tógtha cheana féin. Roghnaigh ceann eile le do thoil."

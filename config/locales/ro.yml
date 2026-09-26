@@ -175,6 +175,7 @@ ro:
       custom_domain_help: "Handle-ul dumneavoastră {handle} este un domeniu personalizat. Puteți continua să-l folosiți pe noul server."
       enter_handle_short: "Vă rugăm să introduceți un handle"
       handle_name_no_dots: "Introduceți doar un nume, fără puncte. {domain} se adaugă automat."
+      handle_domains_hint: "Acest server oferă mai multe terminații pentru handle-ul dvs.: {domains}. Alegeți-o pe a dvs. din lista de la capătul câmpului."
       checking_availability: "Se verifică disponibilitatea..."
       checking_handle: "Se verifică dacă handle-ul este disponibil..."
       handle_taken: "Acest handle este deja ocupat. Vă rugăm să alegeți altul."

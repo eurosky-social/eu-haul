@@ -175,6 +175,7 @@ nb:
       custom_domain_help: "Din handle {handle} er et egendefinert domene. Du kan fortsette å bruke det på den nye serveren."
       enter_handle_short: "Vennligst skriv inn en handle"
       handle_name_no_dots: "Skriv bare et navn, uten punktum. {domain} legges til automatisk."
+      handle_domains_hint: "Denne serveren tilbyr flere endelser for handlen din: {domains}. Velg din i listen på slutten av feltet."
       checking_availability: "Sjekker tilgjengelighet..."
       checking_handle: "Sjekker om handlen er tilgjengelig..."
       handle_taken: "Denne handlen er allerede tatt. Vennligst velg en annen."

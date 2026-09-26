@@ -175,6 +175,7 @@ uk:
       custom_domain_help: "Ваш handle {handle} є власним доменом. Ви можете продовжувати використовувати його на новому сервері."
       enter_handle_short: "Будь ласка, введіть handle"
       handle_name_no_dots: "Введіть лише ім'я, без крапок. {domain} додається автоматично."
+      handle_domains_hint: "Цей сервер пропонує кілька закінчень для вашого handle: {domains}. Виберіть своє у списку в кінці поля."
       checking_availability: "Перевірка доступності..."
       checking_handle: "Перевірка доступності handle..."
       handle_taken: "Цей handle вже зайнятий. Будь ласка, оберіть інший."

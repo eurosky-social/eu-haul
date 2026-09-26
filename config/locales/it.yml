@@ -175,6 +175,7 @@ it:
       custom_domain_help: "Il tuo handle {handle} è un dominio personalizzato. Puoi continuare a utilizzarlo sul nuovo server."
       enter_handle_short: "Inserisci un handle"
       handle_name_no_dots: "Inserisci solo un nome, senza punti. {domain} viene aggiunto automaticamente."
+      handle_domains_hint: "Questo server offre più terminazioni per il tuo handle: {domains}. Scegli la tua nell'elenco alla fine del campo."
       checking_availability: "Verifica disponibilità..."
       checking_handle: "Verifica della disponibilità dell'handle..."
       handle_taken: "Questo handle è già in uso. Scegline un altro."

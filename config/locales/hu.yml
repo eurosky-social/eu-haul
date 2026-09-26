@@ -175,6 +175,7 @@ hu:
       custom_domain_help: "Az On handleje ({handle}) egyeni domain. Tovabbra is hasznalhatja az uj szerveren."
       enter_handle_short: "Kerem, adjon meg egy handlet"
       handle_name_no_dots: "Csak egy nevet adjon meg, pontok nélkül. A(z) {domain} automatikusan hozzáadódik."
+      handle_domains_hint: "Ez a szerver több végződést kínál a handle-jéhez: {domains}. Válassza ki a sajátját a mező végén lévő listából."
       checking_availability: "Elerhetoseg ellenorzese..."
       checking_handle: "Handle elerhetosegenek ellenorzese..."
       handle_taken: "Ez a handle mar foglalt. Kerem, valasszon masikat."

@@ -175,6 +175,7 @@ hr:
       custom_domain_help: "Vas handle {handle} je prilagodena domena. Mozete ga nastaviti koristiti na novom posluzitelju."
       enter_handle_short: "Unesite handle"
       handle_name_no_dots: "Unesite samo ime, bez točaka. {domain} se dodaje automatski."
+      handle_domains_hint: "Ovaj poslužitelj nudi više završetaka za vaš handle: {domains}. Odaberite svoj na popisu na kraju polja."
       checking_availability: "Provjera dostupnosti..."
       checking_handle: "Provjera dostupnosti handlea..."
       handle_taken: "Ovaj handle je vec zauzet. Odaberite drugi."

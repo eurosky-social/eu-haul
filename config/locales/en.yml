@@ -184,6 +184,7 @@ en:
       custom_domain_help: "Your handle {handle} is a custom domain. You can keep using it on the new server."
       enter_handle_short: "Please enter a handle"
       handle_name_no_dots: "Enter just a name, without dots. {domain} is added automatically."
+      handle_domains_hint: "This server offers more than one ending for your handle: {domains}. Choose yours in the list at the end of the field."
       checking_availability: "Checking availability..."
       checking_handle: "Checking if handle is available..."
       handle_taken: "This handle is already taken. Please choose another."

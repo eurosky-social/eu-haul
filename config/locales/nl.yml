@@ -175,6 +175,7 @@ nl:
       custom_domain_help: "Uw handle {handle} is een aangepast domein. U kunt het blijven gebruiken op de nieuwe server."
       enter_handle_short: "Voer een handle in"
       handle_name_no_dots: "Voer alleen een naam in, zonder punten. {domain} wordt automatisch toegevoegd."
+      handle_domains_hint: "Deze server biedt meerdere eindes voor uw handle: {domains}. Kies het uwe in de lijst aan het eind van het veld."
       checking_availability: "Beschikbaarheid controleren..."
       checking_handle: "Controleren of handle beschikbaar is..."
       handle_taken: "Deze handle is al bezet. Kies een andere."

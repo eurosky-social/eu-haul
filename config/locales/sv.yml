@@ -175,6 +175,7 @@ sv:
       custom_domain_help: "Ditt handle {handle} är en anpassad domän. Du kan fortsätta använda det på den nya servern."
       enter_handle_short: "Vänligen ange ett handle"
       handle_name_no_dots: "Ange bara ett namn, utan punkter. {domain} läggs till automatiskt."
+      handle_domains_hint: "Den här servern erbjuder flera ändelser för ditt handle: {domains}. Välj din i listan i slutet av fältet."
       checking_availability: "Kontrollerar tillgänglighet..."
       checking_handle: "Kontrollerar om handle är tillgängligt..."
       handle_taken: "Detta handle är redan taget. Vänligen välj ett annat."

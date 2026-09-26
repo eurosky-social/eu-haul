@@ -175,6 +175,7 @@ sk:
       custom_domain_help: "Váš handle {handle} je vlastná doména. Môžete ho naďalej používať na novom serveri."
       enter_handle_short: "Prosím, zadajte handle"
       handle_name_no_dots: "Zadajte len meno, bez bodiek. {domain} sa doplní automaticky."
+      handle_domains_hint: "Tento server ponúka viac koncoviek pre váš handle: {domains}. Vyberte si svoju v zozname na konci poľa."
       checking_availability: "Kontrola dostupnosti..."
       checking_handle: "Kontrola, či je handle dostupný..."
       handle_taken: "Tento handle je už obsadený. Prosím, zvoľte iný."

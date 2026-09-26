@@ -175,6 +175,7 @@ sl:
       custom_domain_help: "Vaš handle {handle} je domena po meri. Lahko jo še naprej uporabljate na novem strežniku."
       enter_handle_short: "Prosimo, vnesite handle"
       handle_name_no_dots: "Vnesite samo ime, brez pik. {domain} se doda samodejno."
+      handle_domains_hint: "Ta strežnik ponuja več končnic za vaš handle: {domains}. Izberite svojo na seznamu na koncu polja."
       checking_availability: "Preverjanje razpoložljivosti..."
       checking_handle: "Preverjanje, ali je handle na voljo..."
       handle_taken: "Ta handle je že zaseden. Prosimo, izberite drugega."

@@ -82,16 +82,19 @@
     pointer-events: none;
   }
 
-  /* Sits where .handle-suffix does when the server hands out several domains */
+  /* Sits where .handle-suffix does when the server hands out several domains;
+     styled as a control so it doesn't read as fixed text */
   .handle-domain-select {
     position: absolute;
     right: 6px;
     top: 50%;
     transform: translateY(-50%);
     max-width: 190px;
-    border: 0;
-    background-color: transparent;
-    color: #555;
+    padding: 2px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #f1f3f5;
+    color: #333;
     cursor: pointer;
   }
 
@@ -1060,6 +1063,7 @@
     const preserveCheckbox = document.getElementById('preserve-handle-checkbox');
     const customHandleDisplay = document.getElementById('custom-handle-display');
     const newHandleDomain = document.getElementById('new-handle-domain');
+    const newHandleDomainHint = document.getElementById('new-handle-domain-hint');
 
     // The destination's handle domains, each with a leading dot. A server
     // that lists none gets its own hostname, which is what a stock PDS hands out.
@@ -1082,11 +1086,13 @@
 
     // One domain shows as fixed text after the name; several get a picker,
     // starting on the one matching the server's hostname (blacksky.app ->
-    // .blacksky.app), otherwise the server's first.
+    // .blacksky.app), otherwise the server's first, plus a tip naming them so
+    // the choice isn't missed.
     function showHandleDomains() {
       const domains = handleDomains();
       if (domains.length === 1) {
         newHandleDomain.style.display = 'none';
+        newHandleDomainHint.style.display = 'none';
         newHandleSuffix.style.display = '';
         newHandleSuffix.textContent = domains[0];
         return;
@@ -1105,12 +1111,15 @@
       newHandleSuffix.style.display = 'none';
       newHandleSuffix.textContent = '';
       newHandleDomain.style.display = '';
+      newHandleDomainHint.textContent = i18n('handle_domains_hint', {domains: domains.join(', ')});
+      newHandleDomainHint.style.display = '';
     }
 
     function hideHandleDomains() {
       newHandleSuffix.textContent = '';
       newHandleSuffix.style.display = 'none';
       newHandleDomain.style.display = 'none';
+      newHandleDomainHint.style.display = 'none';
     }
 
     function selectedHandleDomain() {
@@ -1629,8 +1638,9 @@
           <div class="position-relative">
             <input type="text" id="new-handle-input" class="form-control" placeholder="<%= t('migrations.new.step4.new_handle_placeholder') %>" style="padding-right: 200px;">
             <span id="new-handle-suffix" class="handle-suffix"></span>
-            <select id="new-handle-domain" class="handle-domain-select" aria-label="<%= t('migrations.new.step4.domain_label') %>" style="display: none;"></select>
+            <select id="new-handle-domain" class="handle-domain-select" aria-label="<%= t('migrations.new.step4.domain_label') %>" aria-describedby="new-handle-domain-hint" style="display: none;"></select>
           </div>
+          <div id="new-handle-domain-hint" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mt-2 mb-0 small" style="display: none;"></div>
           <div class="form-text"><%= t('migrations.new.step4.new_handle_help') %></div>
           <%= f.hidden_field :new_handle, id: "migration_new_handle" %>
         </div>

@@ -175,6 +175,7 @@ fi:
       custom_domain_help: "Handle {handle} on mukautettu verkkotunnus. Voit jatkaa sen käyttöä uudella palvelimella."
       enter_handle_short: "Syötä handle"
       handle_name_no_dots: "Kirjoita pelkkä nimi ilman pisteitä. {domain} lisätään automaattisesti."
+      handle_domains_hint: "Tämä palvelin tarjoaa handlellesi useamman päätteen: {domains}. Valitse omasi kentän lopussa olevasta luettelosta."
       checking_availability: "Tarkistetaan saatavuutta..."
       checking_handle: "Tarkistetaan, onko handle saatavilla..."
       handle_taken: "Tämä handle on jo varattu. Valitse toinen."

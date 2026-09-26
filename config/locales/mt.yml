@@ -175,6 +175,7 @@ mt:
       custom_domain_help: "Il-handle tiegħek {handle} huwa dominju personalizzat. Tista' tkompli tużah fuq is-server il-ġdid."
       enter_handle_short: "Jekk jogħġbok daħħal handle"
       handle_name_no_dots: "Daħħal isem biss, mingħajr tikek. {domain} jiżdied awtomatikament."
+      handle_domains_hint: "Dan is-server joffri aktar minn tmiem wieħed għall-handle tiegħek: {domains}. Agħżel tiegħek mil-lista fit-tarf tal-qasam."
       checking_availability: "Qed jiċċekkja d-disponibbilta..."
       checking_handle: "Qed jiċċekkja jekk il-handle huwiex disponibbli..."
       handle_taken: "Dan il-handle diġa meħud. Jekk jogħġbok agħżel ieħor."

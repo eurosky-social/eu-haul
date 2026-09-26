@@ -175,6 +175,7 @@ lv:
       custom_domain_help: "Jūsu handle {handle} ir pielāgots domēns. Varat turpināt to izmantot jaunajā serverī."
       enter_handle_short: "Lūdzu, ievadiet handle"
       handle_name_no_dots: "Ievadiet tikai vārdu, bez punktiem. {domain} tiek pievienots automātiski."
+      handle_domains_hint: "Šis serveris piedāvā vairākas jūsu handle galotnes: {domains}. Izvēlieties savu sarakstā lauka beigās."
       checking_availability: "Pieejamības pārbaude..."
       checking_handle: "Handle pieejamības pārbaude..."
       handle_taken: "Šis handle jau ir aizņemts. Lūdzu, izvēlieties citu."

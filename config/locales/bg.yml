@@ -175,6 +175,7 @@ bg:
       custom_domain_help: "Вашият handle {handle} е потребителски домейн. Можете да продължите да го използвате на новия сървър."
       enter_handle_short: "Моля, въведете handle"
       handle_name_no_dots: "Въведете само име, без точки. {domain} се добавя автоматично."
+      handle_domains_hint: "Този сървър предлага няколко окончания за вашия handle: {domains}. Изберете своето от списъка в края на полето."
       checking_availability: "Проверка на наличността..."
       checking_handle: "Проверка дали handle е наличен..."
       handle_taken: "Този handle вече е зает. Моля, изберете друг."

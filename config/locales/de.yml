@@ -175,6 +175,7 @@ de:
       custom_domain_help: "Ihr Handle {handle} ist eine eigene Domain. Sie können es auf dem neuen Server weiterhin verwenden."
       enter_handle_short: "Bitte geben Sie ein Handle ein"
       handle_name_no_dots: "Geben Sie nur einen Namen ohne Punkte ein. {domain} wird automatisch angehängt."
+      handle_domains_hint: "Dieser Server bietet mehrere Endungen für Ihr Handle an: {domains}. Wählen Sie Ihre in der Liste am Ende des Feldes."
       checking_availability: "Verfügbarkeit wird geprüft..."
       checking_handle: "Prüfe, ob Handle verfügbar ist..."
       handle_taken: "Dieses Handle ist bereits vergeben. Bitte wählen Sie ein anderes."

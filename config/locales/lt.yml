@@ -175,6 +175,7 @@ lt:
       custom_domain_help: "Jūsų handle {handle} yra pasirinktinis domenas. Galite toliau jį naudoti naujame serveryje."
       enter_handle_short: "Įveskite handle"
       handle_name_no_dots: "Įveskite tik vardą, be taškų. {domain} pridedamas automatiškai."
+      handle_domains_hint: "Šis serveris siūlo kelias jūsų handle pabaigas: {domains}. Pasirinkite savąją sąraše lauko gale."
       checking_availability: "Tikrinamas prieinamumas..."
       checking_handle: "Tikrinamas handle prieinamumas..."
       handle_taken: "Šis handle jau užimtas. Pasirinkite kitą."

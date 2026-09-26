@@ -175,6 +175,7 @@ da:
       custom_domain_help: "Dit handle {handle} er et brugerdefineret domæne. Du kan fortsætte med at bruge det på den nye server."
       enter_handle_short: "Indtast venligst et handle"
       handle_name_no_dots: "Indtast kun et navn uden punktummer. {domain} tilføjes automatisk."
+      handle_domains_hint: "Denne server tilbyder flere endelser til dit handle: {domains}. Vælg din på listen for enden af feltet."
       checking_availability: "Kontrollerer tilgængelighed..."
       checking_handle: "Kontrollerer om handle er tilgængeligt..."
       handle_taken: "Dette handle er allerede taget. Vælg venligst et andet."
