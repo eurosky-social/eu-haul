@@ -1601,54 +1601,62 @@ class GoatService
   # PDS's availableUserDomains ("user.mu.social" on eurosky.social,
   # "user.oso.social" on pds.oso.social). The PDS answers DNS/well-known lookups
   # for these handles, so without this check they pass for custom domains.
-  def self.handle_matches_source_pds?(handle)
+  #
+  # when_unknown is the answer when the handle's PDS or that PDS's domain list
+  # can't be found out. It defaults to true for the wizard: keeping a handle
+  # the old PDS owns breaks it once the old account is deactivated, while a
+  # custom-domain user who isn't offered to keep theirs can set it again after
+  # the move.
+  def self.handle_matches_source_pds?(handle, when_unknown: true)
     parts = handle.split('.')
     return false if parts.length < 3
 
-    # Try to resolve the handle to find its PDS
-    begin
-      did = resolve_handle_to_did(handle)
-      pds_host = resolve_did_to_pds(did)
+    did = resolve_handle_to_did(handle)
+    pds_host = resolve_did_to_pds(did)
+    pds_hostname = URI.parse(pds_host).host&.downcase
+    return when_unknown unless pds_hostname
 
-      # Extract hostname from PDS URL
-      pds_hostname = URI.parse(pds_host).host&.downcase
-      return false unless pds_hostname
+    # Check if the handle's domain suffix matches the PDS hostname
+    # e.g., "euro11-06.pds.local.theeverythingapp.de" ends with "pds.local.theeverythingapp.de"
+    return true if handle.end_with?(".#{pds_hostname}")
 
-      # Check if the handle's domain suffix matches the PDS hostname
-      # e.g., "euro11-06.pds.local.theeverythingapp.de" ends with "pds.local.theeverythingapp.de"
-      return true if handle.end_with?(".#{pds_hostname}")
-
-      pds_handle_domains(pds_host).any? { |domain| handle.end_with?(domain) }
-    rescue StandardError => e
-      Rails.logger.debug("Could not check PDS match for #{handle}: #{e.message}")
-
-      # Fallback: check if the handle looks like it's hosted on a PDS
-      # by checking if removing the first part gives a hostname with "pds" in it
-      suffix = parts[1..].join('.')
-      suffix.include?('pds.') || suffix.start_with?('pds.')
+    domains = pds_handle_domains(pds_host)
+    if domains.nil?
+      Rails.logger.warn("No handle domains from #{pds_host}; treating #{handle} as #{when_unknown ? '' : 'not '}PDS-owned")
+      return when_unknown
     end
+
+    domains.any? { |domain| handle.end_with?(domain) }
+  rescue StandardError => e
+    Rails.logger.warn("Could not find the PDS of #{handle} (#{e.class}: #{e.message}); treating it as #{when_unknown ? '' : 'not '}PDS-owned")
+    when_unknown
   end
 
-  # Handle domains a PDS hands out to its users, from its describeServer
-  # availableUserDomains, normalized like PDS_HOSTED_HANDLE_SUFFIXES. Empty
-  # when the PDS can't be asked; the handle then goes on to the DNS/well-known
-  # checks as before. The wizard logs in to this same PDS right after, so a PDS
-  # that is down here stops the migration there anyway.
-  def self.pds_handle_domains(pds_host)
+  # The PDS's describeServer answer, or nil when it can't be had.
+  def self.describe_server(pds_host)
     url = "#{pds_host.chomp('/')}/xrpc/com.atproto.server.describeServer"
     response = HTTParty.get(url, timeout: 5)
     unless response.success?
-      Rails.logger.warn("describeServer on #{pds_host} answered #{response.code}; not checking its handle domains")
-      return []
+      Rails.logger.warn("describeServer on #{pds_host} answered #{response.code}")
+      return nil
     end
 
-    domains = JSON.parse(response.body)['availableUserDomains']
-    return [] unless domains.is_a?(Array)
+    info = JSON.parse(response.body)
+    info.is_a?(Hash) ? info : nil
+  rescue StandardError => e
+    Rails.logger.warn("Could not ask #{pds_host} to describe itself: #{e.class}: #{e.message}")
+    nil
+  end
+
+  # Handle domains a PDS hands out to its users, from its describeServer
+  # availableUserDomains, normalized like PDS_HOSTED_HANDLE_SUFFIXES. Nil when
+  # the PDS can't be asked or answers without the (required) list, so callers
+  # can tell "unknown" from "none".
+  def self.pds_handle_domains(pds_host)
+    domains = describe_server(pds_host)&.dig('availableUserDomains')
+    return nil unless domains.is_a?(Array)
 
     domains.filter_map { |domain| EuroskyConfig.normalize_handle_suffix(domain) if domain.is_a?(String) }
-  rescue StandardError => e
-    Rails.logger.warn("Could not fetch handle domains from #{pds_host}: #{e.class}: #{e.message}")
-    []
   end
 
   # Convenience method to resolve handle directly to PDS host
