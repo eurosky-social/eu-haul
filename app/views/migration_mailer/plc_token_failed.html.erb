@@ -2,15 +2,13 @@
 <%= email_text t('mailers.plc_token_failed.intro', token: @migration.token) %>
 
 <%= email_well do %>
-  <%= email_heading 'Your account is safe' %>
-  <%= email_text do %>The PLC directory was <strong>not modified</strong>. Your account remains on
-    <strong><%= @migration.old_pds_host %></strong> and all your migration data
-    (repository, blobs, preferences) is safely stored and ready.<% end %>
+  <%= email_heading t('mailers.common.account_safe') %>
+  <%= email_text email_t('mailers.plc_token_failed.safe_text', pds: tag.strong(@migration.old_pds_host)) %>
 <% end %>
 
 <%= email_warning do %>
-  <%= email_heading 'What happened?' %>
-  <%= email_text 'The confirmation code from your old PDS provider expired before it could be used. These codes are only valid for a limited time (typically 1 hour).' %>
+  <%= email_heading t('mailers.common.what_happened') %>
+  <%= email_text t('mailers.plc_token_failed.what_happened_text') %>
   <% if @error_message.present? %>
     <%= email_text tag.strong(t('mailers.plc_token_failed.error_detail', error: @error_message)) %>
   <% end %>
@@ -25,17 +23,17 @@
   ], ordered: true %>
 <% end %>
 
-<%= email_button 'Go to migration status page', @migration_url %>
+<%= email_button t('mailers.common.view_status'), @migration_url %>
 
-<%= email_heading 'Migration details:' %>
+<%= email_heading t('mailers.common.details_heading') %>
 <%= email_details do %>
-  <%= email_detail_row 'Token', @migration.token %>
-  <%= email_detail_row 'DID', @migration.did %>
-  <%= email_detail_row 'Old PDS', @migration.old_pds_host %>
-  <%= email_detail_row 'New PDS', @migration.new_pds_host %>
+  <%= email_detail_row t('mailers.common.label_token'), @migration.token %>
+  <%= email_detail_row t('mailers.common.label_did'), @migration.did %>
+  <%= email_detail_row t('mailers.common.label_old_pds'), @migration.old_pds_host %>
+  <%= email_detail_row t('mailers.common.label_new_pds'), @migration.new_pds_host %>
 <% end %>
 
 <% email_footer do %>
-  <%= email_text "This is an automated notification from #{EuroskyConfig::SITE_NAME}", small: true %>
-  <%= email_text "Migration Token: #{@migration.token}", small: true %>
+  <%= email_text t('mailers.common.automated_notification', site: EuroskyConfig::SITE_NAME), small: true %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
 <% end %>

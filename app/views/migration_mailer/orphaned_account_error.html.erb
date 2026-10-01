@@ -1,12 +1,18 @@
-<% support_mail_url = "mailto:#{@target_pds_support_email}?subject=Orphaned%20Account%20Removal%20Request%20-%20Migration%20#{@migration.token}&body=Hello,%0D%0A%0D%0AI%20am%20trying%20to%20migrate%20to%20#{URI.encode_www_form_component(@migration.new_pds_host)}%20but%20encountered%20an%20orphaned%20account%20error.%0D%0A%0D%0AMigration%20Token:%20#{@migration.token}%0D%0ADID:%20#{@migration.did}%0D%0A%0D%0ACould%20you%20please%20remove%20the%20orphaned%20account%20so%20I%20can%20retry%20my%20migration?%0D%0A%0D%0AThank%20you!" %>
-<%= email_label "Migration #{@migration.token}" %>
+<%
+  support_mail_url = "mailto:#{@target_pds_support_email}?" + {
+    subject: t('mailers.orphaned_account_error.mailto_subject', token: @migration.token),
+    body: t('mailers.orphaned_account_error.mailto_body', pds: @migration.new_pds_host, token: @migration.token, did: @migration.did).gsub(/\r?\n/, "\r\n")
+  }.map { |name, value| "#{name}=#{ERB::Util.url_encode(value)}" }.join('&')
+  status_page_link = email_link(t('mailers.orphaned_account_error.status_page_link'), @migration_url)
+%>
+<%= email_label t('mailers.common.migration_label', token: @migration.token) %>
 <%= email_title t('mailers.orphaned_account_error.heading') %>
 
-<%= email_text 'Hello,' %>
+<%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.orphaned_account_error.intro', token: @migration.token) %>
 
 <%= email_warning do %>
-  <%= email_heading 'What happened' %>
+  <%= email_heading t('mailers.common.what_happened') %>
   <%= email_text t('mailers.orphaned_account_error.explanation') %>
 <% end %>
 
@@ -18,28 +24,28 @@
   ] %>
 <% end %>
 
-<%= email_heading 'Next steps: contact PDS provider' %>
-<%= email_text do %>Please contact the support team for <strong><%= @migration.new_pds_host %></strong> to request removal of the orphaned account.<% end %>
-<%= email_button "Email #{@target_pds_support_email}", support_mail_url %>
-<%= email_text muted: true do %><strong>Include in your message:</strong><br>
-  Migration Token: <%= email_code @migration.token %><br>
-  DID: <%= email_code @migration.did %><% end %>
+<%= email_heading t('mailers.orphaned_account_error.contact_heading') %>
+<%= email_text email_t('mailers.orphaned_account_error.contact_help', pds: tag.strong(@migration.new_pds_host)) %>
+<%= email_button t('mailers.orphaned_account_error.email_support', email: @target_pds_support_email), support_mail_url %>
+<%= email_text muted: true do %><strong><%= t('mailers.orphaned_account_error.include_heading') %></strong><br>
+  <%= email_t('mailers.common.migration_token', token: email_code(@migration.token)) %><br>
+  <%= email_label_value(t('mailers.common.label_did'), email_code(@migration.did)) %><% end %>
 
 <%= email_well do %>
-  <%= email_heading 'After support responds' %>
-  <%= email_text "#{t('mailers.orphaned_account_error.option3', url: '').split(':').first}:" %>
-  <%= email_list ordered: true do %>
-    <%= email_list_item do %>Return to your <%= email_link 'migration status page', @migration_url %><% end %>
-    <%= email_list_item 'Click the "Retry Migration" button' %>
-    <%= email_list_item 'Your migration will resume automatically' %>
-  <% end %>
+  <%= email_heading t('mailers.orphaned_account_error.after_heading') %>
+  <%= email_text t('mailers.orphaned_account_error.option3') %>
+  <%= email_list [
+    email_t('mailers.orphaned_account_error.after1', link: status_page_link),
+    t('mailers.orphaned_account_error.after2'),
+    t('mailers.orphaned_account_error.after3')
+  ], ordered: true %>
 <% end %>
 
-<%= email_text muted: true do %><strong>Need help?</strong> Visit your <%= email_link 'migration status page', @migration_url %> for more details.<% end %>
+<%= email_text email_t('mailers.orphaned_account_error.need_help', link: status_page_link), muted: true %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
-  <%= email_text small: true do %>DID: <%= email_code @migration.did %><% end %>
-  <%= email_text "Target PDS: #{@migration.new_pds_host}", small: true %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
+  <%= email_text email_label_value(t('mailers.common.label_did'), email_code(@migration.did)), small: true %>
+  <%= email_text email_label_value(t('mailers.common.label_target_pds'), @migration.new_pds_host), small: true %>
   <%= email_text t('mailers.common.eurosky_migration'), small: true %>
 <% end %>

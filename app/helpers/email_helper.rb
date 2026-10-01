@@ -112,6 +112,54 @@ module EmailHelper
                 style: "font-family:#{SANS};font-size:#{small ? 12 : 14}px;line-height:1.5;color:#{small ? MUTED : INK};#{WRAP_STYLE}")
   end
 
+  # A translation whose values carry markup (email_code, email_link,
+  # tag.strong). The translation and every plain value are escaped, values
+  # that are already safe go in as they are, and the result is safe to output.
+  # Plain-text parts use t() with raw values instead.
+  def email_t(key, **values)
+    template = ERB::Util.html_escape(t(key)).to_str
+    escaped = values.transform_values { |value| ERB::Util.html_escape(value).to_str }
+    I18n.interpolate(template, escaped).html_safe
+  end
+
+  # "Label: value" in the reader's language (mailers.common.label_value).
+  def email_label_value(label, value)
+    email_t('mailers.common.label_value', label: label, value: value)
+  end
+
+  # A date and time without words (2026-10-02 14:30 UTC), so it reads the same
+  # in every language; the status page uses the same format. Takes a Time or
+  # an ISO 8601 string, and returns anything it cannot read unchanged.
+  def email_time(value)
+    time = value.is_a?(String) ? (Time.zone.parse(value) rescue nil) : value
+    time ? time.utc.strftime('%Y-%m-%d %H:%M UTC') : value
+  end
+
+  # The stage each migration job runs, as MigrationsController#status_from_job_step
+  # maps it.
+  JOB_STEP_STATUSES = {
+    /DownloadAllDataJob/i => 'pending_download',
+    /CreateBackupBundleJob/i => 'pending_backup',
+    /CreateAccountJob/i => 'pending_account',
+    /UploadRepoJob|ImportRepoJob/i => 'pending_repo',
+    /UploadBlobsJob|ImportBlobsJob/i => 'pending_blobs',
+    /ImportPrefsJob/i => 'pending_prefs',
+    /WaitForPlcTokenJob|UpdatePlcJob/i => 'pending_plc',
+    /ActivateAccountJob/i => 'pending_activation'
+  }.freeze
+
+  # The step a migration failed at (a job class name or a status) in the
+  # status page's words (migrations.show.status_names): "UploadBlobsJob" reads
+  # "Transferring media". Nil when there is no step to name: a status of
+  # "failed" or "completed" only says that the migration stopped.
+  def email_step_name(step)
+    step = step.to_s
+    status = JOB_STEP_STATUSES.find { |pattern, _| step.match?(pattern) }&.last || step
+    return nil if status.blank? || Migration::TERMINAL_STATUSES.include?(status)
+
+    I18n.t(status, scope: 'migrations.show.status_names', default: nil)
+  end
+
   # An inline link.
   def email_link(text, url)
     link_to(text, url, style: "color:#{INK};text-decoration:underline;")

@@ -805,7 +805,6 @@ class MigrationsController < ApplicationController
   #
   # Params:
   #   - plc_token: The PLC operation token from the old PDS
-  #   - plc_otp: The one-time password sent via email for verification
   #
   # Response:
   #   - Success: Redirects to status page with success message
@@ -1237,18 +1236,6 @@ class MigrationsController < ApplicationController
     Rails.logger.error("Failed to download backup for migration #{@migration.token}: #{e.message}")
     render plain: I18n.t('controllers.migrations.unexpected_error'), status: :internal_server_error
   end
-
-  # POST /migrate/:token/resend_otp
-  # POST /migrations/:id/resend_plc_otp
-  # Resend the PLC OTP verification code
-  #
-  # Requirements:
-  #   - Migration must be in pending_plc status
-  #   - Rate limited to prevent abuse
-  #
-  # Response:
-  #   - Success: Redirects to status page with notice
-  #   - Failure: Redirects to status page with alert
 
   # POST /migrate/:token/retry
   # Retry a failed migration from the current step

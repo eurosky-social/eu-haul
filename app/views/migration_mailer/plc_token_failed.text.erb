@@ -4,20 +4,16 @@
 <%= t('mailers.plc_token_failed.intro', token: @migration.token) %>
 
 
-YOUR ACCOUNT IS SAFE
+<%= t('mailers.common.account_safe') %>
 =====================
 
-The PLC directory was NOT modified. Your account remains on
-<%= @migration.old_pds_host %> and all your migration data
-(repository, blobs, preferences) is safely stored and ready.
+<%= t('mailers.plc_token_failed.safe_text', pds: @migration.old_pds_host) %>
 
 
-WHAT HAPPENED?
+<%= t('mailers.common.what_happened') %>
 ==============
 
-The confirmation code from your old PDS provider expired before
-it could be used. These codes are only valid for a limited time
-(typically 1 hour).
+<%= t('mailers.plc_token_failed.what_happened_text') %>
 
 <% if @error_message.present? %>
 <%= t('mailers.plc_token_failed.error_detail', error: @error_message) %>
@@ -32,18 +28,18 @@ it could be used. These codes are only valid for a limited time
 3. <%= t('mailers.plc_token_failed.step3') %>
 
 
-View your migration status:
+<%= t('mailers.common.view_status') %>
 <%= @migration_url %>
 
 
-Migration Details:
+<%= t('mailers.common.details_heading') %>
 ------------------
-Token: <%= @migration.token %>
-DID: <%= @migration.did %>
-Old PDS: <%= @migration.old_pds_host %>
-New PDS: <%= @migration.new_pds_host %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_token'), value: @migration.token) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_did'), value: @migration.did) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_old_pds'), value: @migration.old_pds_host) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_new_pds'), value: @migration.new_pds_host) %>
 
 
 ---
-This is an automated notification from <%= EuroskyConfig::SITE_NAME %>
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.automated_notification', site: EuroskyConfig::SITE_NAME) %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>

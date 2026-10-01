@@ -19,6 +19,6 @@
 <% end %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
   <%= email_text t('mailers.migration_completed.email_footer', email: @migration.email), small: true %>
 <% end %>

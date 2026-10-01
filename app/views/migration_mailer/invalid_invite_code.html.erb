@@ -1,37 +1,36 @@
-<%= email_label "Migration #{@migration.token}" %>
-<%= email_title 'Migration failed' %>
-<%= email_text tag.strong(t('mailers.invalid_invite_code.heading')) %>
+<%= email_label t('mailers.common.migration_label', token: @migration.token) %>
+<%= email_title t('mailers.invalid_invite_code.heading') %>
 
-<%= email_text 'Hello,' %>
+<%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.invalid_invite_code.intro', token: @migration.token) %>
 
 <%= email_warning do %>
-  <%= email_heading 'What happened' %>
-  <%= email_text do %>The invite code provided for <strong><%= @migration.new_pds_host %></strong> was rejected. This can happen if:<% end %>
+  <%= email_heading t('mailers.common.what_happened') %>
+  <%= email_text email_t('mailers.invalid_invite_code.rejected', pds: tag.strong(@migration.new_pds_host)) %>
   <%= email_list [
-    'The invite code was mistyped',
-    'The invite code has already been used',
-    'The invite code has expired',
-    'The invite code is not valid for this PDS'
+    t('mailers.invalid_invite_code.reason1'),
+    t('mailers.invalid_invite_code.reason2'),
+    t('mailers.invalid_invite_code.reason3'),
+    t('mailers.invalid_invite_code.reason4')
   ] %>
 <% end %>
 
 <%= email_well do %>
-  <%= email_heading 'Your account is safe' %>
-  <%= email_list do %>
-    <%= email_list_item do %>No changes were made to your account on <strong><%= @migration.old_pds_host %></strong><% end %>
-    <%= email_list_item 'No data was transferred or modified' %>
-    <%= email_list_item 'Your account continues to work normally on your current PDS' %>
-  <% end %>
+  <%= email_heading t('mailers.common.account_safe') %>
+  <%= email_list [
+    email_t('mailers.invalid_invite_code.safe1', pds: tag.strong(@migration.old_pds_host)),
+    t('mailers.invalid_invite_code.safe2'),
+    t('mailers.invalid_invite_code.safe3')
+  ] %>
 <% end %>
 
-<%= email_heading 'Start a new migration' %>
+<%= email_heading t('mailers.invalid_invite_code.start_new') %>
 <%= email_text t('mailers.invalid_invite_code.what_to_do') %>
-<%= email_button 'Start new migration', @new_migration_url %>
+<%= email_button t('mailers.invalid_invite_code.start_new'), @new_migration_url %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
-  <%= email_text small: true do %>DID: <%= email_code @migration.did %><% end %>
-  <%= email_text "Target PDS: #{@migration.new_pds_host}", small: true %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
+  <%= email_text email_label_value(t('mailers.common.label_did'), email_code(@migration.did)), small: true %>
+  <%= email_text email_label_value(t('mailers.common.label_target_pds'), @migration.new_pds_host), small: true %>
   <%= email_text t('mailers.common.eurosky_migration'), small: true %>
 <% end %>

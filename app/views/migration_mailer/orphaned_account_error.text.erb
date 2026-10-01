@@ -1,14 +1,14 @@
 <%= t('mailers.orphaned_account_error.heading') %>
 ==========================================
 
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>
 
-Hello,
+<%= t('mailers.common.hello') %>
 
 <%= t('mailers.orphaned_account_error.intro', token: @migration.token) %>
 
 
-WHAT HAPPENED
+<%= t('mailers.common.what_happened') %>
 ----------------
 <%= t('mailers.orphaned_account_error.explanation') %>
 
@@ -19,31 +19,32 @@ WHAT HAPPENED
 - <%= t('mailers.orphaned_account_error.option2', did: @migration.did) %>
 
 
-NEXT STEPS: CONTACT PDS PROVIDER
+<%= t('mailers.orphaned_account_error.contact_heading') %>
 ------------------------------------
-Please contact the support team for <%= @migration.new_pds_host %> to request removal of the orphaned account:
+<%= t('mailers.orphaned_account_error.contact_help', pds: @migration.new_pds_host) %>
 
-Email: <%= @target_pds_support_email %>
+<%= t('mailers.orphaned_account_error.email_support', email: @target_pds_support_email) %>
 
-Include in your message:
-- Migration Token: <%= @migration.token %>
-- DID: <%= @migration.did %>
+<%= t('mailers.orphaned_account_error.include_heading') %>
+- <%= t('mailers.common.migration_token', token: @migration.token) %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_did'), value: @migration.did) %>
 
 
-AFTER SUPPORT RESPONDS
+<%= t('mailers.orphaned_account_error.after_heading') %>
 --------------------------
-Once the orphaned account has been removed:
-1. Return to your migration status page: <%= @migration_url %>
-2. Click the "Retry Migration" button
-3. Your migration will resume automatically
+<%= t('mailers.orphaned_account_error.option3') %>
+1. <%= t('mailers.orphaned_account_error.after1', link: t('mailers.orphaned_account_error.status_page_link')) %>
+   <%= @migration_url %>
+2. <%= t('mailers.orphaned_account_error.after2') %>
+3. <%= t('mailers.orphaned_account_error.after3') %>
 
 
 ---
 
-Migration Details:
-- Token: <%= @migration.token %>
-- DID: <%= @migration.did %>
-- Target PDS: <%= @migration.new_pds_host %>
-- Support Contact: <%= @target_pds_support_email %>
+<%= t('mailers.common.details_heading') %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_token'), value: @migration.token) %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_did'), value: @migration.did) %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_target_pds'), value: @migration.new_pds_host) %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_support_contact'), value: @target_pds_support_email) %>
 
 <%= t('mailers.common.eurosky_migration') %>

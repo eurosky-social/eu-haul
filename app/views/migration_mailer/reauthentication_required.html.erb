@@ -1,31 +1,33 @@
 <%= email_title t('mailers.reauthentication_required.heading') %>
 
-<%= email_text 'Hello,' %>
+<%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.reauthentication_required.intro', token: @migration.token) %>
 <%= email_text t('mailers.reauthentication_required.reason') %>
 
-<%= email_heading 'Account details' %>
+<%= email_heading t('mailers.common.account_details') %>
 <%= email_details do %>
-  <%= email_detail_row 'Old handle', "@#{@migration.old_handle}" %>
-  <%= email_detail_row 'New handle', "@#{@migration.new_handle}" %>
-  <%= email_detail_row t('mailers.reauthentication_required.step', step: '').split(':').first, @failed_step.to_s.gsub('Job', '').humanize, mono: false %>
+  <%= email_detail_row t('mailers.common.label_old_handle'), "@#{@migration.old_handle}" %>
+  <%= email_detail_row t('mailers.common.label_new_handle'), "@#{@migration.new_handle}" %>
+  <% if (step_name = email_step_name(@failed_step)) %>
+    <%= email_detail_row t('mailers.common.label_failed_step'), step_name, mono: false %>
+  <% end %>
 <% end %>
 
 <%= email_heading t('mailers.reauthentication_required.what_to_do') %>
-<%= email_list ordered: true do %>
-  <%= email_list_item 'Click the button below to open your migration status page' %>
-  <%= email_list_item do %>Enter your password for <strong>@<%= @migration.old_handle %></strong> to re-authenticate<% end %>
-  <%= email_list_item 'The migration will continue automatically where it left off' %>
-<% end %>
+<%= email_list [
+  t('mailers.reauthentication_required.step1'),
+  email_t('mailers.reauthentication_required.step2', handle: tag.strong("@#{@migration.old_handle}")),
+  t('mailers.reauthentication_required.step3')
+], ordered: true %>
 
-<%= email_button 'Re-authenticate & continue', @migration_url %>
+<%= email_button t('mailers.reauthentication_required.button'), @migration_url %>
 
 <%= email_well do %>
-  <%= email_text tag.strong('Your data is safe.') %>
-  <%= email_text 'All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.' %>
+  <%= email_text tag.strong(t('mailers.reauthentication_required.data_safe_heading')) %>
+  <%= email_text t('mailers.reauthentication_required.data_safe') %>
 <% end %>
 
 <% email_footer do %>
-  <%= email_text "Migration Token: #{@migration.token}", small: true %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
   <%= email_text t('mailers.migration_completed.email_footer', email: @migration.email), small: true %>
 <% end %>

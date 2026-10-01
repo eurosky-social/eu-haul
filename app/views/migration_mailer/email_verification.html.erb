@@ -1,13 +1,13 @@
 <%= email_label t('mailers.email_verification.migration_token', token: @migration.token) %>
 <%= email_title t('mailers.email_verification.heading') %>
 
-<%= email_text 'Hello,' %>
-<%= email_text t('mailers.email_verification.initiated', handle: h(@migration.old_handle), pds: h(@migration.new_pds_host)).html_safe %>
+<%= email_text t('mailers.common.hello') %>
+<%= email_text email_t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host) %>
 <%= email_text t('mailers.email_verification.enter_code') %>
 
-<%= email_code_block @migration.email_verification_token, size: :large, caption: 'Your verification code' %>
+<%= email_code_block @migration.email_verification_token, size: :large, caption: t('mailers.email_verification.your_code') %>
 
-<%= email_button t('mailers.email_verification.go_to_page').chomp(':'), @status_url %>
+<%= email_button t('mailers.email_verification.go_to_page_button'), @status_url %>
 
 <%= email_well do %>
   <%= email_heading t('mailers.email_verification.what_next') %>

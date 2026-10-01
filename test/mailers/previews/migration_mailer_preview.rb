@@ -5,26 +5,6 @@
 class MigrationMailerPreview < ActionMailer::Preview
   PASSWORD = 'kV7pQ2mZ9xL4wR8tN3bH6cJd'
 
-  # plc_otp.html.erb / .text.erb have no MigrationMailer method (nothing sends
-  # that mail at the moment). This preview-only mailer renders the templates
-  # with the variables they read, so their design can still be reviewed.
-  class PlcOtpPreviewMailer < MigrationMailer
-    def plc_otp(migration, otp, expires_in)
-      @migration = migration
-      @otp = otp
-      @expires_in = expires_in
-      @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
-
-      I18n.with_locale(migration.locale || :en) do
-        mail(
-          to: migration.email,
-          subject: I18n.t('mailers.plc_otp.subject', token: migration.token),
-          template_path: 'migration_mailer'
-        )
-      end
-    end
-  end
-
   def email_verification
     MigrationMailer.email_verification(migration(status: 'pending_account'))
   end
@@ -50,10 +30,6 @@ class MigrationMailerPreview < ActionMailer::Preview
       status: 'pending_plc',
       progress_data: { 'plc_token_requested_at' => 26.hours.ago.iso8601, 'plc_reminder_count' => 1 }
     ))
-  end
-
-  def plc_otp
-    PlcOtpPreviewMailer.plc_otp(migration(status: 'pending_plc'), '482915', '15 minutes')
   end
 
   def migration_completed

@@ -1,29 +1,31 @@
 <%= t('mailers.reauthentication_required.heading') %>
 =========================
 
-Hello,
+<%= t('mailers.common.hello') %>
 
 <%= t('mailers.reauthentication_required.intro', token: @migration.token) %>
 
 <%= t('mailers.reauthentication_required.reason') %>
 
-Account Details:
-- Old Handle: @<%= @migration.old_handle %>
-- New Handle: @<%= @migration.new_handle %>
-- <%= t('mailers.reauthentication_required.step', step: @failed_step.to_s.gsub('Job', '').humanize) %>
+<%= t('mailers.common.account_details') %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_old_handle'), value: "@#{@migration.old_handle}") %>
+- <%= t('mailers.common.label_value', label: t('mailers.common.label_new_handle'), value: "@#{@migration.new_handle}") %>
+<% if (step_name = email_step_name(@failed_step)) %>
+- <%= t('mailers.reauthentication_required.step', step: step_name) %>
+<% end %>
 
 <%= t('mailers.reauthentication_required.what_to_do') %>
 
-1. Visit your migration status page:
+1. <%= t('mailers.reauthentication_required.step1') %>
    <%= @migration_url %>
 
-2. Enter your password for @<%= @migration.old_handle %> to re-authenticate
+2. <%= t('mailers.reauthentication_required.step2', handle: "@#{@migration.old_handle}") %>
 
-3. The migration will continue automatically where it left off
+3. <%= t('mailers.reauthentication_required.step3') %>
 
-YOUR DATA IS SAFE:
-All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.
+<%= t('mailers.reauthentication_required.data_safe_heading') %>
+<%= t('mailers.reauthentication_required.data_safe') %>
 
 ---
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>
 <%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

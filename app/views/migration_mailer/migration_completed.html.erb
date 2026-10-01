@@ -21,8 +21,8 @@
 <% if @backup_available %>
   <%= email_well do %>
     <%= email_heading t('mailers.migration_completed.backup_heading') %>
-    <%= email_text t('mailers.migration_completed.backup_help') %>
-    <%= email_button 'Download backup bundle', @download_url %>
+    <%= email_text t('mailers.migration_completed.backup_help', time: email_time(@migration.backup_expires_at)) %>
+    <%= email_button t('mailers.migration_completed.download_backup'), @download_url %>
     <%= email_text t('mailers.migration_completed.backup_expiry'), muted: true %>
   <% end %>
 <% end %>
@@ -30,24 +30,24 @@
 <%# Migration details %>
 <%= email_heading t('mailers.migration_completed.summary') %>
 <%= email_details do %>
-  <%= email_detail_row t('mailers.migration_completed.migration_token', token: '').split(':').first, @migration.token %>
-  <%= email_detail_row t('mailers.migration_completed.did', did: '').split(':').first, @migration.did %>
-  <%= email_detail_row t('mailers.migration_completed.old_account', handle: '', pds: '').split(':').first, "#{@migration.old_handle} @ #{@migration.old_pds_host}" %>
-  <%= email_detail_row t('mailers.migration_completed.new_account', handle: '', pds: '').split(':').first, tag.strong("#{@migration.new_handle} @ #{@migration.new_pds_host}") %>
-  <%= email_detail_row t('mailers.migration_completed.completed_at', time: '').split(':').first, (Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at), mono: false %>
+  <%= email_detail_row t('mailers.common.label_migration_token'), @migration.token %>
+  <%= email_detail_row t('mailers.common.label_did'), @migration.did %>
+  <%= email_detail_row t('mailers.migration_completed.old_account_label'), "#{@migration.old_handle} @ #{@migration.old_pds_host}" %>
+  <%= email_detail_row t('mailers.migration_completed.new_account_label'), tag.strong("#{@migration.new_handle} @ #{@migration.new_pds_host}") %>
+  <%= email_detail_row t('mailers.migration_completed.completed_at_label'), email_time(@completed_at), mono: false %>
 <% end %>
 
 <%# Status page %>
-<%= email_button 'View migration status page', @migration_url, secondary: true %>
-<%= email_text t('mailers.migration_completed.status_page', page: '').split(':').first, muted: true %>
+<%= email_text t('mailers.migration_completed.status_page'), muted: true %>
+<%= email_button t('mailers.common.view_status'), @migration_url, secondary: true %>
 
 <%# How to log in %>
 <%= email_warning do %>
   <%= email_heading t('mailers.migration_completed.login_heading') %>
   <%= email_text t('mailers.migration_completed.login_help') %>
   <%= email_well do %>
-    <%= email_text t('mailers.migration_completed.login_handle', handle: h(@migration.new_handle)).html_safe %>
-    <%= email_text tag.strong(t('mailers.migration_completed.hosting_warning', pds: h(@migration.new_pds_host)).html_safe) %>
+    <%= email_text email_t('mailers.migration_completed.login_handle', handle: @migration.new_handle) %>
+    <%= email_text tag.strong(email_t('mailers.migration_completed.hosting_warning', pds: @migration.new_pds_host)) %>
   <% end %>
   <%= email_text t('mailers.migration_completed.hosting_miss') %>
 <% end %>
@@ -65,19 +65,20 @@
 <%= email_warning do %>
   <%= email_heading t('mailers.migration_completed.change_password_heading') %>
   <% if missing_blobs.any? %>
+    <%# Files are still arriving: changing the password now would cut off the transfer, so no button %>
     <%= email_text tag.strong(t('mailers.migration_completed.change_password_wait')) %>
   <% else %>
     <%= email_text t('mailers.migration_completed.change_password_help') %>
+    <%= email_button t('mailers.migration_completed.change_password_button'), "#{@migration.new_pds_host}/.well-known/change-password", secondary: true %>
+    <%= email_text t('mailers.migration_completed.change_password_later'), muted: true %>
   <% end %>
-  <%= email_button 'Change your password now', "#{@migration.new_pds_host}/.well-known/change-password", secondary: true %>
-  <%= email_text t('mailers.migration_completed.change_password_later'), muted: true %>
 <% end %>
 
 <%# What happens next %>
 <%= email_well do %>
   <%= email_heading t('mailers.migration_completed.whats_next') %>
   <%= email_list [
-    t('mailers.migration_completed.next1', pds: h(@migration.new_pds_host)).html_safe,
+    email_t('mailers.migration_completed.next1', pds: @migration.new_pds_host),
     t('mailers.migration_completed.next2', old_pds: @migration.old_pds_host),
     t('mailers.migration_completed.next3'),
     t('mailers.migration_completed.next4')

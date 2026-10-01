@@ -1,3 +1,5 @@
+<%# Deliberately not translated: the subject line of the email the old PDS
+    sends (in English), the code format example and the pdsmoover.com address. %>
 <%= email_title t('mailers.rotation_key_notice.heading') %>
 
 <%= email_text t('mailers.rotation_key_notice.intro') %>
@@ -6,14 +8,14 @@
 <%# PLC confirmation: the action this mail asks for %>
 <%= email_warning do %>
   <%= email_heading t('mailers.rotation_key_notice.check_email') %>
-  <%= email_text do %>You will shortly receive an email from your <strong>old PDS provider</strong> (<%= @migration.old_pds_host %>) with the subject line:<% end %>
+  <%= email_text t('mailers.rotation_key_notice.plc_email_intro', pds: @migration.old_pds_host) %>
   <%= email_well do %>
     <%= email_text tag.strong('"PLC Update Operation Requested"') %>
   <% end %>
-  <%= email_text do %><strong>That email contains a confirmation code</strong> (it looks like <%= email_code 'XXXXX-XXXXX' %>).<% end %>
-  <%= email_text do %>You need to enter this code on your <strong>migration status page</strong> to finalize the migration:<% end %>
-  <%= email_button t('mailers.rotation_key_notice.next_step').chomp(':'), @migration_url %>
-  <%= email_text do %><strong>Important:</strong> The confirmation code expires after 1 hour. If you don't see the email, check your spam folder &mdash; it comes from your old PDS provider, not from us.<% end %>
+  <%= email_text email_t('mailers.rotation_key_notice.plc_code_info', example: email_code('XXXXX-XXXXX')) %>
+  <%= email_text t('mailers.rotation_key_notice.plc_enter_code') %>
+  <%= email_button t('mailers.rotation_key_notice.next_step_button'), @migration_url %>
+  <%= email_text t('mailers.rotation_key_notice.plc_expiry') %>
 <% end %>
 
 <%= email_divider %>
@@ -23,20 +25,20 @@
 <%= email_text t('mailers.rotation_key_notice.key_help') %>
 
 <%= email_warning do %>
-  <%= email_heading 'Save this key now' %>
+  <%= email_heading t('mailers.rotation_key_notice.save_key_heading') %>
   <% if @rotation_key_private.present? %>
-    <%= email_text tag.strong('Your recovery key:') %>
+    <%= email_text tag.strong(t('mailers.rotation_key_notice.recovery_key_label')) %>
     <%= email_code_block @rotation_key_private %>
     <%= email_text t('mailers.rotation_key_notice.key_warning') %>
   <% end %>
 <% end %>
 
 <%= email_well do %>
-  <%= email_heading 'What can I do with this key?' %>
-  <%= email_text do %>If you ever need to recover your account, go to <strong><%= email_link 'pdsmoover.com/restore', 'https://pdsmoover.com/restore' %></strong> and use this key to restore access. It works even if your server is completely offline.<% end %>
+  <%= email_heading t('mailers.rotation_key_notice.key_use_heading') %>
+  <%= email_text email_t('mailers.rotation_key_notice.key_use', link: tag.strong(email_link('pdsmoover.com/restore', 'https://pdsmoover.com/restore'))) %>
 <% end %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
   <%= email_text t('mailers.migration_completed.email_footer', email: @migration.email), small: true %>
 <% end %>

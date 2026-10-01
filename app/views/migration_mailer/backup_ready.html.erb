@@ -1,22 +1,22 @@
-<%= email_label "Migration #{@migration.token}" %>
+<%= email_label t('mailers.common.migration_label', token: @migration.token) %>
 <%= email_title t('mailers.backup_ready.heading') %>
 
-<%= email_text 'Hello,' %>
+<%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.backup_ready.intro', token: @migration.token) %>
 
 <%= email_details do %>
-  <%= email_detail_row 'DID', @migration.did %>
-  <%= email_detail_row 'Old handle', "@#{@migration.old_handle}" %>
-  <%= email_detail_row 'New handle', "@#{@migration.new_handle}" %>
+  <%= email_detail_row t('mailers.common.label_did'), @migration.did %>
+  <%= email_detail_row t('mailers.common.label_old_handle'), "@#{@migration.old_handle}" %>
+  <%= email_detail_row t('mailers.common.label_new_handle'), "@#{@migration.new_handle}" %>
   <% if @backup_size %>
-    <%= email_detail_row t('mailers.backup_ready.size', size: '').split(':').first, number_to_human_size(@backup_size), mono: false %>
+    <%= email_detail_row t('mailers.backup_ready.size_label'), number_to_human_size(@backup_size), mono: false %>
   <% end %>
 <% end %>
 
 <%= email_button t('mailers.backup_ready.download'), @download_url %>
 
 <%= email_warning do %>
-  <%= email_heading t('mailers.backup_ready.expires', time: (@expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at)) %>
+  <%= email_heading t('mailers.backup_ready.expires', time: email_time(@expires_at)) %>
   <%= email_text t('mailers.backup_ready.expiry_warning') %>
 <% end %>
 
@@ -25,6 +25,6 @@
 <% end %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
   <%= email_text t('mailers.common.eurosky_migration'), small: true %>
 <% end %>

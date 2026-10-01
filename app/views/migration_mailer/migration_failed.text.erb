@@ -1,7 +1,7 @@
 <%= t('mailers.migration_failed.heading') %>
 ==========================================
 
-Hello,
+<%= t('mailers.common.hello') %>
 
 <%= t('mailers.migration_failed.intro', token: @migration.token) %>
 
@@ -11,7 +11,9 @@ Hello,
 - <%= t('mailers.migration_failed.new_handle', handle: @migration.new_handle) %>
 
 <%= t('mailers.migration_failed.failure_info') %>
-- <%= t('mailers.migration_failed.failed_step', step: @failed_step.to_s.humanize) %>
+<% if (step_name = email_step_name(@failed_step)) %>
+- <%= t('mailers.migration_failed.failed_step', step: step_name) %>
+<% end %>
 - <%= t('mailers.migration_failed.error', error: @error_message) %>
 - <%= t('mailers.migration_failed.previous_retries', count: @retry_count) %>
 

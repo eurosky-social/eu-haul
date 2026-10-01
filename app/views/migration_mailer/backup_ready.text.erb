@@ -1,7 +1,7 @@
 <%= t('mailers.backup_ready.heading') %>
 ===============================
 
-Hello,
+<%= t('mailers.common.hello') %>
 
 <%= t('mailers.backup_ready.intro', token: @migration.token) %>
 
@@ -9,11 +9,11 @@ Hello,
 <%= @download_url %>
 
 <%= t('mailers.backup_ready.size', size: (number_to_human_size(@backup_size) if @backup_size)) %>
-<%= t('mailers.backup_ready.expires', time: (@expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at)) %>
+<%= t('mailers.backup_ready.expires', time: email_time(@expires_at)) %>
 <%= t('mailers.backup_ready.expiry_warning') %>
 
 <%= t('mailers.backup_ready.whats_next') %>
 
 ---
 <%= t('mailers.common.eurosky_migration') %>
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>

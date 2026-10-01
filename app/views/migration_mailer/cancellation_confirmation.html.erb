@@ -1,28 +1,27 @@
-<%= email_label "Migration #{@migration.token}" %>
+<%= email_label t('mailers.common.migration_label', token: @migration.token) %>
 <%= email_title t('mailers.cancellation_confirmation.heading') %>
 
-<%= email_text 'Hello,' %>
+<%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.cancellation_confirmation.intro', token: @migration.token) %>
 
 <%= email_well do %>
-  <%= email_heading 'Your account is safe' %>
-  <%= email_text do %>No changes have been made to your account. Cancelling this migration will simply stop the process.
-    Your account will remain on <strong><%= @migration.old_pds_host %></strong> and continue to work normally.<% end %>
+  <%= email_heading t('mailers.common.account_safe') %>
+  <%= email_text email_t('mailers.cancellation_confirmation.safe_text', pds: tag.strong(@migration.old_pds_host)) %>
 <% end %>
 
 <%= email_warning do %>
   <%= email_heading t('mailers.cancellation_confirmation.confirm_help') %>
-  <%= email_text 'This action cannot be undone. You will need to start a new migration if you change your mind.' %>
+  <%= email_text t('mailers.cancellation_confirmation.cannot_undo') %>
   <%= email_button t('mailers.cancellation_confirmation.confirm_link'), @confirm_url %>
 <% end %>
 
 <%= email_warning do %>
-  <%= email_heading "Didn't request this?" %>
+  <%= email_heading t('mailers.cancellation_confirmation.not_you_heading') %>
   <%= email_text t('mailers.cancellation_confirmation.not_you') %>
 <% end %>
 
 <% email_footer do %>
-  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
-  <%= email_text small: true do %>DID: <%= email_code @migration.did %><% end %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
+  <%= email_text email_label_value(t('mailers.common.label_did'), email_code(@migration.did)), small: true %>
   <%= email_text t('mailers.common.eurosky_migration'), small: true %>
 <% end %>
