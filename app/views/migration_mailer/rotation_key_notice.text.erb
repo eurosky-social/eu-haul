@@ -1,3 +1,5 @@
+<%# Deliberately not translated: the subject line of the email the old PDS
+    sends (in English), the code format example and the pdsmoover.com address. -%>
 <%= t('mailers.rotation_key_notice.heading') %>
 ================================================================================
 
@@ -9,21 +11,17 @@
 <%= t('mailers.rotation_key_notice.check_email') %>
 ================================================================================
 
-You will shortly receive an email from your OLD PDS provider
-(<%= @migration.old_pds_host %>) with the subject line:
+<%= t('mailers.rotation_key_notice.plc_email_intro', pds: @migration.old_pds_host) %>
 
     "PLC Update Operation Requested"
 
-That email contains a CONFIRMATION CODE (it looks like XXXXX-XXXXX).
+<%= t('mailers.rotation_key_notice.plc_code_info', example: 'XXXXX-XXXXX') %>
 
-You need to enter this code on your migration status page to finalize
-the migration:
+<%= t('mailers.rotation_key_notice.plc_enter_code') %>
 
     <%= @migration_url %>
 
-IMPORTANT: The confirmation code expires after 1 hour. If you don't see
-the email, check your spam folder — it comes from your old PDS provider,
-not from us.
+<%= t('mailers.rotation_key_notice.plc_expiry') %>
 
 
 ================================================================================
@@ -33,7 +31,7 @@ not from us.
 <%= t('mailers.rotation_key_notice.key_help') %>
 
 <% if @rotation_key_private.present? %>
-Your Recovery Key:
+<%= t('mailers.rotation_key_notice.recovery_key_label') %>
 ----------------------------------------
 <%= @rotation_key_private %>
 ----------------------------------------
@@ -42,18 +40,13 @@ Your Recovery Key:
 <% end %>
 
 
-WHAT CAN I DO WITH THIS KEY?
+<%= t('mailers.rotation_key_notice.key_use_heading') %>
 ================================================================================
 
-If you ever need to recover your account, go to:
-
-    https://pdsmoover.com/restore
-
-and use this key to restore access. It works even if your server is
-completely offline.
+<%= t('mailers.rotation_key_notice.key_use', link: 'https://pdsmoover.com/restore') %>
 
 
 ---
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>
 
 <%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

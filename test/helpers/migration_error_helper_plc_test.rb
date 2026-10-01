@@ -42,17 +42,18 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
     assert_not_nil context
     assert_equal :warning, context[:severity]
     assert_equal "⏰", context[:icon]
-    assert_equal "PLC Token Expired", context[:title]
+    assert_equal "PLC token expired", context[:title]
     assert_match(/PLC operation token.*expired/i, context[:what_happened])
     assert_match(/only valid for 1 hour/i, context[:what_happened])
-    assert_equal "Migration paused - new PLC token required", context[:current_status]
+    assert_equal "Migration paused — you need a new PLC token", context[:current_status]
   end
 
   test "plc_token_expired_context includes actionable steps" do
     context = MigrationErrorHelper.explain_error(@migration)
 
     assert context[:what_to_do].is_a?(Array)
-    assert context[:what_to_do].any? { |step| step.include?("Request New PLC Token") }
+    # Names the button exactly as the page labels it
+    assert context[:what_to_do].any? { |step| step.include?(I18n.t("migrations.error_details.request_plc_action")) }
     assert context[:what_to_do].any? { |step| step.include?(@migration.old_pds_host) }
     assert context[:what_to_do].any? { |step| step.include?("within 1 hour") }
     assert context[:what_to_do].any? { |step| step.include?("migration data is safe") }

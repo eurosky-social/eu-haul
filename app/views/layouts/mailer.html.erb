@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
-  </head>
-
-  <body>
-    <%= yield %>
-  </body>
+<%# Every HTML email renders into this layout: the site's logo (or name) on the
+    page background, the template's content in a white card, and the
+    template's email_footer content below the card. The building blocks are in
+    EmailHelper; mail clients need every style inline. %>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title><%= message.subject %></title>
+</head>
+<body style="margin:0;padding:0;width:100%;background-color:<%= EmailHelper::COTTON %>;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="<%= EmailHelper::COTTON %>" style="width:100%;background-color:<%= EmailHelper::COTTON %>;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
+          <tr>
+            <td align="left" style="padding:0 0 16px 0;">
+              <%= email_brand %>
+            </td>
+          </tr>
+          <tr>
+            <td align="left" bgcolor="<%= EmailHelper::CARD %>" style="background-color:<%= EmailHelper::CARD %>;border:1px solid <%= EmailHelper::LINE %>;border-radius:8px;padding:24px;<%= EmailHelper::TEXT_STYLE %>">
+              <%= email_card_body(yield) %>
+            </td>
+          </tr>
+          <% if content_for?(:email_footer) %>
+          <tr>
+            <td align="left" style="padding:16px 0 0 0;font-family:<%= EmailHelper::SANS %>;font-size:12px;line-height:1.5;color:<%= EmailHelper::MUTED %>;">
+              <%= yield(:email_footer) %>
+            </td>
+          </tr>
+          <% end %>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
 </html>

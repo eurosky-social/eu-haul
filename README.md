@@ -174,10 +174,14 @@ PDS_HOSTED_HANDLE_SUFFIXES=.oso.social
 # Invite Code
 INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 
-# UI Customization
-SITE_NAME=Account Migration
-PRIMARY_COLOR=#667eea
-SECONDARY_COLOR=#764ba2
+# UI Customization (the pages and emails follow the Eurosky design system)
+SITE_NAME=Account Migration        # header text when there is no logo; titles and emails
+PRIMARY_COLOR=#02bc60              # accent: primary buttons, active step, progress bars
+LOGO_URL=/eurosky-logo.png         # optional; PNG, shown 24px high in header and emails
+LANDING_DESTINATION=Eurosky        # optional; headline "Move your account to Eurosky"
+HOW_IT_WORKS_URL=https://...       # optional; replaces the built-in /how-it-works page
+BACKGROUND_IMAGE_URL=              # optional photo behind the pages
+# SECONDARY_COLOR is still accepted but no longer has an effect
 
 # Legal Pages (optional)
 # If set, links to these URLs are shown in the wizard footer

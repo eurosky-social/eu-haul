@@ -1,0 +1,23 @@
+<% content_for :title do %><%= EuroskyConfig::SITE_NAME %> · <%= t('landing.page_title') %><% end %>
+
+<div class="eh-container">
+  <div class="eh-narrow eh-landing">
+    <section class="eh-hero">
+      <h1 class="eh-display"><%= EuroskyConfig::LANDING_DESTINATION ? t('landing.title_named', name: EuroskyConfig::LANDING_DESTINATION) : t('landing.title') %></h1>
+      <p class="eh-lead"><%= t('landing.lead') %></p>
+      <div class="eh-actions">
+        <a href="<%= new_migration_path %>" class="es-btn es-btn-primary"><%= t('landing.start') %> →</a>
+        <%= how_it_works_link t('landing.how_it_works'), class: 'es-btn es-btn-ghost' %>
+      </div>
+    </section>
+
+    <ol class="eh-howto" aria-label="<%= t('landing.steps_label') %>">
+      <% %w[sign_in server confirm].each_with_index do |key, i| %>
+        <li>
+          <span class="eh-howto-label"><%= format('%02d', i + 1) %> · <%= t("landing.steps.#{key}.label") %></span>
+          <span><%= t("landing.steps.#{key}.text") %></span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</div>

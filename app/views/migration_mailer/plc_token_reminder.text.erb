@@ -9,7 +9,7 @@
 
 <%= t('mailers.plc_token_reminder.action_help', pds: @migration.old_pds_host) %>
 
-Go to your migration page:
+<%= t('mailers.plc_token_reminder.go_to_page') %>
 
     <%= @migration_url %>
 
@@ -24,6 +24,6 @@ Go to your migration page:
 
 
 ---
-Migration Token: <%= @migration.token %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>
 
 <%= t('mailers.migration_completed.email_footer', email: @migration.email) %>

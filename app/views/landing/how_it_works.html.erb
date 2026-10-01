@@ -1,0 +1,56 @@
+<% content_for :title do %><%= EuroskyConfig::SITE_NAME %> · <%= t('how_it_works.page_title') %><% end %>
+
+<div class="eh-container">
+  <article class="eh-narrow eh-guide eh-plain">
+    <header class="eh-hero">
+      <h1 class="eh-display"><%= t('how_it_works.title') %></h1>
+      <p class="eh-lead"><%= t('how_it_works.lead') %></p>
+    </header>
+
+    <section class="eh-spec" aria-labelledby="hiw-before">
+      <h2 class="eh-spec-label" id="hiw-before"><%= t('how_it_works.before.title') %></h2>
+      <ul class="eh-spec-body eh-list">
+        <% %w[credentials email time invite].each do |key| %>
+          <li><%= t("how_it_works.before.#{key}") %></li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="eh-spec" aria-labelledby="hiw-moves">
+      <h2 class="eh-spec-label" id="hiw-moves"><%= t('how_it_works.moves.title') %></h2>
+      <div class="eh-spec-body">
+        <p><%= t('how_it_works.moves.everything') %></p>
+        <p><%= t('how_it_works.moves.handle') %></p>
+      </div>
+    </section>
+
+    <section class="eh-spec" aria-labelledby="hiw-steps">
+      <h2 class="eh-spec-label" id="hiw-steps"><%= t('how_it_works.steps.title') %></h2>
+      <ol class="eh-spec-body eh-steplist">
+        <% %w[sign_in choose verify copy confirm done].each_with_index do |key, i| %>
+          <li>
+            <span class="eh-steplist-n"><%= format('%02d', i + 1) %></span>
+            <span class="eh-steplist-title"><%= t("how_it_works.steps.#{key}.title") %></span>
+            <span class="eh-steplist-text"><%= t("how_it_works.steps.#{key}.text") %></span>
+          </li>
+        <% end %>
+      </ol>
+    </section>
+
+    <section class="eh-spec" aria-labelledby="hiw-know">
+      <h2 class="eh-spec-label" id="hiw-know"><%= t('how_it_works.know.title') %></h2>
+      <ul class="eh-spec-body eh-list">
+        <% %w[duration cancel recovery old_account backup deletion sign_in].each do |key| %>
+          <li><%= t("how_it_works.know.#{key}") %></li>
+        <% end %>
+      </ul>
+    </section>
+
+    <div class="eh-spec eh-spec-end">
+      <span></span>
+      <div class="eh-actions">
+        <a href="<%= new_migration_path %>" class="es-btn es-btn-primary"><%= t('landing.start') %> →</a>
+      </div>
+    </div>
+  </article>
+</div>

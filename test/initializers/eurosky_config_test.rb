@@ -81,4 +81,26 @@ class EuroskyConfigHandleSuffixesTest < ActiveSupport::TestCase
       assert_raises(EuroskyConfig::ConfigurationError, raw) { EuroskyConfig.parse_pds_hosted_handle_suffixes(raw) }
     end
   end
+
+  test "reads the accent in every notation PRIMARY_COLOR accepts" do
+    assert_equal [2, 188, 96], EuroskyConfig.parse_color_rgb("#02bc60")
+    assert_equal [255, 255, 255], EuroskyConfig.parse_color_rgb("#FFF")
+    assert_equal [255, 210, 4], EuroskyConfig.parse_color_rgb("rgb(255, 210, 4)")
+    assert_equal [255, 128, 0], EuroskyConfig.parse_color_rgb("rgba(100%, 50%, 0%, 0.5)")
+    assert_equal [2, 187, 94], EuroskyConfig.parse_color_rgb("hsl(150, 98%, 37%)")
+    assert_equal [0, 0, 128], EuroskyConfig.parse_color_rgb("Navy")
+    assert_nil EuroskyConfig.parse_color_rgb("transparent")
+  end
+
+  test "text on the accent is near-black on light colours and white on dark ones" do
+    assert_equal "#1a1a1a", EuroskyConfig.text_color_on([2, 188, 96])    # Eurosky green
+    assert_equal "#1a1a1a", EuroskyConfig.text_color_on([102, 126, 234]) # the old purple
+    assert_equal "#ffffff", EuroskyConfig.text_color_on([26, 35, 126])   # dark blue
+    assert_equal "#ffffff", EuroskyConfig.text_color_on([0, 0, 128])     # navy
+  end
+
+  test "the default accent is Eurosky green" do
+    assert_equal "#02bc60", EuroskyConfig::DEFAULT_PRIMARY_COLOR
+    assert_match(/\A#\h{6}\z/, EuroskyConfig.accent_hex)
+  end
 end

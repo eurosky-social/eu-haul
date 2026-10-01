@@ -386,7 +386,7 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
     context = MigrationErrorHelper.explain_error(migration)
 
     # Should use error_code (:plc_token_expired) NOT regex (:generic)
-    assert_equal "PLC Token Expired", context[:title]
+    assert_equal title_for(:plc_token_expired), context[:title]
     assert context[:show_request_new_plc_token],
       "Should use error_code to determine context, not regex on last_error"
   end
@@ -404,7 +404,7 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
 
     context = MigrationErrorHelper.explain_error(migration)
 
-    assert_equal "PLC Token Expired", context[:title],
+    assert_equal title_for(:plc_token_expired), context[:title],
       "error_code should take precedence over regex match on last_error"
   end
 
@@ -420,7 +420,7 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
 
     context = MigrationErrorHelper.explain_error(migration)
 
-    assert_equal "PLC Token Expired", context[:title],
+    assert_equal title_for(:plc_token_expired), context[:title],
       "Should fall back to regex detection when error_code is nil"
     assert context[:show_request_new_plc_token]
   end
@@ -437,7 +437,7 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
 
     context = MigrationErrorHelper.explain_error(migration)
 
-    assert_equal "Session Expired — Re-authentication Required", context[:title],
+    assert_equal title_for(:credentials_need_reauth), context[:title],
       "Should fall back to regex when error_code is empty string"
     assert context[:show_reauth_form]
   end
@@ -454,20 +454,21 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
 
     # Map of error_code -> expected title (validates build_error_context routing)
     expected_titles = {
-      "plc_token_expired"          => "PLC Token Expired",
-      "plc_pre_submission_failure" => "PLC Update Could Not Complete",
-      "critical_plc"               => "PLC Directory Update Failed",
-      "credentials_need_reauth"    => "Session Expired — Re-authentication Required",
-      "authentication"             => "Authentication Failed",
-      "network"                    => "Network Connection Error",
-      "rate_limit"                 => "Rate Limited by Server",
-      "account_exists"             => "Account Already Exists on Target PDS",
-      "invite_code"                => "Invalid or Expired Invite Code",
-      "blob_not_found"             => "Some Blobs Not Found",
-      "data_corruption"            => "Data Transfer Corruption",
-      "disk_space"                 => "Disk Space Exhausted",
-      "cancelled"                  => "Migration Cancelled",
-      "generic"                    => "Migration Error",
+      "plc_token_expired"          => "PLC token expired",
+      "plc_pre_submission_failure" => "PLC update could not complete",
+      "critical_plc"               => "PLC directory update failed",
+      "credentials_need_reauth"    => "Session expired — sign in again",
+      "authentication"             => "Sign-in failed",
+      "network"                    => "Network connection error",
+      "rate_limit"                 => "Rate limited by the server",
+      "account_exists"             => "Account already exists on the new PDS",
+      "email_taken"                => "Email address already in use on the new PDS",
+      "invite_code"                => "Invite code invalid or expired",
+      "blob_not_found"             => "Some blobs were not found",
+      "data_corruption"            => "Data corrupted during transfer",
+      "disk_space"                 => "Out of disk space",
+      "cancelled"                  => "Migration cancelled",
+      "generic"                    => "Migration error",
     }
 
     expected_titles.each do |code, expected_title|
@@ -478,9 +479,64 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
     end
   end
 
+  # Every user-facing string comes from config/locales; a typo in a key would
+  # otherwise only surface as "Translation missing" on a failed migration's page.
+  test "every error explanation resolves all of its texts in every locale" do
+    migration = migrations(:pending_migration)
+    migration.update!(
+      status: :failed,
+      last_error: "irrelevant",
+      old_pds_host: "https://old.example.com",
+      new_pds_host: "https://new.example.com",
+      rotation_key: "z" * 40,
+      progress_data: {}
+    )
+    codes = %w[
+      rate_limit network plc_token_expired plc_pre_submission_failure credentials_need_reauth
+      authentication account_exists blob_not_found data_corruption disk_space invite_code
+      email_taken cancelled critical_plc generic
+    ]
+    # network explains each stage in its own sentence; the other fields switch on
+    # the retry attempt (retrying vs exhausted) and the PLC submission state
+    statuses = %w[pending_repo pending_blobs pending_activation failed]
+    attempts = [[1, 3], [3, 3]]
+    plc_states = [{}, { "plc_operation_submitted_at" => Time.current.iso8601 }]
+
+    I18n.available_locales.each do |locale|
+      I18n.with_locale(locale) do
+        codes.product(statuses, attempts, plc_states).each do |code, status, (attempt, max), plc|
+          migration.assign_attributes(error_code: code, status: status, current_job_attempt: attempt,
+                                      current_job_max_attempts: max, progress_data: plc)
+          context = MigrationErrorHelper.explain_error(migration)
+          texts = [context[:title], context[:what_happened], context[:current_status], *context[:what_to_do]]
+
+          texts.each do |text|
+            assert_kind_of String, text, "#{locale}/#{code}: expected a string, got #{text.inspect}"
+            refute_match(/translation missing/i, text, "#{locale}/#{code} (#{status})")
+            refute_match(/%\{\w+\}/, text, "#{locale}/#{code}: uninterpolated placeholder")
+          end
+        end
+      end
+    end
+  end
+
+  test "format_time_remaining is localised and pluralised" do
+    assert_equal I18n.t("migrations.error_messages.time_remaining.a_few_moments"),
+                 MigrationErrorHelper.format_time_remaining(3)
+    assert_equal "30 seconds", MigrationErrorHelper.format_time_remaining(30)
+    assert_equal "1 minute", MigrationErrorHelper.format_time_remaining(60)
+    assert_equal "2 minutes", MigrationErrorHelper.format_time_remaining(150)
+    assert_equal "1 hour", MigrationErrorHelper.format_time_remaining(3600)
+    assert_equal "3 hours", MigrationErrorHelper.format_time_remaining(3 * 3600)
+  end
+
   private
 
   def detect(message)
     MigrationErrorHelper.detect_error_type(message)
+  end
+
+  def title_for(error_type)
+    I18n.t("migrations.error_messages.#{error_type}.title")
   end
 end

@@ -1,92 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #dc2626; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-    .details { background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0; }
-    .error { background-color: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; }
-    .button { display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-    .button:hover { background-color: #1d4ed8; }
-    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; color: #6b7280; }
-    .info-list { list-style: none; padding: 0; }
-    .info-list li { padding: 5px 0; }
-    .info-list strong { display: inline-block; width: 180px; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1 style="margin: 0;"><%= t('mailers.migration_failed.heading') %></h1>
-  </div>
+<%= email_title t('mailers.migration_failed.heading') %>
 
-  <p>Hello,</p>
+<%= email_text t('mailers.common.hello') %>
+<%= email_text email_t('mailers.migration_failed.intro', token: @migration.token) %>
 
-  <p><%= t('mailers.migration_failed.intro', token: @migration.token).html_safe %></p>
+<%= email_heading t('mailers.migration_failed.account_details') %>
+<%= email_details do %>
+  <%= email_detail_line email_t('mailers.migration_failed.did', did: @migration.did) %>
+  <%= email_detail_line t('mailers.migration_failed.old_handle', handle: @migration.old_handle) %>
+  <%= email_detail_line t('mailers.migration_failed.new_handle', handle: @migration.new_handle) %>
+<% end %>
 
-  <div class="details">
-    <h3 style="margin-top: 0;"><%= t('mailers.migration_failed.account_details') %></h3>
-    <ul class="info-list">
-      <li><%= t('mailers.migration_failed.did', did: @migration.did).html_safe %></li>
-      <li><%= t('mailers.migration_failed.old_handle', handle: @migration.old_handle) %></li>
-      <li><%= t('mailers.migration_failed.new_handle', handle: @migration.new_handle) %></li>
-    </ul>
-  </div>
-
-  <div class="error">
-    <h3 style="margin-top: 0;"><%= t('mailers.migration_failed.failure_info') %></h3>
-    <ul class="info-list">
-      <li><%= t('mailers.migration_failed.failed_step', step: @failed_step.to_s.humanize) %></li>
-      <li><%= t('mailers.migration_failed.error', error: @error_message) %></li>
-      <li><%= t('mailers.migration_failed.previous_retries', count: @retry_count) %></li>
-    </ul>
-  </div>
-
-  <% if @error_message&.match?(/PLC token.*expired/i) %>
-    <h3>PLC Token Expired</h3>
-    <p>Your PLC operation token has expired. PLC tokens are only valid for 1 hour after they are issued.</p>
-
-    <h4>What You Need to Do:</h4>
-    <ol>
-      <li>Visit your migration status page using the button below</li>
-      <li>Click the "Request New PLC Token" button</li>
-      <li>Check your email from <strong><%= @migration.old_pds_host %></strong> for the new token</li>
-      <li>Submit the new token within 1 hour</li>
-    </ol>
-
-    <a href="<%= @migration_url %>" class="button">View Migration & Request New Token</a>
-
-    <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
-      <p style="margin: 0;"><strong>Good News:</strong></p>
-      <p style="margin: 5px 0 0 0;">Your migration data is safe and ready. You just need a fresh PLC token to complete the final step.</p>
-    </div>
-  <% else %>
-    <h3><%= t('mailers.migration_failed.what_to_do') %></h3>
-    <ol>
-      <li><%= t('mailers.migration_failed.do_step1') %></li>
-    </ol>
-
-    <a href="<%= @migration_url %>" class="button">View Migration & Retry</a>
-
-    <p><strong><%= t('mailers.migration_failed.common_issues') %></strong></p>
-    <ul>
-      <li><%= t('mailers.migration_failed.issue1') %></li>
-      <li><%= t('mailers.migration_failed.issue2') %></li>
-      <li><%= t('mailers.migration_failed.issue3') %></li>
-    </ul>
+<%= email_warning do %>
+  <%= email_heading t('mailers.migration_failed.failure_info') %>
+  <%= email_details do %>
+    <% if (step_name = email_step_name(@failed_step)) %>
+      <%= email_detail_line t('mailers.migration_failed.failed_step', step: step_name) %>
+    <% end %>
+    <%= email_detail_line t('mailers.migration_failed.error', error: @error_message) %>
+    <%= email_detail_line t('mailers.migration_failed.previous_retries', count: @retry_count) %>
   <% end %>
+<% end %>
 
-  <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0;">
-    <p style="margin: 0;"><strong><%= t('mailers.migration_failed.important') %></strong></p>
-    <ul style="margin: 10px 0 0 0;">
-      <li><%= t('mailers.migration_failed.note1') %></li>
-      <li><%= t('mailers.migration_failed.note2') %></li>
-      <li><%= t('mailers.migration_failed.note3', token: @migration.token).html_safe %></li>
-    </ul>
-  </div>
+<% if @error_message&.match?(/PLC token.*expired/i) %>
+  <%= email_heading t('mailers.migration_failed.plc_expired_heading') %>
+  <%= email_text t('mailers.migration_failed.plc_expired_text') %>
 
-  <div class="footer">
-    <p><%= t('mailers.common.eurosky_migration') %></p>
-  </div>
-</body>
-</html>
+  <%= email_heading t('mailers.migration_failed.plc_expired_steps') %>
+  <%= email_list [
+    t('mailers.migration_failed.plc_expired_step1'),
+    t('mailers.migration_failed.plc_expired_step2'),
+    email_t('mailers.migration_failed.plc_expired_step3', pds: tag.strong(@migration.old_pds_host)),
+    t('mailers.migration_failed.plc_expired_step4')
+  ], ordered: true %>
+
+  <%= email_button t('mailers.migration_failed.plc_expired_button'), @migration_url %>
+
+  <%= email_well do %>
+    <%= email_text tag.strong(t('mailers.migration_failed.plc_expired_good_news')) %>
+    <%= email_text t('mailers.migration_failed.plc_expired_safe') %>
+  <% end %>
+<% else %>
+  <%= email_heading t('mailers.migration_failed.what_to_do') %>
+  <%= email_list [t('mailers.migration_failed.do_step1')], ordered: true %>
+
+  <%= email_button t('mailers.migration_failed.retry_button'), @migration_url %>
+
+  <%= email_text tag.strong(t('mailers.migration_failed.common_issues')) %>
+  <%= email_list [
+    t('mailers.migration_failed.issue1'),
+    t('mailers.migration_failed.issue2'),
+    t('mailers.migration_failed.issue3')
+  ] %>
+<% end %>
+
+<%= email_warning do %>
+  <%= email_text tag.strong(t('mailers.migration_failed.important')) %>
+  <%= email_list [
+    t('mailers.migration_failed.note1'),
+    t('mailers.migration_failed.note2'),
+    email_t('mailers.migration_failed.note3', token: @migration.token)
+  ] %>
+<% end %>
+
+<% email_footer do %>
+  <%= email_text t('mailers.common.eurosky_migration'), small: true %>
+<% end %>

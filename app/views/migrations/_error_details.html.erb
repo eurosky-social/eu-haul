@@ -1,301 +1,203 @@
-
-
 <% if @migration.last_error.present? %>
   <% error_context = MigrationErrorHelper.explain_error(@migration) %>
 
   <% if error_context %>
-    <%
-      severity = error_context[:severity]
-      if severity == :critical
-        severity_bg_class    = "bg-danger-subtle"
-        severity_border_class = "border-start border-4 border-danger"
-        severity_text_class  = "text-danger-emphasis"
-        alert_class          = "alert-danger"
-      elsif severity == :error
-        severity_bg_class    = "bg-warning-subtle"
-        severity_border_class = "border-start border-4 border-warning"
-        severity_text_class  = "text-warning-emphasis"
-        alert_class          = "alert-warning"
-      else
-        severity_bg_class    = "bg-warning-subtle"
-        severity_border_class = "border-start border-4 border-warning"
-        severity_text_class  = "text-warning-emphasis"
-        alert_class          = "alert-warning"
-      end
-    %>
-    <div class="error-details-section mb-5">
-      <%# Error Header %>
-      <div class="error-header <%= severity_bg_class %> <%= severity_border_class %> p-4 rounded-3 mb-3">
-        <h3 class="<%= severity_text_class %> fs-5 fw-bold mb-2 d-flex align-items-center gap-2">
-          <span class="fs-4"><%= error_context[:icon] %></span>
-          <%= error_context[:title] %>
-        </h3>
-
-        <%# Current Status %>
-        <div class="bg-white bg-opacity-75 p-3 rounded-2 mb-3">
-          <div class="small fw-semibold <%= severity_text_class %> mb-1">
-            <%= t('migrations.error_details.current_status') %>
-          </div>
-          <div class="small text-dark">
-            <%= error_context[:current_status] %>
-          </div>
-
-          <%# Retry Information (only shown for errors with automatic retries) %>
-          <% if error_context[:retry_info] && error_context[:retry_info][:remaining] > 0 %>
-            <div class="mt-2 p-2 bg-info-subtle rounded-2">
-              <div class="small text-primary">
-                <strong><%= t('migrations.error_details.retry_attempt') %></strong> <%= error_context[:retry_info][:attempt] %> / <%= error_context[:retry_info][:max_attempts] %>
-                <br>
-                <strong><%= t('migrations.error_details.remaining_attempts') %></strong> <%= error_context[:retry_info][:remaining] %>
-              </div>
-              <div id="retry-countdown" class="mt-1 text-primary" style="font-size: 12px;">
-                <%= t('migrations.error_details.next_retry') %> <span id="countdown-timer"><%= t('migrations.error_details.calculating') %></span>
-              </div>
-            </div>
-          <% end %>
+    <div class="error-details-section eh-stack">
+      <%# What went wrong, and where things stand %>
+      <div class="error-header eh-warn">
+        <h2 class="eh-title"><%= error_context[:title] %></h2>
+        <div class="eh-stack-xs eh-sm">
+          <div class="eh-label"><%= t('migrations.error_details.current_status') %></div>
+          <p class="eh-muted"><%= error_context[:current_status] %></p>
         </div>
+
+        <%# Retry information (only for errors with automatic retries) %>
+        <% if error_context[:retry_info] && error_context[:retry_info][:remaining] > 0 %>
+          <div class="eh-side-meta">
+            <span class="eh-muted"><%= t('migrations.error_details.retry_attempt') %></span>
+            <span><%= error_context[:retry_info][:attempt] %> / <%= error_context[:retry_info][:max_attempts] %></span>
+            <span class="eh-muted"><%= t('migrations.error_details.remaining_attempts') %></span>
+            <span><%= error_context[:retry_info][:remaining] %></span>
+            <span class="eh-muted"><%= t('migrations.error_details.next_retry') %></span>
+            <span id="countdown-timer"><%= t('migrations.error_details.calculating') %></span>
+          </div>
+        <% end %>
       </div>
 
       <%# Re-authentication form - shown when credentials have expired but migration data is intact %>
       <% if error_context[:show_reauth_form] %>
-        <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
-          <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
-            <%= t('migrations.error_details.reauth_safe') %>
-          </h4>
-          <p class="text-primary small mb-3">
-            <%= t('migrations.error_details.reauth_help', handle: @migration.old_handle).html_safe %>
-          </p>
-          <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+        <div class="eh-well">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.error_details.reauth_safe') %></div>
+            <p class="eh-sm eh-muted"><%= t('migrations.error_details.reauth_help', handle: @migration.old_handle).html_safe %></p>
+          </div>
+          <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post" class="eh-stack-sm">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-            <div class="mb-3">
-              <label for="reauth_password" class="form-label small text-primary fw-semibold mb-1">
-                <%= t('migrations.error_details.password_for', handle: @migration.old_handle) %>
-              </label>
+            <div class="es-field">
+              <label for="reauth_password" class="es-label"><%= t('migrations.error_details.password_for', handle: @migration.old_handle) %></label>
               <input type="password" name="password" id="reauth_password" required
                      autocomplete="current-password"
                      placeholder="<%= t('migrations.error_details.enter_password_placeholder') %>"
-                     class="form-control">
+                     class="es-input">
             </div>
-            <button type="submit" class="btn btn-lg btn-gradient">
-              <%= t('migrations.error_details.reauth_button') %>
-            </button>
+            <div><button type="submit" class="es-btn es-btn-primary eh-square"><%= t('migrations.error_details.reauth_button') %></button></div>
           </form>
         </div>
       <% end %>
 
       <%# New-account password form - the generated password for the NEW account was rejected (migration_out) %>
       <% if error_context[:show_new_pds_reauth_form] %>
-        <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
-          <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
-            <%= t('migrations.error_details.new_pds_reauth_safe') %>
-          </h4>
-          <p class="text-primary small mb-3">
-            <%= t('migrations.error_details.new_pds_reauth_help', pds: @migration.new_pds_host).html_safe %>
-          </p>
-          <form action="<%= reauthenticate_new_pds_by_token_path(@migration.token) %>" method="post">
+        <div class="eh-well">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.error_details.new_pds_reauth_safe') %></div>
+            <p class="eh-sm eh-muted"><%= t('migrations.error_details.new_pds_reauth_help', pds: @migration.new_pds_host).html_safe %></p>
+          </div>
+          <form action="<%= reauthenticate_new_pds_by_token_path(@migration.token) %>" method="post" class="eh-stack-sm">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-            <div class="mb-3">
-              <label for="new_pds_password" class="form-label small text-primary fw-semibold mb-1">
-                <%= t('migrations.error_details.new_pds_password_for', pds: @migration.new_pds_host) %>
-              </label>
+            <div class="es-field">
+              <label for="new_pds_password" class="es-label"><%= t('migrations.error_details.new_pds_password_for', pds: @migration.new_pds_host) %></label>
               <input type="password" name="password" id="new_pds_password" required
                      autocomplete="current-password"
                      placeholder="<%= t('migrations.error_details.enter_password_placeholder') %>"
-                     class="form-control">
+                     class="es-input">
             </div>
-            <button type="submit" class="btn btn-lg btn-gradient">
-              <%= t('migrations.error_details.new_pds_reauth_button') %>
-            </button>
+            <div><button type="submit" class="es-btn es-btn-primary eh-square"><%= t('migrations.error_details.new_pds_reauth_button') %></button></div>
           </form>
         </div>
       <% end %>
 
-      <%# PLC Token Action - shown when a new PLC token is needed %>
+      <%# PLC token action - shown when a new PLC token is needed %>
       <% if error_context[:show_request_new_plc_token] %>
-        <div class="bg-info-subtle border border-2 border-primary rounded-3 p-4 mb-3">
-          <h4 class="text-primary fw-bold mb-2" style="font-size: 16px;">
-            <%= t('migrations.error_details.plc_safe') %>
-          </h4>
+        <div class="eh-well">
+          <div class="eh-well-title"><%= t('migrations.error_details.plc_safe') %></div>
 
           <% if @migration.has_old_pds_tokens? %>
             <%# Old PDS session is still valid — can request token automatically %>
-            <p class="text-primary small mb-3">
-              <%= t('migrations.error_details.plc_request_help', pds: @migration.old_pds_host).html_safe %>
-            </p>
-            <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post" class="d-inline">
+            <p class="eh-sm eh-muted"><%= t('migrations.error_details.plc_request_help', pds: @migration.old_pds_host).html_safe %></p>
+            <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <button type="submit"
                       onclick="return confirm('<%= j t('migrations.error_details.request_plc_confirm') %>');"
-                      class="btn btn-lg btn-gradient">
+                      class="es-btn es-btn-primary eh-square">
                 <%= t('migrations.error_details.request_plc_button') %>
               </button>
             </form>
           <% else %>
             <%# Old PDS session expired — need password to re-authenticate %>
-            <p class="text-primary small mb-3">
-              <%= t('migrations.error_details.plc_session_expired', pds: @migration.old_pds_host, handle: @migration.old_handle).html_safe %>
-            </p>
-            <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
+            <p class="eh-sm eh-muted"><%= t('migrations.error_details.plc_session_expired', pds: @migration.old_pds_host, handle: @migration.old_handle).html_safe %></p>
+            <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post" class="eh-stack-sm">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-              <div class="mb-3">
-                <label for="reauth_plc_password" class="form-label small text-primary fw-semibold mb-1">
-                  <%= t('migrations.error_details.password_for', handle: @migration.old_handle) %>
-                </label>
+              <div class="es-field">
+                <label for="reauth_plc_password" class="es-label"><%= t('migrations.error_details.password_for', handle: @migration.old_handle) %></label>
                 <input type="password" name="password" id="reauth_plc_password" required
                        autocomplete="current-password"
                        placeholder="<%= t('migrations.error_details.enter_password_placeholder') %>"
-                       class="form-control">
+                       class="es-input">
               </div>
-              <button type="submit" class="btn btn-lg btn-gradient">
-                <%= t('migrations.error_details.reauth_plc_button') %>
-              </button>
+              <div><button type="submit" class="es-btn es-btn-primary eh-square"><%= t('migrations.error_details.reauth_plc_button') %></button></div>
             </form>
           <% end %>
         </div>
       <% end %>
 
-      <%# Expandable Details %>
-      <details class="error-expandable mb-3">
-        <summary class="p-3 bg-light rounded-2 fw-semibold text-dark small" style="cursor: pointer; user-select: none;">
-          <%= t('migrations.error_details.what_happened_title') %>
-        </summary>
+      <%# What happened and what to do %>
+      <details class="error-expandable eh-details eh-rule-top">
+        <summary><%= t('migrations.error_details.what_happened_title') %></summary>
 
-        <div class="p-4 bg-white border rounded-2 mt-2">
-          <%# What Happened %>
-          <div class="mb-4">
-            <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
-              <%= t('migrations.error_details.what_happened') %>
-            </h4>
-            <p class="text-body-secondary small lh-lg">
-              <%= error_context[:what_happened] %>
-            </p>
+        <div class="eh-details-body">
+          <div class="eh-stack-xs">
+            <div class="eh-label"><%= t('migrations.error_details.what_happened') %></div>
+            <p class="eh-muted"><%= error_context[:what_happened] %></p>
           </div>
 
-          <%# What To Do %>
-          <div class="mb-4">
-            <h4 class="text-dark fw-bold mb-2" style="font-size: 16px;">
-              <%= t('migrations.error_details.what_to_do') %>
-            </h4>
-            <ul class="text-body-secondary small lh-lg ps-4">
+          <div class="eh-stack-xs">
+            <div class="eh-label"><%= t('migrations.error_details.what_to_do') %></div>
+            <ul class="eh-list eh-muted">
               <% error_context[:what_to_do].each do |action| %>
-                <li class="mb-1"><%= action %></li>
+                <li><%= action %></li>
               <% end %>
             </ul>
           </div>
 
-          <%# Action Buttons %>
-          <div class="d-flex flex-wrap gap-2 mt-4 pt-4 border-top">
+          <div class="eh-actions">
             <% if error_context[:show_request_new_plc_token] %>
               <%= button_to t('migrations.error_details.request_plc_action'), request_new_plc_token_by_token_path(@migration.token),
                   method: :post,
                   data: { confirm: t('migrations.error_details.request_plc_confirm') },
-                  class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
+                  class: "es-btn es-btn-primary eh-square" %>
             <% end %>
 
             <% if error_context[:show_retry_button] %>
               <%= button_to t('migrations.error_details.retry_migration'), retry_migration_by_token_path(@migration.token),
                   method: :post,
                   data: { confirm: t('migrations.error_details.retry_confirm') },
-                  class: "btn btn-gradient d-inline-flex align-items-center gap-1" %>
+                  class: "es-btn es-btn-primary eh-square" %>
             <% end %>
 
             <% if error_context[:show_new_migration_button] %>
-              <%= link_to t('migrations.error_details.start_new'), new_migration_path,
-                  class: "btn btn-success d-inline-flex align-items-center gap-1" %>
+              <%= link_to t('migrations.error_details.start_new'), new_migration_path, class: "es-btn eh-square" %>
             <% end %>
 
             <% if error_context[:check_url] %>
               <%= link_to t('migrations.error_details.check_pds'), error_context[:check_url],
                   target: "_blank",
                   rel: "noopener noreferrer",
-                  class: "btn btn-secondary d-inline-flex align-items-center gap-1" %>
+                  class: "es-btn eh-square" %>
             <% end %>
 
             <% if error_context[:show_download_manifest] && @migration.progress_data&.dig('failed_blobs').present? %>
               <%= link_to t('migrations.error_details.download_report'), export_recovery_data_migration_by_token_path(@migration.token, format: :txt),
-                  class: "btn btn-warning d-inline-flex align-items-center gap-1" %>
+                  class: "es-btn eh-square" %>
             <% end %>
-
           </div>
 
-          <%# Special Sections %>
           <% if error_context[:show_cleanup_instructions] %>
-            <div class="mt-4 p-3 bg-warning-subtle border-start border-4 border-warning rounded-2">
-              <h4 class="text-warning-emphasis fw-bold mb-2" style="font-size: 15px;">
-                <%= t('migrations.error_details.cleanup_title') %>
-              </h4>
-              <p class="text-warning-emphasis small mb-2">
-                <%= t('migrations.error_details.cleanup_help') %>
-              </p>
-              <code class="d-block bg-white bg-opacity-75 p-3 rounded-2 font-monospace" style="font-size: 12px; overflow-wrap: break-word;">
-                cd scripts && ./cleanup_orphaned_account_db.sh <%= error_context[:did] %>
-              </code>
-              <p class="text-warning-emphasis small mt-2 mb-0">
-                <%= t('migrations.error_details.cleanup_contact') %>
-              </p>
+            <div class="eh-warn">
+              <div class="eh-label"><%= t('migrations.error_details.cleanup_title') %></div>
+              <p class="eh-muted"><%= t('migrations.error_details.cleanup_help') %></p>
+              <code class="eh-code-block">cd scripts && ./cleanup_orphaned_account_db.sh <%= error_context[:did] %></code>
+              <p class="eh-muted"><%= t('migrations.error_details.cleanup_contact') %></p>
             </div>
           <% end %>
 
           <% if error_context[:show_rotation_key] && @migration.rotation_key.present? %>
-            <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
-              <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
-                <%= t('migrations.error_details.rotation_key_save') %>
-              </h4>
-              <div class="bg-white p-3 rounded-2 my-2 font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all;">
-                <%= @migration.rotation_key %>
+            <div class="eh-warn">
+              <div class="eh-label"><%= t('migrations.error_details.rotation_key_save') %></div>
+              <code class="eh-code-block"><%= @migration.rotation_key %></code>
+              <div>
+                <button type="button" class="es-btn es-btn-sm eh-square" data-copy="<%= @migration.rotation_key %>" data-copied="<%= t('migrations.show.copied') %>"><%= t('migrations.error_details.copy_rotation_key') %></button>
               </div>
-              <button onclick="navigator.clipboard.writeText('<%= j @migration.rotation_key %>'); this.textContent='\u2705 Copied!'; setTimeout(() => this.textContent='<%= j t('migrations.error_details.copy_rotation_key') %>', 2000)"
-                      class="btn btn-sm btn-danger fw-semibold">
-                <%= t('migrations.error_details.copy_rotation_key') %>
-              </button>
             </div>
           <% end %>
 
           <% if error_context[:show_contact_support] %>
-            <div class="mt-4 p-3 bg-danger-subtle border-start border-4 border-danger rounded-2">
-              <h4 class="text-danger-emphasis fw-bold mb-2" style="font-size: 15px;">
-                <%= t('migrations.error_details.contact_support') %>
-              </h4>
-              <p class="text-danger-emphasis small mb-2">
-                <strong><%= t('migrations.error_details.support_email') %></strong> <%= error_context[:support_email] %><br>
-                <strong><%= t('migrations.error_details.migration_token') %></strong> <code class="bg-white bg-opacity-75 px-1 rounded-1"><%= error_context[:migration_token] %></code>
-              </p>
-              <p class="text-danger-emphasis small mb-0">
-                <%= t('migrations.error_details.include_token') %>
-              </p>
+            <div class="eh-warn">
+              <div class="eh-label"><%= t('migrations.error_details.contact_support') %></div>
+              <div class="eh-side-meta">
+                <span class="eh-muted"><%= t('migrations.error_details.support_email') %></span><span><%= error_context[:support_email] %></span>
+                <span class="eh-muted"><%= t('migrations.error_details.migration_token') %></span><span><%= error_context[:migration_token] %></span>
+              </div>
+              <p class="eh-muted"><%= t('migrations.error_details.include_token') %></p>
             </div>
           <% end %>
         </div>
       </details>
 
-      <%# Technical Details (Collapsed by Default) %>
-      <details class="technical-details mb-3">
-        <summary class="p-3 bg-light rounded-2 fw-semibold text-muted small" style="cursor: pointer; user-select: none;">
-          <%= t('migrations.error_details.technical_title') %>
-        </summary>
-
-        <div class="p-3 rounded-2 mt-2 font-monospace" style="background: #1f2937; color: #f3f4f6; font-size: 12px; overflow-x: auto;">
-          <div class="mb-2">
-            <strong class="text-secondary"><%= t('migrations.error_details.error_message') %></strong>
+      <%# Technical details (collapsed by default) %>
+      <details class="technical-details eh-details-quiet">
+        <summary><%= t('migrations.error_details.technical_title') %></summary>
+        <div class="eh-details-body">
+          <div class="eh-stack-xs">
+            <div class="eh-label"><%= t('migrations.error_details.error_message') %></div>
+            <pre class="eh-pre"><%= error_context[:technical_details] %></pre>
           </div>
-          <div class="p-2 rounded-2" style="background: rgba(0,0,0,0.3); white-space: pre-wrap; word-break: break-word;"><%= error_context[:technical_details] %></div>
-
-          <% if error_context[:job_step] %>
-            <div class="mt-3">
-              <strong class="text-secondary"><%= t('migrations.error_details.job_step') %></strong> <%= error_context[:job_step] %>
-            </div>
-          <% end %>
-
-          <div class="mt-3">
-            <strong class="text-secondary"><%= t('migrations.error_details.migration_status') %></strong> <%= @migration.status %>
-          </div>
-
-          <div class="mt-2">
-            <strong class="text-secondary"><%= t('migrations.error_details.migration_token') %></strong> <%= @migration.token %>
-          </div>
-
-          <div class="mt-2">
-            <strong class="text-secondary"><%= t('migrations.error_details.did_label') %></strong> <%= @migration.did %>
+          <div class="eh-side-meta">
+            <% if error_context[:job_step] %>
+              <span class="eh-muted"><%= t('migrations.error_details.job_step') %></span><span><%= error_context[:job_step] %></span>
+            <% end %>
+            <span class="eh-muted"><%= t('migrations.error_details.migration_status') %></span><span><%= @migration.status %></span>
+            <span class="eh-muted"><%= t('migrations.error_details.migration_token') %></span><span><%= @migration.token %></span>
+            <span class="eh-muted"><%= t('migrations.error_details.did_label') %></span><span><%= @migration.did %></span>
           </div>
         </div>
       </details>

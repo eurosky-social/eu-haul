@@ -3,7 +3,7 @@
 
 <%= t('mailers.email_verification.migration_token', token: @migration.token) %>
 
-Hello,
+<%= t('mailers.common.hello') %>
 
 <%= t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host) %>
 

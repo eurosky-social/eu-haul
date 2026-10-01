@@ -25,7 +25,7 @@
 <%= t('mailers.migration_completed.backup_heading') %>
 ================================================================================
 
-<%= t('mailers.migration_completed.backup_help') %>
+<%= t('mailers.migration_completed.backup_help', time: email_time(@migration.backup_expires_at)) %>
 
 <%= @download_url %>
 
@@ -43,7 +43,7 @@
 <%= t('mailers.migration_completed.old_account', handle: @migration.old_handle, pds: @migration.old_pds_host) %>
 <%= t('mailers.migration_completed.new_account', handle: @migration.new_handle, pds: @migration.new_pds_host) %>
 
-<%= t('mailers.migration_completed.completed_at', time: (Time.parse(@completed_at).strftime('%B %d, %Y at %I:%M %p %Z') rescue @completed_at)) %>
+<%= t('mailers.migration_completed.completed_at', time: email_time(@completed_at)) %>
 
 
 <%= t('mailers.migration_completed.status_page') %>
@@ -77,11 +77,15 @@
 <%= t('mailers.migration_completed.change_password_heading') %>
 ================================================================================
 
-<%= missing_blobs.any? ? t('mailers.migration_completed.change_password_wait') : t('mailers.migration_completed.change_password_help') %>
+<% if missing_blobs.any? %>
+<%= t('mailers.migration_completed.change_password_wait') %>
+<% else %>
+<%= t('mailers.migration_completed.change_password_help') %>
 
   <%= @migration.new_pds_host %>/.well-known/change-password
 
 <%= t('mailers.migration_completed.change_password_later') %>
+<% end %>
 
 
 ================================================================================

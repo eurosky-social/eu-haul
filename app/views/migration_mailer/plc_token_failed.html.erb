@@ -1,81 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { background: white; padding: 30px; border: 2px solid #f59e0b; border-top: none; border-radius: 0 0 8px 8px; }
-    .info-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 4px; }
-    .safe-box { background: #d1fae5; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 4px; }
-    .code { background: #f3f4f6; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 14px; overflow-wrap: break-word; margin: 10px 0; }
-    .button { display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0; }
-    h2 { color: #92400e; margin-top: 0; }
-    ul { padding-left: 20px; }
-    li { margin-bottom: 10px; }
-    .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1 style="margin: 0; font-size: 24px;"><%= t('mailers.plc_token_failed.heading') %></h1>
-    <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-      <%= t('mailers.plc_token_failed.intro', token: @migration.token) %>
-    </p>
-  </div>
+<%= email_title t('mailers.plc_token_failed.heading') %>
+<%= email_text t('mailers.plc_token_failed.intro', token: @migration.token) %>
 
-  <div class="content">
-    <div class="safe-box">
-      <h2 style="color: #065f46; margin-top: 0;">Your Account is Safe</h2>
-      <p style="font-size: 15px; margin-bottom: 0;">
-        The PLC directory was <strong>not modified</strong>. Your account remains on
-        <strong><%= @migration.old_pds_host %></strong> and all your migration data
-        (repository, blobs, preferences) is safely stored and ready.
-      </p>
-    </div>
+<%= email_well do %>
+  <%= email_heading t('mailers.common.account_safe') %>
+  <%= email_text email_t('mailers.plc_token_failed.safe_text', pds: tag.strong(@migration.old_pds_host)) %>
+<% end %>
 
-    <div class="info-box">
-      <h2 style="color: #92400e; margin-top: 0;">What Happened?</h2>
-      <p style="font-size: 14px; color: #78350f;">
-        The confirmation code from your old PDS provider expired before it could be used.
-        These codes are only valid for a limited time (typically 1 hour).
-      </p>
-      <% if @error_message.present? %>
-      <p style="font-size: 13px; color: #92400e; margin-bottom: 0;">
-        <strong><%= t('mailers.plc_token_failed.error_detail', error: @error_message) %></strong>
-      </p>
-      <% end %>
-    </div>
+<%= email_warning do %>
+  <%= email_heading t('mailers.common.what_happened') %>
+  <%= email_text t('mailers.plc_token_failed.what_happened_text') %>
+  <% if @error_message.present? %>
+    <%= email_text tag.strong(t('mailers.plc_token_failed.error_detail', error: @error_message)) %>
+  <% end %>
+<% end %>
 
-    <div style="background: #dbeafe; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #3b82f6;">
-      <h2 style="color: #1e40af; margin-top: 0;"><%= t('mailers.plc_token_failed.what_to_do') %></h2>
-      <ol style="font-size: 15px; color: #1e3a8a;">
-        <li><%= t('mailers.plc_token_failed.step1') %></li>
-        <li><%= t('mailers.plc_token_failed.step2') %></li>
-        <li><%= t('mailers.plc_token_failed.step3') %></li>
-      </ol>
-    </div>
+<%= email_well do %>
+  <%= email_heading t('mailers.plc_token_failed.what_to_do') %>
+  <%= email_list [
+    t('mailers.plc_token_failed.step1'),
+    t('mailers.plc_token_failed.step2'),
+    t('mailers.plc_token_failed.step3')
+  ], ordered: true %>
+<% end %>
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="<%= @migration_url %>" class="button">
-        Go to Migration Status Page
-      </a>
-    </div>
+<%= email_button t('mailers.common.view_status'), @migration_url %>
 
-    <div style="background: #fef9c3; padding: 15px; margin: 20px 0; border-radius: 6px; border-left: 4px solid #eab308;">
-      <p style="font-size: 13px; color: #854d0e; margin: 0;">
-        <strong>Migration Details:</strong><br>
-        Token: <%= @migration.token %><br>
-        DID: <%= @migration.did %><br>
-        Old PDS: <%= @migration.old_pds_host %><br>
-        New PDS: <%= @migration.new_pds_host %>
-      </p>
-    </div>
-  </div>
+<%= email_heading t('mailers.common.details_heading') %>
+<%= email_details do %>
+  <%= email_detail_row t('mailers.common.label_token'), @migration.token %>
+  <%= email_detail_row t('mailers.common.label_did'), @migration.did %>
+  <%= email_detail_row t('mailers.common.label_old_pds'), @migration.old_pds_host %>
+  <%= email_detail_row t('mailers.common.label_new_pds'), @migration.new_pds_host %>
+<% end %>
 
-  <div class="footer">
-    <p>This is an automated notification from <%= EuroskyConfig::SITE_NAME %></p>
-    <p>Migration Token: <%= @migration.token %></p>
-  </div>
-</body>
-</html>
+<% email_footer do %>
+  <%= email_text t('mailers.common.automated_notification', site: EuroskyConfig::SITE_NAME), small: true %>
+  <%= email_text email_t('mailers.common.migration_token', token: email_code(@migration.token)), small: true %>
+<% end %>

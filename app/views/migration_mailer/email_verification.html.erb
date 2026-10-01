@@ -1,139 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background: linear-gradient(135deg, #F57F29 0%, #d66a1f 100%);
-      color: white;
-      padding: 30px;
-      border-radius: 8px 8px 0 0;
-      text-align: center;
-    }
-    .content {
-      background: #f8f9fa;
-      padding: 30px;
-      border-radius: 0 0 8px 8px;
-    }
-    .code-box {
-      background: white;
-      border: 2px solid #F57F29;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      margin: 24px 0;
-    }
-    .code-value {
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: 6px;
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-      color: #1a1a1a;
-    }
-    .code-label {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-    .status-link {
-      display: inline-block;
-      background: #F57F29;
-      color: white;
-      padding: 12px 32px;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 15px;
-      margin: 16px 0;
-    }
-    .status-link:hover {
-      background: #d66a1f;
-    }
-    .info-box {
-      background: #e3f2fd;
-      border-left: 4px solid #2196f3;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .warning-box {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .footer {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-    }
-    code {
-      background: #f4f4f4;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1><%= t('mailers.email_verification.heading') %></h1>
-    <p><%= t('mailers.email_verification.migration_token', token: @migration.token) %></p>
-  </div>
+<%= email_label t('mailers.email_verification.migration_token', token: @migration.token) %>
+<%= email_title t('mailers.email_verification.heading') %>
 
-  <div class="content">
-    <p>Hello,</p>
+<%= email_text t('mailers.common.hello') %>
+<%= email_text email_t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host) %>
+<%= email_text t('mailers.email_verification.enter_code') %>
 
-    <p><%= t('mailers.email_verification.initiated', handle: @migration.old_handle, pds: @migration.new_pds_host).html_safe %></p>
+<%= email_code_block @migration.email_verification_token, size: :large, caption: t('mailers.email_verification.your_code') %>
 
-    <p><%= t('mailers.email_verification.enter_code') %></p>
+<%= email_button t('mailers.email_verification.go_to_page_button'), @status_url %>
 
-    <div class="code-box">
-      <div class="code-label">Your verification code</div>
-      <div class="code-value"><%= @migration.email_verification_token %></div>
-    </div>
+<%= email_well do %>
+  <%= email_heading t('mailers.email_verification.what_next') %>
+  <%= email_list [
+    t('mailers.email_verification.next_step1'),
+    t('mailers.email_verification.next_step2'),
+    t('mailers.email_verification.next_step3'),
+    t('mailers.email_verification.next_step4')
+  ] %>
+<% end %>
 
-    <div style="text-align: center;">
-      <a href="<%= @status_url %>" class="status-link"><%= t('mailers.email_verification.go_to_page').chomp(':') %></a>
-    </div>
+<%= email_warning do %>
+  <%= email_heading t('mailers.email_verification.important') %>
+  <%= email_list [
+    tag.strong(t('mailers.email_verification.reminder1')),
+    t('mailers.email_verification.reminder2'),
+    t('mailers.email_verification.reminder3'),
+    t('mailers.email_verification.reminder4')
+  ] %>
+<% end %>
 
-    <div class="info-box">
-      <h3 style="margin-top: 0;"><%= t('mailers.email_verification.what_next') %></h3>
-      <ul style="margin: 10px 0;">
-        <li><%= t('mailers.email_verification.next_step1') %></li>
-        <li><%= t('mailers.email_verification.next_step2') %></li>
-        <li><%= t('mailers.email_verification.next_step3') %></li>
-        <li><%= t('mailers.email_verification.next_step4') %></li>
-      </ul>
-    </div>
-
-    <div class="warning-box">
-      <h3 style="margin-top: 0;"><%= t('mailers.email_verification.important') %></h3>
-      <ul style="margin: 10px 0; margin-bottom: 0;">
-        <li><strong><%= t('mailers.email_verification.reminder1') %></strong></li>
-        <li><%= t('mailers.email_verification.reminder2') %></li>
-        <li><%= t('mailers.email_verification.reminder3') %></li>
-        <li><%= t('mailers.email_verification.reminder4') %></li>
-      </ul>
-    </div>
-
-    <div class="footer">
-      <p><%= t('mailers.email_verification.migration_token', token: @migration.token) %></p>
-      <p><%= t('mailers.email_verification.not_you') %></p>
-      <p><%= t('mailers.common.eurosky_migration') %></p>
-    </div>
-  </div>
-</body>
-</html>
+<% email_footer do %>
+  <%= email_text t('mailers.email_verification.migration_token', token: @migration.token), small: true %>
+  <%= email_text t('mailers.email_verification.not_you'), small: true %>
+  <%= email_text t('mailers.common.eurosky_migration'), small: true %>
+<% end %>

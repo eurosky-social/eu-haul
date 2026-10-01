@@ -6,75 +6,73 @@
 <%= t('mailers.critical_plc_failure.warning') %>
 
 
-IMPORTANT - DO NOT:
+<%= t('mailers.critical_plc_failure.do_not_heading') %>
 =======================
 
-- Start a new migration
-- Delete this email
-- Attempt manual recovery without support
-- Change your account settings on either PDS
+- <%= t('mailers.critical_plc_failure.do_not1') %>
+- <%= t('mailers.critical_plc_failure.do_not2') %>
+- <%= t('mailers.critical_plc_failure.do_not3') %>
+- <%= t('mailers.critical_plc_failure.do_not4') %>
 
-Your account data is safe, but the PLC directory state needs to be
-verified by our support team before you take any action.
+<%= t('mailers.critical_plc_failure.data_safe') %>
 
 
-WHAT TO DO RIGHT NOW:
+<%= t('mailers.critical_plc_failure.right_now_heading') %>
 =====================
 
-1. Save this email - You will need the information below
+<% number = 0 -%>
+<%= number += 1 %>. <%= t('mailers.critical_plc_failure.step_save_email') %>
 
-2. Save your migration token:
+<%= number += 1 %>. <%= t('mailers.critical_plc_failure.step_save_token') %>
    <%= @migration.token %>
 
 <% if @rotation_key.present? %>
-3. <%= t('mailers.critical_plc_failure.key_heading') %>
+<%= number += 1 %>. <%= t('mailers.critical_plc_failure.key_heading') %>
    <%= @rotation_key %>
 
    <%= t('mailers.critical_plc_failure.key_help') %>
 <% end %>
 
-4. <%= t('mailers.critical_plc_failure.contact') %>
+<%= number += 1 %>. <%= t('mailers.critical_plc_failure.contact') %>
    <%= @support_email %>
 
-5. Include this migration token in your support request:
+<%= number += 1 %>. <%= t('mailers.critical_plc_failure.step_reference_token') %>
    <%= @migration.token %>
 
 
-WHAT HAPPENED?
+<%= t('mailers.common.what_happened') %>
 ==============
 
-The migration failed during the PLC directory update, which is the
-critical step that redirects your DID to the new PDS.
+<%= t('mailers.critical_plc_failure.what_happened_text') %>
 
 <%= t('mailers.critical_plc_failure.error_detail', error: @error_message) %>
 
-Migration Information:
+<%= t('mailers.common.details_heading') %>
 ----------------------
-Token: <%= @migration.token %>
-DID: <%= @migration.did %>
-Old PDS: <%= @migration.old_pds_host %>
-New PDS: <%= @migration.new_pds_host %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_token'), value: @migration.token) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_did'), value: @migration.did) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_old_pds'), value: @migration.old_pds_host) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_new_pds'), value: @migration.new_pds_host) %>
 
 
-WHAT HAPPENS NEXT?
+<%= t('mailers.common.what_happens_next') %>
 ==================
 
-Our support team will:
+<%= t('mailers.critical_plc_failure.support_will') %>
 
-- Investigate the PLC directory state for your DID
-- Determine whether the PLC operation succeeded or failed
-- Provide you with specific recovery instructions
-- Contact you within 24 hours via email
+- <%= t('mailers.critical_plc_failure.support1') %>
+- <%= t('mailers.critical_plc_failure.support2') %>
+- <%= t('mailers.critical_plc_failure.support3') %>
+- <%= t('mailers.critical_plc_failure.support4') %>
 
-DO NOT TAKE ANY ACTION until you hear from support.
-We will guide you through the recovery process.
+<%= t('mailers.critical_plc_failure.wait_for_support') %>
 
 
-View your migration status:
+<%= t('mailers.common.view_status') %>
 <%= @migration_url %>
 
 
 ---
-This is an automated critical alert from <%= EuroskyConfig::SITE_NAME %>
-Support: <%= @support_email %>
-Migration Token: <%= @migration.token %>
+<%= t('mailers.critical_plc_failure.automated', site: EuroskyConfig::SITE_NAME) %>
+<%= t('mailers.common.label_value', label: t('mailers.common.label_support_email'), value: @support_email) %>
+<%= t('mailers.common.migration_token', token: @migration.token) %>

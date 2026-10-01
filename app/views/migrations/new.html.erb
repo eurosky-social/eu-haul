@@ -1,181 +1,5 @@
 <% content_for :title do %><%= EuroskyConfig::SITE_NAME %> - <%= t('migrations.new.page_title') %><% end %>
 
-<% content_for :head do %>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
-    background: url('<%= EuroskyConfig::BACKGROUND_IMAGE_URL %>') no-repeat center center fixed;
-    background-size: cover;
-    <% else %>
-    background: var(--gradient);
-    <% end %>
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 0;
-  }
-  <% end %>
-
-  .new-migration-container {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    width: 95%;
-    margin: 40px auto;
-  }
-
-  .new-migration-content {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 1.5rem;
-    padding: 3rem;
-    padding-top: 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 5px 15px -5px rgba(0, 0, 0, 0.05);
-  }
-
-  .new-migration-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding: 2rem 3rem;
-    background: #ffffff;
-    border-radius: 1rem;
-  }
-
-  .new-migration-header h1 {
-    font-size: 72px;
-    font-weight: 900;
-    color: #000000;
-    margin: 0 0 8px 0;
-    letter-spacing: -2px;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial Black", sans-serif;
-  }
-
-  .new-migration-header p {
-    font-size: 14px;
-    color: #000000;
-    margin: 0;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-
-  .handle-suffix {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-    pointer-events: none;
-  }
-
-  /* Sits where .handle-suffix does when the server hands out several domains;
-     styled as a control so it doesn't read as fixed text */
-  .handle-domain-select {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    max-width: 190px;
-    padding: 2px 6px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    background-color: #f1f3f5;
-    color: #333;
-    cursor: pointer;
-  }
-
-  .typeahead-wrapper {
-    position: relative;
-  }
-
-  .typeahead-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 1050;
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-top: none;
-    border-radius: 0 0 0.5rem 0.5rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    max-height: 280px;
-    overflow-y: auto;
-    display: none;
-  }
-
-  .typeahead-dropdown.active {
-    display: block;
-  }
-
-  .typeahead-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    cursor: pointer;
-    gap: 10px;
-    transition: background 0.1s;
-  }
-
-  .typeahead-item:hover,
-  .typeahead-item.highlighted {
-    background: #f0f4ff;
-  }
-
-  .typeahead-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    background: #e9ecef;
-  }
-
-  .typeahead-info {
-    min-width: 0;
-    flex: 1;
-  }
-
-  .typeahead-displayname {
-    font-weight: 600;
-    font-size: 14px;
-    color: #1a1a1a;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .typeahead-handle {
-    font-size: 13px;
-    color: #666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .typeahead-loading {
-    padding: 12px;
-    text-align: center;
-    color: #999;
-    font-size: 13px;
-  }
-</style>
-<% end %>
-
 <% content_for :scripts do %>
 <script>
   // Translations for JavaScript
@@ -225,7 +49,7 @@
     const progress3 = document.getElementById('progress-3');
     const progress4 = document.getElementById('progress-4');
     const progress5 = document.getElementById('progress-5');
-    const progressBar = document.getElementById('progress-bar');
+    const stepCount = document.getElementById('wizard-step-count');
 
     // Configuration from server
     const defaultTargetPds = '<%= EuroskyConfig::DEFAULT_TARGET_PDS %>';
@@ -383,38 +207,51 @@
 
     // Show/hide steps
     function showStep(stepNumber) {
-      [step1, step2, step3, step4, step5].forEach(s => s.classList.remove('active'));
-      [progress1, progress2, progress3, progress4, progress5].forEach(p => p.classList.remove('active', 'completed'));
-      progressBar.style.width = ((stepNumber - 1) / 4 * 100) + '%';
-
-      if (stepNumber === 1) {
-        step1.classList.add('active');
-        progress1.classList.add('active');
-      }
-      if (stepNumber === 2) {
-        step2.classList.add('active');
-        progress1.classList.add('completed');
-        progress2.classList.add('active');
-      }
-      if (stepNumber === 3) {
-        step3.classList.add('active');
-        progress1.classList.add('completed');
-        progress2.classList.add('completed');
-        progress3.classList.add('active');
-      }
-      if (stepNumber === 4) {
-        step4.classList.add('active');
-        progress1.classList.add('completed');
-        progress2.classList.add('completed');
-        progress3.classList.add('completed');
-        progress4.classList.add('active');
-      }
-      if (stepNumber === 5) {
-        step5.classList.add('active');
-        [progress1, progress2, progress3, progress4].forEach(p => p.classList.add('completed'));
-        progress5.classList.add('active');
-      }
+      const steps = [step1, step2, step3, step4, step5];
+      const indicators = [progress1, progress2, progress3, progress4, progress5];
+      steps.forEach((s, i) => s.classList.toggle('active', i + 1 === stepNumber));
+      indicators.forEach((p, i) => {
+        const n = i + 1;
+        p.classList.toggle('active', n === stepNumber);
+        p.classList.toggle('completed', n < stepNumber);
+        // Finished steps are buttons back to that step; later ones can't be skipped to
+        p.disabled = n >= stepNumber;
+        if (n === stepNumber) { p.setAttribute('aria-current', 'step'); } else { p.removeAttribute('aria-current'); }
+      });
+      stepCount.textContent = i18n('step_of', {current: stepNumber, total: steps.length});
+      // A long step can leave the next one starting above the screen on a phone
+      if (form.getBoundingClientRect().top < 0) form.scrollIntoView({ block: 'start' });
     }
+
+    function currentStepNumber() {
+      const active = document.querySelector('.wizard-step.active');
+      return active ? parseInt(active.id.replace('step-', ''), 10) : 1;
+    }
+
+    // Going back through the step bar runs each Back button in turn, so the
+    // same state is undone as when the person clicks Back themselves
+    [progress1, progress2, progress3, progress4, progress5].forEach(p => {
+      p.addEventListener('click', function() {
+        const target = parseInt(p.dataset.step, 10);
+        for (let n = currentStepNumber(); n > target; n--) {
+          document.getElementById('step' + n + '-back').click();
+        }
+      });
+    });
+
+    // Leaving through the logo once something has been entered asks first
+    (function() {
+      const home = document.getElementById('eh-home-link');
+      const dialog = document.getElementById('leave-dialog');
+      if (!home || !dialog || typeof dialog.showModal !== 'function') return;
+      home.addEventListener('click', function(e) {
+        const touched = wizardData.authenticated || handleField.value.trim() || passwordField.value;
+        if (!touched) return;
+        e.preventDefault();
+        dialog.showModal();
+      });
+      document.getElementById('leave-dialog-stay').addEventListener('click', () => dialog.close());
+    })();
 
     // Utility: Show status message
     function showStatus(element, message, type) {
@@ -480,7 +317,7 @@
       .then(response => response.json())
       .then(data => {
         if (data.two_factor_required) {
-          document.getElementById('two-factor-group').style.display = 'block';
+          document.getElementById('two-factor-group').style.display = '';
           document.getElementById('two_factor_code').focus();
           showStatus(status, i18n('two_factor_sent'), 'info');
           btn.disabled = false;
@@ -744,9 +581,9 @@
           btn.textContent = i18n('continue');
 
           if (data.two_factor_required) {
-            document.getElementById('target-2fa-group').style.display = 'block';
+            document.getElementById('target-2fa-group').style.display = '';
             document.getElementById('target-2fa-code').focus();
-            showStatus(targetStatus, 'A sign-in code has been sent to your email. Enter it above and click Continue again.', 'info');
+            showStatus(targetStatus, i18n('two_factor_sent'), 'info');
             return;
           }
 
@@ -854,7 +691,7 @@
       const inviteGroup = document.getElementById('invite-code-group');
       if (inviteGroup) inviteGroup.style.display = 'none';
 
-      targetPasswordGroup.style.display = 'block';
+      targetPasswordGroup.style.display = '';
       wizardData.targetCredentialsVerified = false;
       wizardData.newPdsAccessToken = null;
       wizardData.newPdsRefreshToken = null;
@@ -863,7 +700,7 @@
       // Show deactivated account help if applicable
       if (deactivatedHelp) {
         if (wizardData.accountDeactivatedOnTarget) {
-          deactivatedHelp.style.display = 'block';
+          deactivatedHelp.style.display = '';
           if (deactivatedPwdLink) {
             deactivatedPwdLink.href = pdsUrl.replace(/\/$/, '') + '/.well-known/change-password';
             deactivatedPwdLink.textContent = pdsUrl.replace(/\/$/, '') + '/.well-known/change-password';
@@ -926,7 +763,7 @@
 
       if (wizardData.pdsIsEurosky) {
         // Eurosky PDS: show consent checkbox (required to proceed)
-        consentGroup.style.display = 'block';
+        consentGroup.style.display = '';
         consentDescription.textContent = i18n('pds_consent_description', {pds: pdsHostname});
 
         if (hasTos && hasPrivacy) {
@@ -936,7 +773,7 @@
         }
       } else {
         // Third-party PDS: show links as informational only (no checkbox)
-        pdsLinksGroup.style.display = 'block';
+        pdsLinksGroup.style.display = '';
         pdsLinksContent.innerHTML = i18n('pds_links_info', {pds: pdsHostname}) + ' ' + links.join(' · ');
       }
     }
@@ -958,7 +795,7 @@
       updatePdsConsentUI();
 
       if (selectedValue === 'custom') {
-        customGroup.style.display = 'block';
+        customGroup.style.display = '';
         customPdsField.value = '';
         customPdsField.focus();
         inviteGroup.style.display = 'none';
@@ -1035,7 +872,7 @@
         updatePdsConsentUI();
 
         if (data.invite_code_required) {
-          inviteGroup.style.display = 'block';
+          inviteGroup.style.display = '';
           inviteCodeField.required = true;
           inviteCodeField.setAttribute('required', 'required');
         } else {
@@ -1061,7 +898,6 @@
     const preservationSection = document.getElementById('handle-preservation-section');
     const newHandleSection = document.getElementById('new-handle-section');
     const preserveCheckbox = document.getElementById('preserve-handle-checkbox');
-    const customHandleDisplay = document.getElementById('custom-handle-display');
     const newHandleDomain = document.getElementById('new-handle-domain');
     const newHandleDomainHint = document.getElementById('new-handle-domain-hint');
 
@@ -1131,27 +967,23 @@
       // back with the handle the target has stored, so there is nothing to pick.
       if (wizardData.accountExistsOnTarget && wizardData.existingHandleOnTarget) {
         preservationSection.style.display = 'none';
-        newHandleSection.style.display = 'block';
+        newHandleSection.style.display = '';
         newHandleInput.value = wizardData.existingHandleOnTarget;
         hideHandleDomains();
         newHandleInput.readOnly = true;
-        newHandleInput.style.paddingRight = '12px';
       } else if (wizardData.canPreserveHandle && wizardData.handleType === 'dns_verified') {
         // Custom domain: offer to keep it
-        preservationSection.style.display = 'block';
-        customHandleDisplay.textContent = '@' + wizardData.oldHandle;
+        preservationSection.style.display = '';
         var domainHelp = document.getElementById('custom-domain-help-text');
         if (domainHelp) domainHelp.innerHTML = i18n('custom_domain_help', {handle: '<strong>@' + wizardData.oldHandle + '</strong>'});
         preserveCheckbox.checked = true;
         newHandleSection.style.display = 'none';
         newHandleInput.readOnly = false;
-        newHandleInput.style.paddingRight = '200px';
       } else {
         // New account: editable handle, pre-filled with old handle prefix
         preservationSection.style.display = 'none';
-        newHandleSection.style.display = 'block';
+        newHandleSection.style.display = '';
         newHandleInput.readOnly = false;
-        newHandleInput.style.paddingRight = '200px';
         showHandleDomains();
 
         // Pre-fill with the username part of the old handle
@@ -1165,7 +997,7 @@
       if (e.target.checked) {
         newHandleSection.style.display = 'none';
       } else {
-        newHandleSection.style.display = 'block';
+        newHandleSection.style.display = '';
         showHandleDomains();
         newHandleInput.value = '';
         newHandleInput.focus();
@@ -1408,17 +1240,12 @@
 </script>
 <% end %>
 
-<div class="new-migration-container">
-  <div class="new-migration-content">
-    <div class="new-migration-header">
-      <h1><%= EuroskyConfig::SITE_NAME %></h1>
-      <p><%= EuroskyConfig::SITE_SUBTITLE %></p>
-    </div>
-
+<div class="eh-container">
+  <div class="eh-narrow eh-stack-lg">
     <% if @migration&.errors&.any? %>
-      <div class="alert alert-danger" role="alert">
-        <h6 class="alert-heading fw-bold"><%= t('migrations.new.errors_heading') %></h6>
-        <ul class="mb-0">
+      <div class="eh-alert" role="alert">
+        <div class="eh-strong"><%= t('migrations.new.errors_heading') %></div>
+        <ul>
           <% @migration.errors.full_messages.each do |message| %>
             <li><%= message %></li>
           <% end %>
@@ -1426,7 +1253,7 @@
       </div>
     <% end %>
 
-    <%= form_with model: @migration, url: migrations_path, local: true, html: { novalidate: true } do |f| %>
+    <%= form_with model: @migration, url: migrations_path, local: true, html: { novalidate: true, class: 'eh-card', id: 'migration-wizard' } do |f| %>
       <!-- Hidden fields for authentication tokens -->
       <%= hidden_field_tag 'migration[old_access_token]', '', id: 'migration_old_access_token' %>
       <%= hidden_field_tag 'migration[old_refresh_token]', '', id: 'migration_old_refresh_token' %>
@@ -1438,304 +1265,291 @@
       <%= hidden_field_tag 'pds_captcha_required', '0', id: 'pds_captcha_required' %>
       <%= hidden_field_tag 'pds_captcha_site_key', '', id: 'pds_captcha_site_key' %>
 
-      <!-- Progress Bar -->
-      <div class="step-progress-bar">
-        <div class="progress-indicator" id="progress-bar" style="width: 0%;"></div>
+      <div class="eh-card-head">
+        <div class="eh-card-label">
+          <span><%= t('migrations.new.card_label') %></span>
+          <span class="eh-muted" id="wizard-step-count"><%= t('migrations.new.step_of', current: 1, total: 5) %></span>
+        </div>
       </div>
 
-      <!-- Progress Indicator -->
-      <div class="wizard-progress mb-4">
-        <div id="progress-1" class="wizard-progress-step">
-          <div class="wizard-progress-circle">1</div>
-          <div class="wizard-progress-label"><%= t('migrations.new.progress.account') %></div>
-        </div>
-        <div id="progress-2" class="wizard-progress-step">
-          <div class="wizard-progress-circle">2</div>
-          <div class="wizard-progress-label"><%= t('migrations.new.progress.email') %></div>
-        </div>
-        <div id="progress-3" class="wizard-progress-step">
-          <div class="wizard-progress-circle">3</div>
-          <div class="wizard-progress-label"><%= t('migrations.new.progress.destination') %></div>
-        </div>
-        <div id="progress-4" class="wizard-progress-step">
-          <div class="wizard-progress-circle">4</div>
-          <div class="wizard-progress-label"><%= t('migrations.new.progress.handle') %></div>
-        </div>
-        <div id="progress-5" class="wizard-progress-step">
-          <div class="wizard-progress-circle">5</div>
-          <div class="wizard-progress-label"><%= t('migrations.new.progress.review') %></div>
-        </div>
-      </div>
+      <!-- Step indicator: finished steps can be clicked to go back -->
+      <nav class="eh-steps" aria-label="<%= t('migrations.new.steps_label') %>">
+        <% %w[account email destination handle review].each_with_index do |key, i| %>
+          <button type="button" id="progress-<%= i + 1 %>" class="eh-step wizard-progress-step" data-step="<%= i + 1 %>" disabled>
+            <span class="eh-step-n"><%= format('%02d', i + 1) %></span>
+            <span class="eh-step-label"><%= t("migrations.new.progress.#{key}") %></span>
+          </button>
+        <% end %>
+      </nav>
+
+      <div class="eh-card-body">
 
       <!-- STEP 1: Handle & Password -->
-      <div id="step-1" class="wizard-step">
-        <h2 class="mb-3"><%= t('migrations.new.step1.title') %></h2>
-
-        <div class="mb-3">
-          <%= f.label :old_handle, t('migrations.new.step1.handle_label'), class: "form-label" %>
-          <%= f.text_field :old_handle, id: "migration_old_handle", placeholder: t('migrations.new.step1.handle_placeholder'), autocomplete: "username", class: "form-control" %>
-          <div class="form-text"><%= t('migrations.new.step1.handle_help') %></div>
+      <section id="step-1" class="wizard-step" aria-labelledby="step-1-title">
+        <div class="eh-stack-xs">
+          <h2 class="eh-title" id="step-1-title"><%= t('migrations.new.step1.title') %></h2>
+          <p class="eh-subtitle"><%= t('migrations.new.step1.subtitle') %></p>
         </div>
 
-        <div class="mb-3">
-          <%= f.label :password, t('migrations.new.step1.password_label'), class: "form-label" %>
-          <%= f.password_field :password, id: "migration_password", autocomplete: "current-password", class: "form-control" %>
-          <div class="form-text"><%= t('migrations.new.step1.password_help') %></div>
+        <div class="es-field">
+          <%= f.label :old_handle, t('migrations.new.step1.handle_label'), class: "es-label", for: "migration_old_handle" %>
+          <div>
+            <%= f.text_field :old_handle, id: "migration_old_handle", placeholder: t('migrations.new.step1.handle_placeholder'), autocomplete: "username", autocapitalize: "none", spellcheck: false, class: "es-input eh-input-mono" %>
+          </div>
+          <div class="es-hint"><%= t('migrations.new.step1.handle_help') %></div>
         </div>
 
-        <div id="step1-status" class="lookup-status"></div>
+        <div class="es-field">
+          <%= f.label :password, t('migrations.new.step1.password_label'), class: "es-label", for: "migration_password" %>
+          <%= f.password_field :password, id: "migration_password", autocomplete: "current-password", class: "es-input" %>
+          <div class="es-hint"><%= t('migrations.new.step1.password_help') %></div>
+        </div>
+
+        <div id="step1-status" class="lookup-status" role="status"></div>
 
         <!-- Two-Factor Authentication -->
-        <div id="two-factor-group" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3" style="display: none;">
-          <div class="fw-semibold small mb-1" style="color: #92400e;"><%= t('migrations.new.step1.two_factor_title') %></div>
-          <p class="small mb-2" style="color: #78350f;">
-            <%= t('migrations.new.step1.two_factor_help') %>
-          </p>
-          <input type="text" id="two_factor_code" class="form-control form-control-lg text-center font-monospace" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
+        <div id="two-factor-group" class="eh-well" style="display: none;">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.new.step1.two_factor_title') %></div>
+            <p class="eh-sm eh-muted"><%= t('migrations.new.step1.two_factor_help') %></p>
+          </div>
+          <input type="text" id="two_factor_code" class="es-input eh-code-input" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric" aria-label="<%= t('migrations.new.step1.two_factor_title') %>">
         </div>
 
-        <div class="form-check mt-3 mb-0 small">
-          <input type="checkbox" name="migration[legal_consent]" id="legal-consent"
-                 class="form-check-input" value="1">
-          <label class="form-check-label" for="legal-consent">
+        <label class="eh-check" for="legal-consent">
+          <input type="checkbox" name="migration[legal_consent]" id="legal-consent" value="1">
+          <span>
             <%= t('migrations.new.step1.legal_consent_html',
                   tos_url: EuroskyConfig::TERMS_OF_SERVICE_URL,
                   privacy_url: EuroskyConfig::PRIVACY_POLICY_URL) %>
-          </label>
-        </div>
+          </span>
+        </label>
 
-        <div class="d-grid mt-3">
-          <button type="button" id="step1-next" class="btn btn-lg btn-gradient"><%= t('migrations.new.step1.continue') %></button>
+        <div class="eh-nav eh-nav-end">
+          <button type="button" id="step1-next" class="es-btn es-btn-primary eh-square eh-btn-min"><%= t('migrations.new.step1.continue') %></button>
         </div>
-      </div>
+      </section>
 
       <!-- STEP 2: Email -->
-      <div id="step-2" class="wizard-step">
-        <h2 class="mb-3"><%= t('migrations.new.step2.title') %></h2>
-
-        <div class="mb-3">
-          <%= f.label :email, t('migrations.new.step2.email_label'), class: "form-label" %>
-          <%= f.email_field :email, id: "migration_email", placeholder: "you@example.com", autocomplete: "email", class: "form-control" %>
-          <div class="form-text"><%= t('migrations.new.step2.email_help') %></div>
+      <section id="step-2" class="wizard-step" aria-labelledby="step-2-title">
+        <div class="eh-stack-xs">
+          <h2 class="eh-title" id="step-2-title"><%= t('migrations.new.step2.title') %></h2>
+          <p class="eh-subtitle"><%= t('migrations.new.step2.subtitle') %></p>
         </div>
 
-        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-          <div class="form-check mb-0">
-            <input type="checkbox" id="confirm-email-access" class="form-check-input">
-            <label class="form-check-label" for="confirm-email-access" style="color: #78350f;">
-              <%= t('migrations.new.step2.confirm_access') %>
-            </label>
-          </div>
+        <div class="es-field">
+          <%= f.label :email, t('migrations.new.step2.email_label'), class: "es-label", for: "migration_email" %>
+          <%= f.email_field :email, id: "migration_email", placeholder: "you@example.com", autocomplete: "email", class: "es-input" %>
+          <%# .form-text: the wizard script writes the read-only/manual hint here %>
+          <div class="es-hint form-text"><%= t('migrations.new.step2.email_help') %></div>
         </div>
 
-        <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step2-back" class="btn btn-secondary"><%= t('migrations.new.step2.back') %></button>
-          <button type="button" id="step2-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step2.continue') %></button>
+        <label class="eh-check eh-check-well" for="confirm-email-access">
+          <input type="checkbox" id="confirm-email-access">
+          <span><%= t('migrations.new.step2.confirm_access') %></span>
+        </label>
+
+        <div class="eh-nav">
+          <button type="button" id="step2-back" class="es-btn eh-square"><%= t('migrations.new.step2.back') %></button>
+          <button type="button" id="step2-next" class="es-btn es-btn-primary eh-square eh-btn-min"><%= t('migrations.new.step2.continue') %></button>
         </div>
-      </div>
+      </section>
 
       <!-- STEP 3: Destination PDS -->
-      <div id="step-3" class="wizard-step">
-        <h2 class="mb-3"><%= t('migrations.new.step3.title') %></h2>
+      <section id="step-3" class="wizard-step" aria-labelledby="step-3-title">
+        <div class="eh-stack-xs">
+          <h2 class="eh-title" id="step-3-title"><%= t('migrations.new.step3.title') %></h2>
+          <p class="eh-subtitle"><%= t('migrations.new.step3.subtitle') %></p>
+        </div>
 
-        <div class="mb-3">
-          <label for="pds-select" class="form-label"><%= t('migrations.new.step3.server_label') %></label>
-          <select id="pds-select" class="form-select form-select-lg">
+        <div class="es-field">
+          <label for="pds-select" class="es-label"><%= t('migrations.new.step3.server_label') %></label>
+          <select id="pds-select" class="es-select">
             <option value=""><%= t('migrations.new.step3.server_placeholder') %></option>
             <% EuroskyConfig.target_pds_options.each do |option| %>
               <option value="<%= option[:url] %>"><%= option[:label] %></option>
             <% end %>
             <option value="custom"><%= t('migrations.new.step3.server_custom') %></option>
           </select>
-          <div class="form-text"><%= t('migrations.new.step3.server_help') %></div>
+          <div class="es-hint"><%= t('migrations.new.step3.server_help') %></div>
         </div>
 
-        <div id="custom-pds-group" class="mb-3" style="display: none;">
-          <%= f.label :new_pds_host, t('migrations.new.step3.custom_url_label'), class: "form-label" %>
-          <%= f.text_field :new_pds_host, id: "migration_new_pds_host", placeholder: t('migrations.new.step3.custom_url_placeholder'), autocomplete: "off", class: "form-control" %>
-          <div class="form-text"><%= t('migrations.new.step3.custom_url_help') %></div>
+        <div id="custom-pds-group" class="es-field" style="display: none;">
+          <%= f.label :new_pds_host, t('migrations.new.step3.custom_url_label'), class: "es-label", for: "migration_new_pds_host" %>
+          <%= f.text_field :new_pds_host, id: "migration_new_pds_host", placeholder: t('migrations.new.step3.custom_url_placeholder'), autocomplete: "off", autocapitalize: "none", spellcheck: false, class: "es-input eh-input-mono" %>
+          <div class="es-hint"><%= t('migrations.new.step3.custom_url_help') %></div>
         </div>
 
-        <div id="pds-status" class="lookup-status"></div>
+        <div id="pds-status" class="lookup-status" role="status"></div>
 
-        <div id="invite-code-group" class="mb-3" style="display: none;">
-          <%= f.label :invite_code, t('migrations.new.step3.invite_code_label'), class: "form-label" %>
-          <%= f.text_field :invite_code, id: "migration_invite_code", placeholder: t('migrations.new.step3.invite_code_placeholder'), autocomplete: "off", class: "form-control" %>
-          <div class="form-text"><%= t('migrations.new.step3.invite_code_help') %></div>
+        <div id="invite-code-group" class="es-field" style="display: none;">
+          <%= f.label :invite_code, t('migrations.new.step3.invite_code_label'), class: "es-label", for: "migration_invite_code" %>
+          <%= f.text_field :invite_code, id: "migration_invite_code", placeholder: t('migrations.new.step3.invite_code_placeholder'), autocomplete: "off", class: "es-input eh-input-mono" %>
+          <div class="es-hint"><%= t('migrations.new.step3.invite_code_help') %></div>
         </div>
 
         <!-- Target PDS password (for existing account on target server) -->
-        <div id="target-password-group" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mt-3 mb-3" style="display: none;">
-          <div class="fw-semibold small mb-1" style="color: #0c4a6e;"><%= t('migrations.new.step3.existing_account_title') %></div>
-          <p class="small mb-2" style="color: #164e63;">
-            <%= t('migrations.new.step3.existing_account_help') %>
-          </p>
-          <div class="mb-2">
-            <label for="target-pds-password" class="form-label small"><%= t('migrations.new.step3.target_password_label') %></label>
-            <input type="password" id="target-pds-password" class="form-control" placeholder="<%= t('migrations.new.step3.target_password_placeholder') %>" autocomplete="current-password">
+        <div id="target-password-group" class="eh-well" style="display: none;">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.new.step3.existing_account_title') %></div>
+            <p class="eh-sm eh-muted"><%= t('migrations.new.step3.existing_account_help') %></p>
           </div>
-          <div id="target-2fa-group" class="mt-2" style="display: none;">
-            <label for="target-2fa-code" class="form-label small"><%= t('migrations.new.step3.target_2fa_label') %></label>
-            <input type="text" id="target-2fa-code" class="form-control form-control-lg text-center font-monospace" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
-            <div class="form-text"><%= t('migrations.new.step3.target_2fa_help') %></div>
+          <div class="es-field">
+            <label for="target-pds-password" class="es-label"><%= t('migrations.new.step3.target_password_label') %></label>
+            <input type="password" id="target-pds-password" class="es-input" placeholder="<%= t('migrations.new.step3.target_password_placeholder') %>" autocomplete="current-password">
           </div>
-          <div id="target-deactivated-help" class="mt-2 small" style="display: none; color: #78350f; background: #fef3c7; padding: 10px; border-radius: 4px;">
-            <strong><%= t('migrations.new.step3.deactivated_notice') %></strong> <%= t('migrations.new.step3.deactivated_reason') %><br>
-            <%= t('migrations.new.step3.deactivated_help') %>
-            <ul class="mb-1 mt-1">
+          <div id="target-2fa-group" class="es-field" style="display: none;">
+            <label for="target-2fa-code" class="es-label"><%= t('migrations.new.step3.target_2fa_label') %></label>
+            <input type="text" id="target-2fa-code" class="es-input eh-code-input" placeholder="<%= t('migrations.new.step1.two_factor_placeholder') %>" autocomplete="one-time-code" inputmode="numeric">
+            <div class="es-hint"><%= t('migrations.new.step3.target_2fa_help') %></div>
+          </div>
+          <div id="target-deactivated-help" class="eh-warn eh-sm" style="display: none;">
+            <p><span class="eh-strong"><%= t('migrations.new.step3.deactivated_notice') %></span> <span class="eh-muted"><%= t('migrations.new.step3.deactivated_reason') %></span></p>
+            <p class="eh-muted"><%= t('migrations.new.step3.deactivated_help') %></p>
+            <ul class="eh-list eh-muted">
               <li><%= t('migrations.new.step3.deactivated_reset') %> <a id="target-deactivated-pwd-link" href="#" target="_blank" rel="noopener"></a></li>
-              <li><span id="target-deactivated-contact-text"></span> <code id="target-deactivated-did"></code></li>
+              <li><span id="target-deactivated-contact-text"></span> <code id="target-deactivated-did" class="eh-mono"></code></li>
             </ul>
           </div>
-          <div id="target-password-status" class="lookup-status"></div>
+          <div id="target-password-status" class="lookup-status" role="status"></div>
         </div>
 
         <!-- PDS Terms of Service / Privacy Policy consent (Eurosky PDS only) -->
-        <div id="pds-consent-group" class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mt-3 mb-3 small" style="display: none;">
-          <div class="fw-semibold mb-1" style="color: #0c4a6e;"><%= t('migrations.new.step3.pds_consent_title') %></div>
-          <p class="mb-2" style="color: #164e63;" id="pds-consent-description"></p>
-          <div class="form-check mb-0">
-            <input type="checkbox" id="pds-consent-checkbox" class="form-check-input">
-            <label class="form-check-label" for="pds-consent-checkbox" id="pds-consent-label"></label>
+        <div id="pds-consent-group" class="eh-well" style="display: none;">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.new.step3.pds_consent_title') %></div>
+            <p class="eh-sm eh-muted" id="pds-consent-description"></p>
           </div>
+          <label class="eh-check" for="pds-consent-checkbox">
+            <input type="checkbox" id="pds-consent-checkbox">
+            <span id="pds-consent-label"></span>
+          </label>
         </div>
 
         <!-- PDS legal links (informational, for non-Eurosky PDSs) -->
-        <div id="pds-links-group" class="text-muted small mt-3 mb-3" style="display: none;">
+        <p id="pds-links-group" class="eh-sm eh-muted" style="display: none;">
           <span id="pds-links-content"></span>
-        </div>
+        </p>
 
         <!-- Hidden fields for target PDS tokens -->
         <%= hidden_field_tag 'migration[new_access_token]', '', id: 'migration_new_access_token' %>
         <%= hidden_field_tag 'migration[new_refresh_token]', '', id: 'migration_new_refresh_token' %>
 
-        <div id="step3-error" class="lookup-status"></div>
+        <div id="step3-error" class="lookup-status" role="alert"></div>
 
-        <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step3-back" class="btn btn-secondary"><%= t('migrations.new.step3.back') %></button>
-          <button type="button" id="step3-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step3.continue') %></button>
+        <div class="eh-nav">
+          <button type="button" id="step3-back" class="es-btn eh-square"><%= t('migrations.new.step3.back') %></button>
+          <button type="button" id="step3-next" class="es-btn es-btn-primary eh-square eh-btn-min"><%= t('migrations.new.step3.continue') %></button>
         </div>
-      </div>
+      </section>
 
       <!-- STEP 4: New Handle -->
-      <div id="step-4" class="wizard-step">
-        <h2 class="mb-3"><%= t('migrations.new.step4.title') %></h2>
+      <section id="step-4" class="wizard-step" aria-labelledby="step-4-title">
+        <div class="eh-stack-xs">
+          <h2 class="eh-title" id="step-4-title"><%= t('migrations.new.step4.title') %></h2>
+          <p class="eh-subtitle"><%= t('migrations.new.step4.new_handle_help') %></p>
+        </div>
 
         <!-- Custom Domain Handle Preservation Option -->
-        <div id="handle-preservation-section" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mb-3 small" style="display: none;">
-          <div class="fw-semibold mb-1" style="color: #075985;"><%= t('migrations.new.step4.custom_domain_title') %></div>
-          <p class="mb-2" style="color: #075985;" id="custom-domain-help-text">
-          </p>
-          <div class="form-check mb-0">
-            <input type="checkbox" id="preserve-handle-checkbox" checked class="form-check-input">
-            <label class="form-check-label fw-semibold" for="preserve-handle-checkbox"><%= t('migrations.new.step4.keep_handle') %></label>
+        <div id="handle-preservation-section" class="eh-well" style="display: none;">
+          <div class="eh-stack-xs">
+            <div class="eh-well-title"><%= t('migrations.new.step4.custom_domain_title') %></div>
+            <p class="eh-sm eh-muted" id="custom-domain-help-text"></p>
           </div>
+          <label class="eh-check" for="preserve-handle-checkbox">
+            <input type="checkbox" id="preserve-handle-checkbox" checked>
+            <span class="eh-strong"><%= t('migrations.new.step4.keep_handle') %></span>
+          </label>
         </div>
 
         <!-- Regular Handle Input -->
-        <div id="new-handle-section" class="mb-3">
-          <label for="new-handle-input" class="form-label"><%= t('migrations.new.step4.new_handle_label') %></label>
-          <div class="position-relative">
-            <input type="text" id="new-handle-input" class="form-control" placeholder="<%= t('migrations.new.step4.new_handle_placeholder') %>" style="padding-right: 200px;">
-            <span id="new-handle-suffix" class="handle-suffix"></span>
-            <select id="new-handle-domain" class="handle-domain-select" aria-label="<%= t('migrations.new.step4.domain_label') %>" aria-describedby="new-handle-domain-hint" style="display: none;"></select>
+        <div id="new-handle-section" class="es-field">
+          <label for="new-handle-input" class="es-label"><%= t('migrations.new.step4.new_handle_label') %></label>
+          <div class="eh-affix">
+            <input type="text" id="new-handle-input" class="eh-affix-input" placeholder="<%= t('migrations.new.step4.new_handle_placeholder') %>" autocapitalize="none" spellcheck="false" autocomplete="off">
+            <span id="new-handle-suffix" class="eh-affix-suffix"></span>
+            <select id="new-handle-domain" class="es-select eh-affix-select" aria-label="<%= t('migrations.new.step4.domain_label') %>" aria-describedby="new-handle-domain-hint" style="display: none;"></select>
           </div>
-          <div id="new-handle-domain-hint" class="alert alert-info border-start border-info border-4 rounded-1 py-2 px-3 mt-2 mb-0 small" style="display: none;"></div>
-          <div class="form-text"><%= t('migrations.new.step4.new_handle_help') %></div>
+          <p id="new-handle-domain-hint" class="eh-well eh-well-tight eh-sm" style="display: none;"></p>
           <%= f.hidden_field :new_handle, id: "migration_new_handle" %>
         </div>
 
-        <div id="step4-status" class="lookup-status"></div>
+        <div id="step4-status" class="lookup-status" role="status"></div>
 
-        <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step4-back" class="btn btn-secondary"><%= t('migrations.new.step4.back') %></button>
-          <button type="button" id="step4-next" class="btn btn-lg btn-gradient flex-grow-1"><%= t('migrations.new.step4.continue') %></button>
+        <div class="eh-nav">
+          <button type="button" id="step4-back" class="es-btn eh-square"><%= t('migrations.new.step4.back') %></button>
+          <button type="button" id="step4-next" class="es-btn es-btn-primary eh-square eh-btn-min"><%= t('migrations.new.step4.continue') %></button>
         </div>
-      </div>
+      </section>
 
       <!-- STEP 5: Summary & Confirm -->
-      <div id="step-5" class="wizard-step">
-        <h2 class="mb-3"><%= t('migrations.new.step5.title') %></h2>
+      <section id="step-5" class="wizard-step" aria-labelledby="step-5-title">
+        <div class="eh-stack-xs">
+          <h2 class="eh-title" id="step-5-title"><%= t('migrations.new.step5.title') %></h2>
+          <p class="eh-subtitle"><%= t('migrations.new.step5.subtitle') %></p>
+        </div>
 
-        <table class="table mb-4">
+        <table class="eh-kv">
           <tr>
-            <td class="fw-semibold"><%= t('migrations.new.step5.current_handle') %></td>
+            <th scope="row"><%= t('migrations.new.step5.current_handle') %></th>
             <td id="summary-handle"></td>
           </tr>
           <tr>
-            <td class="fw-semibold"><%= t('migrations.new.step5.email') %></td>
+            <th scope="row"><%= t('migrations.new.step5.email') %></th>
             <td id="summary-email"></td>
           </tr>
           <tr>
-            <td class="fw-semibold"><%= t('migrations.new.step5.destination_server') %></td>
+            <th scope="row"><%= t('migrations.new.step5.destination_server') %></th>
             <td id="summary-pds"></td>
           </tr>
           <tr>
-            <td class="fw-semibold"><%= t('migrations.new.step5.new_handle') %></td>
-            <td class="fw-bold text-primary" id="summary-new-handle"></td>
+            <th scope="row"><%= t('migrations.new.step5.new_handle') %></th>
+            <td class="eh-kv-strong" id="summary-new-handle"></td>
           </tr>
           <tr id="summary-invite-row" style="display: none;">
-            <td class="fw-semibold"><%= t('migrations.new.step5.invite_code') %></td>
+            <th scope="row"><%= t('migrations.new.step5.invite_code') %></th>
             <td id="summary-invite"></td>
           </tr>
         </table>
 
-        <div class="alert alert-success border-start border-success border-4 rounded-1 py-2 px-3 mb-3 small">
-          <div class="form-check mb-0">
-            <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true, class: "form-check-input" %>
-            <label class="form-check-label fw-semibold" for="migration_create_backup_bundle">
-              <%= t('migrations.new.step5.create_backup') %>
-            </label>
-            <div class="text-body-secondary mt-1">
-              <%= t('migrations.new.step5.backup_help') %>
-            </div>
-          </div>
+        <label class="eh-check" for="migration_create_backup_bundle">
+          <%= f.check_box :create_backup_bundle, id: "migration_create_backup_bundle", checked: true %>
+          <span>
+            <span class="eh-strong"><%= t('migrations.new.step5.create_backup') %></span><br>
+            <span class="eh-muted"><%= t('migrations.new.step5.backup_help') %></span>
+          </span>
+        </label>
+
+        <p class="eh-sm eh-muted" id="confirm-email-notice"></p>
+
+        <div class="eh-warn">
+          <div class="eh-label"><%= t('migrations.new.step5.no_usage_title') %></div>
+          <p class="eh-sm eh-muted"><%= t('migrations.new.step5.no_usage_help') %></p>
+          <label class="eh-check" for="acknowledge-no-usage">
+            <input type="checkbox" id="acknowledge-no-usage" required>
+            <span><%= t('migrations.new.step5.acknowledge') %></span>
+          </label>
         </div>
 
-        <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small" id="confirm-email-notice">
+        <div class="eh-nav">
+          <button type="button" id="step5-back" class="es-btn eh-square"><%= t('migrations.new.step5.back') %></button>
+          <%= f.submit t('migrations.new.step5.continue'), class: "es-btn es-btn-primary eh-square eh-btn-min", id: "start-migration-btn" %>
         </div>
+      </section>
 
-        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-          <div class="fw-semibold mb-1" style="color: #92400e;"><%= t('migrations.new.step5.no_usage_title') %></div>
-          <p class="mb-2" style="color: #78350f;">
-            <%= t('migrations.new.step5.no_usage_help') %>
-          </p>
-          <div class="form-check mb-0">
-            <input type="checkbox" id="acknowledge-no-usage" class="form-check-input" required>
-            <label class="form-check-label fw-semibold" for="acknowledge-no-usage" style="color: #92400e;">
-              <%= t('migrations.new.step5.acknowledge') %>
-            </label>
-          </div>
-        </div>
-
-        <div class="d-flex gap-2 mt-4">
-          <button type="button" id="step5-back" class="btn btn-secondary"><%= t('migrations.new.step5.back') %></button>
-          <%= f.submit t('migrations.new.step5.continue'), class: "btn btn-lg btn-gradient flex-grow-1", id: "start-migration-btn" %>
-        </div>
-      </div>
-
-    <% end %>
-
-    <!-- Legal Links -->
-    <!--
-    <% if EuroskyConfig::PRIVACY_POLICY_URL.present? || EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
-      <div class="text-center mt-3 small text-muted">
-        <% if EuroskyConfig::PRIVACY_POLICY_URL.present? %>
-          <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener" class="text-muted"><%= t('layouts.privacy_policy') %></a>
-        <% end %>
-        <% if EuroskyConfig::PRIVACY_POLICY_URL.present? && EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
-          <span class="mx-1">·</span>
-        <% end %>
-        <% if EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
-          <a href="<%= EuroskyConfig::TERMS_OF_SERVICE_URL %>" target="_blank" rel="noopener" class="text-muted"><%= t('layouts.terms_of_service') %></a>
-        <% end %>
       </div>
     <% end %>
-    -->
-
-    <!-- Image Attribution -->
-    <div class="text-center mt-3 small text-muted">
-      <%= t('layouts.background_attribution') %> <a href="https://commons.wikimedia.org/wiki/File:GMC_U-Haul_truck_front_1.JPG" target="_blank" rel="noopener" class="text-muted">GMC U-Haul truck</a> <%= t('layouts.background_attribution_by') %> <a href="https://commons.wikimedia.org/wiki/User:BrokenSphere" target="_blank" rel="noopener" class="text-muted">BrokenSphere</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener" class="text-muted">CC BY 3.0</a>
-    </div>
   </div>
 </div>
+
+<%# Shown when the logo is clicked with something already entered %>
+<dialog id="leave-dialog" class="eh-dialog" aria-labelledby="leave-dialog-title">
+  <div class="eh-dialog-body">
+    <div class="eh-card-label" id="leave-dialog-title"><%= t('migrations.new.leave.title') %></div>
+    <p class="eh-sm eh-muted"><%= t('migrations.new.leave.body') %></p>
+    <div class="eh-actions" style="justify-content: flex-end;">
+      <button type="button" class="es-btn eh-square" id="leave-dialog-stay"><%= t('migrations.new.leave.stay') %></button>
+      <a href="<%= root_path %>" class="es-btn es-btn-primary eh-square" id="leave-dialog-leave"><%= t('migrations.new.leave.leave') %></a>
+    </div>
+  </div>
+</dialog>
