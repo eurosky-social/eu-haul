@@ -46,6 +46,7 @@
     <footer class="eh-footer">
       <span><%= EuroskyConfig::OPERATOR_NAME == 'UNCONFIGURED' ? EuroskyConfig::SITE_NAME : EuroskyConfig::OPERATOR_NAME %> © <%= Date.current.year %></span>
       <span class="eh-footer-links">
+        <%= how_it_works_link t('landing.how_it_works') %>
         <% if EuroskyConfig::PRIVACY_POLICY_URL.present? %>
           <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener"><%= t('layouts.privacy_policy') %></a>
         <% end %>

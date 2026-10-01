@@ -45,7 +45,13 @@ module EuroskyConfig
   # needs the attribution in the footer, so that shows only when it is in use.
   BUNDLED_BACKGROUND_IMAGE = '/GMC_U-Haul_truck_front_1.JPG'
 
-  # Where the landing page's "How it works" button points. Unset hides it.
+  # Who accounts move to, for the landing page headline: set, it reads "Move
+  # your account to <LANDING_DESTINATION>" (e.g. Eurosky) in every language;
+  # unset, "Move your account to Europe".
+  LANDING_DESTINATION = ENV['LANDING_DESTINATION'].presence&.strip&.freeze
+
+  # Where "How it works" links point. Unset, they open the built-in
+  # /how-it-works page; set it to use an operator's own explanation instead.
   HOW_IT_WORKS_URL = ENV['HOW_IT_WORKS_URL'].presence&.freeze
 
   # PDS Configuration

@@ -32,6 +32,16 @@ module ApplicationHelper
     CSS
   end
 
+  # "How it works": the operator's own page when HOW_IT_WORKS_URL is set,
+  # the built-in /how-it-works otherwise. External pages open in a new tab.
+  def how_it_works_link(text, **options)
+    if EuroskyConfig::HOW_IT_WORKS_URL.present?
+      link_to text, EuroskyConfig::HOW_IT_WORKS_URL, target: '_blank', rel: 'noopener', **options
+    else
+      link_to text, how_it_works_path, **options
+    end
+  end
+
   # Header mark: the operator's logo when LOGO_URL is set, the site name otherwise.
   def brand_mark
     if EuroskyConfig::LOGO_URL.present?

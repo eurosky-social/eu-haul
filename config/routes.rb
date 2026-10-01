@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   # Root route: the landing page; the wizard is migrations#new
   root "landing#show"
+  get "/how-it-works", to: "landing#how_it_works", as: :how_it_works
 
   # Health check endpoints
   get "/_health", to: "health#index"

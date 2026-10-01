@@ -3,13 +3,11 @@
 <div class="eh-container">
   <div class="eh-narrow eh-landing">
     <section class="eh-hero">
-      <h1 class="eh-display"><%= t('landing.title') %></h1>
+      <h1 class="eh-display"><%= EuroskyConfig::LANDING_DESTINATION ? t('landing.title_named', name: EuroskyConfig::LANDING_DESTINATION) : t('landing.title') %></h1>
       <p class="eh-lead"><%= t('landing.lead') %></p>
       <div class="eh-actions">
         <a href="<%= new_migration_path %>" class="es-btn es-btn-primary"><%= t('landing.start') %> →</a>
-        <% if EuroskyConfig::HOW_IT_WORKS_URL.present? %>
-          <a href="<%= EuroskyConfig::HOW_IT_WORKS_URL %>" class="es-btn es-btn-ghost" target="_blank" rel="noopener"><%= t('landing.how_it_works') %></a>
-        <% end %>
+        <%= how_it_works_link t('landing.how_it_works'), class: 'es-btn es-btn-ghost' %>
       </div>
     </section>
 

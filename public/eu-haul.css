@@ -194,6 +194,27 @@ p.eh-well, p.eh-warn, p.eh-ok, p.lookup-status, .eh-well p, .eh-warn p { max-wid
   .eh-howto li { grid-template-columns: minmax(0, 1fr); gap: var(--es-space-1); }
 }
 
+/* ---------- Guide (/how-it-works): label | content rows opened by a strong rule ---------- */
+.eh-guide { display: grid; gap: 0; padding-top: var(--es-space-6); grid-template-columns: minmax(0, 1fr); }
+.eh-guide > .eh-hero { margin-bottom: 40px; }
+.eh-spec { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: var(--es-space-3) var(--es-space-5); padding-block: var(--es-space-5); border-top: var(--es-border-hairline) solid var(--es-border-strong); }
+.eh-spec-end { border-top-color: var(--es-border); }
+.eh-spec-label { font-size: var(--es-text-md); font-weight: var(--es-weight-medium); line-height: var(--es-leading-snug); letter-spacing: 0; }
+.eh-spec-body { display: grid; gap: var(--es-space-3); margin: 0; font-size: var(--es-text-md); line-height: var(--es-leading-normal); grid-template-columns: minmax(0, 1fr); }
+.eh-spec-body p, .eh-spec-body ul { max-width: none; }
+.eh-steplist { list-style: none; padding: 0; gap: 0; }
+.eh-steplist li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 2px var(--es-space-3); padding: var(--es-space-3) 0; border-bottom: var(--es-border-hairline) solid var(--es-border); }
+.eh-steplist li:first-child { padding-top: 0; }
+.eh-steplist li:last-child { border-bottom: 0; padding-bottom: 0; }
+.eh-steplist-n { grid-row: span 2; font-family: var(--es-font-mono); font-size: var(--es-text-xs); color: var(--es-fg-muted); line-height: 1.9; }
+.eh-steplist-title { font-weight: var(--es-weight-medium); }
+.eh-steplist-text { color: var(--es-fg-muted); }
+@media (max-width: 640px) {
+  .eh-guide { padding-top: var(--es-space-2); }
+  .eh-spec { grid-template-columns: minmax(0, 1fr); gap: var(--es-space-3); }
+  .eh-spec-end > span:first-child { display: none; }
+}
+
 /* ---------- Wizard ---------- */
 .eh-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 0 var(--es-space-5); margin-top: var(--es-space-3); }
 .eh-step { display: flex; gap: var(--es-space-2); align-items: baseline; min-width: 0; padding: var(--es-space-2) 0 10px; background: none; border: 0; border-bottom: 2px solid var(--es-border); font: inherit; font-size: 13px; color: var(--es-fg-muted); text-align: left; cursor: default; transition: border-color var(--es-motion-fast) var(--es-motion-ease), color var(--es-motion-fast) var(--es-motion-ease); }

@@ -178,7 +178,8 @@ INVITE_CODE_MODE=optional  # "required", "optional", or "hidden"
 SITE_NAME=Account Migration        # header text when there is no logo; titles and emails
 PRIMARY_COLOR=#02bc60              # accent: primary buttons, active step, progress bars
 LOGO_URL=/eurosky-logo.png         # optional; PNG, shown 24px high in header and emails
-HOW_IT_WORKS_URL=https://...       # optional; the landing page's "How it works" button
+LANDING_DESTINATION=Eurosky        # optional; headline "Move your account to Eurosky"
+HOW_IT_WORKS_URL=https://...       # optional; replaces the built-in /how-it-works page
 BACKGROUND_IMAGE_URL=              # optional photo behind the pages
 # SECONDARY_COLOR is still accepted but no longer has an effect
 

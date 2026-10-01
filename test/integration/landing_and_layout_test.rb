@@ -6,7 +6,8 @@ class LandingAndLayoutTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "h1", I18n.t("landing.title")
+    headline = EuroskyConfig::LANDING_DESTINATION ? I18n.t("landing.title_named", name: EuroskyConfig::LANDING_DESTINATION) : I18n.t("landing.title")
+    assert_select "h1", headline
     assert_select "a.es-btn-primary[href=?]", new_migration_path
     assert_select "ol.eh-howto li", 3
     assert_select "form#migration-wizard", false
@@ -18,11 +19,22 @@ class LandingAndLayoutTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_migration_path(handle: "jane.bsky.social")
   end
 
-  test "the How it works button only shows when HOW_IT_WORKS_URL is set" do
-    skip "HOW_IT_WORKS_URL is set in this environment" if EuroskyConfig::HOW_IT_WORKS_URL.present?
-
+  test "How it works leads to the built-in guide unless HOW_IT_WORKS_URL points elsewhere" do
     get root_path
-    assert_select "a", text: I18n.t("landing.how_it_works"), count: 0
+
+    target = EuroskyConfig::HOW_IT_WORKS_URL.presence || how_it_works_path
+    assert_select ".eh-hero a.es-btn-ghost[href=?]", target, text: I18n.t("landing.how_it_works")
+    assert_select "footer a[href=?]", target
+  end
+
+  test "the guide explains the move step by step and leads into the wizard" do
+    get how_it_works_path
+
+    assert_response :success
+    assert_select "h1", I18n.t("how_it_works.title")
+    assert_select "section.eh-spec", 4
+    assert_select "ol.eh-steplist li", 6
+    assert_select "a.es-btn-primary[href=?]", new_migration_path
   end
 
   test "the wizard has the five steps, a step counter and the leave dialog" do
