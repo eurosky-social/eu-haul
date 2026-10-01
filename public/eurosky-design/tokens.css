@@ -1,0 +1,127 @@
+/* eurosky-design v0.1.0 — tokens
+ *
+ * EXTRACTED, NOT AUTHORED HERE. Lifted from the published "Eurosky design
+ * system" artifact because the package it is generated from is not yet a repo
+ * we can vendor or depend on. When @eurosky/design exists, delete this
+ * directory and take dist/ instead — see README.md next to this file.
+ *
+ * Generated from tokens/tokens.json upstream; do not hand-edit either here or
+ * there. Components reference only the semantic roles below, never the palette.
+ */
+
+:root {
+  /* palette (guideline) */
+  --es-palette-white: #ffffff;
+  --es-palette-cotton: #f7f6f2;
+  --es-palette-linen: #eceae5;
+  --es-palette-stone: #e0ddd8;
+  --es-palette-black: #1a1a1a;
+  --es-palette-blue: #9ac2ff;
+  --es-palette-green: #02bc60;
+  --es-palette-yellow: #f7d204;
+  --es-palette-charcoal: #b9b6af;
+  /* font family */
+  --es-font-sans: "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --es-font-mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+  /* font size */
+  --es-text-xs: 0.75rem;
+  --es-text-sm: 0.875rem;
+  --es-text-md: 1rem;
+  --es-text-lg: 1.25rem;
+  --es-text-xl: 1.5rem;
+  --es-text-2xl: 2rem;
+  --es-text-3xl: 2.625rem;
+  /* line height */
+  --es-leading-tight: 1.15;
+  --es-leading-snug: 1.3;
+  --es-leading-normal: 1.5;
+  /* weight */
+  --es-weight-regular: 400;
+  --es-weight-medium: 500;
+  --es-weight-semibold: 600;
+  /* tracking */
+  --es-tracking-tight: -0.015em;
+  --es-tracking-normal: 0;
+  /* space */
+  --es-space-1: 0.25rem;
+  --es-space-2: 0.5rem;
+  --es-space-3: 0.75rem;
+  --es-space-4: 1rem;
+  --es-space-5: 1.5rem;
+  --es-space-6: 2rem;
+  --es-space-7: 3rem;
+  --es-space-8: 4rem;
+  --es-space-9: 6rem;
+  /* radius */
+  --es-radius-sm: 4px;
+  --es-radius-md: 8px;
+  --es-radius-lg: 16px;
+  --es-radius-pill: 999px;
+  /* border */
+  --es-border-hairline: 1px;
+  /* layout */
+  --es-layout-measure: 65ch;
+  --es-layout-container: 72rem;
+  --es-layout-sidebar: 15rem;
+  /* motion */
+  --es-motion-fast: 120ms;
+  --es-motion-normal: 200ms;
+  --es-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* semantic — light (default) */
+:root, [data-theme="light"] {
+  --es-bg: var(--es-palette-cotton);
+  --es-bg-raised: var(--es-palette-white);
+  --es-bg-sunken: var(--es-palette-linen);
+  --es-fg: var(--es-palette-black);
+  --es-fg-muted: color-mix(in srgb, var(--es-palette-black) 62%, var(--es-palette-cotton));
+  --es-fg-on-accent: var(--es-palette-black);
+  --es-border: var(--es-palette-stone);
+  --es-border-strong: var(--es-palette-black);
+  --es-accent: var(--es-palette-green);
+  --es-accent-hover: color-mix(in srgb, var(--es-palette-green) 88%, var(--es-palette-black));
+  --es-info: var(--es-palette-blue);
+  --es-warning: var(--es-palette-yellow);
+  --es-neutral: var(--es-palette-charcoal);
+  --es-focus: var(--es-palette-blue);
+  color-scheme: light;
+}
+
+/* semantic — dark: follows the OS unless data-theme is set explicitly */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --es-bg: var(--es-palette-black);
+    --es-bg-raised: color-mix(in srgb, var(--es-palette-black) 92%, var(--es-palette-white));
+    --es-bg-sunken: color-mix(in srgb, var(--es-palette-black) 96%, var(--es-palette-white));
+    --es-fg: var(--es-palette-cotton);
+    --es-fg-muted: color-mix(in srgb, var(--es-palette-cotton) 62%, var(--es-palette-black));
+    --es-fg-on-accent: var(--es-palette-black);
+    --es-border: color-mix(in srgb, var(--es-palette-black) 80%, var(--es-palette-white));
+    --es-border-strong: var(--es-palette-cotton);
+    --es-accent: var(--es-palette-green);
+    --es-accent-hover: color-mix(in srgb, var(--es-palette-green) 85%, var(--es-palette-white));
+    --es-info: var(--es-palette-blue);
+    --es-warning: var(--es-palette-yellow);
+    --es-neutral: var(--es-palette-charcoal);
+    --es-focus: var(--es-palette-blue);
+    color-scheme: dark;
+  }
+}
+[data-theme="dark"] {
+  --es-bg: var(--es-palette-black);
+  --es-bg-raised: color-mix(in srgb, var(--es-palette-black) 92%, var(--es-palette-white));
+  --es-bg-sunken: color-mix(in srgb, var(--es-palette-black) 96%, var(--es-palette-white));
+  --es-fg: var(--es-palette-cotton);
+  --es-fg-muted: color-mix(in srgb, var(--es-palette-cotton) 62%, var(--es-palette-black));
+  --es-fg-on-accent: var(--es-palette-black);
+  --es-border: color-mix(in srgb, var(--es-palette-black) 80%, var(--es-palette-white));
+  --es-border-strong: var(--es-palette-cotton);
+  --es-accent: var(--es-palette-green);
+  --es-accent-hover: color-mix(in srgb, var(--es-palette-green) 85%, var(--es-palette-white));
+  --es-info: var(--es-palette-blue);
+  --es-warning: var(--es-palette-yellow);
+  --es-neutral: var(--es-palette-charcoal);
+  --es-focus: var(--es-palette-blue);
+  color-scheme: dark;
+}

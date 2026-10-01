@@ -1,0 +1,70 @@
+/* eurosky-design v0.1.0 — base
+ *
+ * EXTRACTED, NOT AUTHORED HERE. See README.md next to this file.
+ *
+ * Reset + typography + the rule-based layout language from the brand
+ * guidelines. Depends on tokens.css.
+ *
+ * NOTE: this restyles bare element selectors — body, h1-h4, a, hr, img. It is
+ * deliberately loaded ONLY by the onboarding layout, not by the application
+ * layout, so the 44 existing views keep the slate idiom they were written in
+ * until somebody migrates them on purpose.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--es-font-sans);
+  font-size: 100%;
+  line-height: var(--es-leading-normal);
+  -webkit-text-size-adjust: 100%;
+  font-feature-settings: "cv11", "ss01"; /* Inter: single-storey a, open digits */
+}
+
+body {
+  margin: 0;
+  background: var(--es-bg);
+  color: var(--es-fg);
+  font-size: var(--es-text-md);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Type scale. Headings are set in the same face, one weight up — hierarchy
+   comes from size and rules, not from decoration. */
+h1, h2, h3, h4 { margin: 0 0 var(--es-space-3); font-weight: var(--es-weight-medium); line-height: var(--es-leading-tight); text-wrap: balance; }
+h1 { font-size: var(--es-text-3xl); letter-spacing: var(--es-tracking-tight); }
+h2 { font-size: var(--es-text-2xl); letter-spacing: var(--es-tracking-tight); }
+h3 { font-size: var(--es-text-xl); }
+h4 { font-size: var(--es-text-lg); line-height: var(--es-leading-snug); }
+p, ul, ol { margin: 0 0 var(--es-space-4); max-width: var(--es-layout-measure); }
+small, .es-text-sm { font-size: var(--es-text-sm); }
+.es-text-xs { font-size: var(--es-text-xs); }
+.es-muted { color: var(--es-fg-muted); }
+
+/* Mono is for handles, identifiers, counts and developer-facing text. */
+code, kbd, pre, .es-mono { font-family: var(--es-font-mono); font-size: 0.9em; }
+pre { background: var(--es-bg-sunken); padding: var(--es-space-4); overflow-x: auto; border-radius: var(--es-radius-sm); }
+
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+a:hover { color: var(--es-fg-muted); }
+
+/* Rules: the guideline document is built on full-width hairlines. A strong
+   (black) rule marks a section; a light (stone) rule separates items. */
+hr, .es-rule { border: 0; border-top: var(--es-border-hairline) solid var(--es-border-strong); margin: var(--es-space-6) 0; }
+.es-rule-light { border-top-color: var(--es-border); }
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+:focus-visible { outline: 2px solid var(--es-focus); outline-offset: 2px; }
+
+::selection { background: var(--es-info); color: var(--es-palette-black); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Container + the two-column "label | content" grid the guideline uses. */
+.es-container { max-width: var(--es-layout-container); margin-inline: auto; padding-inline: var(--es-space-5); }
+.es-spec { display: grid; grid-template-columns: 1fr; gap: var(--es-space-4) var(--es-space-6); padding-block: var(--es-space-5); border-top: var(--es-border-hairline) solid var(--es-border-strong); }
+@media (min-width: 48rem) { .es-spec { grid-template-columns: 12rem 1fr; } }

@@ -1,0 +1,103 @@
+/* eurosky-design v0.1.0 — components
+ *
+ * EXTRACTED, NOT AUTHORED HERE. See README.md next to this file.
+ *
+ * Plain-CSS components, prefixed es-. Everything sits on hairlines and tonal
+ * steps; no shadows. Depends on tokens.css.
+ */
+
+/* ---------- Buttons ---------- */
+.es-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--es-space-2);
+  min-height: 2.5rem; padding: 0 var(--es-space-4);
+  border: var(--es-border-hairline) solid var(--es-border-strong); border-radius: var(--es-radius-pill);
+  background: var(--es-bg-raised); color: var(--es-fg);
+  font-size: var(--es-text-sm); font-weight: var(--es-weight-medium); line-height: 1; text-decoration: none;
+  cursor: pointer; white-space: nowrap;
+  transition: background var(--es-motion-fast) var(--es-motion-ease), color var(--es-motion-fast) var(--es-motion-ease);
+}
+.es-btn:hover { background: var(--es-fg); color: var(--es-bg); }
+.es-btn:disabled, .es-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.es-btn-primary { background: var(--es-accent); border-color: var(--es-accent); color: var(--es-fg-on-accent); }
+.es-btn-primary:hover { background: var(--es-accent-hover); border-color: var(--es-accent-hover); color: var(--es-fg-on-accent); }
+.es-btn-ghost { border-color: transparent; background: transparent; }
+.es-btn-ghost:hover { background: var(--es-bg-sunken); color: var(--es-fg); }
+.es-btn-sm { min-height: 2rem; padding-inline: var(--es-space-3); font-size: var(--es-text-xs); }
+.es-btn-lg { min-height: 3rem; padding-inline: var(--es-space-5); font-size: var(--es-text-md); }
+.es-btn-block { display: flex; width: 100%; }
+
+/* ---------- Form fields ---------- */
+.es-field { display: grid; gap: var(--es-space-1); margin-bottom: var(--es-space-4); }
+.es-label { font-size: var(--es-text-sm); font-weight: var(--es-weight-medium); }
+.es-hint { font-size: var(--es-text-xs); color: var(--es-fg-muted); }
+.es-input, .es-select, .es-textarea {
+  width: 100%; min-height: 2.5rem; padding: var(--es-space-2) var(--es-space-3);
+  background: var(--es-bg-raised); color: var(--es-fg);
+  border: var(--es-border-hairline) solid var(--es-border); border-radius: var(--es-radius-sm);
+  transition: border-color var(--es-motion-fast) var(--es-motion-ease);
+}
+.es-input:hover, .es-select:hover, .es-textarea:hover { border-color: var(--es-neutral); }
+.es-input:focus, .es-select:focus, .es-textarea:focus { outline: none; border-color: var(--es-fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--es-focus) 60%, transparent); }
+.es-input[aria-invalid="true"] { border-color: var(--es-fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--es-warning) 70%, transparent); }
+.es-input::placeholder { color: var(--es-fg-muted); }
+.es-textarea { min-height: 6rem; resize: vertical; }
+.es-error { font-size: var(--es-text-xs); color: var(--es-fg); padding-left: var(--es-space-2); border-left: 3px solid var(--es-warning); }
+
+/* ---------- Card / panel ---------- */
+.es-card { background: var(--es-bg-raised); border: var(--es-border-hairline) solid var(--es-border); border-radius: var(--es-radius-md); overflow: hidden; }
+.es-card-header { padding: var(--es-space-3) var(--es-space-4); border-bottom: var(--es-border-hairline) solid var(--es-border); font-size: var(--es-text-xs); font-family: var(--es-font-mono); color: var(--es-fg-muted); }
+.es-card-header.is-active { border-bottom-color: var(--es-accent); border-bottom-width: 2px; }
+.es-card-body { padding: var(--es-space-4); }
+.es-card-footer { padding: var(--es-space-3) var(--es-space-4); border-top: var(--es-border-hairline) solid var(--es-border); }
+
+/* ---------- Notice ---------- */
+.es-notice { display: grid; grid-template-columns: 1fr auto; gap: var(--es-space-3); padding: var(--es-space-3) var(--es-space-4); border-bottom: var(--es-border-hairline) solid var(--es-border); }
+.es-notice:last-child { border-bottom: 0; }
+.es-notice-title { font-size: var(--es-text-sm); font-weight: var(--es-weight-medium); margin: 0 0 var(--es-space-1); }
+.es-notice-body { font-size: var(--es-text-sm); color: var(--es-fg-muted); margin: 0; }
+.es-notice-dismiss { align-self: start; width: 1.5rem; height: 1.5rem; border: 0; background: transparent; cursor: pointer; color: var(--es-fg-muted); border-radius: var(--es-radius-sm); }
+.es-notice-dismiss:hover { background: var(--es-bg-sunken); color: var(--es-fg); }
+
+/* ---------- Banner ---------- */
+.es-banner { display: flex; align-items: center; gap: var(--es-space-3); padding: var(--es-space-2) var(--es-space-4); font-size: var(--es-text-sm); background: var(--es-bg-sunken); border-radius: var(--es-radius-sm); }
+.es-banner-accent { background: var(--es-accent); color: var(--es-fg-on-accent); }
+.es-banner-info { background: var(--es-info); color: var(--es-fg-on-accent); }
+.es-banner-warning { background: var(--es-warning); color: var(--es-fg-on-accent); }
+.es-banner .es-tag { flex: none; }
+.es-banner-dismiss { margin-left: auto; }
+
+/* ---------- Tag ---------- */
+.es-tag { display: inline-block; padding: 2px var(--es-space-2); font-family: var(--es-font-mono); font-size: var(--es-text-xs); line-height: 1.4; border: var(--es-border-hairline) solid var(--es-border-strong); border-radius: var(--es-radius-sm); background: var(--es-bg-raised); color: var(--es-fg); }
+.es-tag-accent { background: var(--es-accent); border-color: var(--es-accent); color: var(--es-fg-on-accent); }
+
+/* ---------- Stats ---------- */
+.es-stats { display: flex; gap: var(--es-space-6); font-family: var(--es-font-mono); font-size: var(--es-text-xs); }
+.es-stat { display: grid; gap: 2px; }
+.es-stat dt { color: var(--es-fg-muted); font-weight: var(--es-weight-regular); }
+.es-stat dd { margin: 0; font-size: var(--es-text-sm); }
+
+/* ---------- Side navigation ---------- */
+.es-sidenav { display: flex; flex-direction: column; gap: 2px; padding: var(--es-space-4); width: var(--es-layout-sidebar); background: var(--es-bg-sunken); min-height: 100%; }
+.es-sidenav-section { font-family: var(--es-font-mono); font-size: var(--es-text-xs); color: var(--es-fg-muted); margin: var(--es-space-4) 0 var(--es-space-2); }
+.es-sidenav a { display: flex; justify-content: space-between; align-items: center; padding: var(--es-space-2) var(--es-space-3); border-radius: var(--es-radius-sm); text-decoration: none; font-size: var(--es-text-sm); border-left: 2px solid transparent; }
+.es-sidenav a:hover { background: var(--es-bg-raised); color: var(--es-fg); }
+.es-sidenav a[aria-current="page"] { border-left-color: var(--es-accent); background: var(--es-bg-raised); font-weight: var(--es-weight-medium); }
+.es-sidenav-accent { background: var(--es-accent); color: var(--es-fg-on-accent); }
+.es-sidenav-accent a:hover, .es-sidenav-accent a[aria-current="page"] { background: color-mix(in srgb, var(--es-palette-black) 12%, transparent); color: inherit; border-left-color: var(--es-fg-on-accent); }
+.es-sidenav-accent .es-sidenav-section { color: inherit; opacity: .7; }
+
+/* ---------- Top bar ---------- */
+.es-topbar { display: flex; align-items: center; justify-content: space-between; gap: var(--es-space-4); padding: var(--es-space-3) var(--es-space-5); border-bottom: var(--es-border-hairline) solid var(--es-border-strong); }
+.es-topbar-handle { font-family: var(--es-font-mono); font-size: var(--es-text-xs); }
+
+/* ---------- Table ---------- */
+.es-table { width: 100%; border-collapse: collapse; font-size: var(--es-text-sm); }
+.es-table th { text-align: left; font-weight: var(--es-weight-regular); font-family: var(--es-font-mono); font-size: var(--es-text-xs); color: var(--es-fg-muted); padding: var(--es-space-2) var(--es-space-3); border-bottom: var(--es-border-hairline) solid var(--es-border-strong); }
+.es-table td { padding: var(--es-space-3); border-bottom: var(--es-border-hairline) solid var(--es-border); vertical-align: top; }
+.es-table tr:hover td { background: var(--es-bg-sunken); }
+
+/* ---------- Star mark (from the logo; never recoloured) ---------- */
+.es-star { width: 1em; height: 1em; display: inline-block; vertical-align: -0.1em; fill: currentColor; }
+
+/* ---------- Empty state ---------- */
+.es-empty { padding: var(--es-space-7) var(--es-space-4); text-align: center; border: var(--es-border-hairline) dashed var(--es-border); border-radius: var(--es-radius-md); color: var(--es-fg-muted); font-size: var(--es-text-sm); }
