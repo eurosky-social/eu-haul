@@ -3,19 +3,30 @@
 # Transforms technical error messages into actionable, user-friendly explanations
 # with context, next steps, and recovery options.
 #
+# Every user-facing string lives in config/locales/*.yml under
+# migrations.error_messages.<type>.*; only the raw error message
+# (technical_details) is shown verbatim.
+#
 # Usage:
 #   error_context = MigrationErrorHelper.explain_error(migration)
 #   => {
 #        severity: :warning | :error | :critical,
-#        title: "Network Error During Blob Transfer",
-#        what_happened: "Connection to old PDS timed out...",
-#        current_status: "Automatically retrying (attempt 2/3)",
-#        what_to_do: ["Wait for automatic retry", "Check old PDS status"],
+#        title: "Network connection error",
+#        what_happened: "The connection to your old PDS timed out...",
+#        current_status: "Retrying automatically (attempt 2 of 3)",
+#        what_to_do: ["Wait for the automatic retry (recommended)", ...],
 #        show_retry_button: true,
 #        technical_details: "GoatService::NetworkError: ..."
 #      }
 
 module MigrationErrorHelper
+  I18N_SCOPE = "migrations.error_messages".freeze
+
+  # Localised text for this helper; key is relative to migrations.error_messages
+  def self.t(key, **values)
+    I18n.t(key, scope: I18N_SCOPE, **values)
+  end
+
   # Main entry point - explains the current error state
   def self.explain_error(migration)
     return nil unless migration.last_error.present?
@@ -168,13 +179,13 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "⚠️",
-      title: "Rate Limited by Server",
-      what_happened: "The server is rate-limiting requests to prevent overload. This is normal behavior when many migrations are running.",
-      current_status: retry_attempt < max_attempts ? "Automatically retrying with longer delays (attempt #{retry_attempt}/#{max_attempts})" : "All retries exhausted",
+      title: t("rate_limit.title"),
+      what_happened: t("rate_limit.what_happened"),
+      current_status: retry_attempt < max_attempts ? t("rate_limit.current_status.retrying", attempt: retry_attempt, max_attempts: max_attempts) : t("rate_limit.current_status.exhausted"),
       what_to_do: [
-        "Wait for automatic retry (recommended) - each retry uses a longer delay",
-        "Rate limiting is temporary and usually resolves within a few minutes",
-        "If this persists after #{max_attempts} retries, the server may be overloaded"
+        t("rate_limit.what_to_do.wait"),
+        t("rate_limit.what_to_do.temporary"),
+        t("rate_limit.what_to_do.overloaded", max_attempts: max_attempts)
       ],
       show_retry_button: retry_attempt >= max_attempts,
       help_link: "/docs/troubleshooting#rate-limiting"
@@ -184,26 +195,26 @@ module MigrationErrorHelper
   def self.network_context(migration, retry_attempt, max_attempts)
     stage_info = case migration.status
     when 'pending_repo'
-      { target: "old PDS", url: migration.old_pds_host, operation: "repository export" }
+      { stage: "repo_export", url: migration.old_pds_host }
     when 'pending_blobs'
-      { target: "old PDS", url: migration.old_pds_host, operation: "blob download" }
+      { stage: "blob_download", url: migration.old_pds_host }
     when 'pending_activation'
-      { target: "new PDS", url: migration.new_pds_host, operation: "account activation" }
+      { stage: "account_activation", url: migration.new_pds_host }
     else
-      { target: "PDS", url: migration.old_pds_host, operation: "migration operation" }
+      { stage: "other", url: migration.old_pds_host }
     end
 
     {
       severity: :warning,
       icon: "🌐",
-      title: "Network Connection Error",
-      what_happened: "Connection to #{stage_info[:target]} timed out or was interrupted during #{stage_info[:operation]}.",
-      current_status: retry_attempt < max_attempts ? "Automatically retrying (attempt #{retry_attempt}/#{max_attempts})" : "All retries exhausted",
+      title: t("network.title"),
+      what_happened: t("network.what_happened.#{stage_info[:stage]}"),
+      current_status: retry_attempt < max_attempts ? t("network.current_status.retrying", attempt: retry_attempt, max_attempts: max_attempts) : t("network.current_status.exhausted"),
       what_to_do: [
-        "Wait for automatic retry (recommended)",
-        "Check if #{stage_info[:url]} is accessible from your browser",
-        "If errors persist, the PDS may be temporarily down or experiencing high load",
-        "Contact the PDS administrator if the problem continues"
+        t("network.what_to_do.wait"),
+        t("network.what_to_do.check_url", url: stage_info[:url]),
+        t("network.what_to_do.may_be_down"),
+        t("network.what_to_do.contact_admin")
       ],
       show_retry_button: retry_attempt >= max_attempts,
       help_link: "/docs/troubleshooting#network-errors",
@@ -215,14 +226,14 @@ module MigrationErrorHelper
     {
       severity: :error,
       icon: "🔐",
-      title: "Authentication Failed",
-      what_happened: "Could not authenticate with your PDS. This usually means the password is incorrect or has expired.",
-      current_status: "Migration stopped - requires new credentials",
+      title: t("authentication.title"),
+      what_happened: t("authentication.what_happened"),
+      current_status: t("authentication.current_status"),
       what_to_do: [
-        "Verify your password is correct",
-        "Check if your credentials have expired (48 hour limit from migration start)",
-        "Start a new migration with correct credentials",
-        "If you're sure the password is correct, contact your PDS administrator"
+        t("authentication.what_to_do.check_password"),
+        t("authentication.what_to_do.check_expiry"),
+        t("authentication.what_to_do.start_new"),
+        t("authentication.what_to_do.contact_admin")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -238,15 +249,14 @@ module MigrationErrorHelper
     {
       severity: :error,
       icon: "📧",
-      title: "Email Address Already Registered on Target PDS",
-      what_happened: "#{migration.new_pds_host} already has an account registered with #{migration.email}, " \
-                     "so a new account for your DID could not be created there. " \
-                     "Your account on #{migration.old_pds_host} is untouched.",
-      current_status: "Migration stopped — no changes were made to your identity",
+      title: t("email_taken.title"),
+      what_happened: t("email_taken.what_happened",
+                       new_pds: migration.new_pds_host, email: migration.email, old_pds: migration.old_pds_host),
+      current_status: t("email_taken.current_status"),
       what_to_do: [
-        "If that account is yours, log in to it on #{migration.new_pds_host}, change its email address, then start a new migration",
-        "Or start a new migration using a different email address",
-        "If you don't recognise the account, contact the PDS provider: #{contact_email}"
+        t("email_taken.what_to_do.account_is_yours", new_pds: migration.new_pds_host),
+        t("email_taken.what_to_do.other_email"),
+        t("email_taken.what_to_do.contact_provider", contact_email: contact_email)
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -271,17 +281,17 @@ module MigrationErrorHelper
     {
       severity: :error,
       icon: "👥",
-      title: "Account Already Exists on Target PDS",
-      what_happened: "An account with your DID already exists on the target PDS (#{migration.new_pds_host}). This orphaned account is likely from a previous failed migration attempt.",
-      current_status: "Migration paused - orphaned account needs removal by PDS provider",
+      title: t("account_exists.title"),
+      what_happened: t("account_exists.what_happened", new_pds: migration.new_pds_host),
+      current_status: t("account_exists.current_status"),
       what_to_do: [
-        "📧 Contact the target PDS provider to remove the orphaned account:",
-        "   Email: #{contact_email}",
-        "   Include: Migration Token (#{migration.token}) and DID (#{migration.did})",
+        t("account_exists.what_to_do.contact_provider"),
+        t("account_exists.what_to_do.contact_email", contact_email: contact_email),
+        t("account_exists.what_to_do.include_details", token: migration.token, did: migration.did),
         "",
-        "Once the orphaned account is removed, you can retry this migration.",
+        t("account_exists.what_to_do.retry_after_removal"),
         "",
-        "⚠️ This requires action from the PDS provider - you cannot fix this yourself."
+        t("account_exists.what_to_do.provider_only")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -297,14 +307,14 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "⏰",
-      title: "PLC Token Expired",
-      what_happened: "The PLC operation token you submitted has expired. PLC tokens are only valid for 1 hour after they are issued by your old PDS provider.",
-      current_status: "Migration paused - new PLC token required",
+      title: t("plc_token_expired.title"),
+      what_happened: t("plc_token_expired.what_happened"),
+      current_status: t("plc_token_expired.current_status"),
       what_to_do: [
-        "Click the 'Request New PLC Token' button below to request a fresh token",
-        "Check your email from #{migration.old_pds_host} for the new token",
-        "Submit the new token within 1 hour of receiving it",
-        "The rest of your migration data is safe and ready - you just need a fresh token"
+        t("plc_token_expired.what_to_do.request_token", button: request_plc_token_label),
+        t("plc_token_expired.what_to_do.check_email", old_pds: migration.old_pds_host),
+        t("plc_token_expired.what_to_do.submit_in_time"),
+        t("plc_token_expired.what_to_do.data_safe")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -319,15 +329,14 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "⚠️",
-      title: "PLC Update Could Not Complete",
-      what_happened: "The PLC directory update could not be completed, but your account is safe. " \
-                     "The PLC directory was NOT modified — your account remains on #{migration.old_pds_host}.",
-      current_status: "Migration paused — request a new confirmation code to try again",
+      title: t("plc_pre_submission_failure.title"),
+      what_happened: t("plc_pre_submission_failure.what_happened", old_pds: migration.old_pds_host),
+      current_status: t("plc_pre_submission_failure.current_status"),
       what_to_do: [
-        "Click 'Request New PLC Token' below to get a fresh confirmation code",
-        "Check your email from #{migration.old_pds_host} for the new code",
-        "Submit the new code within 1 hour of receiving it",
-        "Your migration data (repository, blobs, preferences) is safe and ready"
+        t("plc_pre_submission_failure.what_to_do.request_code", button: request_plc_token_label),
+        t("plc_pre_submission_failure.what_to_do.check_email", old_pds: migration.old_pds_host),
+        t("plc_pre_submission_failure.what_to_do.submit_in_time"),
+        t("plc_pre_submission_failure.what_to_do.data_safe")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -342,14 +351,13 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "🔑",
-      title: "Session Expired — Re-authentication Required",
-      what_happened: "Your stored credentials have expired. For security, credentials are automatically cleared after 48 hours. " \
-                     "To continue the migration, you need to re-authenticate.",
-      current_status: "Migration paused — re-authentication required to continue",
+      title: t("credentials_need_reauth.title"),
+      what_happened: t("credentials_need_reauth.what_happened"),
+      current_status: t("credentials_need_reauth.current_status"),
       what_to_do: [
-        "Enter your password below to re-authenticate",
-        "Your migration data is safe — you just need fresh credentials",
-        "After re-authenticating, the migration will continue where it left off"
+        t("credentials_need_reauth.what_to_do.enter_password"),
+        t("credentials_need_reauth.what_to_do.data_safe"),
+        t("credentials_need_reauth.what_to_do.resume")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -364,14 +372,14 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "🖼️",
-      title: "Some Blobs Not Found",
-      what_happened: "Some blobs (images/videos) were not found on the old PDS. They may have been deleted or are no longer available.",
-      current_status: "Migration continuing - missing blobs will be skipped",
+      title: t("blob_not_found.title"),
+      what_happened: t("blob_not_found.what_happened"),
+      current_status: t("blob_not_found.current_status"),
       what_to_do: [
-        "This is usually not critical - migration will continue without these blobs",
-        "Missing blobs may mean some old images/videos won't transfer",
-        "Check the failed blobs manifest for details after migration completes",
-        "You can manually re-upload missing media after migration if needed"
+        t("blob_not_found.what_to_do.not_critical"),
+        t("blob_not_found.what_to_do.media_may_be_missing"),
+        t("blob_not_found.what_to_do.check_report"),
+        t("blob_not_found.what_to_do.reupload")
       ],
       show_retry_button: false,
       show_download_manifest: true,
@@ -383,14 +391,14 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "💾",
-      title: "Data Transfer Corruption",
-      what_happened: "Data was corrupted during transfer. This can happen on slow or unstable network connections.",
-      current_status: retry_attempt < max_attempts ? "Re-downloading corrupted data (attempt #{retry_attempt}/#{max_attempts})" : "All retries exhausted",
+      title: t("data_corruption.title"),
+      what_happened: t("data_corruption.what_happened"),
+      current_status: retry_attempt < max_attempts ? t("data_corruption.current_status.retrying", attempt: retry_attempt, max_attempts: max_attempts) : t("data_corruption.current_status.exhausted"),
       what_to_do: [
-        "Wait for automatic retry - the data will be re-downloaded",
-        "If this persists, check your network connection quality",
-        "Try using a more stable network connection",
-        "Large repositories may timeout on slow connections"
+        t("data_corruption.what_to_do.wait"),
+        t("data_corruption.what_to_do.check_network"),
+        t("data_corruption.what_to_do.stable_network"),
+        t("data_corruption.what_to_do.large_repositories")
       ],
       show_retry_button: retry_attempt >= max_attempts,
       help_link: "/docs/troubleshooting#data-corruption"
@@ -401,13 +409,13 @@ module MigrationErrorHelper
     {
       severity: :error,
       icon: "💿",
-      title: "Disk Space Exhausted",
-      what_happened: "The server or PDS has run out of disk space.",
-      current_status: "Migration stopped - requires administrator intervention",
+      title: t("disk_space.title"),
+      what_happened: t("disk_space.what_happened"),
+      current_status: t("disk_space.current_status"),
       what_to_do: [
-        "Contact the server/PDS administrator to free up disk space",
-        "This is a server-side issue that cannot be resolved by retrying",
-        "Once disk space is freed, you can retry the migration"
+        t("disk_space.what_to_do.contact_admin"),
+        t("disk_space.what_to_do.server_side"),
+        t("disk_space.what_to_do.retry_later")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -420,14 +428,14 @@ module MigrationErrorHelper
     {
       severity: :error,
       icon: "🎫",
-      title: "Invalid or Expired Invite Code",
-      what_happened: "The invite code provided is invalid, expired, or has already been used.",
-      current_status: "Migration stopped - requires valid invite code",
+      title: t("invite_code.title"),
+      what_happened: t("invite_code.what_happened"),
+      current_status: t("invite_code.current_status"),
       what_to_do: [
-        "Obtain a new invite code from the target PDS administrator",
-        "Verify the invite code is copied correctly (no extra spaces)",
-        "Start a new migration with the correct invite code",
-        "Some PDS instances don't require invite codes - check with the administrator"
+        t("invite_code.what_to_do.get_new_code"),
+        t("invite_code.what_to_do.check_copy"),
+        t("invite_code.what_to_do.start_new"),
+        t("invite_code.what_to_do.may_not_be_needed")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -440,12 +448,12 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "🚫",
-      title: "Migration Cancelled",
-      what_happened: "This migration was cancelled at your request. No changes were made to your account.",
-      current_status: "Migration cancelled — your account remains on #{migration.old_pds_host}",
+      title: t("cancelled.title"),
+      what_happened: t("cancelled.what_happened"),
+      current_status: t("cancelled.current_status", old_pds: migration.old_pds_host),
       what_to_do: [
-        "Your account is safe and unchanged on #{migration.old_pds_host}",
-        "You can start a new migration at any time"
+        t("cancelled.what_to_do.account_safe", old_pds: migration.old_pds_host),
+        t("cancelled.what_to_do.start_new")
       ],
       show_retry_button: false,
       show_retry_info: false,
@@ -463,15 +471,15 @@ module MigrationErrorHelper
     base_context = {
       severity: :critical,
       icon: "⚠️",
-      title: "PLC Directory Update Failed",
-      what_happened: "The PLC directory update did not complete successfully. Your account data is safe.",
-      current_status: plc_not_yet_updated ? "The PLC directory was not modified — you can request a new token and try again." : "The PLC directory may have been partially updated. Please contact support.",
+      title: t("critical_plc.title"),
+      what_happened: t("critical_plc.what_happened"),
+      current_status: plc_not_yet_updated ? t("critical_plc.current_status.not_updated") : t("critical_plc.current_status.maybe_updated"),
       what_to_do: [
-        "Do not start a new migration",
-        "Your account data is safe and intact",
-        migration.rotation_key.present? ? "Your recovery key is available on this page — save it securely" : nil,
-        "Save this migration token: #{migration.token}",
-        "Contact support if the issue persists: #{support_email}"
+        t("critical_plc.what_to_do.no_new_migration"),
+        t("critical_plc.what_to_do.data_safe"),
+        migration.rotation_key.present? ? t("critical_plc.what_to_do.save_recovery_key") : nil,
+        t("critical_plc.what_to_do.save_token", token: migration.token),
+        t("critical_plc.what_to_do.contact_support", support_email: support_email)
       ].compact,
       show_retry_button: false,
       show_retry_info: false,
@@ -485,7 +493,7 @@ module MigrationErrorHelper
 
     # If PLC was not yet updated, emphasize token request
     if plc_not_yet_updated
-      base_context[:what_to_do].unshift("Try requesting a new PLC token - the update hasn't happened yet")
+      base_context[:what_to_do].unshift(t("critical_plc.what_to_do.request_token"))
     end
 
     base_context
@@ -495,13 +503,13 @@ module MigrationErrorHelper
     {
       severity: :warning,
       icon: "⚠️",
-      title: "Migration Error",
-      what_happened: "An error occurred during the migration process.",
-      current_status: retry_attempt < max_attempts ? "Automatically retrying (attempt #{retry_attempt}/#{max_attempts})" : "All retries exhausted",
+      title: t("generic.title"),
+      what_happened: t("generic.what_happened"),
+      current_status: retry_attempt < max_attempts ? t("generic.current_status.retrying", attempt: retry_attempt, max_attempts: max_attempts) : t("generic.current_status.exhausted"),
       what_to_do: [
-        "Wait for automatic retry",
-        "If this persists, check the technical details below",
-        "Contact support if you need assistance: #{ENV.fetch('SUPPORT_EMAIL', 'support@example.com')}"
+        t("generic.what_to_do.wait"),
+        t("generic.what_to_do.check_details"),
+        t("generic.what_to_do.contact_support", support_email: ENV.fetch('SUPPORT_EMAIL', 'support@example.com'))
       ],
       show_retry_button: retry_attempt >= max_attempts,
       help_link: "/docs/troubleshooting"
@@ -509,6 +517,12 @@ module MigrationErrorHelper
   end
 
   # Helper methods
+
+  # Label of the "Request new PLC token" button under the explanation, so the
+  # instructions name it exactly as the page shows it in every locale.
+  def self.request_plc_token_label
+    I18n.t("migrations.error_details.request_plc_action")
+  end
 
   def self.time_until_retry(migration)
     # Calculate next retry time based on exponential backoff
@@ -528,16 +542,16 @@ module MigrationErrorHelper
   end
 
   def self.format_time_remaining(seconds)
-    return "a few moments" if seconds < 5
+    return t("time_remaining.a_few_moments") if seconds < 5
 
     if seconds < 60
-      "#{seconds} seconds"
+      t("time_remaining.seconds", count: seconds)
     elsif seconds < 3600
       minutes = (seconds / 60).round
-      "#{minutes} minute#{'s' if minutes != 1}"
+      t("time_remaining.minutes", count: minutes)
     else
       hours = (seconds / 3600).round
-      "#{hours} hour#{'s' if hours != 1}"
+      t("time_remaining.hours", count: hours)
     end
   end
 end
