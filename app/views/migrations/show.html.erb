@@ -1,786 +1,402 @@
 <% content_for :title do %><%= t('migrations.show.page_title', token: @migration.token) %> - <%= EuroskyConfig::SITE_NAME %><% end %>
 
-<% content_for :head do %>
-  <style>
-    /* Background + centering (matches new.html.erb) */
-    body {
-      margin: 0;
-      padding: 0;
-      <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
-      background: url('<%= EuroskyConfig::BACKGROUND_IMAGE_URL %>') no-repeat center center fixed;
-      background-size: cover;
-      <% else %>
-      background: var(--gradient);
-      <% end %>
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 0;
-    }
-    <% end %>
-
-    /* Page-specific layout styles for show.html.erb */
-    .page-layout {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      max-width: 1020px;
-      margin: 0 auto;
-      padding: 40px 16px;
-    }
-
-    .page-layout.has-sidebar {
-      display: grid;
-      grid-template-columns: minmax(0, 700px) 280px;
-      gap: 24px;
-      align-items: start;
-      justify-content: center;
-    }
-
-    .page-layout > .container {
-      max-width: 700px;
-    }
-
-    .has-sidebar .container {
-      max-width: none;
-    }
-
-    .backup-sidebar {
-      position: sticky;
-      top: 20px;
-    }
-
-    .backup-sidebar-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      border-left: 4px solid #10b981;
-      margin-bottom: 16px;
-    }
-
-    .backup-sidebar-card.backup-urgent {
-      border-left-color: #3b82f6;
-    }
-
-    .backup-sidebar-header {
-      background: #d1fae5;
-      padding: 16px;
-      font-weight: 700;
-      font-size: 15px;
-      color: #065f46;
-    }
-
-    .backup-urgent .backup-sidebar-header {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .backup-sidebar-body {
-      padding: 16px;
-    }
-
-    .backup-sidebar-body p {
-      font-size: 13px;
-      color: #374151;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .backup-sidebar-body .backup-meta {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 16px;
-    }
-
-    .backup-sidebar-body .backup-meta strong {
-      color: #374151;
-    }
-
-    .backup-sidebar-body .backup-download-btn {
-      display: block;
-      text-align: center;
-      padding: 12px 16px;
-      background: var(--gradient);
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .backup-sidebar-body .backup-download-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .bookmark-notice code {
-      background: rgba(255, 255, 255, 0.8);
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: "SF Mono", Monaco, "Courier New", monospace;
-      font-size: 13px;
-      word-break: break-all;
-    }
-
-    .progress-bar-container {
-      background: #e5e7eb;
-      height: 30px;
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar-fill {
-      background: var(--gradient);
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 14px;
-      transition: width 0.3s ease;
-    }
-
-    .status-completed { color: #10b981; }
-    .status-failed { color: #dc2626; }
-    .status-in-progress { color: #3b82f6; }
-
-    .progress-bar-waiting {
-      animation: pulse-waiting 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-waiting {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    /* Header-specific overrides: white text on gradient */
-    .header-eurosky .status-completed,
-    .header-eurosky .status-failed,
-    .header-eurosky .status-in-progress {
-      color: white !important;
-    }
-
-    .header-eurosky .progress-bar-container {
-      background: rgba(255, 255, 255, 0.2);
-      height: 24px;
-      border-radius: 12px;
-    }
-
-    .header-eurosky .progress-bar-fill {
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--primary-color);
-      font-size: 13px;
-      border-radius: 12px;
-    }
-
-    .header-eurosky #retry-info {
-      color: rgba(255, 255, 200, 0.9) !important;
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-
-    .metric-value {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-
-    @media (max-width: 1060px) {
-      .page-layout.has-sidebar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .has-sidebar .container {
-        display: block;
-        max-width: 700px;
-      }
-
-      .backup-sidebar {
-        position: static;
-        width: 100%;
-        max-width: 700px;
-        margin-bottom: 20px;
-        order: -1;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page-layout {
-        padding: 20px 12px;
-      }
-
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-  <% if @migration.migration_out? && @migration.progress_data&.dig('captcha_required') && @migration.progress_data&.dig('captcha_site_key') && !@migration.email_verified? %>
+<% if @migration.migration_out? && @migration.progress_data&.dig('captcha_required') && @migration.progress_data&.dig('captcha_site_key') && !@migration.email_verified? %>
+  <% content_for :head do %>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <% end %>
 <% end %>
 
-<% show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) || (@migration.cancellable? && @migration.email_verified?) %>
-<div class="page-layout<%= ' has-sidebar' if show_sidebar %>">
-  <div class="container">
-    <div class="card-eurosky">
-    <div class="header-eurosky p-4">
-      <% if EuroskyConfig::LOGO_URL.present? %>
-        <img src="<%= EuroskyConfig::LOGO_URL %>" alt="<%= EuroskyConfig::SITE_NAME %>" class="header-logo">
-      <% end %>
+<%
+  # pending_plc splits in two: waiting for the person's code, or code in and the
+  # identity update running
+  plc_waiting = @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?)
+  plc_token_submitted = @migration.pending_plc? && !plc_waiting
+  show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) || (@migration.cancellable? && @migration.email_verified?)
+  status_name = plc_waiting ? t('migrations.show.status_waiting_for_you') : t("migrations.show.status_names.#{@migration.status}", default: @migration.status.humanize)
+%>
 
-      <% if @migration.email_verified? %>
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h1 class="fs-3 mb-0"><%= t('migrations.show.migration_status') %></h1>
-          <div class="token-badge" style="font-size: 16px; padding: 4px 12px;"><%= @migration.token %></div>
+<div class="eh-container">
+  <div class="eh-status<%= ' eh-no-side' unless show_sidebar %>">
+    <div class="eh-card">
+      <div class="eh-card-head">
+        <div class="eh-card-label">
+          <span><%= t('migrations.show.migration_status') %></span>
+          <span class="eh-muted"><%= t('migrations.show.token_label') %> <b><%= @migration.token %></b></span>
         </div>
+      </div>
 
-        <div class="d-flex align-items-baseline justify-content-between mb-2">
-          <div>
-            <span class="small" style="opacity: 0.7;"><%= t('migrations.show.status_label') %></span>
-            <span id="status-value" class="fw-semibold status-<%= @migration.completed? ? 'completed' : @migration.failed? ? 'failed' : 'in-progress' %>" data-status="<%= @migration.status %>">
-              <span id="status-text"><%= @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) ? t('migrations.show.status_waiting_for_you') : @migration.status.humanize %></span>
-            </span>
-          </div>
-          <div id="retry-info" class="small" style="<%= 'display:none;' unless @migration.job_retrying? && @migration.current_job_step %>">
-            <% if @migration.job_retrying? && @migration.current_job_step %>
-              <%= t('migrations.show.retry_info', attempt: @migration.current_job_attempt, max: @migration.current_job_max_attempts, step: @migration.current_job_step.gsub('Job', '').humanize) %>
-            <% end %>
-          </div>
-        </div>
-
-        <% plc_waiting = @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
-        <div id="progress-bar-container" class="progress-bar-container" role="progressbar" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
-          <div id="progress-bar" class="progress-bar-fill<%= ' progress-bar-waiting' if plc_waiting %>" style="width: <%= @migration.progress_percentage %>%">
-            <%= plc_waiting ? t('migrations.show.progress_waiting_for_you') : "#{@migration.progress_percentage}%" %>
-          </div>
-        </div>
-        <% unless @migration.completed? || @migration.failed? %>
-          <div id="poll-status" class="small mt-2" style="opacity: 0.8;">
-            <span id="poll-updated"></span>
-            <span id="poll-error" style="display: none;"> · <%= t('migrations.show.poll_error') %></span>
-            · <a href="#" id="poll-refresh" style="color: inherit; text-decoration: underline;"><%= t('migrations.show.refresh_now') %></a>
-          </div>
+      <div class="eh-card-body">
+        <% if flash[:notice] %>
+          <div class="eh-ok eh-sm" role="status"><%= flash[:notice] %></div>
         <% end %>
-      <% else %>
-        <div class="d-flex justify-content-between align-items-center">
-          <h1 class="fs-3 mb-0"><%= t('migrations.show.verify_email') %></h1>
-          <div class="token-badge" style="font-size: 16px; padding: 4px 12px;"><%= @migration.token %></div>
-        </div>
-      <% end %>
-    </div>
+        <% if flash[:alert] %>
+          <div class="eh-warn eh-sm" role="alert"><%= flash[:alert] %></div>
+        <% end %>
 
-    <div class="p-4">
-      <% if flash[:notice] %>
-        <div class="alert alert-success border-start border-success border-4 rounded-1 small" role="alert">
-          <%= flash[:notice] %>
-        </div>
-      <% end %>
-      <% if flash[:alert] %>
-        <div class="alert alert-danger border-start border-danger border-4 rounded-1 small" role="alert">
-          <%= flash[:alert] %>
-        </div>
-      <% end %>
-
-      <% if !@migration.email_verified? %>
-        <%# Awaiting email confirmation — show code entry form %>
-        <div class="text-center pt-2 pb-3">
-          <h2 class="fs-4 mb-2 text-dark"><%= t('migrations.show.enter_verification') %></h2>
-          <p class="small text-body-secondary mx-auto mb-0" style="max-width: 480px;">
-            <%= t('migrations.show.verification_sent', email: @migration.email).html_safe %>
-          </p>
-        </div>
-
-        <%= form_with url: verify_email_path(token: @migration.token), method: :post, local: true do |f| %>
-          <div class="form-group">
-            <%= label_tag :verification_code, t('migrations.show.verification_label') %>
-            <%= text_field_tag :verification_code, nil, required: true, placeholder: t('migrations.show.verification_placeholder'), autocomplete: "off", maxlength: 7, class: "form-control font-monospace fs-3 text-center text-uppercase", style: "letter-spacing: 4px;" %>
-          </div>
-          <% if @migration.migration_out? && @migration.progress_data&.dig('captcha_required') && @migration.progress_data&.dig('captcha_site_key') %>
-            <div class="d-flex justify-content-center mt-3">
-              <div class="h-captcha" data-sitekey="<%= @migration.progress_data['captcha_site_key'] %>"></div>
+        <% if !@migration.email_verified? %>
+          <%# Awaiting email confirmation — code entry %>
+          <div class="eh-stack">
+            <div class="eh-stack-xs">
+              <h2 class="eh-title"><%= t('migrations.show.verify_email') %></h2>
+              <p class="eh-subtitle"><%= t('migrations.show.verification_sent', email: @migration.email).html_safe %></p>
             </div>
-          <% end %>
-          <%= submit_tag t('migrations.show.verify_button'), class: "btn btn-lg btn-gradient w-100 mt-3" %>
-        <% end %>
 
-        <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mt-4 mb-3 small">
-          <div class="fw-semibold mb-1" style="color: #92400e;"><%= t('migrations.show.didnt_receive') %></div>
-          <ul class="mb-0 ps-3 lh-lg" style="color: #78350f;">
-            <li><%= t('migrations.show.check_spam') %></li>
-            <li><%= t('migrations.show.check_email_correct', email: @migration.email).html_safe %></li>
-            <li><%= t('migrations.show.email_delay') %></li>
-          </ul>
-          <div class="mt-2 pt-2 border-top" style="border-color: rgba(146, 64, 14, 0.2) !important;">
-            <%= form_with url: resend_verification_by_token_path(@migration.token), method: :post, local: true do %>
-              <button type="submit" class="btn btn-sm btn-warning text-white fw-semibold">
-                <%= t('migrations.show.resend_code') %>
-              </button>
-            <% end %>
-          </div>
-        </div>
-
-      <% else %>
-
-        <%# ═══════════════════════════════════════════════════════ %>
-        <%# Status + progress bar are now in the header above       %>
-        <%# Body contains: notices, metrics, actions, help          %>
-        <%# ═══════════════════════════════════════════════════════ %>
-
-        <div id="queued-notice" class="alert alert-primary border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small" style="<%= 'display:none;' unless @migration.progress_data&.dig('queued') %>">
-          <div class="fw-semibold text-primary mb-1"><%= t('migrations.show.in_queue') %></div>
-          <p id="queued-reason" class="text-primary small mb-0">
-            <%= @migration.progress_data&.dig('queued_reason') || t('migrations.show.queue_default') %>
-          </p>
-          <p class="text-primary small mt-1 mb-0" style="opacity: 0.8;"><%= t('migrations.show.queue_auto_start') %></p>
-        </div>
-
-        <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
-          <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-            🔄 <strong><%= t('migrations.show.converting_blobs') %></strong> — <%= t('migrations.show.converting_blobs_detail') %>
-          </div>
-        <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
-          <div class="alert alert-success border-start border-success border-4 rounded-1 py-2 px-3 mb-3 small">
-            ✅ <%= t('migrations.show.blobs_converted') %>
-          </div>
-        <% end %>
-
-        <%# Files the blob stage could not transfer. The migration goes on without them; %>
-        <%# they are retried in the background and can be retried here at any time,     %>
-        <%# also after completion. The list is only written when the blob stage ends,    %>
-        <%# so this must render for every later status, not just pending_blobs.          %>
-        <% missing_blobs = @migration.progress_data&.dig('failed_blobs') || [] %>
-        <% if missing_blobs.any? && !@migration.pending_blobs? && !@migration.failed? %>
-          <div id="missing-files-notice" class="alert alert-warning border-start border-warning border-4 rounded-1 py-2 px-3 mb-3 small">
-            <div class="fw-semibold mb-1" style="color: #92400e;"><%= t('migrations.show.missing_files_title', count: missing_blobs.length) %></div>
-            <p class="mb-2" style="color: #78350f;">
-              <%= @migration.completed? ? t('migrations.show.missing_files_completed') : t('migrations.show.missing_files_detail') %>
-            </p>
-            <%= form_with url: retry_failed_blobs_by_token_path(@migration.token), method: :post, local: true do %>
-              <button type="submit" class="btn btn-sm btn-warning text-white fw-semibold"><%= t('migrations.show.retry_failed_blobs') %></button>
-            <% end %>
-          </div>
-        <% end %>
-
-        <% if @migration.pending_blobs? %>
-          <% blobs_completed = @migration.progress_data['blobs_completed'].to_i %>
-          <% blobs_total = @migration.progress_data['blobs_total'].to_i %>
-          <% bytes_transferred = @migration.progress_data['bytes_transferred'].to_i %>
-          <% if blobs_total > 0 %>
-            <div id="blob-progress-section" class="metrics-grid mb-3">
-              <div class="card bg-body-tertiary border">
-                <div class="card-body p-3">
-                  <div class="small text-body-secondary mb-1"><%= t('migrations.show.blobs_uploaded') %></div>
-                  <div class="metric-value">
-                    <span id="blobs-completed"><%= blobs_completed %></span>
-                    <span class="small fw-normal text-body-secondary">/ <span id="blobs-total"><%= blobs_total %></span> <%= t('migrations.show.files') %></span>
-                  </div>
-                </div>
+            <%= form_with url: verify_email_path(token: @migration.token), method: :post, local: true, class: 'eh-stack' do %>
+              <div class="es-field">
+                <%= label_tag :verification_code, t('migrations.show.verification_label'), class: 'es-label' %>
+                <%= text_field_tag :verification_code, nil, required: true, placeholder: t('migrations.show.verification_placeholder'), autocomplete: "one-time-code", autocapitalize: "characters", spellcheck: false, maxlength: 7, class: "es-input eh-code-input eh-code-lg" %>
               </div>
-              <div class="card bg-body-tertiary border">
-                <div class="card-body p-3">
-                  <div class="small text-body-secondary mb-1"><%= t('migrations.show.data_transferred') %></div>
-                  <div class="metric-value">
-                    <span id="bytes-transferred"><%= number_to_human_size(bytes_transferred) %></span>
-                  </div>
-                </div>
-              </div>
-              <% if @migration.progress_data['failed_blobs'].present? %>
-                <div class="card bg-body-tertiary border">
-                  <div class="card-body p-3">
-                    <div class="small text-body-secondary mb-1"><%= t('migrations.show.failed') %></div>
-                    <div class="metric-value text-danger">
-                      <span id="blobs-failed"><%= @migration.progress_data['failed_blobs'].length %></span>
-                      <span class="small fw-normal text-body-secondary"><%= t('migrations.show.files') %></span>
-                    </div>
-                  </div>
-                </div>
+              <% if @migration.migration_out? && @migration.progress_data&.dig('captcha_required') && @migration.progress_data&.dig('captcha_site_key') %>
+                <div class="h-captcha" data-sitekey="<%= @migration.progress_data['captcha_site_key'] %>"></div>
+              <% end %>
+              <%= submit_tag t('migrations.show.verify_button'), class: "es-btn es-btn-primary es-btn-lg es-btn-block eh-square" %>
+            <% end %>
+
+            <div class="eh-rule-top eh-stack-sm eh-sm">
+              <div class="eh-label"><%= t('migrations.show.didnt_receive') %></div>
+              <ul class="eh-list eh-muted">
+                <li><%= t('migrations.show.check_spam') %></li>
+                <li><%= t('migrations.show.check_email_correct', email: @migration.email).html_safe %></li>
+                <li><%= t('migrations.show.email_delay') %></li>
+              </ul>
+              <%= form_with url: resend_verification_by_token_path(@migration.token), method: :post, local: true do %>
+                <button type="submit" class="es-btn es-btn-sm eh-square"><%= t('migrations.show.resend_code') %></button>
               <% end %>
             </div>
-          <% elsif @migration.progress_data['blob_count'].to_i > 0 %>
-            <div id="blob-progress-section" class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-              <%= t('migrations.show.preparing_blobs', count: @migration.progress_data['blob_count']).html_safe %>
+          </div>
+
+        <% else %>
+
+          <%# Status, progress and the move itself %>
+          <div class="eh-progress">
+            <div class="eh-progress-head">
+              <div class="eh-progress-status">
+                <span class="eh-sm eh-muted"><%= t('migrations.show.status_label') %></span>
+                <span id="status-value" class="eh-status-text" data-status="<%= @migration.status %>"><span id="status-text"><%= status_name %></span></span>
+              </div>
+              <span id="progress-label" class="eh-progress-label"><%= plc_waiting ? t('migrations.show.progress_waiting_for_you') : "#{@migration.progress_percentage}%" %></span>
             </div>
-          <% else %>
-            <div id="blob-waiting-section" class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-              <div class="fw-semibold text-primary mb-1"><%= t('migrations.show.upload_queue_title') %></div>
-              <p class="text-primary small mb-1"><%= t('migrations.show.upload_queue_detail') %></p>
-              <p class="text-primary small mb-0" style="opacity: 0.8;"><%= t('migrations.show.page_auto_update') %></p>
+            <div id="progress-bar-container" class="eh-bar" role="progressbar" aria-label="<%= t('migrations.show.status_label') %>" aria-valuenow="<%= @migration.progress_percentage %>" aria-valuemin="0" aria-valuemax="100">
+              <div id="progress-bar" class="eh-bar-fill" style="width: <%= @migration.progress_percentage %>%"></div>
+            </div>
+            <% retrying = @migration.job_retrying? && @migration.current_job_step %>
+            <% if retrying || !(@migration.completed? || @migration.failed?) %>
+              <div class="eh-progress-meta">
+                <span id="retry-info" style="<%= 'display:none;' unless retrying %>"><% if retrying %><%= t('migrations.show.retry_info', attempt: @migration.current_job_attempt, max: @migration.current_job_max_attempts, step: @migration.current_job_step.gsub('Job', '').humanize) %> · <% end %></span>
+                <% unless @migration.completed? || @migration.failed? %>
+                  <span id="poll-status">
+                    <span id="poll-updated"></span>
+                    <span id="poll-error" style="display: none;"> · <%= t('migrations.show.poll_error') %></span>
+                    · <a href="#" id="poll-refresh"><%= t('migrations.show.refresh_now') %></a>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+            <table class="eh-kv">
+              <tr>
+                <th scope="row"><%= t('migrations.show.from') %></th>
+                <td>@<%= @migration.old_handle %> · <%= @migration.old_pds_host.to_s.sub(%r{\Ahttps?://}, '') %></td>
+              </tr>
+              <tr>
+                <th scope="row"><%= t('migrations.show.to') %></th>
+                <td>@<%= @migration.new_handle %> · <%= @migration.new_pds_host.to_s.sub(%r{\Ahttps?://}, '') %></td>
+              </tr>
+            </table>
+          </div>
+
+          <div id="queued-notice" class="eh-well" style="<%= 'display:none;' unless @migration.progress_data&.dig('queued') %>">
+            <div class="eh-well-title"><%= t('migrations.show.in_queue') %></div>
+            <p id="queued-reason" class="eh-sm"><%= @migration.progress_data&.dig('queued_reason') || t('migrations.show.queue_default') %></p>
+            <p class="eh-sm eh-muted"><%= t('migrations.show.queue_auto_start') %></p>
+          </div>
+
+          <% if @migration.progress_data&.dig('legacy_blob_conversion_started_at') && !@migration.progress_data&.dig('legacy_blob_conversion_completed_at') %>
+            <p class="eh-well eh-well-tight eh-sm">
+              <span><span class="eh-strong"><%= t('migrations.show.converting_blobs') %></span> — <%= t('migrations.show.converting_blobs_detail') %></span>
+            </p>
+          <% elsif @migration.progress_data&.dig('legacy_blobs_converted') == true %>
+            <p class="eh-ok eh-sm"><%= t('migrations.show.blobs_converted') %></p>
+          <% end %>
+
+          <%# Files the blob stage could not transfer. The migration goes on without them; %>
+          <%# they are retried in the background and can be retried here at any time,     %>
+          <%# also after completion. The list is only written when the blob stage ends,    %>
+          <%# so this must render for every later status, not just pending_blobs.          %>
+          <% missing_blobs = @migration.progress_data&.dig('failed_blobs') || [] %>
+          <% if missing_blobs.any? && !@migration.pending_blobs? && !@migration.failed? %>
+            <div id="missing-files-notice" class="eh-warn eh-sm">
+              <div class="eh-label"><%= t('migrations.show.missing_files_title', count: missing_blobs.length) %></div>
+              <p class="eh-muted"><%= @migration.completed? ? t('migrations.show.missing_files_completed') : t('migrations.show.missing_files_detail') %></p>
+              <%= form_with url: retry_failed_blobs_by_token_path(@migration.token), method: :post, local: true do %>
+                <button type="submit" class="es-btn es-btn-sm eh-square"><%= t('migrations.show.retry_failed_blobs') %></button>
+              <% end %>
             </div>
           <% end %>
-        <% end %>
 
-        <% if @migration.pending_download? || @migration.pending_backup? %>
-          <div class="alert alert-info border-start border-primary border-4 rounded-1 py-2 px-3 mb-3 small">
-            <% if @migration.pending_download? %>
-              📥 <strong><%= t('migrations.show.downloading_account') %></strong> &mdash; <%= t('migrations.show.downloading_detail') %>
+          <% if @migration.pending_blobs? %>
+            <% blobs_completed = @migration.progress_data['blobs_completed'].to_i %>
+            <% blobs_total = @migration.progress_data['blobs_total'].to_i %>
+            <% bytes_transferred = @migration.progress_data['bytes_transferred'].to_i %>
+            <% if blobs_total > 0 %>
+              <div id="blob-progress-section" class="eh-stack">
+                <div class="eh-metrics">
+                  <div class="eh-metric">
+                    <span class="eh-metric-label"><%= t('migrations.show.blobs_uploaded') %></span>
+                    <span class="eh-metric-value"><span id="blobs-completed"><%= blobs_completed %></span> <small>/ <span id="blobs-total"><%= blobs_total %></span> <%= t('migrations.show.files') %></small></span>
+                  </div>
+                  <div class="eh-metric">
+                    <span class="eh-metric-label"><%= t('migrations.show.data_transferred') %></span>
+                    <span class="eh-metric-value"><span id="bytes-transferred"><%= number_to_human_size(bytes_transferred) %></span></span>
+                  </div>
+                  <% if @migration.progress_data['failed_blobs'].present? %>
+                    <div class="eh-metric">
+                      <span class="eh-metric-label"><%= t('migrations.show.failed') %></span>
+                      <span class="eh-metric-value"><span id="blobs-failed"><%= @migration.progress_data['failed_blobs'].length %></span> <small><%= t('migrations.show.files') %></small></span>
+                    </div>
+                  <% end %>
+                </div>
+                <p class="eh-sm eh-muted"><%= t('migrations.show.page_auto_update') %></p>
+              </div>
+            <% elsif @migration.progress_data['blob_count'].to_i > 0 %>
+              <p id="blob-progress-section" class="eh-well eh-well-tight eh-sm">
+                <span><%= t('migrations.show.preparing_blobs', count: @migration.progress_data['blob_count']).html_safe %></span>
+              </p>
             <% else %>
-              📦 <strong><%= t('migrations.show.creating_backup') %></strong> &mdash; <%= t('migrations.show.creating_backup_detail') %>
+              <div id="blob-waiting-section" class="eh-well">
+                <div class="eh-well-title"><%= t('migrations.show.upload_queue_title') %></div>
+                <p class="eh-sm"><%= t('migrations.show.upload_queue_detail') %></p>
+                <p class="eh-sm eh-muted"><%= t('migrations.show.page_auto_update') %></p>
+              </div>
             <% end %>
-            <% if @migration.progress_data&.dig('download_progress') %>
-              <% progress = @migration.progress_data['download_progress'] %>
-              <br><%= t('migrations.show.downloaded_count', downloaded: progress['downloaded'], total: progress['total']) %>
-              <% if progress['bytes'] %>(<%= number_to_human_size(progress['bytes']) %>)<% end %>
-            <% end %>
-          </div>
-        <% end %>
+          <% end %>
 
-        <% if @migration.backup_bundle_path.present? && @migration.backup_expired? %>
-          <div class="alert alert-danger border-start border-danger border-4 rounded-1 py-2 px-3 mb-3 small">
-            ⚠️ <strong><%= t('migrations.show.backup_expired') %></strong> — <%= t('migrations.show.backup_expired_detail') %>
-          </div>
-        <% end %>
+          <% if @migration.pending_download? || @migration.pending_backup? %>
+            <div class="eh-well eh-sm">
+              <p>
+                <% if @migration.pending_download? %>
+                  <span class="eh-strong"><%= t('migrations.show.downloading_account') %></span> — <%= t('migrations.show.downloading_detail') %>
+                <% else %>
+                  <span class="eh-strong"><%= t('migrations.show.creating_backup') %></span> — <%= t('migrations.show.creating_backup_detail') %>
+                <% end %>
+              </p>
+              <% if @migration.progress_data&.dig('download_progress') %>
+                <% progress = @migration.progress_data['download_progress'] %>
+                <p class="eh-mono eh-muted">
+                  <%= t('migrations.show.downloaded_count', downloaded: progress['downloaded'], total: progress['total']) %>
+                  <% if progress['bytes'] %>(<%= number_to_human_size(progress['bytes']) %>)<% end %>
+                </p>
+              <% end %>
+            </div>
+          <% end %>
 
-        <%# ═══════════════════════════════════════════════════════ %>
-        <%# ZONE 2: PRIMARY CONTENT — state-specific hero content   %>
-        <%# ═══════════════════════════════════════════════════════ %>
+          <% if @migration.backup_bundle_path.present? && @migration.backup_expired? %>
+            <p class="eh-warn eh-sm"><span><span class="eh-strong"><%= t('migrations.show.backup_expired') %></span> — <%= t('migrations.show.backup_expired_detail') %></span></p>
+          <% end %>
 
-        <% if @migration.pending_plc? %>
-          <hr class="section-divider">
-          <% plc_token_submitted = @migration.encrypted_plc_token.present? && !@migration.plc_token_expired? %>
+          <%# ── State-specific main content ── %>
 
           <% if plc_token_submitted %>
-            <div class="text-center py-4">
-              <div class="fs-1 mb-2"><span class="spin">⚙</span></div>
-              <h3 class="fs-5 mb-2 text-dark"><%= t('migrations.show.updating_identity') %></h3>
-              <p class="text-body-secondary lh-lg mx-auto mb-0" style="max-width: 500px;">
-                <%= t('migrations.show.plc_accepted', pds: @migration.new_pds_host).html_safe %>
-              </p>
-              <p class="text-primary small mt-3 mb-0">
-                <%= t('migrations.show.page_auto_update') %>
-              </p>
+            <div class="eh-stack-sm eh-rule-top">
+              <h2 class="eh-title"><%= t('migrations.show.updating_identity') %></h2>
+              <p class="eh-sm eh-muted"><%= t('migrations.show.plc_accepted', pds: @migration.new_pds_host).html_safe %></p>
+              <p class="eh-sm eh-muted"><%= t('migrations.show.page_auto_update') %></p>
             </div>
 
-          <% else %>
-            <div class="alert alert-warning border-start border-warning border-4 rounded-1 py-3 px-3 mb-3" style="background: #fef9c3;">
-              <div class="d-flex align-items-center mb-2">
-                <span class="fs-4 me-2">✉️</span>
-                <h3 class="fs-5 mb-0 fw-bold" style="color: #92400e;"><%= t('migrations.show.action_required_title') %></h3>
-              </div>
-              <p class="mb-2 small" style="color: #78350f;">
-                <%= t('migrations.show.action_required_detail').html_safe %>
-              </p>
-              <ul class="mb-0 ps-3 small lh-lg" style="color: #78350f;">
+          <% elsif plc_waiting %>
+            <div class="eh-warn">
+              <h2 class="eh-title"><%= t('migrations.show.action_required_title') %></h2>
+              <p class="eh-sm eh-muted"><%= t('migrations.show.action_required_detail').html_safe %></p>
+              <ul class="eh-sm eh-list">
                 <li><%= t('migrations.show.action_required_check_email') %></li>
                 <li><%= t('migrations.show.action_required_look_for', pds: @migration.old_pds_host).html_safe %></li>
                 <li><%= t('migrations.show.action_required_not_same_email') %></li>
               </ul>
             </div>
 
-            <div class="text-center mb-3">
-              <h3 class="fs-5 mb-1 text-dark"><%= t('migrations.show.enter_confirmation') %></h3>
-              <p class="text-body-secondary small mb-0">
-                <%= t('migrations.show.confirmation_hint', pds: @migration.old_pds_host).html_safe %>
-              </p>
-            </div>
-
-            <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true do |f| %>
-              <div class="form-group">
-                <%= label_tag :plc_token, t('migrations.show.confirmation_label') %>
-                <%= text_field_tag :plc_token, nil, required: true, placeholder: t('migrations.show.confirmation_placeholder'), autocomplete: "off", class: "form-control font-monospace fs-4 text-center py-3", style: "letter-spacing: 3px;" %>
+            <%= form_with url: submit_plc_token_by_token_path(@migration.token), method: :post, local: true, class: 'eh-stack' do %>
+              <div class="es-field">
+                <%= label_tag :plc_token, t('migrations.show.confirmation_label'), class: 'es-label' %>
+                <%= text_field_tag :plc_token, nil, required: true, placeholder: t('migrations.show.confirmation_placeholder'), autocomplete: "one-time-code", autocapitalize: "characters", spellcheck: false, class: "es-input eh-code-input eh-code-md", aria: { describedby: 'plc-token-hint' } %>
+                <div class="es-hint" id="plc-token-hint"><%= t('migrations.show.confirmation_hint', pds: @migration.old_pds_host).html_safe %></div>
               </div>
-              <%= submit_tag t('migrations.show.complete_migration'), class: "btn btn-lg btn-gradient w-100 mt-3", onclick: "return confirm('#{j t('migrations.show.complete_confirm')}');" %>
+              <%= submit_tag t('migrations.show.complete_migration'), class: "es-btn es-btn-primary es-btn-lg es-btn-block eh-square", onclick: "return confirm('#{j t('migrations.show.complete_confirm')}');" %>
             <% end %>
 
-           
-          <% end %>
-
-        <% elsif @migration.completed? %>
-          <hr class="section-divider">
-
-          <div class="alert alert-success" role="alert">
-            <h3 class="fs-4 mb-3">✅ <%= t('migrations.show.completed_title') %></h3>
-            <p class="fs-6">
-              <% if @migration.returning_to_existing_pds? %>
-                <%= t('migrations.show.completed_migrated_back', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
-              <% else %>
-                <%= t('migrations.show.completed_migrated_to', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
-              <% end %>
-            </p>
-
-            <div class="bg-primary-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
-              <p class="small mb-0" style="color: #1e40af;">
-                <%= t('migrations.show.email_sent_html', email: @migration.email).html_safe %>
-              </p>
-            </div>
-
-            <% if @migration.rotation_key.present? %>
-              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 my-4">
-                <h4 class="fs-5 mb-2" style="color: #92400e;">⚠️ <%= t('migrations.show.save_rotation_key') %></h4>
-                <p class="small mb-3" style="color: #92400e;">
-                  <strong><%= t('migrations.show.page_auto_delete') %></strong><br>
-                  <%= t('migrations.show.rotation_key_needed') %>
-                </p>
-                <div class="bg-white p-3 rounded-2 my-3 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
-                  <%= @migration.rotation_key %>
+            <div class="eh-rule-top eh-stack-sm">
+              <details class="eh-details" open>
+                <summary><%= t('migrations.show.didnt_receive_plc') %></summary>
+                <div class="eh-details-body">
+                  <ul class="eh-list eh-muted">
+                    <li><%= t('migrations.show.plc_check_spam') %></li>
+                    <li><%= t('migrations.show.plc_from_old_pds', pds: @migration.old_pds_host) %></li>
+                    <li><%= t('migrations.show.plc_expires') %></li>
+                  </ul>
+                  <% if @migration.has_old_pds_tokens? %>
+                    <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
+                      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                      <button type="submit" class="es-btn es-btn-sm eh-square"><%= t('migrations.show.request_new_code') %></button>
+                    </form>
+                  <% else %>
+                    <p class="eh-muted"><%= t('migrations.show.plc_new_code_help') %></p>
+                    <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post" class="eh-inline-form">
+                      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                      <input type="password" name="password" required autocomplete="current-password"
+                             placeholder="<%= t('migrations.show.plc_password_placeholder', handle: @migration.old_handle) %>"
+                             aria-label="<%= t('migrations.show.plc_password_placeholder', handle: @migration.old_handle) %>"
+                             class="es-input">
+                      <button type="submit" class="es-btn eh-square"><%= t('migrations.show.request_new_code') %></button>
+                    </form>
+                  <% end %>
                 </div>
-                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 <%= j t('migrations.show.copy_rotation_key') %>', 2000)"
-                        class="btn btn-warning text-white fw-semibold mb-2">
-                  📋 <%= t('migrations.show.copy_rotation_key') %>
-                </button>
-                <p class="small mt-3 mb-0" style="color: #92400e;">
-                  ✉️ <%= t('migrations.show.key_emailed', email: @migration.email).html_safe %>
-                </p>
-              </div>
-            <% end %>
+              </details>
 
-            <div class="bg-info-subtle border-start border-primary border-4 p-3 rounded-2 my-3">
-              <h4 class="fw-semibold mb-2" style="color: #3730a3;">🔒 <%= t('migrations.show.privacy_notice') %></h4>
-              <p class="small mb-2" style="color: #3730a3;">
-                <%= t('migrations.show.privacy_detail').html_safe %>
-              </p>
-              <p class="small mb-0" style="color: #3730a3;">
-                <%= t('migrations.show.privacy_delete_now') %>
-              </p>
+              <details class="eh-details-quiet">
+                <summary><%= t('migrations.show.technical_details') %></summary>
+                <div class="eh-details-body eh-muted">
+                  <p><%= t('migrations.show.plc_explanation').html_safe %></p>
+                  <p><%= t('migrations.show.plc_irreversible', new_pds: @migration.new_pds_host, old_pds: @migration.old_pds_host).html_safe %></p>
+                  <p><%= t('migrations.show.plc_expiry_note') %></p>
+                </div>
+              </details>
             </div>
 
-            <div class="border-top pt-3 mt-3">
+          <% elsif @migration.completed? %>
+            <div class="eh-stack">
+              <div class="eh-stack-xs">
+                <h2 class="eh-title"><%= t('migrations.show.completed_title') %></h2>
+                <p class="eh-sm eh-muted">
+                  <% if @migration.returning_to_existing_pds? %>
+                    <%= t('migrations.show.completed_migrated_back', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
+                  <% else %>
+                    <%= t('migrations.show.completed_migrated_to', pds: h(@migration.new_pds_host), handle: h(@migration.new_handle)).html_safe %>
+                  <% end %>
+                </p>
+              </div>
+              <p class="eh-sm eh-muted"><%= t('migrations.show.email_sent_html', email: @migration.email).html_safe %></p>
+
+              <% if @migration.rotation_key.present? %>
+                <div class="eh-warn eh-sm">
+                  <div class="eh-label"><%= t('migrations.show.save_rotation_key') %></div>
+                  <p class="eh-muted"><span class="eh-strong"><%= t('migrations.show.page_auto_delete') %></span> <%= t('migrations.show.rotation_key_needed') %></p>
+                  <code class="eh-code-block"><%= @migration.rotation_key %></code>
+                  <div>
+                    <button type="button" class="es-btn es-btn-sm eh-square" data-copy="<%= @migration.rotation_key %>" data-copied="<%= t('migrations.show.copied') %>"><%= t('migrations.show.copy_rotation_key') %></button>
+                  </div>
+                  <p class="eh-muted"><%= t('migrations.show.key_emailed', email: @migration.email).html_safe %></p>
+                </div>
+              <% end %>
+
+              <div class="eh-rule-top eh-stack-sm eh-sm">
+                <div class="eh-label"><%= t('migrations.show.privacy_notice') %></div>
+                <p class="eh-muted"><%= t('migrations.show.privacy_detail').html_safe %></p>
+                <p class="eh-muted"><%= t('migrations.show.privacy_delete_now') %></p>
+              </div>
+
               <form action="<%= confirm_delete_by_token_path(@migration.token) %>" method="post"
                     onsubmit="return confirm('<%= j t('migrations.show.delete_confirm') %>');">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                <button type="submit" class="btn btn-outline-danger w-100">
-                  <%= t('migrations.show.delete_button') %>
-                </button>
+                <button type="submit" class="es-btn es-btn-block eh-square"><%= t('migrations.show.delete_button') %></button>
               </form>
+
+              <p class="eh-sm eh-muted">
+                <%= @migration.returning_to_existing_pds? ? t('migrations.show.welcome_back') : t('migrations.show.welcome_new') %>
+              </p>
             </div>
 
-            <p class="mt-3 small text-success">
-              <%= @migration.returning_to_existing_pds? ? t('migrations.show.welcome_back') : t('migrations.show.welcome_new') %>
-            </p>
-          </div>
-
-        <% elsif @migration.failed? %>
-          <hr class="section-divider">
-          <%= render 'migrations/error_details', migration: @migration %>
-        <% end %>
-
-        <%# ═══════════════════════════════════════════════════════ %>
-        <%# ZONE 3: SECONDARY / HELP — collapsed detail sections    %>
-        <%# ═══════════════════════════════════════════════════════ %>
-
-        <% show_zone3 = false %>
-        <% show_zone3 = true if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
-        <% show_zone3 = true if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
-
-        <% if show_zone3 %>
-          <hr class="section-divider">
-
-          <%# "Didn't receive the email?" + Technical details (first, most important for pending_plc) %>
-          <% if @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?) %>
-            <details class="mb-3" open>
-              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                <%= t('migrations.show.didnt_receive_plc') %>
-              </summary>
-              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
-                <ul class="small mb-3 ps-3 lh-lg" style="color: #78350f;">
-                  <li><%= t('migrations.show.plc_check_spam') %></li>
-                  <li><%= t('migrations.show.plc_from_old_pds', pds: @migration.old_pds_host) %></li>
-                  <li><%= t('migrations.show.plc_expires') %></li>
-                </ul>
-                <% if @migration.has_old_pds_tokens? %>
-                  <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
-                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                    <button type="submit"
-                            class="btn btn-sm btn-warning text-white fw-semibold">
-                      <%= t('migrations.show.request_new_code') %>
-                    </button>
-                  </form>
-                <% else %>
-                  <p class="small mb-2" style="color: #78350f;">
-                    <%= t('migrations.show.plc_new_code_help') %>
-                  </p>
-                  <form action="<%= reauthenticate_by_token_path(@migration.token) %>" method="post">
-                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                    <div class="d-flex gap-2">
-                      <input type="password" name="password" required
-                             autocomplete="current-password"
-                             placeholder="<%= t('migrations.show.plc_password_placeholder', handle: @migration.old_handle) %>"
-                             class="form-control form-control-sm border-2 border-warning flex-grow-1">
-                      <button type="submit"
-                              class="btn btn-sm btn-warning text-white fw-semibold text-nowrap">
-                        <%= t('migrations.show.request_new_code') %>
-                      </button>
-                    </div>
-                  </form>
-                <% end %>
-              </div>
-            </details>
-
-            <details class="mb-3">
-              <summary class="text-body-secondary small fw-medium" style="cursor: pointer;">
-                <%= t('migrations.show.technical_details') %>
-              </summary>
-              <div class="bg-body-tertiary border rounded-3 p-3 mt-2 small text-body-secondary lh-lg">
-                <p class="mb-2">
-                  <%= t('migrations.show.plc_explanation').html_safe %>
-                </p>
-                <p class="mb-2">
-                  <%= t('migrations.show.plc_irreversible', new_pds: @migration.new_pds_host, old_pds: @migration.old_pds_host).html_safe %>
-                </p>
-                <p class="mb-0">
-                  <%= t('migrations.show.plc_expiry_note') %>
-                </p>
-              </div>
-            </details>
+          <% elsif @migration.failed? %>
+            <%= render 'migrations/error_details', migration: @migration %>
           <% end %>
 
-          <%# Rotation key (collapsible, after the email help) %>
+          <%# Recovery key with the how-to-revert notes, while the move is still running %>
           <% if @migration.rotation_key.present? && !@migration.completed? && !@migration.pending_download? && !@migration.pending_backup? %>
-            <details class="mb-3">
-              <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                🔑 <%= t('migrations.show.recovery_key_title') %>
-              </summary>
-              <div class="bg-warning-subtle border-start border-warning border-4 p-3 rounded-2 mt-2">
-                <p class="small mb-2" style="color: #92400e;">
-                  <strong><%= t('migrations.show.recovery_key_important') %></strong> <%= t('migrations.show.recovery_key_help') %>
-                </p>
-                <div class="bg-white p-3 rounded-2 mb-2 font-monospace small" style="overflow-wrap: break-word; word-break: break-all;">
-                  <%= @migration.rotation_key %>
+            <details class="eh-details eh-rule-top">
+              <summary><%= t('migrations.show.recovery_key_title') %></summary>
+              <div class="eh-details-body">
+                <p class="eh-muted"><span class="eh-strong"><%= t('migrations.show.recovery_key_important') %></span> <%= t('migrations.show.recovery_key_help') %></p>
+                <code class="eh-code-block"><%= @migration.rotation_key %></code>
+                <div>
+                  <button type="button" class="es-btn es-btn-sm eh-square" data-copy="<%= @migration.rotation_key %>" data-copied="<%= t('migrations.show.copied') %>"><%= t('migrations.show.copy_clipboard') %></button>
                 </div>
-                <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 <%= j t('migrations.show.copy_clipboard') %>', 2000)"
-                        class="btn btn-sm btn-warning text-white">
-                  📋 <%= t('migrations.show.copy_clipboard') %>
-                </button>
-                <details class="mt-3">
-                  <summary class="fw-semibold small" style="cursor: pointer; color: #92400e;">
-                    <%= t('migrations.show.revert_title') %>
-                  </summary>
-                  <div class="bg-white p-3 rounded-2 mt-2 small text-body-secondary lh-lg">
-                    <p class="mb-2"><%= t('migrations.show.revert_help') %></p>
-                    <ol class="ps-3 my-2">
-                      <li class="mb-1"><%= t('migrations.show.revert_step1').html_safe %></li>
-                      <li class="mb-1"><%= t('migrations.show.revert_step2').html_safe %></li>
-                      <li class="mb-1"><%= t('migrations.show.revert_step3') %></li>
-                      <li class="mb-1"><%= t('migrations.show.revert_step4').html_safe %></li>
-                      <li class="mb-1"><%= t('migrations.show.revert_step5').html_safe %></li>
+                <details class="eh-details-quiet">
+                  <summary><%= t('migrations.show.revert_title') %></summary>
+                  <div class="eh-details-body eh-muted">
+                    <p><%= t('migrations.show.revert_help') %></p>
+                    <ol class="eh-list">
+                      <li><%= t('migrations.show.revert_step1').html_safe %></li>
+                      <li><%= t('migrations.show.revert_step2').html_safe %></li>
+                      <li><%= t('migrations.show.revert_step3') %></li>
+                      <li><%= t('migrations.show.revert_step4').html_safe %></li>
+                      <li><%= t('migrations.show.revert_step5').html_safe %></li>
                       <li><%= t('migrations.show.revert_step6').html_safe %></li>
                     </ol>
-                    <p class="text-danger mt-2 mb-0">
-                      <strong>Note:</strong> <%= t('migrations.show.revert_warning') %>
-                    </p>
+                    <p class="eh-warn"><span><span class="eh-strong"><%= t('migrations.show.revert_note') %></span> <%= t('migrations.show.revert_warning') %></span></p>
                   </div>
                 </details>
               </div>
             </details>
           <% end %>
+
+        <% end %><%# end of email_verified? if/else %>
+      </div>
+    </div>
+
+    <% if show_sidebar %>
+      <aside class="eh-side">
+        <% if @migration.backup_available? %>
+          <div class="eh-side-box">
+            <div class="eh-side-head">
+              <span><%= t('migrations.show.backup_label') %></span>
+              <span class="es-tag es-tag-accent"><%= t('migrations.show.backup_ready_tag') %></span>
+            </div>
+            <p class="eh-muted"><%= @migration.completed? ? t('migrations.show.backup_download_completed') : t('migrations.show.backup_download_ready') %></p>
+            <div class="eh-side-meta">
+              <span class="eh-muted"><%= t('migrations.show.size') %></span><span><%= number_to_human_size(@migration.backup_size) %></span>
+              <span class="eh-muted"><%= t('migrations.show.expires') %></span><span><%= @migration.backup_expires_at.utc.strftime('%Y-%m-%d %H:%M UTC') %></span>
+            </div>
+            <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>" class="es-btn es-btn-block eh-square"><%= t('migrations.show.download_button') %></a>
+          </div>
         <% end %>
 
-      <% end %><%# end of email_verified? if/else %>
-    </div>
-    </div><%# end card-eurosky %>
+        <% if @migration.rotation_key.present? %>
+          <div class="eh-side-box">
+            <div class="eh-side-head"><span><%= t('migrations.show.recovery_key') %></span></div>
+            <p class="eh-muted"><%= t('migrations.show.recovery_key_sidebar') %></p>
+            <code class="eh-code-block"><%= @migration.rotation_key %></code>
+            <button type="button" class="es-btn es-btn-sm es-btn-block eh-square" data-copy="<%= @migration.rotation_key %>" data-copied="<%= t('migrations.show.copied') %>"><%= t('migrations.show.copy_key') %></button>
+          </div>
+        <% end %>
+
+        <% if @migration.cancellable? && @migration.email_verified? %>
+          <details class="eh-side-details eh-details-quiet">
+            <summary><%= t('migrations.show.cancel_migration') %></summary>
+            <div class="eh-details-body eh-muted">
+              <p><%= t('migrations.show.cancel_help') %></p>
+              <p><%= t('migrations.show.cancel_patience') %></p>
+              <form action="<%= request_cancellation_by_token_path(@migration.token) %>" method="post"
+                    onsubmit="return confirm('<%= j t('migrations.show.cancel_confirm') %>');">
+                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                <button type="submit" class="es-btn es-btn-ghost es-btn-sm eh-square"><%= t('migrations.show.cancel_button') %></button>
+              </form>
+            </div>
+          </details>
+        <% end %>
+      </aside>
+    <% end %>
   </div>
-
-  <% if show_sidebar %>
-    <div class="backup-sidebar">
-      <% if @migration.backup_available? %>
-        <div class="backup-sidebar-card<%= ' backup-urgent' if @migration.completed? %>">
-          <div class="backup-sidebar-header">
-            <%= @migration.completed? ? "📦 #{t('migrations.show.download_backup')}" : "✅ #{t('migrations.show.backup_ready')}" %>
-          </div>
-          <div class="backup-sidebar-body">
-            <% if @migration.completed? %>
-              <p><%= t('migrations.show.backup_download_completed') %></p>
-            <% else %>
-              <p><%= t('migrations.show.backup_download_ready') %></p>
-            <% end %>
-            <div class="backup-meta">
-              <strong><%= t('migrations.show.size') %></strong> <%= number_to_human_size(@migration.backup_size) %><br>
-              <strong><%= t('migrations.show.expires') %></strong> <%= @migration.backup_expires_at.strftime('%b %d, %Y %l:%M %p') %>
-            </div>
-            <a href="<%= migration_download_backup_path(@migration, token: @migration.token) %>" class="backup-download-btn">
-              ⬇️ <%= t('migrations.show.download_button') %>
-            </a>
-          </div>
-        </div>
-      <% end %>
-
-      <% if @migration.rotation_key.present? %>
-        <div class="backup-sidebar-card" style="border-left-color: #f59e0b;">
-          <div class="backup-sidebar-header" style="background: #fef3c7; color: #92400e;">
-            🔑 <%= t('migrations.show.recovery_key') %>
-          </div>
-          <div class="backup-sidebar-body">
-            <p><%= t('migrations.show.recovery_key_sidebar') %></p>
-            <div class="font-monospace" style="font-size: 11px; overflow-wrap: break-word; word-break: break-all; background: #f9fafb; padding: 8px; border-radius: 6px; margin-bottom: 12px;">
-              <%= @migration.rotation_key %>
-            </div>
-            <button onclick="navigator.clipboard.writeText('<%= @migration.rotation_key %>'); this.textContent='✅ Copied!'; setTimeout(() => this.textContent='📋 <%= j t('migrations.show.copy_key') %>', 2000)"
-                    class="backup-download-btn" style="border: none; cursor: pointer; width: 100%;">
-              📋 <%= t('migrations.show.copy_key') %>
-            </button>
-          </div>
-        </div>
-      <% end %>
-
-      <% if @migration.cancellable? && @migration.email_verified? %>
-        <div class="backup-sidebar-card" style="border-left-color: #9ca3af;">
-          <div class="backup-sidebar-body">
-            <details>
-              <summary class="text-body-secondary small fw-medium" style="cursor: pointer;">
-                <%= t('migrations.show.cancel_migration') %>
-              </summary>
-              <div class="mt-2">
-                <p class="text-body-secondary small"><%= t('migrations.show.cancel_help') %></p>
-                <p class="text-body-secondary small mb-2"><%= t('migrations.show.cancel_patience') %></p>
-                <form action="<%= request_cancellation_by_token_path(@migration.token) %>" method="post"
-                      onsubmit="return confirm('<%= j t('migrations.show.cancel_confirm') %>');">
-                  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-                  <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-                    <%= t('migrations.show.cancel_button') %>
-                  </button>
-                </form>
-              </div>
-            </details>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
 </div>
 
-<% content_for :scripts do %>
-  <script>
-    // Align sidebar with card body (below the gradient header)
-    (function() {
-      var header = document.querySelector('.header-eurosky');
-      var sidebar = document.querySelector('.backup-sidebar');
-      if (header && sidebar) {
-        sidebar.style.marginTop = header.offsetHeight + 'px';
-      }
-    })();
-  </script>
-  <% unless @migration.completed? || @migration.failed? %>
+<% unless @migration.completed? || @migration.failed? %>
+  <% content_for :scripts do %>
   <script>
     (function() {
       var pollUrl = '<%= migration_by_token_path(@migration.token, format: :json) %>';
       var currentStatus = '<%= @migration.status %>';
       var emailVerified = <%= @migration.email_verified? %>;
+      var statusNames = <%= raw t('migrations.show.status_names').to_json %>;
       var statusWaitingText = '<%= j t('migrations.show.status_waiting_for_you') %>';
       var barWaitingText = '<%= j t('migrations.show.progress_waiting_for_you') %>';
       var lastUpdatedText = '<%= j t('migrations.show.last_updated', time: '{time}') %>';
+      var retryText = '<%= j t('migrations.show.retry_info', attempt: '{attempt}', max: '{max}', step: '{step}') %>';
 
       // "Last updated" line + error marker, so a stalled poll is visible instead of silent
       function markPolled(ok) {
@@ -831,29 +447,28 @@
             // In-place updates for progress
             var bar = document.getElementById('progress-bar');
             var barContainer = document.getElementById('progress-bar-container');
+            var label = document.getElementById('progress-label');
             var isPendingPlc = data.status === 'pending_plc';
             if (bar && barContainer) {
               bar.style.width = data.progress_percentage + '%';
-              if (isPendingPlc) {
-                bar.textContent = barWaitingText;
-                bar.classList.add('progress-bar-waiting');
-              } else {
-                bar.textContent = data.progress_percentage + '%';
-                bar.classList.remove('progress-bar-waiting');
-              }
               barContainer.setAttribute('aria-valuenow', data.progress_percentage);
+            }
+            if (label) {
+              label.textContent = isPendingPlc ? barWaitingText : data.progress_percentage + '%';
             }
 
             var statusText = document.getElementById('status-text');
-            if (statusText) {
-              statusText.textContent = isPendingPlc ? statusWaitingText : data.status_humanized;
+            if (statusText && !isPendingPlc) {
+              statusText.textContent = statusNames[data.status] || data.status_humanized;
+            } else if (statusText) {
+              statusText.textContent = statusWaitingText;
             }
 
             var retryInfo = document.getElementById('retry-info');
             if (retryInfo) {
               if (data.job_retrying && data.current_job_step) {
                 var stepName = data.current_job_step.replace('Job', '').replace(/([A-Z])/g, ' $1').trim();
-                retryInfo.textContent = 'Retry ' + data.current_job_attempt + '/' + data.current_job_max_attempts + ' - ' + stepName;
+                retryInfo.textContent = retryText.replace('{attempt}', data.current_job_attempt).replace('{max}', data.current_job_max_attempts).replace('{step}', stepName) + ' · ';
                 retryInfo.style.display = '';
               } else {
                 retryInfo.style.display = 'none';

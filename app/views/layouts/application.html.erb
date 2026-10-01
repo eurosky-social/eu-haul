@@ -1,23 +1,91 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<%# data-theme pins the light theme: the design is light-only, and the design %>
+<%# system's tokens would otherwise follow the operating system's dark mode. %>
+<html lang="<%= I18n.locale %>" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="description" content="<%= EuroskyConfig::SITE_SUBTITLE %>">
   <%= csrf_meta_tags %>
   <title><%= content_for?(:title) ? yield(:title) : EuroskyConfig::SITE_NAME %></title>
   <% if EuroskyConfig::FAVICON_URL.present? %>
     <link rel="icon" type="image/png" href="<%= EuroskyConfig::FAVICON_URL %>">
   <% end %>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <%= render 'shared/styles' %>
+  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="<%= public_asset_path('fonts/fonts.css') %>">
+  <link rel="stylesheet" href="<%= public_asset_path('eurosky-design/tokens.css') %>">
+  <link rel="stylesheet" href="<%= public_asset_path('eurosky-design/base.css') %>">
+  <link rel="stylesheet" href="<%= public_asset_path('eurosky-design/components.css') %>">
+  <link rel="stylesheet" href="<%= public_asset_path('eu-haul.css') %>">
+  <%= accent_style_tag %>
+  <% if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>
+    <style>
+      body.eh-has-bg { background-image: url(<%= raw EuroskyConfig::BACKGROUND_IMAGE_URL.to_json %>); }
+    </style>
+  <% end %>
   <%= yield :head %>
 </head>
-<body>
-  <%= render 'shared/language_selector' %>
-  <%= yield %>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<body class="<%= 'eh-has-bg' if EuroskyConfig::BACKGROUND_IMAGE_URL.present? %>">
+  <div class="eh-page">
+    <header class="eh-topbar">
+      <a href="<%= root_path %>" class="eh-brand" id="eh-home-link" aria-label="<%= t('layouts.home_label', site: EuroskyConfig::SITE_NAME) %>">
+        <%= brand_mark %>
+      </a>
+      <div class="eh-topbar-meta">
+        <span class="eh-topbar-label"><%= t('layouts.topbar_label') %></span>
+        <%= render 'shared/language_selector' %>
+      </div>
+    </header>
+
+    <main class="eh-main">
+      <%= yield %>
+    </main>
+
+    <footer class="eh-footer">
+      <span><%= EuroskyConfig::OPERATOR_NAME == 'UNCONFIGURED' ? EuroskyConfig::SITE_NAME : EuroskyConfig::OPERATOR_NAME %> © <%= Date.current.year %></span>
+      <span class="eh-footer-links">
+        <% if EuroskyConfig::PRIVACY_POLICY_URL.present? %>
+          <a href="<%= EuroskyConfig::PRIVACY_POLICY_URL %>" target="_blank" rel="noopener"><%= t('layouts.privacy_policy') %></a>
+        <% end %>
+        <% if EuroskyConfig::TERMS_OF_SERVICE_URL.present? %>
+          <a href="<%= EuroskyConfig::TERMS_OF_SERVICE_URL %>" target="_blank" rel="noopener"><%= t('layouts.terms_of_service') %></a>
+        <% end %>
+      </span>
+      <% if EuroskyConfig.bundled_background_image? %>
+        <span class="eh-footer-credit">
+          <%= t('layouts.background_attribution') %> <a href="https://commons.wikimedia.org/wiki/File:GMC_U-Haul_truck_front_1.JPG" target="_blank" rel="noopener">GMC U-Haul truck</a> <%= t('layouts.background_attribution_by') %> <a href="https://commons.wikimedia.org/wiki/User:BrokenSphere" target="_blank" rel="noopener">BrokenSphere</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a>
+        </span>
+      <% end %>
+    </footer>
+  </div>
+
+  <script>
+    // Language menu: close on a click outside it or on Escape
+    (function() {
+      var menu = document.getElementById('eh-lang');
+      if (!menu) return;
+      document.addEventListener('click', function(e) {
+        if (menu.open && !menu.contains(e.target)) menu.open = false;
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); }
+      });
+    })();
+
+    // Copy buttons: <button data-copy="text" data-copied="Copied">
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-copy]');
+      if (!btn) return;
+      e.preventDefault();
+      navigator.clipboard.writeText(btn.dataset.copy).then(function() {
+        var label = btn.textContent;
+        btn.textContent = btn.dataset.copied;
+        setTimeout(function() { btn.textContent = label; }, 2000);
+      });
+    });
+  </script>
   <%= yield :scripts %>
 </body>
 </html>

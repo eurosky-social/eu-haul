@@ -45,7 +45,7 @@ class PlcTokenExpirationFlowTest < ActionDispatch::IntegrationTest
     get migration_by_token_path(@migration.token)
     assert_response :success
     assert_select 'div.error-details-section' do
-      assert_select 'h3', text: /PLC Token Expired/i
+      assert_select 'h2', text: /PLC Token Expired/i
     end
 
     # Step 5: Error helper identifies the error type correctly

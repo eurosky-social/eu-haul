@@ -25,13 +25,28 @@ module EuroskyConfig
   INVITE_CODE_MODE = ENV.fetch('INVITE_CODE_MODE', 'optional').downcase.freeze
 
   # UI Branding
+  # The pages follow the Eurosky design system; an operator rebrands them with
+  # these. PRIMARY_COLOR is the design's single accent (primary buttons, the
+  # active step, progress bars); button text on it turns black or white,
+  # whichever reads better. LOGO_URL replaces the site name in the header and
+  # in emails (use a PNG: mail clients don't render SVG). SECONDARY_COLOR is
+  # still read so existing configurations keep booting, but it no longer has
+  # an effect: the design has no two-colour gradient.
   SITE_NAME = ENV.fetch('SITE_NAME', 'Eurosky Migration').freeze
   SITE_SUBTITLE = ENV.fetch('SITE_SUBTITLE', 'Migrate your AT Protocol account to a new PDS').freeze
-  PRIMARY_COLOR = ENV.fetch('PRIMARY_COLOR', '#667eea').freeze
-  SECONDARY_COLOR = ENV.fetch('SECONDARY_COLOR', '#764ba2').freeze
-  LOGO_URL = ENV['LOGO_URL']&.freeze
-  FAVICON_URL = ENV['FAVICON_URL']&.freeze
-  BACKGROUND_IMAGE_URL = ENV['BACKGROUND_IMAGE_URL']&.freeze
+  DEFAULT_PRIMARY_COLOR = '#02bc60'
+  PRIMARY_COLOR = ENV.fetch('PRIMARY_COLOR', DEFAULT_PRIMARY_COLOR).strip.freeze
+  SECONDARY_COLOR = ENV.fetch('SECONDARY_COLOR', '').freeze
+  LOGO_URL = ENV['LOGO_URL'].presence&.freeze
+  FAVICON_URL = ENV['FAVICON_URL'].presence&.freeze
+  BACKGROUND_IMAGE_URL = ENV['BACKGROUND_IMAGE_URL'].presence&.freeze
+
+  # The one background image the app ships (public/). Its CC BY 3.0 licence
+  # needs the attribution in the footer, so that shows only when it is in use.
+  BUNDLED_BACKGROUND_IMAGE = '/GMC_U-Haul_truck_front_1.JPG'
+
+  # Where the landing page's "How it works" button points. Unset hides it.
+  HOW_IT_WORKS_URL = ENV['HOW_IT_WORKS_URL'].presence&.freeze
 
   # PDS Configuration
   DEFAULT_TARGET_PDS = ENV['DEFAULT_TARGET_PDS']&.freeze
@@ -227,9 +242,93 @@ module EuroskyConfig
     suffix.freeze
   end
 
-  # Get CSS gradient string for backgrounds
-  def self.gradient_css
-    "linear-gradient(135deg, #{PRIMARY_COLOR} 0%, #{SECONDARY_COLOR} 100%)"
+  # The accent as a #rrggbb hex, whatever notation PRIMARY_COLOR uses. Emails
+  # need it: mail clients understand neither rgb() reliably nor color-mix().
+  def self.accent_hex
+    @accent_hex ||= begin
+      r, g, b = accent_rgb
+      format('#%02x%02x%02x', r, g, b).freeze
+    end
+  end
+
+  # Text colour for anything set on the accent: the design's near-black where
+  # that reads at least as well as white, white otherwise. The design puts
+  # black on its green (white on green fails AA); a darker operator colour
+  # needs white.
+  def self.accent_text_color
+    @accent_text_color ||= text_color_on(accent_rgb)
+  end
+
+  # '#1a1a1a' or '#ffffff', whichever has the higher contrast on [r, g, b].
+  def self.text_color_on(rgb)
+    background = relative_luminance(rgb)
+    on_black = (background + 0.05) / (relative_luminance(TEXT_BLACK_RGB) + 0.05)
+    on_white = 1.05 / (background + 0.05)
+    on_black >= on_white ? '#1a1a1a' : '#ffffff'
+  end
+
+  # Whether the footer owes the bundled background photo its attribution.
+  def self.bundled_background_image?
+    BACKGROUND_IMAGE_URL.present? && BACKGROUND_IMAGE_URL.end_with?(BUNDLED_BACKGROUND_IMAGE)
+  end
+
+  TEXT_BLACK_RGB = [0x1a, 0x1a, 0x1a].freeze
+
+  NAMED_COLOR_RGB = {
+    'black' => [0, 0, 0], 'white' => [255, 255, 255], 'red' => [255, 0, 0],
+    'green' => [0, 128, 0], 'blue' => [0, 0, 255], 'yellow' => [255, 255, 0],
+    'cyan' => [0, 255, 255], 'magenta' => [255, 0, 255], 'gray' => [128, 128, 128],
+    'grey' => [128, 128, 128], 'silver' => [192, 192, 192], 'maroon' => [128, 0, 0],
+    'navy' => [0, 0, 128], 'purple' => [128, 0, 128], 'teal' => [0, 128, 128],
+    'olive' => [128, 128, 0], 'lime' => [0, 255, 0], 'aqua' => [0, 255, 255],
+    'fuchsia' => [255, 0, 255]
+  }.freeze
+
+  # PRIMARY_COLOR as [r, g, b] (0-255). validate! has already restricted it to
+  # the notations handled here; anything unreadable (transparent, a malformed
+  # rgb()) falls back to the default accent rather than failing a page.
+  def self.accent_rgb
+    @accent_rgb ||= (parse_color_rgb(PRIMARY_COLOR) || parse_color_rgb(DEFAULT_PRIMARY_COLOR)).freeze
+  end
+
+  def self.parse_color_rgb(color)
+    value = color.to_s.strip.downcase
+    if (m = value.match(/\A#([0-9a-f]{3}|[0-9a-f]{6})\z/))
+      hex = m[1].length == 3 ? m[1].chars.map { |c| c * 2 }.join : m[1]
+      return hex.scan(/../).map { |pair| pair.to_i(16) }
+    end
+    if (m = value.match(/\Argba?\(\s*([\d.]+%?)[\s,]+([\d.]+%?)[\s,]+([\d.]+%?)/))
+      return m.captures.map { |c| c.end_with?('%') ? (c.to_f * 255 / 100).round : c.to_f.round }.map { |c| c.clamp(0, 255) }
+    end
+    if (m = value.match(/\Ahsla?\(\s*([\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%/))
+      return hsl_to_rgb(m[1].to_f, m[2].to_f / 100, m[3].to_f / 100)
+    end
+    NAMED_COLOR_RGB[value]
+  end
+
+  def self.hsl_to_rgb(hue, saturation, lightness)
+    chroma = (1 - (2 * lightness - 1).abs) * saturation
+    h = (hue % 360) / 60.0
+    x = chroma * (1 - (h % 2 - 1).abs)
+    r, g, b = case h.floor
+              when 0 then [chroma, x, 0]
+              when 1 then [x, chroma, 0]
+              when 2 then [0, chroma, x]
+              when 3 then [0, x, chroma]
+              when 4 then [x, 0, chroma]
+              else [chroma, 0, x]
+              end
+    m = lightness - chroma / 2
+    [r, g, b].map { |c| ((c + m) * 255).round.clamp(0, 255) }
+  end
+
+  # WCAG 2 relative luminance of an [r, g, b] colour.
+  def self.relative_luminance(rgb)
+    r, g, b = rgb.map do |channel|
+      c = channel / 255.0
+      c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055)**2.4
+    end
+    0.2126 * r + 0.7152 * g + 0.0722 * b
   end
 
   private

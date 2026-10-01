@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   # end
   # mount Sidekiq::Web => '/sidekiq'
 
-  # Root route
-  root "migrations#new"
+  # Root route: the landing page; the wizard is migrations#new
+  root "landing#show"
 
   # Health check endpoints
   get "/_health", to: "health#index"
