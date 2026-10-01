@@ -47,6 +47,7 @@ en:
   landing:
     page_title: "Move your account"
     title: "Move your account to Europe"
+    title_named: "Move your account to %{name}"
     lead: "Bring your posts, follows and identity to a European server. Your handle can come with you, and your followers won't notice a thing."
     start: "Start migration"
     how_it_works: "How it works"
@@ -61,6 +62,54 @@ en:
       confirm:
         label: "Confirm by email"
         text: "We transfer your data and ask you to confirm the final step by email. Takes about 20–30 minutes."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "How it works"
+    title: "How moving your account works"
+    lead: "Your account moves to another server in about half an hour. Your posts, follows and identity come with you, and the people who follow you keep following you."
+    before:
+      title: "Before you start"
+      credentials: "Your current handle and your account password. App passwords don't work. If you use two-factor authentication, you'll also need the sign-in code we ask for."
+      email: "Access to the email address of your account. We send you a code there, and later your current server sends you one too."
+      time: "About half an hour in which you don't use your account."
+      invite: "For some servers, an invite code. The wizard tells you if the server you pick needs one."
+    moves:
+      title: "What moves with you"
+      everything: "Everything in your account: your posts and replies, likes and reposts, follows, lists and blocks, your profile, your images and videos, and your app settings, such as saved feeds and muted words. Your identity moves too, so the people who follow you keep following you."
+      handle: "Your handle can come along if it's on your own domain. A handle on your current server's domain, such as name.bsky.social, stays behind: you choose a new one on the new server."
+    steps:
+      title: "Step by step"
+      sign_in:
+        title: "Sign in"
+        text: "Sign in with your current handle and password. We use them to start the move and never store your password."
+      choose:
+        title: "Choose where to go"
+        text: "Pick a server, accept its terms if it has any, and choose your handle there. You can also ask for a backup of your whole account."
+      verify:
+        title: "Confirm your email"
+        text: "We email you a code. The move starts once you enter it on your migration's status page."
+      copy:
+        title: "We copy your account"
+        text: "We create your account on the new server and copy everything to it; the status page shows the progress. Don't post, like or follow in the meantime: those changes wouldn't come along."
+      confirm:
+        title: "Confirm the move"
+        text: "Your current server emails you a confirmation code. Enter it on the status page within an hour, or request a new one. This step points your identity at the new server."
+      done:
+        title: "Done"
+        text: "Your account on the new server is switched on and the old one is deactivated. We email you how to sign in, together with your new account's password."
+    know:
+      title: "Good to know"
+      duration: "Most moves take 20–30 minutes. Accounts with many images and videos take longer."
+      cancel: "Until you enter the confirmation code in step 5, you can cancel the move, and your account stays where it is."
+      recovery: "Pointing your identity at the new server can't be undone here. We give you a recovery key that can undo it, so keep it somewhere safe."
+      old_account: "Your old account is deactivated, not deleted. You can move back to its server later with this tool."
+      backup: "If you asked for a backup, you can download it for 24 hours."
+      deletion: "We delete the record of your move, and everything we kept for it, 2 days after the move is complete."
+      sign_in: "To sign in afterwards, use your new handle and choose your new server as the hosting provider in your app."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ en:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Rate limited by the server"
+        what_happened: "The server is limiting requests to avoid overload. This is normal when many migrations are running."
+        current_status:
+          retrying: "Retrying automatically with longer delays (attempt %{attempt} of %{max_attempts})"
+          exhausted: "No automatic retries left"
+        what_to_do:
+          wait: "Wait for the automatic retry (recommended) — each retry waits a little longer"
+          temporary: "Rate limiting is temporary and usually clears within a few minutes"
+          overloaded: "If it continues after %{max_attempts} retries, the server may be overloaded"
+      network:
+        title: "Network connection error"
+        what_happened:
+          repo_export: "The connection to your old PDS timed out or was interrupted while exporting your repository."
+          blob_download: "The connection to your old PDS timed out or was interrupted while downloading your blobs (images and videos)."
+          account_activation: "The connection to your new PDS timed out or was interrupted while activating your account."
+          other: "The connection to the PDS timed out or was interrupted during the migration."
+        current_status:
+          retrying: "Retrying automatically (attempt %{attempt} of %{max_attempts})"
+          exhausted: "No automatic retries left"
+        what_to_do:
+          wait: "Wait for the automatic retry (recommended)"
+          check_url: "Check whether %{url} opens in your browser"
+          may_be_down: "If the errors continue, the PDS may be down for a while or under heavy load"
+          contact_admin: "If the problem continues, contact the PDS administrator"
+      authentication:
+        title: "Sign-in failed"
+        what_happened: "We couldn't sign in to your PDS. This usually means the password is wrong or has expired."
+        current_status: "Migration stopped — new credentials needed"
+        what_to_do:
+          check_password: "Check that your password is correct"
+          check_expiry: "Check whether your credentials have expired (they are kept for 48 hours from the start of the migration)"
+          start_new: "Start a new migration with the correct credentials"
+          contact_admin: "If you're sure the password is correct, contact your PDS administrator"
+      email_taken:
+        title: "Email address already in use on the new PDS"
+        what_happened: "%{new_pds} already has an account with %{email}, so we couldn't create an account for your DID there. Your account on %{old_pds} is untouched."
+        current_status: "Migration stopped — no changes were made to your identity"
+        what_to_do:
+          account_is_yours: "If that account is yours, sign in to it on %{new_pds}, change its email address, then start a new migration"
+          other_email: "Or start a new migration with a different email address"
+          contact_provider: "If you don't recognise the account, contact the PDS provider: %{contact_email}"
+      account_exists:
+        title: "Account already exists on the new PDS"
+        what_happened: "An account with your DID already exists on the new PDS (%{new_pds}). This orphaned account is most likely left over from an earlier migration attempt that failed."
+        current_status: "Migration paused — the PDS provider needs to remove the orphaned account"
+        what_to_do:
+          contact_provider: "Contact the new PDS provider and ask them to remove the orphaned account:"
+          contact_email: "Email: %{contact_email}"
+          include_details: "Include your migration token (%{token}) and DID (%{did})"
+          retry_after_removal: "Once the orphaned account is removed, you can retry this migration."
+          provider_only: "This needs action from the PDS provider — you can't fix it yourself."
+      plc_token_expired:
+        title: "PLC token expired"
+        what_happened: "The PLC operation token you entered has expired. PLC tokens are only valid for 1 hour after your old PDS provider issues them."
+        current_status: "Migration paused — you need a new PLC token"
+        what_to_do:
+          request_token: "Use the \"%{button}\" button below to request a fresh token"
+          check_email: "Look for an email from %{old_pds} with the new token"
+          submit_in_time: "Enter the new token within 1 hour of receiving it"
+          data_safe: "The rest of your migration data is safe and ready — you just need a fresh token"
+      plc_pre_submission_failure:
+        title: "PLC update could not complete"
+        what_happened: "The PLC directory update could not be completed, but your account is safe. The PLC directory was not changed — your account is still on %{old_pds}."
+        current_status: "Migration paused — request a new confirmation code to try again"
+        what_to_do:
+          request_code: "Use the \"%{button}\" button below to get a fresh confirmation code"
+          check_email: "Look for an email from %{old_pds} with the new code"
+          submit_in_time: "Enter the new code within 1 hour of receiving it"
+          data_safe: "Your migration data (repository, blobs, preferences) is safe and ready"
+      credentials_need_reauth:
+        title: "Session expired — sign in again"
+        what_happened: "Your stored credentials have expired. For your security, they are deleted automatically after 48 hours. To continue the migration, sign in again."
+        current_status: "Migration paused — sign in again to continue"
+        what_to_do:
+          enter_password: "Enter your password below to sign in again"
+          data_safe: "Your migration data is safe — you just need fresh credentials"
+          resume: "After you sign in, the migration continues where it left off"
+      blob_not_found:
+        title: "Some blobs were not found"
+        what_happened: "Some blobs (images and videos) were not found on your old PDS. They may have been deleted or are no longer available."
+        current_status: "Migration continues — missing blobs will be skipped"
+        what_to_do:
+          not_critical: "This is usually not serious — the migration continues without these blobs"
+          media_may_be_missing: "Some older images or videos may not be transferred"
+          check_report: "After the migration finishes, check the failed blobs report for details"
+          reupload: "If needed, you can upload missing media again yourself after the migration"
+      data_corruption:
+        title: "Data corrupted during transfer"
+        what_happened: "Data was corrupted during the transfer. This can happen on slow or unstable network connections."
+        current_status:
+          retrying: "Downloading the corrupted data again (attempt %{attempt} of %{max_attempts})"
+          exhausted: "No automatic retries left"
+        what_to_do:
+          wait: "Wait for the automatic retry — the data will be downloaded again"
+          check_network: "If it keeps happening, check the quality of your network connection"
+          stable_network: "Try a more stable network connection"
+          large_repositories: "Large repositories can time out on slow connections"
+      disk_space:
+        title: "Out of disk space"
+        what_happened: "The server or PDS has run out of disk space."
+        current_status: "Migration stopped — an administrator needs to step in"
+        what_to_do:
+          contact_admin: "Contact the server or PDS administrator to free up disk space"
+          server_side: "This is a server-side problem — retrying won't fix it"
+          retry_later: "Once disk space has been freed, you can retry the migration"
+      invite_code:
+        title: "Invite code invalid or expired"
+        what_happened: "The invite code you entered is invalid, has expired or has already been used."
+        current_status: "Migration stopped — a valid invite code is needed"
+        what_to_do:
+          get_new_code: "Ask the new PDS administrator for a new invite code"
+          check_copy: "Check that you copied the invite code correctly (no extra spaces)"
+          start_new: "Start a new migration with the correct invite code"
+          may_not_be_needed: "Some PDS servers don't need an invite code — check with the administrator"
+      cancelled:
+        title: "Migration cancelled"
+        what_happened: "This migration was cancelled at your request. No changes were made to your account."
+        current_status: "Migration cancelled — your account stays on %{old_pds}"
+        what_to_do:
+          account_safe: "Your account is safe and unchanged on %{old_pds}"
+          start_new: "You can start a new migration at any time"
+      critical_plc:
+        title: "PLC directory update failed"
+        what_happened: "The PLC directory update did not complete. Your account data is safe."
+        current_status:
+          not_updated: "The PLC directory was not changed — you can request a new token and try again."
+          maybe_updated: "The PLC directory may have been partly updated. Contact support."
+        what_to_do:
+          request_token: "Try requesting a new PLC token — the update hasn't happened yet"
+          no_new_migration: "Don't start a new migration"
+          data_safe: "Your account data is safe and intact"
+          save_recovery_key: "Your recovery key is on this page — save it somewhere safe"
+          save_token: "Save this migration token: %{token}"
+          contact_support: "If the problem continues, contact support: %{support_email}"
+      generic:
+        title: "Migration error"
+        what_happened: "Something went wrong during the migration."
+        current_status:
+          retrying: "Retrying automatically (attempt %{attempt} of %{max_attempts})"
+          exhausted: "No automatic retries left"
+        what_to_do:
+          wait: "Wait for the automatic retry"
+          check_details: "If it keeps happening, check the technical details below"
+          contact_support: "If you need help, contact support: %{support_email}"
+      time_remaining:
+        a_few_moments: "a few moments"
+        seconds:
+          one: "%{count} second"
+          other: "%{count} seconds"
+        minutes:
+          one: "%{count} minute"
+          other: "%{count} minutes"
+        hours:
+          one: "%{count} hour"
+          other: "%{count} hours"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ en:
   mailers:
     common:
       eurosky_migration: "Eurosky Migration Service"
+      hello: "Hello,"
+      migration_label: "Migration %{token}"
+      migration_token: "Migration token: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Old handle"
+      label_new_handle: "New handle"
+      label_old_pds: "Old PDS"
+      label_new_pds: "New PDS"
+      label_target_pds: "Target PDS"
+      label_support_contact: "Support contact"
+      label_support_email: "Support email"
+      label_email: "Email"
+      label_migration_token: "Migration token"
+      label_failed_step: "Failed step"
+      details_heading: "Migration details"
+      account_details: "Account details"
+      account_safe: "Your account is safe"
+      what_happened: "What happened?"
+      what_happens_next: "What happens next?"
+      view_status: "View migration status"
+      select_to_copy: "Click to select and copy"
+      automated_notification: "This is an automated notification from %{site}."
 
     email_verification:
       subject: "Your verification code: %{code} (%{token})"
@@ -594,6 +828,8 @@ en:
       reminder3: "Close all apps and browser tabs with your account"
       reminder4: "Wait for the completion email before logging in again"
       not_you: "If you didn't initiate this migration, please ignore this email."
+      your_code: "Your verification code"
+      go_to_page_button: "Go to the migration page"
 
     account_password:
       subject: "Your new account password for %{handle} (%{token})"
@@ -616,6 +852,7 @@ en:
       no_backup_step2: "Your data is being migrated (without backup)"
       no_backup_step3: "You'll be notified when the migration is complete"
       track_progress: "Track your migration progress at:"
+      status_page_link: "Migration status page"
 
     migration_completed:
       subject: "Migration complete (%{token})"
@@ -626,15 +863,15 @@ en:
       save_password: "Save this password now — store it in a password manager."
       change_password: "You can change it after logging in for the first time."
       backup_heading: "Backup bundle available"
-      backup_help: "Your account data backup is available for download for the next 10 minutes:"
-      backup_expiry: "After 10 minutes, this link will expire and the backup will be permanently deleted."
+      backup_help: "Your account data backup can be downloaded until %{time}:"
+      backup_expiry: "After that, the link stops working and the backup is permanently deleted."
       summary: "Migration summary"
       migration_token: "Migration token: %{token}"
       did: "DID: %{did}"
       old_account: "Old account: %{handle} @ %{pds}"
       new_account: "New account: %{handle} @ %{pds}"
       completed_at: "Completed at: %{time}"
-      status_page: "View status page (available for 10 minutes):"
+      status_page: "View status page (available for 2 days):"
       login_heading: "How to log in to your new account"
       login_help: "If you haven't done so already, log out of your old account in any Bluesky app, then log in with your new handle:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ en:
       next3: "All your posts, follows, and data have been transferred"
       next4: "Your followers should automatically see your new location (DID-based)"
       privacy_heading: "Privacy and security"
-      privacy1: "This migration record will be automatically deleted in 10 minutes for GDPR compliance"
+      privacy1: "This migration record will be deleted automatically in 2 days for GDPR compliance"
       privacy2: "All encrypted credentials have been securely erased from our servers"
       support: "If you have questions or issues, please contact support with your migration token:"
       email_footer: "This email was sent to %{email} because you initiated an account migration."
+      download_backup: "Download backup bundle"
+      change_password_button: "Change your password"
+      old_account_label: "Old account"
+      new_account_label: "New account"
+      completed_at_label: "Completed at"
 
     migration_failed:
       subject: "Migration failed – action required (%{token})"
@@ -671,7 +913,7 @@ en:
       previous_retries: "Previous retry attempts: %{count}"
       what_to_do: "What you can do"
       do_step1: "Review the migration status:"
-      do_step2: "Click the \"Retry Migration\" button to attempt the migration again"
+      do_step2: "Click the \"Retry migration\" button to try the migration again"
       do_step3: "If the problem persists after multiple retries, please contact support with your migration token: %{token}"
       common_issues: "Common issues and solutions"
       issue1: "Network timeouts: Usually resolve on retry"
@@ -681,6 +923,17 @@ en:
       note1: "Your data on the old PDS remains intact"
       note2: "You can safely retry the migration"
       note3: "If you need help, reference your migration token: %{token}"
+      retry_button: "View migration and retry"
+      plc_expired_heading: "PLC token expired"
+      plc_expired_text: "Your PLC operation token has expired. PLC tokens are only valid for 1 hour after they are issued."
+      plc_expired_steps: "What you need to do"
+      plc_expired_step1: "Open your migration status page with the button below"
+      plc_expired_step2: "Click the \"Request new PLC token\" button"
+      plc_expired_step3: "Check your email from %{pds} for the new token"
+      plc_expired_step4: "Submit the new token within 1 hour"
+      plc_expired_button: "View migration and request a new token"
+      plc_expired_good_news: "Good news:"
+      plc_expired_safe: "Your migration data is safe and ready. You only need a new PLC token to complete the final step."
 
     backup_ready:
       subject: "Your Eurosky migration backup is ready (%{token})"
@@ -691,6 +944,7 @@ en:
       expires: "This download link expires at %{time}."
       expiry_warning: "After expiration, the backup will be permanently deleted from our servers."
       whats_next: "Your migration is continuing in the background. You'll receive another email when it's complete."
+      size_label: "Backup size"
 
     rotation_key_notice:
       subject: "Action required: confirm your migration with the PLC code (%{token})"
@@ -699,9 +953,17 @@ en:
       key_heading: "Your rotation key (save this first)"
       key_help: "Before proceeding, save this rotation key securely. It's your only way to recover your account if something goes wrong:"
       key_warning: "Store this key in a password manager or other secure location. You will not be able to retrieve it later."
-      next_step: "Go to the migration page to enter your PLC confirmation code:"
       check_email: "Check your email for a code from your old PDS provider — it looks like XXXXX-XXXXX"
       no_password_reset: "Important: do not log in to or reset the password of your new account on %{pds} until this migration has completed. Resetting the password there invalidates the credentials the migration uses, and it will fail."
+      plc_email_intro: "You will shortly receive an email from your old PDS provider (%{pds}) with the subject line:"
+      plc_code_info: "That email contains a confirmation code (it looks like %{example})."
+      plc_enter_code: "You need to enter this code on your migration status page to finalize the migration:"
+      plc_expiry: "Important: the confirmation code expires after 1 hour. If you don't see the email, check your spam folder. It comes from your old PDS provider, not from us."
+      save_key_heading: "Save this key now"
+      recovery_key_label: "Your recovery key:"
+      key_use_heading: "What can I do with this key?"
+      key_use: "If you ever need to recover your account, go to %{link} and use this key to restore access. It works even if your server is completely offline."
+      next_step_button: "Go to the migration page to enter your PLC confirmation code"
 
     plc_token_failed:
       subject: "Action required: request a new PLC confirmation code (%{token})"
@@ -712,6 +974,8 @@ en:
       step2: "Request a new PLC token (you may need to re-enter your password)"
       step3: "Enter the new token when you receive it via email"
       error_detail: "Error: %{error}"
+      safe_text: "The PLC directory was not changed. Your account remains on %{pds}, and all your migration data (repository, files and preferences) is stored safely and ready."
+      what_happened_text: "The confirmation code from your old PDS provider expired before it could be used. These codes are only valid for a limited time (usually 1 hour)."
 
     critical_plc_failure:
       subject: "Urgent: critical migration failure – do not start a new migration (%{token})"
@@ -722,12 +986,41 @@ en:
       key_help: "You will need this key to recover your account:"
       contact: "Contact support immediately:"
       error_detail: "Error: %{error}"
+      summary: "Your AT Protocol account migration has run into a critical error."
+      uncertain_state: "Your account may be in an uncertain state."
+      do_not_heading: "Please do not:"
+      do_not1: "Start a new migration"
+      do_not2: "Delete this email"
+      do_not3: "Try to recover the account yourself without support"
+      do_not4: "Change your account settings on either PDS"
+      data_safe: "Your account data is safe, but our support team needs to verify the state of the PLC directory before you take any action."
+      right_now_heading: "What to do right now"
+      step_save_email: "Save this email. You will need the information below."
+      step_save_token: "Save your migration token:"
+      step_reference_token: "Include your migration token in your support request:"
+      what_happened_text: "The migration failed during the PLC directory update, the critical step that points your DID to the new PDS."
+      support_will: "Our support team will:"
+      support1: "Investigate the PLC directory state for your DID"
+      support2: "Find out whether the PLC operation succeeded or failed"
+      support3: "Give you specific recovery instructions"
+      support4: "Contact you by email within 24 hours"
+      wait_for_support: "Do not take any action until you hear from support. We will guide you through the recovery."
+      automated: "This is an automated critical alert from %{site}."
 
     invalid_invite_code:
       subject: "Migration failed – invalid invite code (%{token})"
       heading: "Invalid invite code"
       intro: "Your migration %{token} could not proceed because the invite code was invalid or has already been used."
       what_to_do: "To start a new migration with a valid invite code:"
+      rejected: "The invite code provided for %{pds} was rejected. This can happen if:"
+      reason1: "The invite code was mistyped"
+      reason2: "The invite code has already been used"
+      reason3: "The invite code has expired"
+      reason4: "The invite code is not valid for this PDS"
+      safe1: "No changes were made to your account on %{pds}"
+      safe2: "No data was transferred or changed"
+      safe3: "Your account keeps working as normal on your current PDS"
+      start_new: "Start a new migration"
 
     orphaned_account_error:
       subject: "Migration paused – orphaned account on the destination server (%{token})"
@@ -738,6 +1031,18 @@ en:
       option1: "Contact the target PDS administrator at %{email} to remove the orphaned account"
       option2: "Include your DID: %{did}"
       option3: "Once removed, retry the migration from the status page:"
+      contact_heading: "Next step: contact the PDS provider"
+      contact_help: "Please contact the support team for %{pds} to request removal of the orphaned account."
+      email_support: "Email %{email}"
+      include_heading: "Include in your message:"
+      after_heading: "After support responds"
+      after1: "Return to your %{link}"
+      after2: "Click the \"Retry migration\" button"
+      after3: "Your migration will resume automatically"
+      status_page_link: "migration status page"
+      need_help: "Need help? Visit your %{link} for more details."
+      mailto_subject: "Orphaned account removal request – migration %{token}"
+      mailto_body: "Hello,\n\nI am trying to migrate to %{pds} but ran into an orphaned account error.\n\nMigration token: %{token}\nDID: %{did}\n\nCould you please remove the orphaned account so I can retry my migration?\n\nThank you."
 
     reauthentication_required:
       subject: "Action required: sign in again (%{token})"
@@ -745,8 +1050,13 @@ en:
       intro: "Your migration %{token} needs you to re-enter your password to continue."
       reason: "Your session with the old PDS has expired during the migration process."
       what_to_do: "Go to the migration page and re-enter your password:"
-      error_detail: "Error: %{error}"
       step: "Failed step: %{step}"
+      step1: "Open your migration status page"
+      step2: "Enter your password for %{handle} to sign in again"
+      step3: "The migration continues automatically where it left off"
+      button: "Sign in again and continue"
+      data_safe_heading: "Your data is safe."
+      data_safe: "All migration progress has been kept. You only need to sign in again so we can continue transferring your account."
 
     plc_token_reminder:
       subject: "Reminder: complete your migration by entering the PLC code (%{token})"
@@ -768,6 +1078,9 @@ en:
       confirm_help: "Click the link below to confirm the cancellation:"
       confirm_link: "Confirm cancellation"
       not_you: "If you didn't request this cancellation, you can safely ignore this email. Your migration will continue as normal."
+      safe_text: "No changes have been made to your account. Cancelling this migration only stops the process. Your account stays on %{pds} and keeps working as normal."
+      cannot_undo: "This cannot be undone. If you change your mind, you will need to start a new migration."
+      not_you_heading: "Didn't request this?"
 
     blobs_transfer_complete:
       subject: "All files transferred — your migration is fully complete (%{token})"
@@ -784,26 +1097,6 @@ en:
       what_to_do: "Open the status page and use \"Retry failed files\". Each retry uses the copies from your backup, so nothing is lost. You will receive a final email once everything has arrived:"
       keep_password: "Until then, do not change the password of your account on %{pds} — changing it cuts off the transfer for good."
       support: "If retries keep failing, contact support and include your migration token:"
-
-    plc_otp:
-      subject: "PLC verification code – point of no return (%{token})"
-      heading: "PLC verification code"
-      critical: "Critical: point of no return"
-      intro: "Your migration is ready for the final, irreversible step. You're about to submit your PLC token to redirect your DID to the new PDS."
-      your_code: "Your verification code"
-      expires_in: "Expires in %{time}"
-      point_of_no_return: "This is the point of no return"
-      point_of_no_return_detail: "Once you submit this code along with your PLC token, your account will be permanently migrated to the new PDS."
-      did_will_point: "Your DID will point to the new PDS immediately"
-      cannot_undo: "You cannot undo this operation"
-      ensure_ready: "Make sure your new account is ready before proceeding"
-      how_to_use: "How to use this code"
-      step1: "Go to your migration status page"
-      step2: "Enter your PLC token (from your old PDS email)"
-      step3: "Enter this verification code: %{code}"
-      step4: "Submit both to complete the migration"
-      attempts_note: "You have 5 attempts to enter the correct code. After that, you'll need to request a new one."
-      not_you: "If you didn't request this code, someone may be attempting to access your migration."
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations
