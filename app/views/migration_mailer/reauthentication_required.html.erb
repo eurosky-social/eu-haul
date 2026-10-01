@@ -1,55 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f59e0b; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-    .details { background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0; }
-    .button { display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-    .button:hover { background-color: #1d4ed8; }
-    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; color: #6b7280; }
-    .info-list { list-style: none; padding: 0; }
-    .info-list li { padding: 5px 0; }
-    .info-list strong { display: inline-block; width: 180px; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1 style="margin: 0;"><%= t('mailers.reauthentication_required.heading') %></h1>
-  </div>
+<%= email_title t('mailers.reauthentication_required.heading') %>
 
-  <p>Hello,</p>
+<%= email_text 'Hello,' %>
+<%= email_text t('mailers.reauthentication_required.intro', token: @migration.token) %>
+<%= email_text t('mailers.reauthentication_required.reason') %>
 
-  <p><%= t('mailers.reauthentication_required.intro', token: @migration.token) %></p>
-  <p><%= t('mailers.reauthentication_required.reason') %></p>
+<%= email_heading 'Account details' %>
+<%= email_details do %>
+  <%= email_detail_row 'Old handle', "@#{@migration.old_handle}" %>
+  <%= email_detail_row 'New handle', "@#{@migration.new_handle}" %>
+  <%= email_detail_row t('mailers.reauthentication_required.step', step: '').split(':').first, @failed_step.to_s.gsub('Job', '').humanize, mono: false %>
+<% end %>
 
-  <div class="details">
-    <h3 style="margin-top: 0;">Account Details</h3>
-    <ul class="info-list">
-      <li><strong>Old Handle:</strong> @<%= @migration.old_handle %></li>
-      <li><strong>New Handle:</strong> @<%= @migration.new_handle %></li>
-      <li><strong><%= t('mailers.reauthentication_required.step', step: '').split(':').first %>:</strong> <%= @failed_step.to_s.gsub('Job', '').humanize %></li>
-    </ul>
-  </div>
+<%= email_heading t('mailers.reauthentication_required.what_to_do') %>
+<%= email_list ordered: true do %>
+  <%= email_list_item 'Click the button below to open your migration status page' %>
+  <%= email_list_item do %>Enter your password for <strong>@<%= @migration.old_handle %></strong> to re-authenticate<% end %>
+  <%= email_list_item 'The migration will continue automatically where it left off' %>
+<% end %>
 
-  <h3><%= t('mailers.reauthentication_required.what_to_do') %></h3>
-  <ol>
-    <li>Click the button below to open your migration status page</li>
-    <li>Enter your password for <strong>@<%= @migration.old_handle %></strong> to re-authenticate</li>
-    <li>The migration will continue automatically where it left off</li>
-  </ol>
+<%= email_button 'Re-authenticate & continue', @migration_url %>
 
-  <a href="<%= @migration_url %>" class="button">Re-authenticate & Continue</a>
+<%= email_well do %>
+  <%= email_text tag.strong('Your data is safe.') %>
+  <%= email_text 'All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.' %>
+<% end %>
 
-  <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
-    <p style="margin: 0;"><strong>Your data is safe.</strong></p>
-    <p style="margin: 5px 0 0 0;">All migration progress has been preserved. You just need to re-authenticate so we can continue transferring your account.</p>
-  </div>
-
-  <div class="footer">
-    <p>Migration Token: <%= @migration.token %></p>
-    <p><%= t('mailers.migration_completed.email_footer', email: @migration.email) %></p>
-  </div>
-</body>
-</html>
+<% email_footer do %>
+  <%= email_text "Migration Token: #{@migration.token}", small: true %>
+  <%= email_text t('mailers.migration_completed.email_footer', email: @migration.email), small: true %>
+<% end %>

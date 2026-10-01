@@ -1,131 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      border-radius: 8px 8px 0 0;
-      text-align: center;
-    }
-    .content {
-      background: #f8f9fa;
-      padding: 30px;
-      border-radius: 0 0 8px 8px;
-    }
-    .button {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 15px 30px;
-      text-decoration: none;
-      border-radius: 6px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-    .button:hover {
-      background: #5568d3;
-    }
-    .info-box {
-      background: white;
-      border-left: 4px solid #667eea;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .warning-box {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .details {
-      background: white;
-      padding: 15px;
-      border-radius: 4px;
-      margin: 20px 0;
-    }
-    .details dl {
-      margin: 0;
-    }
-    .details dt {
-      font-weight: bold;
-      color: #666;
-      margin-top: 10px;
-    }
-    .details dd {
-      margin: 5px 0 10px 0;
-      color: #333;
-    }
-    .footer {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1><%= t('mailers.backup_ready.heading') %></h1>
-    <p>Migration <%= @migration.token %></p>
-  </div>
+<%= email_label "Migration #{@migration.token}" %>
+<%= email_title t('mailers.backup_ready.heading') %>
 
-  <div class="content">
-    <p>Hello,</p>
+<%= email_text 'Hello,' %>
+<%= email_text t('mailers.backup_ready.intro', token: @migration.token) %>
 
-    <p><%= t('mailers.backup_ready.intro', token: @migration.token) %></p>
+<%= email_details do %>
+  <%= email_detail_row 'DID', @migration.did %>
+  <%= email_detail_row 'Old handle', "@#{@migration.old_handle}" %>
+  <%= email_detail_row 'New handle', "@#{@migration.new_handle}" %>
+  <% if @backup_size %>
+    <%= email_detail_row t('mailers.backup_ready.size', size: '').split(':').first, number_to_human_size(@backup_size), mono: false %>
+  <% end %>
+<% end %>
 
-    <div class="details">
-      <dl>
-        <dt>DID:</dt>
-        <dd><code><%= @migration.did %></code></dd>
+<%= email_button t('mailers.backup_ready.download'), @download_url %>
 
-        <dt>Old Handle:</dt>
-        <dd>@<%= @migration.old_handle %></dd>
+<%= email_warning do %>
+  <%= email_heading t('mailers.backup_ready.expires', time: (@expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at)) %>
+  <%= email_text t('mailers.backup_ready.expiry_warning') %>
+<% end %>
 
-        <dt>New Handle:</dt>
-        <dd>@<%= @migration.new_handle %></dd>
+<%= email_well do %>
+  <%= email_text t('mailers.backup_ready.whats_next') %>
+<% end %>
 
-        <% if @backup_size %>
-        <dt><%= t('mailers.backup_ready.size', size: '').split(':').first %>:</dt>
-        <dd><%= number_to_human_size(@backup_size) %></dd>
-        <% end %>
-      </dl>
-    </div>
-
-    <div style="text-align: center;">
-      <a href="<%= @download_url %>" class="button">
-        <%= t('mailers.backup_ready.download') %>
-      </a>
-    </div>
-
-    <div class="warning-box">
-      <h3 style="margin-top: 0;"><%= t('mailers.backup_ready.expires', time: (@expires_at.strftime('%B %d, %Y at %l:%M %p %Z') if @expires_at)) %></h3>
-      <p><%= t('mailers.backup_ready.expiry_warning') %></p>
-    </div>
-
-    <div class="info-box">
-      <h3 style="margin-top: 0;"><%= t('mailers.backup_ready.whats_next') %></h3>
-    </div>
-
-    <div class="footer">
-      <p>Migration Token: <code><%= @migration.token %></code></p>
-      <p><%= t('mailers.common.eurosky_migration') %></p>
-    </div>
-  </div>
-</body>
-</html>
+<% email_footer do %>
+  <%= email_text small: true do %>Migration Token: <%= email_code @migration.token %><% end %>
+  <%= email_text t('mailers.common.eurosky_migration'), small: true %>
+<% end %>
