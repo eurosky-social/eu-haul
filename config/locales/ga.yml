@@ -47,6 +47,7 @@ ga:
   landing:
     page_title: "Bog do chuntas"
     title: "Bog do chuntas go dtí an Eoraip"
+    title_named: "Bog do chuntas chuig %{name}"
     lead: "Tabhair do phostálacha, na cuntais a leanann tú agus d'aitheantas chuig freastalaí Eorpach. Is féidir le do handle teacht leat, agus ní thabharfaidh do leantóirí aon rud faoi deara."
     start: "Tosaigh an imirce"
     how_it_works: "Conas a oibríonn sé"
@@ -61,6 +62,54 @@ ga:
       confirm:
         label: "Deimhnigh trí ríomhphost"
         text: "Aistrímid do shonraí agus iarraimid ort an chéim dheireanach a dheimhniú trí ríomhphost. Tógann sé thart ar 20–30 nóiméad."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Conas a oibríonn sé"
+    title: "Conas a oibríonn bogadh do chuntais"
+    lead: "Bogtar do chuntas chuig freastalaí eile i gceann thart ar leathuair an chloig. Tagann do phostálacha, na cuntais a leanann tú agus d'aitheantas leat, agus leanann na daoine a leanann thú ag leanúint ort."
+    before:
+      title: "Sula dtosaíonn tú"
+      credentials: "Do handle reatha agus pasfhocal do chuntais. Ní oibríonn pasfhocail aipe. Má úsáideann tú fíordheimhniú dhá fhachtóir, beidh an cód logála isteach a iarraimid ag teastáil uait freisin."
+      email: "Rochtain ar sheoladh ríomhphoist do chuntais. Seolaimid cód chugat ansin, agus níos déanaí seolann do fhreastalaí reatha ceann chugat freisin."
+      time: "Thart ar leathuair an chloig nach n-úsáideann tú do chuntas ann."
+      invite: "I gcás roinnt freastalaithe, cód cuiridh. Inseoidh an treoraí duit an bhfuil ceann ag teastáil ón bhfreastalaí a roghnaíonn tú."
+    moves:
+      title: "Cad a bhogann leat"
+      everything: "Gach rud i do chuntas: do phostálacha agus d'fhreagraí, na rudaí a thaitin leat agus d'athphostálacha, na cuntais a leanann tú, liostaí agus bacanna, do phróifíl, d'íomhánna agus d'fhíseáin, agus socruithe d'aipeanna, mar shampla fothaí sábháilte agus focail bhalbhaithe. Bogann d'aitheantas freisin, mar sin leanann na daoine a leanann thú ag leanúint ort."
+      handle: "Is féidir le do handle teacht leat má tá sé ar d'fhearann féin. Fanann handle ar fhearann do fhreastalaí reatha, mar shampla ainm.bsky.social, i do dhiaidh: roghnaíonn tú ceann nua ar an bhfreastalaí nua."
+    steps:
+      title: "Céim ar chéim"
+      sign_in:
+        title: "Logáil isteach"
+        text: "Logáil isteach le do handle agus do phasfhocal reatha. Úsáidimid iad chun an bogadh a thosú agus ní stórálaimid do phasfhocal riamh."
+      choose:
+        title: "Roghnaigh cá rachaidh tú"
+        text: "Roghnaigh freastalaí, glac lena théarmaí má tá téarmaí aige, agus roghnaigh do handle ansin. Is féidir leat cóip chúltaca de do chuntas ar fad a iarraidh freisin."
+      verify:
+        title: "Deimhnigh do ríomhphost"
+        text: "Seolaimid cód chugat i ríomhphost. Tosaíonn an bogadh nuair a chuireann tú isteach é ar leathanach stádais d'imirce."
+      copy:
+        title: "Cóipeálaimid do chuntas"
+        text: "Cruthaímid do chuntas ar an bhfreastalaí nua agus cóipeálaimid gach rud chuige; taispeánann an leathanach stádais an dul chun cinn. Ná postáil, ná taitin agus ná lean aon rud idir an dá linn: ní thiocfadh na hathruithe sin leat."
+      confirm:
+        title: "Deimhnigh an bogadh"
+        text: "Seolann do fhreastalaí reatha cód deimhnithe chugat i ríomhphost. Cuir isteach é ar an leathanach stádais laistigh d'uair an chloig, nó iarr ceann nua. Díríonn an chéim seo d'aitheantas ar an bhfreastalaí nua."
+      done:
+        title: "Críochnaithe"
+        text: "Cuirtear do chuntas ar an bhfreastalaí nua ar siúl agus díghníomhachtaítear an seancheann. Seolaimid ríomhphost chugat faoi conas logáil isteach, mar aon le pasfhocal do chuntais nua."
+    know:
+      title: "Eolas úsáideach"
+      duration: "Tógann formhór na mbogadh 20–30 nóiméad. Tógann cuntais a bhfuil go leor íomhánna agus físeán iontu níos faide."
+      cancel: "Go dtí go gcuireann tú an cód deimhnithe isteach i gcéim 5, is féidir leat an bogadh a chealú, agus fanann do chuntas mar a bhfuil sé."
+      recovery: "Ní féidir díriú d'aitheantais ar an bhfreastalaí nua a chealú anseo. Tugaimid eochair aisghabhála duit atá in ann é a chealú, mar sin coinnigh in áit shábháilte í."
+      old_account: "Díghníomhachtaítear do sheanchuntas, ní scriostar é. Is féidir leat bogadh ar ais chuig a fhreastalaí níos déanaí leis an uirlis seo."
+      backup: "Má d'iarr tú cóip chúltaca, is féidir leat í a íoslódáil ar feadh 24 uair an chloig."
+      deletion: "Scriosaimid taifead do bhogtha, agus gach rud a choinníomar dó, 2 lá tar éis don bhogadh a bheith críochnaithe."
+      sign_in: "Chun logáil isteach ina dhiaidh sin, úsáid do handle nua agus roghnaigh do fhreastalaí nua mar sholáthraí óstála i d'aip."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ ga:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Teorannú ráta ag an bhfreastalaí"
+        what_happened: "Tá an freastalaí ag teorannú iarratas chun ró-ualach a sheachaint. Is gnáthrud é seo nuair a bhíonn go leor imirce ar siúl."
+        current_status:
+          retrying: "Athiarracht uathoibríoch le moilleanna níos faide (iarracht %{attempt} as %{max_attempts})"
+          exhausted: "Níl aon athiarracht uathoibríoch fágtha"
+        what_to_do:
+          wait: "Fan leis an athiarracht uathoibríoch (molta) — fanann gach athiarracht beagán níos faide"
+          temporary: "Is rud sealadach é teorannú ráta agus glanann sé de ghnáth laistigh de chúpla nóiméad"
+          overloaded: "Má leanann sé tar éis %{max_attempts} athiarracht, d'fhéadfadh ró-ualach a bheith ar an bhfreastalaí"
+      network:
+        title: "Earráid cheangail líonra"
+        what_happened:
+          repo_export: "Chuaigh an ceangal le do sheanPDS thar am nó briseadh é agus do stór á easpórtáil."
+          blob_download: "Chuaigh an ceangal le do sheanPDS thar am nó briseadh é agus do bhloib (íomhánna agus físeáin) á n-íoslódáil."
+          account_activation: "Chuaigh an ceangal le do PDS nua thar am nó briseadh é agus do chuntas á ghníomhachtú."
+          other: "Chuaigh an ceangal leis an PDS thar am nó briseadh é le linn na himirce."
+        current_status:
+          retrying: "Athiarracht uathoibríoch (iarracht %{attempt} as %{max_attempts})"
+          exhausted: "Níl aon athiarracht uathoibríoch fágtha"
+        what_to_do:
+          wait: "Fan leis an athiarracht uathoibríoch (molta)"
+          check_url: "Seiceáil an osclaíonn %{url} i do bhrabhsálaí"
+          may_be_down: "Má leanann na hearráidí, d'fhéadfadh an PDS a bheith as feidhm ar feadh tamaill nó faoi ualach trom"
+          contact_admin: "Má leanann an fhadhb, déan teagmháil le riarthóir an PDS"
+      authentication:
+        title: "Theip ar logáil isteach"
+        what_happened: "Níorbh fhéidir linn logáil isteach i do PDS. De ghnáth ciallaíonn sé seo go bhfuil an pasfhocal mícheart nó imithe in éag."
+        current_status: "Imirce stoptha — tá dintiúir nua ag teastáil"
+        what_to_do:
+          check_password: "Seiceáil go bhfuil do phasfhocal ceart"
+          check_expiry: "Seiceáil an bhfuil do dhintiúir imithe in éag (coinnítear iad ar feadh 48 uair an chloig ó thús na himirce)"
+          start_new: "Tosaigh imirce nua leis na dintiúir chearta"
+          contact_admin: "Má tá tú cinnte go bhfuil an pasfhocal ceart, déan teagmháil le riarthóir do PDS"
+      email_taken:
+        title: "Seoladh ríomhphoist in úsáid cheana ar an PDS nua"
+        what_happened: "Tá cuntas ag %{new_pds} cheana le %{email}, mar sin níorbh fhéidir linn cuntas a chruthú do do DID ansin. Níor athraíodh do chuntas ar %{old_pds}."
+        current_status: "Imirce stoptha — níor athraíodh aon rud ar d'aitheantas"
+        what_to_do:
+          account_is_yours: "Más leatsa an cuntas sin, logáil isteach ann ar %{new_pds}, athraigh a sheoladh ríomhphoist, agus ansin tosaigh imirce nua"
+          other_email: "Nó tosaigh imirce nua le seoladh ríomhphoist eile"
+          contact_provider: "Mura n-aithníonn tú an cuntas, déan teagmháil le soláthraí an PDS: %{contact_email}"
+      account_exists:
+        title: "Tá cuntas ann cheana ar an PDS nua"
+        what_happened: "Tá cuntas le do DID ann cheana ar an PDS nua (%{new_pds}). Is dócha gur fágadh an cuntas dílleachta seo ó iarracht imirce níos luaithe a theip."
+        current_status: "Imirce ar sos — caithfidh soláthraí an PDS an cuntas dílleachta a bhaint"
+        what_to_do:
+          contact_provider: "Déan teagmháil le soláthraí an PDS nua agus iarr orthu an cuntas dílleachta a bhaint:"
+          contact_email: "Ríomhphost: %{contact_email}"
+          include_details: "Cuir do chomhartha imirce (%{token}) agus do DID (%{did}) san áireamh"
+          retry_after_removal: "Nuair a bhaintear an cuntas dílleachta, is féidir leat triail eile a bhaint as an imirce seo."
+          provider_only: "Tá gníomh ag teastáil ó sholáthraí an PDS — ní féidir leat é a réiteach thú féin."
+      plc_token_expired:
+        title: "Comhartha PLC imithe in éag"
+        what_happened: "Tá an comhartha oibríochta PLC a chuir tú isteach imithe in éag. Níl comharthaí PLC bailí ach ar feadh uair an chloig tar éis do do sheansoláthraí PDS iad a eisiúint."
+        current_status: "Imirce ar sos — tá comhartha PLC nua ag teastáil uait"
+        what_to_do:
+          request_token: "Úsáid an cnaipe \"%{button}\" thíos chun comhartha nua a iarraidh"
+          check_email: "Lorg ríomhphost ó %{old_pds} leis an gcomhartha nua"
+          submit_in_time: "Cuir isteach an comhartha nua laistigh d'uair an chloig tar éis duit é a fháil"
+          data_safe: "Tá an chuid eile de shonraí d'imirce slán agus réidh — níl uait ach comhartha nua"
+      plc_pre_submission_failure:
+        title: "Níorbh fhéidir an nuashonrú PLC a chríochnú"
+        what_happened: "Níorbh fhéidir nuashonrú an eolaire PLC a chríochnú, ach tá do chuntas slán. Níor athraíodh an t-eolaire PLC — tá do chuntas fós ar %{old_pds}."
+        current_status: "Imirce ar sos — iarr cód deimhnithe nua chun triail eile a bhaint as"
+        what_to_do:
+          request_code: "Úsáid an cnaipe \"%{button}\" thíos chun cód deimhnithe nua a fháil"
+          check_email: "Lorg ríomhphost ó %{old_pds} leis an gcód nua"
+          submit_in_time: "Cuir isteach an cód nua laistigh d'uair an chloig tar éis duit é a fháil"
+          data_safe: "Tá sonraí d'imirce (stór, bloib, sainroghanna) slán agus réidh"
+      credentials_need_reauth:
+        title: "Seisiún imithe in éag — logáil isteach arís"
+        what_happened: "Tá na dintiúir stóráilte imithe in éag. Ar mhaithe le do shlándáil, scriostar iad go huathoibríoch tar éis 48 uair an chloig. Chun leanúint leis an imirce, logáil isteach arís."
+        current_status: "Imirce ar sos — logáil isteach arís chun leanúint ar aghaidh"
+        what_to_do:
+          enter_password: "Cuir isteach do phasfhocal thíos chun logáil isteach arís"
+          data_safe: "Tá sonraí d'imirce slán — níl uait ach dintiúir nua"
+          resume: "Nuair a logálann tú isteach, leanann an imirce ar aghaidh ón áit ar stop sí"
+      blob_not_found:
+        title: "Níor aimsíodh roinnt blob"
+        what_happened: "Níor aimsíodh roinnt blob (íomhánna agus físeáin) ar do sheanPDS. B'fhéidir gur scriosadh iad nó nach bhfuil siad ar fáil níos mó."
+        current_status: "Leanann an imirce ar aghaidh — scipeálfar na bloib atá ar iarraidh"
+        what_to_do:
+          not_critical: "De ghnáth ní fadhb mhór é seo — leanann an imirce ar aghaidh gan na bloib seo"
+          media_may_be_missing: "D'fhéadfadh nach n-aistreofaí roinnt íomhánna nó físeán níos sine"
+          check_report: "Nuair a chríochnaíonn an imirce, féach ar thuairisc na mblob teipthe le haghaidh sonraí"
+          reupload: "Más gá, is féidir leat na meáin atá ar iarraidh a uaslódáil arís thú féin tar éis na himirce"
+      data_corruption:
+        title: "Sonraí truaillithe le linn an aistrithe"
+        what_happened: "Truaillíodh sonraí le linn an aistrithe. Is féidir go dtarlódh sé seo ar cheangail líonra mhalla nó éagobhsaí."
+        current_status:
+          retrying: "Na sonraí truaillithe á n-íoslódáil arís (iarracht %{attempt} as %{max_attempts})"
+          exhausted: "Níl aon athiarracht uathoibríoch fágtha"
+        what_to_do:
+          wait: "Fan leis an athiarracht uathoibríoch — íoslódálfar na sonraí arís"
+          check_network: "Má tharlaíonn sé arís, seiceáil cáilíocht do cheangail líonra"
+          stable_network: "Bain triail as ceangal líonra níos cobhsaí"
+          large_repositories: "Féadann stórtha móra dul thar am ar cheangail mhalla"
+      disk_space:
+        title: "Spás diosca ídithe"
+        what_happened: "Tá spás diosca ídithe ar an bhfreastalaí nó ar an PDS."
+        current_status: "Imirce stoptha — caithfidh riarthóir idirghabháil a dhéanamh"
+        what_to_do:
+          contact_admin: "Déan teagmháil le riarthóir an fhreastalaí nó an PDS chun spás diosca a shaoradh"
+          server_side: "Is fadhb ar thaobh an fhreastalaí í seo — ní réiteoidh athiarracht í"
+          retry_later: "Nuair a bheidh spás diosca saor, is féidir leat triail eile a bhaint as an imirce"
+      invite_code:
+        title: "Cód cuiridh neamhbhailí nó imithe in éag"
+        what_happened: "Tá an cód cuiridh a chuir tú isteach neamhbhailí, imithe in éag nó úsáidte cheana."
+        current_status: "Imirce stoptha — tá cód cuiridh bailí ag teastáil"
+        what_to_do:
+          get_new_code: "Iarr cód cuiridh nua ar riarthóir an PDS nua"
+          check_copy: "Seiceáil gur chóipeáil tú an cód cuiridh i gceart (gan spásanna breise)"
+          start_new: "Tosaigh imirce nua leis an gcód cuiridh ceart"
+          may_not_be_needed: "Ní theastaíonn cód cuiridh ó roinnt freastalaithe PDS — seiceáil leis an riarthóir"
+      cancelled:
+        title: "Imirce cealaithe"
+        what_happened: "Cealaíodh an imirce seo ar d'iarratas. Níor athraíodh aon rud ar do chuntas."
+        current_status: "Imirce cealaithe — fanann do chuntas ar %{old_pds}"
+        what_to_do:
+          account_safe: "Tá do chuntas slán agus gan athrú ar %{old_pds}"
+          start_new: "Is féidir leat imirce nua a thosú am ar bith"
+      critical_plc:
+        title: "Theip ar nuashonrú an eolaire PLC"
+        what_happened: "Níor críochnaíodh nuashonrú an eolaire PLC. Tá sonraí do chuntais slán."
+        current_status:
+          not_updated: "Níor athraíodh an t-eolaire PLC — is féidir leat comhartha nua a iarraidh agus triail eile a bhaint as."
+          maybe_updated: "D'fhéadfadh go bhfuil an t-eolaire PLC nuashonraithe go páirteach. Déan teagmháil le tacaíocht."
+        what_to_do:
+          request_token: "Bain triail as comhartha PLC nua a iarraidh — níor tharla an nuashonrú fós"
+          no_new_migration: "Ná tosaigh imirce nua"
+          data_safe: "Tá sonraí do chuntais slán agus iomlán"
+          save_recovery_key: "Tá d'eochair aisghabhála ar an leathanach seo — coinnigh in áit shábháilte í"
+          save_token: "Sábháil an comhartha imirce seo: %{token}"
+          contact_support: "Má leanann an fhadhb, déan teagmháil le tacaíocht: %{support_email}"
+      generic:
+        title: "Earráid imirce"
+        what_happened: "Chuaigh rud éigin mícheart le linn na himirce."
+        current_status:
+          retrying: "Athiarracht uathoibríoch (iarracht %{attempt} as %{max_attempts})"
+          exhausted: "Níl aon athiarracht uathoibríoch fágtha"
+        what_to_do:
+          wait: "Fan leis an athiarracht uathoibríoch"
+          check_details: "Má tharlaíonn sé arís, féach ar na sonraí teicniúla thíos"
+          contact_support: "Má tá cabhair uait, déan teagmháil le tacaíocht: %{support_email}"
+      time_remaining:
+        a_few_moments: "cúpla soicind"
+        seconds:
+          one: "%{count} soicind"
+          other: "%{count} soicind"
+        minutes:
+          one: "%{count} nóiméad"
+          other: "%{count} nóiméad"
+        hours:
+          one: "%{count} uair an chloig"
+          other: "%{count} uair an chloig"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ ga:
   mailers:
     common:
       eurosky_migration: "Seirbhís Imirce Eurosky"
+      hello: "Dia duit,"
+      migration_label: "Imirce %{token}"
+      migration_token: "Comhartha imirce: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Comhartha"
+      label_did: "DID"
+      label_old_handle: "Sean-handle"
+      label_new_handle: "Handle nua"
+      label_old_pds: "SeanPDS"
+      label_new_pds: "PDS nua"
+      label_target_pds: "PDS sprice"
+      label_support_contact: "Teagmháil tacaíochta"
+      label_support_email: "Ríomhphost tacaíochta"
+      label_email: "Ríomhphost"
+      label_migration_token: "Comhartha imirce"
+      label_failed_step: "Céim theipthe"
+      details_heading: "Sonraí na himirce"
+      account_details: "Sonraí an chuntais"
+      account_safe: "Tá do chuntas slán"
+      what_happened: "Cad a tharla?"
+      what_happens_next: "Cad a tharlóidh ansin?"
+      view_status: "Féach ar stádas na himirce"
+      select_to_copy: "Cliceáil chun roghnú agus cóipeáil"
+      automated_notification: "Is fógra uathoibríoch é seo ó %{site}."
 
     email_verification:
       subject: "Do chód deimhnithe: %{code} (%{token})"
@@ -594,6 +828,8 @@ ga:
       reminder3: "Dún gach aip agus cluaisín brabhsálaí a bhaineann le do chuntas"
       reminder4: "Fan leis an ríomhphost críochnaithe sula logálann tú isteach arís"
       not_you: "Mura tusa a thosaigh an imirce seo, déan neamhaird den ríomhphost seo le do thoil."
+      your_code: "Do chód deimhnithe"
+      go_to_page_button: "Téigh chuig leathanach na himirce"
 
     account_password:
       subject: "Do phasfhocal nua cuntais do %{handle} (%{token})"
@@ -616,6 +852,7 @@ ga:
       no_backup_step2: "Tá do shonraí á n-aistriú (gan cóip chúltaca)"
       no_backup_step3: "Cuirfear ar an eolas thú nuair a bheidh an imirce críochnaithe"
       track_progress: "Lean dul chun cinn d'imirce ag:"
+      status_page_link: "Leathanach stádais na himirce"
 
     migration_completed:
       subject: "Imirce críochnaithe (%{token})"
@@ -626,15 +863,15 @@ ga:
       save_password: "Sábháil an pasfhocal seo anois — stóráil i mbainisteoir pasfhocal é."
       change_password: "Is féidir leat é a athrú tar éis logáil isteach den chéad uair."
       backup_heading: "Pacáiste cóip chúltaca ar fáil"
-      backup_help: "Tá cóip chúltaca sonraí do chuntais ar fáil le híoslódáil ar feadh na chéad 10 nóiméad eile:"
-      backup_expiry: "Tar éis 10 nóiméad, rachaidh an nasc seo in éag agus scriosfar an chóip chúltaca go buan."
+      backup_help: "Is féidir cóip chúltaca sonraí do chuntais a íoslódáil go dtí %{time}:"
+      backup_expiry: "Ina dhiaidh sin, ní oibríonn an nasc a thuilleadh agus scriostar an chóip chúltaca go buan."
       summary: "Achoimre ar an imirce"
       migration_token: "Comhartha imirce: %{token}"
       did: "DID: %{did}"
       old_account: "Sean-chuntas: %{handle} @ %{pds}"
       new_account: "Cuntas nua: %{handle} @ %{pds}"
       completed_at: "Críochnaithe: %{time}"
-      status_page: "Féach ar an leathanach stádais (ar fáil ar feadh 10 nóiméad):"
+      status_page: "Féach ar an leathanach stádais (ar fáil ar feadh 2 lá):"
       login_heading: "Conas logáil isteach ar do chuntas nua"
       login_help: "Mura ndearna tú cheana é, logáil amach as do shean-chuntas in aon aip Bluesky, ansin logáil isteach le do handle nua:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ ga:
       next3: "Aistríodh do phostálacha, do leanúintí agus do shonraí go léir"
       next4: "Ba cheart go bhfeicfeadh do leantóirí do shuíomh nua go huathoibríoch (bunaithe ar DID)"
       privacy_heading: "Príobháideacht agus slándáil"
-      privacy1: "Scriosfar an taifead imirce seo go huathoibríoch i gceann 10 nóiméad le haghaidh comhlíonadh GDPR"
+      privacy1: "Scriosfar an taifead imirce seo go huathoibríoch i gceann 2 lá le haghaidh comhlíonadh GDPR"
       privacy2: "Scriosadh gach dintiúir criptithe go slán ónár bhfreastalaithe"
       support: "Má tá ceisteanna nó fadhbanna agat, déan teagmháil le tacaíocht le do chomhartha imirce:"
       email_footer: "Seoladh an ríomhphost seo chuig %{email} mar thosaigh tú imirce cuntais."
+      download_backup: "Íoslódáil an pacáiste cóip chúltaca"
+      change_password_button: "Athraigh do phasfhocal"
+      old_account_label: "Sean-chuntas"
+      new_account_label: "Cuntas nua"
+      completed_at_label: "Críochnaithe"
 
     blobs_transfer_complete:
       subject: "Gach comhad aistrithe — tá d'aistriú críochnaithe go hiomlán (%{token})"
@@ -672,26 +914,6 @@ ga:
       what_to_do: "Oscail an leathanach stádais agus úsáid \"Bain triail eile as na comhaid ar theip orthu\". Úsáideann gach iarracht na cóipeanna ó do chúltaca, mar sin ní chailltear rud ar bith. Gheobhaidh tú ríomhphost deiridh nuair a bheidh gach rud tagtha:"
       keep_password: "Go dtí sin, ná hathraigh pasfhocal do chuntais ar %{pds} — gearrann athrú an t-aistriú go deo."
       support: "Má leanann na hiarrachtaí ag teip, déan teagmháil le tacaíocht agus cuir do chomhartha aistrithe san áireamh:"
-
-    plc_otp:
-      subject: "Cód deimhnithe PLC – pointe gan filleadh (%{token})"
-      heading: "Cód deimhnithe PLC"
-      critical: "Criticiúil: pointe gan filleadh"
-      intro: "Tá d'imirce réidh don chéim dheireanach nach féidir a aisiompú. Tá tú ar tí do chomhartha PLC a chur isteach chun do DID a atreorú chuig an PDS nua."
-      your_code: "Do chód deimhnithe"
-      expires_in: "Téann in éag i gceann %{time}"
-      point_of_no_return: "Seo é an pointe gan filleadh"
-      point_of_no_return_detail: "Nuair a chuireann tú an cód seo isteach in éineacht le do chomhartha PLC, aistreofar do chuntas go buan chuig an PDS nua."
-      did_will_point: "Díreoidh do DID ar an PDS nua láithreach"
-      cannot_undo: "Ní féidir leat an oibríocht seo a chealú"
-      ensure_ready: "Cinntigh go bhfuil do chuntas nua réidh sula leanann tú ar aghaidh"
-      how_to_use: "Conas an cód seo a úsáid"
-      step1: "Téigh chuig leathanach stádais d'imirce"
-      step2: "Cuir isteach do chomhartha PLC (ón ríomhphost ó do shean-PDS)"
-      step3: "Cuir isteach an cód deimhnithe seo: %{code}"
-      step4: "Cuir an dá cheann isteach chun an imirce a chríochnú"
-      attempts_note: "Tá 5 iarracht agat chun an cód ceart a chur isteach. Ina dhiaidh sin, beidh ort ceann nua a iarraidh."
-      not_you: "Mura tusa a d'iarr an cód seo, d'fhéadfadh duine éigin a bheith ag iarraidh rochtain a fháil ar d'imirce."
 
 
     migration_failed:
@@ -718,6 +940,17 @@ ga:
       note1: "Fanann do shonraí ar an sean-PDS slán"
       note2: "Is féidir leat triail eile a bhaint as an imirce go sábháilte"
       note3: "Más gá cabhair, tagair do do chomhartha imirce: %{token}"
+      retry_button: "Féach ar an imirce agus bain triail eile as"
+      plc_expired_heading: "Comhartha PLC imithe in éag"
+      plc_expired_text: "Tá do chomhartha oibríochta PLC imithe in éag. Níl comharthaí PLC bailí ach ar feadh uair an chloig tar éis iad a eisiúint."
+      plc_expired_steps: "Cad atá le déanamh agat"
+      plc_expired_step1: "Oscail leathanach stádais d'imirce leis an gcnaipe thíos"
+      plc_expired_step2: "Cliceáil ar an gcnaipe \"Iarr comhartha PLC nua\""
+      plc_expired_step3: "Seiceáil do ríomhphost ó %{pds} don chomhartha nua"
+      plc_expired_step4: "Cuir isteach an comhartha nua laistigh d'uair an chloig"
+      plc_expired_button: "Féach ar an imirce agus iarr comhartha nua"
+      plc_expired_good_news: "Dea-scéala:"
+      plc_expired_safe: "Tá sonraí d'imirce slán agus réidh. Níl uait ach comhartha PLC nua chun an chéim dheireanach a chríochnú."
 
     backup_ready:
       subject: "Tá do chóip chúltaca imirce Eurosky réidh (%{token})"
@@ -728,6 +961,7 @@ ga:
       expires: "Rachaidh an nasc íoslódála seo in éag ag %{time}."
       expiry_warning: "Tar éis dul in éag, scriosfar an chóip chúltaca go buan ónár bhfreastalaithe."
       whats_next: "Tá d'imirce ag leanúint sa chúlra. Gheobhaidh tú ríomhphost eile nuair a bheidh sé críochnaithe."
+      size_label: "Méid na cóipe cúltaca"
 
     rotation_key_notice:
       subject: "Gníomh ag teastáil: deimhnigh d'imirce leis an gcód PLC (%{token})"
@@ -736,9 +970,17 @@ ga:
       key_heading: "D'eochair rothlaithe (sábháil í seo ar dtús)"
       key_help: "Sula leanann tú ar aghaidh, sábháil an eochair rothlaithe seo go slán. Is é an t-aon bhealach agat é chun do chuntas a aisghabháil má théann rud éigin amú:"
       key_warning: "Stóráil an eochair seo i mbainisteoir pasfhocal nó áit shlán eile. Ní bheidh tú in ann í a fháil ar ais níos déanaí."
-      next_step: "Téigh chuig leathanach na himirce chun do chód deimhnithe PLC a chur isteach:"
       check_email: "Seiceáil do ríomhphost le haghaidh cóid ó do shean-soláthraí PDS — breathnaíonn sé cosúil le XXXXX-XXXXX"
       no_password_reset: "Tábhachtach: ná logáil isteach i do chuntas nua ar %{pds} agus ná hathshocraigh an pasfhocal ansin go dtí go mbeidh an t-aistriú seo críochnaithe. Cuireann athshocrú an phasfhocail na dintiúir a úsáideann an t-aistriú ó bhail, agus teipfidh ar an aistriú."
+      plc_email_intro: "Gheobhaidh tú ríomhphost go luath ó do sheansoláthraí PDS (%{pds}) leis an líne ábhair seo:"
+      plc_code_info: "Tá cód deimhnithe sa ríomhphost sin (breathnaíonn sé cosúil le %{example})."
+      plc_enter_code: "Ní mór duit an cód seo a chur isteach ar leathanach stádais d'imirce chun an imirce a chur i gcrích:"
+      plc_expiry: "Tábhachtach: téann an cód deimhnithe in éag tar éis uair an chloig. Mura bhfeiceann tú an ríomhphost, seiceáil d'fhillteán dramhphoist. Tagann sé ó do sheansoláthraí PDS, ní uainne."
+      save_key_heading: "Sábháil an eochair seo anois"
+      recovery_key_label: "D'eochair aisghabhála:"
+      key_use_heading: "Cad is féidir liom a dhéanamh leis an eochair seo?"
+      key_use: "Má bhíonn ort do chuntas a aisghabháil riamh, téigh chuig %{link} agus úsáid an eochair seo chun rochtain a athbhunú. Oibríonn sé fiú má tá do fhreastalaí as líne go hiomlán."
+      next_step_button: "Téigh chuig leathanach na himirce chun do chód deimhnithe PLC a chur isteach"
 
     plc_token_failed:
       subject: "Gníomh ag teastáil: iarr cód deimhnithe PLC nua (%{token})"
@@ -749,6 +991,8 @@ ga:
       step2: "Iarr comhartha PLC nua (b'fhéidir go mbeidh ort do phasfhocal a chur isteach arís)"
       step3: "Cuir isteach an comhartha nua nuair a fhaigheann tú é trí ríomhphost"
       error_detail: "Earráid: %{error}"
+      safe_text: "Níor athraíodh an t-eolaire PLC. Fanann do chuntas ar %{pds}, agus tá sonraí d'imirce go léir (stór, comhaid agus sainroghanna) stóráilte go slán agus réidh."
+      what_happened_text: "Chuaigh an cód deimhnithe ó do sheansoláthraí PDS in éag sular úsáideadh é. Níl na cóid seo bailí ach ar feadh tréimhse teoranta (uair an chloig de ghnáth)."
 
     critical_plc_failure:
       subject: "Práinneach: teip chriticiúil imirce – ná tosaigh imirce nua (%{token})"
@@ -759,12 +1003,41 @@ ga:
       key_help: "Beidh an eochair seo ag teastáil uait chun do chuntas a aisghabháil:"
       contact: "Déan teagmháil le tacaíocht láithreach:"
       error_detail: "Earráid: %{error}"
+      summary: "Tharla earráid chriticiúil le himirce do chuntais AT Protocol."
+      uncertain_state: "D'fhéadfadh do chuntas a bheith i staid éiginnte."
+      do_not_heading: "Le do thoil, ná déan na rudaí seo:"
+      do_not1: "Imirce nua a thosú"
+      do_not2: "An ríomhphost seo a scriosadh"
+      do_not3: "Iarracht a dhéanamh an cuntas a aisghabháil thú féin gan tacaíocht"
+      do_not4: "Socruithe do chuntais a athrú ar cheachtar PDS"
+      data_safe: "Tá sonraí do chuntais slán, ach caithfidh ár bhfoireann tacaíochta staid an eolaire PLC a fhíorú sula ndéanann tú aon rud."
+      right_now_heading: "Cad atá le déanamh anois"
+      step_save_email: "Sábháil an ríomhphost seo. Beidh an t-eolas thíos ag teastáil uait."
+      step_save_token: "Sábháil do chomhartha imirce:"
+      step_reference_token: "Cuir do chomhartha imirce san áireamh i d'iarratas tacaíochta:"
+      what_happened_text: "Theip ar an imirce le linn nuashonrú an eolaire PLC, an chéim chriticiúil a dhíríonn do DID ar an PDS nua."
+      support_will: "Seo a dhéanfaidh ár bhfoireann tacaíochta:"
+      support1: "Staid an eolaire PLC do do DID a fhiosrú"
+      support2: "A fháil amach ar éirigh leis an oibríocht PLC nó ar theip uirthi"
+      support3: "Treoracha sonracha aisghabhála a thabhairt duit"
+      support4: "Teagmháil a dhéanamh leat trí ríomhphost laistigh de 24 uair an chloig"
+      wait_for_support: "Ná déan aon rud go dtí go gcloiseann tú ón tacaíocht. Treoróimid thú tríd an aisghabháil."
+      automated: "Is foláireamh criticiúil uathoibríoch é seo ó %{site}."
 
     invalid_invite_code:
       subject: "Theip ar an imirce – cód cuiridh neamhbhailí (%{token})"
       heading: "Cód cuiridh neamhbhailí"
       intro: "Níorbh fhéidir le d'imirce %{token} leanúint ar aghaidh mar bhí an cód cuiridh neamhbhailí nó úsáideadh cheana é."
       what_to_do: "Chun imirce nua a thosú le cód cuiridh bailí:"
+      rejected: "Diúltaíodh don chód cuiridh a tugadh do %{pds}. Seo roinnt cúiseanna féideartha:"
+      reason1: "Clóscríobhadh an cód cuiridh go mícheart"
+      reason2: "Úsáideadh an cód cuiridh cheana"
+      reason3: "Tá an cód cuiridh imithe in éag"
+      reason4: "Níl an cód cuiridh bailí don PDS seo"
+      safe1: "Níor athraíodh aon rud ar do chuntas ar %{pds}"
+      safe2: "Níor aistríodh ná níor athraíodh aon sonraí"
+      safe3: "Leanann do chuntas ag obair mar is gnáth ar do PDS reatha"
+      start_new: "Tosaigh imirce nua"
 
     orphaned_account_error:
       subject: "Imirce ar sos – cuntas dílleachta ar an bhfreastalaí ceann scríbe (%{token})"
@@ -775,6 +1048,18 @@ ga:
       option1: "Déan teagmháil le riarthóir an PDS sprice ag %{email} chun an cuntas dílleachta a bhaint"
       option2: "Cuir do DID san áireamh: %{did}"
       option3: "Nuair a bhaintear é, bain triail eile as an imirce ón leathanach stádais:"
+      contact_heading: "An chéad chéim eile: déan teagmháil le soláthraí an PDS"
+      contact_help: "Déan teagmháil le foireann tacaíochta %{pds} chun iarraidh orthu an cuntas dílleachta a bhaint."
+      email_support: "Seol ríomhphost chuig %{email}"
+      include_heading: "Cuir san áireamh i do theachtaireacht:"
+      after_heading: "Tar éis don tacaíocht freagra a thabhairt"
+      after1: "Fill ar do %{link}"
+      after2: "Cliceáil ar an gcnaipe \"Bain triail eile as an imirce\""
+      after3: "Leanfaidh d'imirce ar aghaidh go huathoibríoch"
+      status_page_link: "leathanach stádais na himirce"
+      need_help: "An bhfuil cabhair uait? Tabhair cuairt ar do %{link} le haghaidh tuilleadh sonraí."
+      mailto_subject: "Iarratas ar chuntas dílleachta a bhaint – imirce %{token}"
+      mailto_body: "Dia duit,\n\nTá mé ag iarraidh imirce a dhéanamh chuig %{pds} ach fuair mé earráid cuntais dhílleachta.\n\nComhartha imirce: %{token}\nDID: %{did}\n\nAn bhféadfá an cuntas dílleachta a bhaint, le do thoil, ionas gur féidir liom triail eile a bhaint as m'imirce?\n\nGo raibh maith agat."
 
     reauthentication_required:
       subject: "Gníomh ag teastáil: logáil isteach arís (%{token})"
@@ -782,8 +1067,13 @@ ga:
       intro: "Tá d'imirce %{token} ag teastáil uait do phasfhocal a chur isteach arís chun leanúint ar aghaidh."
       reason: "Chuaigh do sheisiún leis an sean-PDS in éag le linn an phróisis imirce."
       what_to_do: "Téigh chuig leathanach na himirce agus cuir isteach do phasfhocal arís:"
-      error_detail: "Earráid: %{error}"
       step: "Céim theipthe: %{step}"
+      step1: "Oscail leathanach stádais d'imirce"
+      step2: "Cuir isteach do phasfhocal do %{handle} chun logáil isteach arís"
+      step3: "Leanann an imirce ar aghaidh go huathoibríoch ón áit ar stop sí"
+      button: "Logáil isteach arís agus lean ar aghaidh"
+      data_safe_heading: "Tá do shonraí slán."
+      data_safe: "Coinníodh dul chun cinn na himirce ar fad. Níl ort ach logáil isteach arís ionas gur féidir linn leanúint le do chuntas a aistriú."
 
     plc_token_reminder:
       subject: "Meabhrúchán: críochnaigh d'imirce tríd an gcód PLC a chur isteach (%{token})"
@@ -805,6 +1095,9 @@ ga:
       confirm_help: "Cliceáil ar an nasc thíos chun an cealú a dheimhniú:"
       confirm_link: "Deimhnigh an cealú"
       not_you: "Mura ndearna tú an iarratas cealaithe seo, is féidir leat neamhaird a dhéanamh den ríomhphost seo go sábháilte. Leanfaidh d'imirce ar aghaidh mar is gnáth."
+      safe_text: "Níor athraíodh aon rud ar do chuntas. Ní dhéanann cealú na himirce seo ach an próiseas a stopadh. Fanann do chuntas ar %{pds} agus leanann sé ag obair mar is gnáth."
+      cannot_undo: "Ní féidir é seo a chealú. Má athraíonn tú d'intinn, beidh ort imirce nua a thosú."
+      not_you_heading: "Níor iarr tú é seo?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

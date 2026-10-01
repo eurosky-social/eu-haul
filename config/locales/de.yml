@@ -47,6 +47,7 @@ de:
   landing:
     page_title: "Konto umziehen"
     title: "Ziehen Sie mit Ihrem Konto nach Europa um"
+    title_named: "Ziehen Sie mit Ihrem Konto zu %{name} um"
     lead: "Nehmen Sie Ihre Beiträge, Follows und Ihre Identität mit auf einen europäischen Server. Ihr Handle kann mitkommen, und Ihre Follower merken nichts davon."
     start: "Migration starten"
     how_it_works: "So funktioniert es"
@@ -61,6 +62,54 @@ de:
       confirm:
         label: "Per E-Mail bestätigen"
         text: "Wir übertragen Ihre Daten und bitten Sie, den letzten Schritt per E-Mail zu bestätigen. Das dauert etwa 20–30 Minuten."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "So funktioniert es"
+    title: "So funktioniert der Umzug Ihres Kontos"
+    lead: "Ihr Konto zieht in etwa einer halben Stunde auf einen anderen Server um. Ihre Beiträge, Follows und Ihre Identität kommen mit, und die Menschen, die Ihnen folgen, folgen Ihnen weiterhin."
+    before:
+      title: "Bevor Sie beginnen"
+      credentials: "Ihr aktuelles Handle und Ihr Kontopasswort. App-Passwörter funktionieren nicht. Wenn Sie die Zwei-Faktor-Authentifizierung nutzen, brauchen Sie außerdem den Anmeldecode, nach dem wir fragen."
+      email: "Zugang zur E-Mail-Adresse Ihres Kontos. Wir senden Ihnen dorthin einen Code, und später schickt Ihnen auch Ihr aktueller Server einen."
+      time: "Etwa eine halbe Stunde, in der Sie Ihr Konto nicht nutzen."
+      invite: "Für manche Server einen Einladungscode. Der Assistent sagt Ihnen, ob der gewählte Server einen braucht."
+    moves:
+      title: "Was mit umzieht"
+      everything: "Alles in Ihrem Konto: Ihre Beiträge und Antworten, Likes und Reposts, Follows, Listen und Blockierungen, Ihr Profil, Ihre Bilder und Videos sowie Ihre App-Einstellungen wie gespeicherte Feeds und stummgeschaltete Wörter. Auch Ihre Identität zieht um, sodass die Menschen, die Ihnen folgen, Ihnen weiterhin folgen."
+      handle: "Ihr Handle kann mitkommen, wenn es auf Ihrer eigenen Domain liegt. Ein Handle auf der Domain Ihres aktuellen Servers, etwa name.bsky.social, bleibt zurück: Sie wählen auf dem neuen Server ein neues."
+    steps:
+      title: "Schritt für Schritt"
+      sign_in:
+        title: "Anmelden"
+        text: "Melden Sie sich mit Ihrem aktuellen Handle und Passwort an. Wir verwenden diese Daten, um den Umzug zu starten, und speichern Ihr Passwort nie."
+      choose:
+        title: "Ziel wählen"
+        text: "Wählen Sie einen Server, akzeptieren Sie gegebenenfalls seine Bedingungen und wählen Sie dort Ihr Handle. Sie können auch eine Sicherungskopie Ihres gesamten Kontos anfordern."
+      verify:
+        title: "E-Mail bestätigen"
+        text: "Wir senden Ihnen einen Code per E-Mail. Der Umzug beginnt, sobald Sie ihn auf der Statusseite Ihrer Migration eingeben."
+      copy:
+        title: "Wir kopieren Ihr Konto"
+        text: "Wir legen Ihr Konto auf dem neuen Server an und kopieren alles dorthin; die Statusseite zeigt den Fortschritt. Posten, liken oder folgen Sie in der Zwischenzeit nicht: Diese Änderungen kämen nicht mit."
+      confirm:
+        title: "Umzug bestätigen"
+        text: "Ihr aktueller Server schickt Ihnen einen Bestätigungscode per E-Mail. Geben Sie ihn innerhalb einer Stunde auf der Statusseite ein oder fordern Sie einen neuen an. Dieser Schritt richtet Ihre Identität auf den neuen Server aus."
+      done:
+        title: "Fertig"
+        text: "Ihr Konto auf dem neuen Server wird aktiviert und das alte deaktiviert. Wir schicken Ihnen per E-Mail, wie Sie sich anmelden, zusammen mit dem Passwort Ihres neuen Kontos."
+    know:
+      title: "Gut zu wissen"
+      duration: "Die meisten Umzüge dauern 20–30 Minuten. Konten mit vielen Bildern und Videos brauchen länger."
+      cancel: "Bis Sie in Schritt 5 den Bestätigungscode eingeben, können Sie den Umzug abbrechen, und Ihr Konto bleibt, wo es ist."
+      recovery: "Das Ausrichten Ihrer Identität auf den neuen Server lässt sich hier nicht rückgängig machen. Sie erhalten von uns einen Wiederherstellungsschlüssel, mit dem es rückgängig gemacht werden kann — bewahren Sie ihn also sicher auf."
+      old_account: "Ihr altes Konto wird deaktiviert, nicht gelöscht. Sie können später mit diesem Werkzeug auf seinen Server zurückziehen."
+      backup: "Wenn Sie eine Sicherungskopie angefordert haben, können Sie sie 24 Stunden lang herunterladen."
+      deletion: "Wir löschen den Datensatz Ihres Umzugs und alles, was wir dafür gespeichert haben, 2 Tage nach Abschluss des Umzugs."
+      sign_in: "Um sich danach anzumelden, verwenden Sie Ihr neues Handle und wählen in Ihrer App Ihren neuen Server als Hosting-Anbieter."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ de:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Anfragen vom Server begrenzt"
+        what_happened: "Der Server begrenzt Anfragen, um eine Überlastung zu vermeiden. Das ist normal, wenn viele Migrationen laufen."
+        current_status:
+          retrying: "Automatischer neuer Versuch mit längeren Wartezeiten (Versuch %{attempt} von %{max_attempts})"
+          exhausted: "Keine automatischen Wiederholungen mehr übrig"
+        what_to_do:
+          wait: "Warten Sie auf den automatischen neuen Versuch (empfohlen) — jeder Versuch wartet etwas länger"
+          temporary: "Die Begrenzung ist vorübergehend und löst sich meist innerhalb weniger Minuten"
+          overloaded: "Wenn es nach %{max_attempts} Versuchen weiter auftritt, ist der Server möglicherweise überlastet"
+      network:
+        title: "Netzwerkverbindungsfehler"
+        what_happened:
+          repo_export: "Die Verbindung zu Ihrem alten PDS ist beim Exportieren Ihres Repositorys abgelaufen oder wurde unterbrochen."
+          blob_download: "Die Verbindung zu Ihrem alten PDS ist beim Herunterladen Ihrer Blobs (Bilder und Videos) abgelaufen oder wurde unterbrochen."
+          account_activation: "Die Verbindung zu Ihrem neuen PDS ist beim Aktivieren Ihres Kontos abgelaufen oder wurde unterbrochen."
+          other: "Die Verbindung zum PDS ist während der Migration abgelaufen oder wurde unterbrochen."
+        current_status:
+          retrying: "Automatischer neuer Versuch (Versuch %{attempt} von %{max_attempts})"
+          exhausted: "Keine automatischen Wiederholungen mehr übrig"
+        what_to_do:
+          wait: "Warten Sie auf den automatischen neuen Versuch (empfohlen)"
+          check_url: "Prüfen Sie, ob sich %{url} in Ihrem Browser öffnet"
+          may_be_down: "Wenn die Fehler anhalten, ist der PDS möglicherweise vorübergehend nicht erreichbar oder stark ausgelastet"
+          contact_admin: "Wenn das Problem anhält, wenden Sie sich an den PDS-Administrator"
+      authentication:
+        title: "Anmeldung fehlgeschlagen"
+        what_happened: "Wir konnten uns nicht bei Ihrem PDS anmelden. Meist ist das Passwort falsch oder abgelaufen."
+        current_status: "Migration gestoppt — neue Zugangsdaten erforderlich"
+        what_to_do:
+          check_password: "Prüfen Sie, ob Ihr Passwort korrekt ist"
+          check_expiry: "Prüfen Sie, ob Ihre Zugangsdaten abgelaufen sind (sie werden ab dem Start der Migration 48 Stunden lang aufbewahrt)"
+          start_new: "Starten Sie eine neue Migration mit den richtigen Zugangsdaten"
+          contact_admin: "Wenn Sie sicher sind, dass das Passwort stimmt, wenden Sie sich an Ihren PDS-Administrator"
+      email_taken:
+        title: "E-Mail-Adresse auf dem neuen PDS bereits vergeben"
+        what_happened: "Auf %{new_pds} gibt es bereits ein Konto mit %{email}, daher konnten wir dort kein Konto für Ihre DID anlegen. Ihr Konto auf %{old_pds} ist unverändert."
+        current_status: "Migration gestoppt — an Ihrer Identität wurde nichts geändert"
+        what_to_do:
+          account_is_yours: "Wenn dieses Konto Ihnen gehört, melden Sie sich auf %{new_pds} daran an, ändern Sie seine E-Mail-Adresse und starten Sie dann eine neue Migration"
+          other_email: "Oder starten Sie eine neue Migration mit einer anderen E-Mail-Adresse"
+          contact_provider: "Wenn Sie das Konto nicht kennen, wenden Sie sich an den PDS-Anbieter: %{contact_email}"
+      account_exists:
+        title: "Konto existiert bereits auf dem neuen PDS"
+        what_happened: "Auf dem neuen PDS (%{new_pds}) existiert bereits ein Konto mit Ihrer DID. Dieses verwaiste Konto stammt höchstwahrscheinlich von einem früheren, fehlgeschlagenen Migrationsversuch."
+        current_status: "Migration pausiert — der PDS-Anbieter muss das verwaiste Konto entfernen"
+        what_to_do:
+          contact_provider: "Wenden Sie sich an den Anbieter des neuen PDS und bitten Sie ihn, das verwaiste Konto zu entfernen:"
+          contact_email: "E-Mail: %{contact_email}"
+          include_details: "Geben Sie Ihr Migrationstoken (%{token}) und Ihre DID (%{did}) an"
+          retry_after_removal: "Sobald das verwaiste Konto entfernt ist, können Sie diese Migration wiederholen."
+          provider_only: "Das muss der PDS-Anbieter erledigen — Sie können es nicht selbst beheben."
+      plc_token_expired:
+        title: "PLC-Token abgelaufen"
+        what_happened: "Das eingegebene PLC-Operationstoken ist abgelaufen. PLC-Token sind nur 1 Stunde gültig, nachdem Ihr alter PDS-Anbieter sie ausgestellt hat."
+        current_status: "Migration pausiert — Sie benötigen ein neues PLC-Token"
+        what_to_do:
+          request_token: "Fordern Sie über die Schaltfläche „%{button}“ unten ein neues Token an"
+          check_email: "Suchen Sie nach einer E-Mail von %{old_pds} mit dem neuen Token"
+          submit_in_time: "Geben Sie das neue Token innerhalb von 1 Stunde nach Erhalt ein"
+          data_safe: "Ihre übrigen Migrationsdaten sind sicher und bereit — Sie brauchen nur ein neues Token"
+      plc_pre_submission_failure:
+        title: "PLC-Aktualisierung konnte nicht abgeschlossen werden"
+        what_happened: "Die Aktualisierung des PLC-Verzeichnisses konnte nicht abgeschlossen werden, aber Ihr Konto ist sicher. Das PLC-Verzeichnis wurde nicht geändert — Ihr Konto liegt weiterhin auf %{old_pds}."
+        current_status: "Migration pausiert — fordern Sie einen neuen Bestätigungscode an, um es erneut zu versuchen"
+        what_to_do:
+          request_code: "Fordern Sie über die Schaltfläche „%{button}“ unten einen neuen Bestätigungscode an"
+          check_email: "Suchen Sie nach einer E-Mail von %{old_pds} mit dem neuen Code"
+          submit_in_time: "Geben Sie den neuen Code innerhalb von 1 Stunde nach Erhalt ein"
+          data_safe: "Ihre Migrationsdaten (Repository, Blobs, Einstellungen) sind sicher und bereit"
+      credentials_need_reauth:
+        title: "Sitzung abgelaufen — melden Sie sich erneut an"
+        what_happened: "Ihre gespeicherten Zugangsdaten sind abgelaufen. Zu Ihrer Sicherheit werden sie nach 48 Stunden automatisch gelöscht. Melden Sie sich erneut an, um die Migration fortzusetzen."
+        current_status: "Migration pausiert — melden Sie sich erneut an, um fortzufahren"
+        what_to_do:
+          enter_password: "Geben Sie unten Ihr Passwort ein, um sich erneut anzumelden"
+          data_safe: "Ihre Migrationsdaten sind sicher — Sie benötigen nur neue Zugangsdaten"
+          resume: "Nach der Anmeldung setzt die Migration dort fort, wo sie aufgehört hat"
+      blob_not_found:
+        title: "Einige Blobs wurden nicht gefunden"
+        what_happened: "Einige Blobs (Bilder und Videos) wurden auf Ihrem alten PDS nicht gefunden. Sie wurden möglicherweise gelöscht oder sind nicht mehr verfügbar."
+        current_status: "Migration läuft weiter — fehlende Blobs werden übersprungen"
+        what_to_do:
+          not_critical: "Das ist meist nicht schlimm — die Migration läuft ohne diese Blobs weiter"
+          media_may_be_missing: "Einige ältere Bilder oder Videos werden möglicherweise nicht übertragen"
+          check_report: "Prüfen Sie nach Abschluss der Migration den Bericht über fehlgeschlagene Blobs"
+          reupload: "Bei Bedarf können Sie fehlende Medien nach der Migration selbst erneut hochladen"
+      data_corruption:
+        title: "Daten bei der Übertragung beschädigt"
+        what_happened: "Daten wurden bei der Übertragung beschädigt. Das kann bei langsamen oder instabilen Netzwerkverbindungen passieren."
+        current_status:
+          retrying: "Beschädigte Daten werden erneut heruntergeladen (Versuch %{attempt} von %{max_attempts})"
+          exhausted: "Keine automatischen Wiederholungen mehr übrig"
+        what_to_do:
+          wait: "Warten Sie auf den automatischen neuen Versuch — die Daten werden erneut heruntergeladen"
+          check_network: "Wenn es immer wieder passiert, prüfen Sie die Qualität Ihrer Netzwerkverbindung"
+          stable_network: "Versuchen Sie es mit einer stabileren Netzwerkverbindung"
+          large_repositories: "Bei großen Repositorys kann es auf langsamen Verbindungen zu Zeitüberschreitungen kommen"
+      disk_space:
+        title: "Kein Speicherplatz mehr"
+        what_happened: "Auf dem Server oder PDS ist kein Speicherplatz mehr frei."
+        current_status: "Migration gestoppt — ein Administrator muss eingreifen"
+        what_to_do:
+          contact_admin: "Wenden Sie sich an den Server- oder PDS-Administrator, damit Speicherplatz freigegeben wird"
+          server_side: "Das ist ein serverseitiges Problem — ein neuer Versuch behebt es nicht"
+          retry_later: "Sobald Speicherplatz freigegeben wurde, können Sie die Migration wiederholen"
+      invite_code:
+        title: "Einladungscode ungültig oder abgelaufen"
+        what_happened: "Der eingegebene Einladungscode ist ungültig, abgelaufen oder wurde bereits verwendet."
+        current_status: "Migration gestoppt — ein gültiger Einladungscode ist erforderlich"
+        what_to_do:
+          get_new_code: "Bitten Sie den Administrator des neuen PDS um einen neuen Einladungscode"
+          check_copy: "Prüfen Sie, ob Sie den Einladungscode korrekt kopiert haben (keine zusätzlichen Leerzeichen)"
+          start_new: "Starten Sie eine neue Migration mit dem richtigen Einladungscode"
+          may_not_be_needed: "Manche PDS-Server brauchen keinen Einladungscode — fragen Sie beim Administrator nach"
+      cancelled:
+        title: "Migration abgebrochen"
+        what_happened: "Diese Migration wurde auf Ihren Wunsch abgebrochen. An Ihrem Konto wurde nichts geändert."
+        current_status: "Migration abgebrochen — Ihr Konto bleibt auf %{old_pds}"
+        what_to_do:
+          account_safe: "Ihr Konto ist sicher und auf %{old_pds} unverändert"
+          start_new: "Sie können jederzeit eine neue Migration starten"
+      critical_plc:
+        title: "Aktualisierung des PLC-Verzeichnisses fehlgeschlagen"
+        what_happened: "Die Aktualisierung des PLC-Verzeichnisses wurde nicht abgeschlossen. Ihre Kontodaten sind sicher."
+        current_status:
+          not_updated: "Das PLC-Verzeichnis wurde nicht geändert — Sie können ein neues Token anfordern und es erneut versuchen."
+          maybe_updated: "Das PLC-Verzeichnis wurde möglicherweise teilweise aktualisiert. Wenden Sie sich an den Support."
+        what_to_do:
+          request_token: "Fordern Sie ein neues PLC-Token an — die Aktualisierung hat noch nicht stattgefunden"
+          no_new_migration: "Starten Sie keine neue Migration"
+          data_safe: "Ihre Kontodaten sind sicher und intakt"
+          save_recovery_key: "Ihr Wiederherstellungsschlüssel steht auf dieser Seite — bewahren Sie ihn sicher auf"
+          save_token: "Speichern Sie dieses Migrationstoken: %{token}"
+          contact_support: "Wenn das Problem anhält, wenden Sie sich an den Support: %{support_email}"
+      generic:
+        title: "Migrationsfehler"
+        what_happened: "Bei der Migration ist etwas schiefgelaufen."
+        current_status:
+          retrying: "Automatischer neuer Versuch (Versuch %{attempt} von %{max_attempts})"
+          exhausted: "Keine automatischen Wiederholungen mehr übrig"
+        what_to_do:
+          wait: "Warten Sie auf den automatischen neuen Versuch"
+          check_details: "Wenn es immer wieder passiert, prüfen Sie die technischen Details unten"
+          contact_support: "Wenn Sie Hilfe brauchen, wenden Sie sich an den Support: %{support_email}"
+      time_remaining:
+        a_few_moments: "wenigen Augenblicken"
+        seconds:
+          one: "%{count} Sekunde"
+          other: "%{count} Sekunden"
+        minutes:
+          one: "%{count} Minute"
+          other: "%{count} Minuten"
+        hours:
+          one: "%{count} Stunde"
+          other: "%{count} Stunden"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ de:
   mailers:
     common:
       eurosky_migration: "Eurosky-Migrationsdienst"
+      hello: "Hallo,"
+      migration_label: "Migration %{token}"
+      migration_token: "Migrationstoken: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Altes Handle"
+      label_new_handle: "Neues Handle"
+      label_old_pds: "Alter PDS"
+      label_new_pds: "Neuer PDS"
+      label_target_pds: "Ziel-PDS"
+      label_support_contact: "Support-Kontakt"
+      label_support_email: "Support-E-Mail"
+      label_email: "E-Mail"
+      label_migration_token: "Migrationstoken"
+      label_failed_step: "Fehlgeschlagener Schritt"
+      details_heading: "Migrationsdetails"
+      account_details: "Kontodaten"
+      account_safe: "Ihr Konto ist sicher"
+      what_happened: "Was ist passiert?"
+      what_happens_next: "Was passiert als Nächstes?"
+      view_status: "Migrationsstatus ansehen"
+      select_to_copy: "Zum Auswählen und Kopieren klicken"
+      automated_notification: "Dies ist eine automatische Benachrichtigung von %{site}."
 
     email_verification:
       subject: "Ihr Bestätigungscode: %{code} (%{token})"
@@ -594,6 +828,8 @@ de:
       reminder3: "Schließen Sie alle Apps und Browser-Tabs mit Ihrem Konto"
       reminder4: "Warten Sie auf die Abschluss-E-Mail, bevor Sie sich erneut anmelden"
       not_you: "Wenn Sie diese Migration nicht gestartet haben, ignorieren Sie bitte diese E-Mail."
+      your_code: "Ihr Bestätigungscode"
+      go_to_page_button: "Zur Migrationsseite"
 
     account_password:
       subject: "Ihr neues Kontopasswort für %{handle} (%{token})"
@@ -616,6 +852,7 @@ de:
       no_backup_step2: "Ihre Daten werden migriert (ohne Sicherungskopie)"
       no_backup_step3: "Sie werden benachrichtigt, sobald die Migration abgeschlossen ist"
       track_progress: "Verfolgen Sie den Fortschritt Ihrer Migration unter:"
+      status_page_link: "Statusseite der Migration"
 
     migration_completed:
       subject: "Migration abgeschlossen (%{token})"
@@ -626,15 +863,15 @@ de:
       save_password: "Speichern Sie dieses Passwort jetzt — bewahren Sie es in einem Passwort-Manager auf."
       change_password: "Sie können es nach der ersten Anmeldung ändern."
       backup_heading: "Sicherungskopie verfügbar"
-      backup_help: "Ihre Kontosicherungskopie steht für die nächsten 10 Minuten zum Download bereit:"
-      backup_expiry: "Nach 10 Minuten läuft dieser Link ab und die Sicherungskopie wird dauerhaft gelöscht."
+      backup_help: "Ihre Kontosicherungskopie kann bis %{time} heruntergeladen werden:"
+      backup_expiry: "Danach funktioniert der Link nicht mehr und die Sicherungskopie wird dauerhaft gelöscht."
       summary: "Migrationsübersicht"
       migration_token: "Migrationstoken: %{token}"
       did: "DID: %{did}"
       old_account: "Altes Konto: %{handle} @ %{pds}"
       new_account: "Neues Konto: %{handle} @ %{pds}"
       completed_at: "Abgeschlossen: %{time}"
-      status_page: "Statusseite ansehen (verfügbar für 10 Minuten):"
+      status_page: "Statusseite ansehen (verfügbar für 2 Tage):"
       login_heading: "So melden Sie sich bei Ihrem neuen Konto an"
       login_help: "Falls noch nicht geschehen, melden Sie sich in allen Bluesky-Apps von Ihrem alten Konto ab und melden Sie sich dann mit Ihrem neuen Handle an:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ de:
       next3: "Alle Ihre Beiträge, Follows und Daten wurden übertragen"
       next4: "Ihre Follower sollten automatisch Ihren neuen Standort sehen (DID-basiert)"
       privacy_heading: "Datenschutz und Sicherheit"
-      privacy1: "Dieser Migrationsdatensatz wird gemäß DSGVO in 10 Minuten automatisch gelöscht"
+      privacy1: "Dieser Migrationsdatensatz wird gemäß DSGVO in 2 Tagen automatisch gelöscht"
       privacy2: "Alle verschlüsselten Zugangsdaten wurden sicher von unseren Servern gelöscht"
       support: "Bei Fragen oder Problemen wenden Sie sich bitte an den Support mit Ihrem Migrationstoken:"
       email_footer: "Diese E-Mail wurde an %{email} gesendet, weil Sie eine Kontomigration gestartet haben."
+      download_backup: "Sicherungskopie herunterladen"
+      change_password_button: "Passwort ändern"
+      old_account_label: "Altes Konto"
+      new_account_label: "Neues Konto"
+      completed_at_label: "Abgeschlossen"
 
     blobs_transfer_complete:
       subject: "Alle Dateien übertragen — Ihre Migration ist vollständig abgeschlossen (%{token})"
@@ -673,26 +915,6 @@ de:
       keep_password: "Ändern Sie bis dahin das Passwort Ihres Kontos auf %{pds} nicht — eine Änderung bricht die Übertragung endgültig ab."
       support: "Wenn die Versuche weiterhin fehlschlagen, wenden Sie sich an den Support und geben Sie Ihr Migrations-Token an:"
 
-    plc_otp:
-      subject: "PLC-Bestätigungscode – Point of No Return (%{token})"
-      heading: "PLC-Bestätigungscode"
-      critical: "Kritisch: Point of No Return"
-      intro: "Ihre Migration ist bereit für den letzten, unumkehrbaren Schritt. Sie sind dabei, Ihr PLC-Token einzureichen, um Ihre DID auf den neuen PDS umzuleiten."
-      your_code: "Ihr Bestätigungscode"
-      expires_in: "Läuft ab in %{time}"
-      point_of_no_return: "Dies ist der Point of No Return"
-      point_of_no_return_detail: "Sobald Sie diesen Code zusammen mit Ihrem PLC-Token einreichen, wird Ihr Konto dauerhaft zum neuen PDS migriert."
-      did_will_point: "Ihre DID verweist sofort auf den neuen PDS"
-      cannot_undo: "Sie können diesen Vorgang nicht rückgängig machen"
-      ensure_ready: "Stellen Sie sicher, dass Ihr neues Konto bereit ist, bevor Sie fortfahren"
-      how_to_use: "So verwenden Sie diesen Code"
-      step1: "Gehen Sie zu Ihrer Migrationsstatusseite"
-      step2: "Geben Sie Ihr PLC-Token ein (aus der E-Mail Ihres alten PDS)"
-      step3: "Geben Sie diesen Bestätigungscode ein: %{code}"
-      step4: "Senden Sie beides ab, um die Migration abzuschließen"
-      attempts_note: "Sie haben 5 Versuche, den richtigen Code einzugeben. Danach müssen Sie einen neuen anfordern."
-      not_you: "Wenn Sie diesen Code nicht angefordert haben, versucht möglicherweise jemand, auf Ihre Migration zuzugreifen."
-
 
     migration_failed:
       subject: "Migration fehlgeschlagen — Handlung erforderlich (%{token})"
@@ -708,7 +930,7 @@ de:
       previous_retries: "Bisherige Wiederholungsversuche: %{count}"
       what_to_do: "Was Sie tun können"
       do_step1: "Überprüfen Sie den Migrationsstatus:"
-      do_step2: "Klicken Sie auf \"Migration wiederholen\", um die Migration erneut zu versuchen"
+      do_step2: "Klicken Sie auf die Schaltfläche „Migration wiederholen“, um die Migration erneut zu versuchen"
       do_step3: "Wenn das Problem nach mehreren Versuchen bestehen bleibt, kontaktieren Sie bitte den Support mit Ihrem Migrationstoken: %{token}"
       common_issues: "Häufige Probleme und Lösungen"
       issue1: "Netzwerk-Timeouts: Werden normalerweise bei Wiederholung behoben"
@@ -718,6 +940,17 @@ de:
       note1: "Ihre Daten auf dem alten PDS bleiben intakt"
       note2: "Sie können die Migration sicher wiederholen"
       note3: "Wenn Sie Hilfe benötigen, geben Sie Ihr Migrationstoken an: %{token}"
+      retry_button: "Migration ansehen und wiederholen"
+      plc_expired_heading: "PLC-Token abgelaufen"
+      plc_expired_text: "Ihr PLC-Operationstoken ist abgelaufen. PLC-Token sind nach der Ausstellung nur 1 Stunde gültig."
+      plc_expired_steps: "Was Sie tun müssen"
+      plc_expired_step1: "Öffnen Sie über die Schaltfläche unten die Statusseite Ihrer Migration"
+      plc_expired_step2: "Klicken Sie auf die Schaltfläche „Neues PLC-Token anfordern“"
+      plc_expired_step3: "Prüfen Sie Ihre E-Mails von %{pds} auf das neue Token"
+      plc_expired_step4: "Reichen Sie das neue Token innerhalb von 1 Stunde ein"
+      plc_expired_button: "Migration ansehen und neues Token anfordern"
+      plc_expired_good_news: "Gute Nachricht:"
+      plc_expired_safe: "Ihre Migrationsdaten sind sicher und bereit. Sie brauchen nur ein neues PLC-Token, um den letzten Schritt abzuschließen."
 
     backup_ready:
       subject: "Ihre Eurosky-Migrationssicherungskopie ist bereit (%{token})"
@@ -728,6 +961,7 @@ de:
       expires: "Dieser Download-Link läuft ab am %{time}."
       expiry_warning: "Nach Ablauf wird die Sicherungskopie dauerhaft von unseren Servern gelöscht."
       whats_next: "Ihre Migration wird im Hintergrund fortgesetzt. Sie erhalten eine weitere E-Mail, wenn sie abgeschlossen ist."
+      size_label: "Größe der Sicherungskopie"
 
     rotation_key_notice:
       subject: "Handlung erforderlich: Bestätigen Sie Ihre Migration mit dem PLC-Code (%{token})"
@@ -736,9 +970,17 @@ de:
       key_heading: "Ihr Rotationsschlüssel (zuerst speichern)"
       key_help: "Speichern Sie diesen Rotationsschlüssel sicher, bevor Sie fortfahren. Er ist Ihre einzige Möglichkeit, Ihr Konto wiederherzustellen, wenn etwas schiefgeht:"
       key_warning: "Bewahren Sie diesen Schlüssel in einem Passwort-Manager oder an einem anderen sicheren Ort auf. Sie können ihn später nicht erneut abrufen."
-      next_step: "Gehen Sie zur Migrationsseite, um Ihren PLC-Bestätigungscode einzugeben:"
       check_email: "Überprüfen Sie Ihre E-Mails auf einen Code von Ihrem alten PDS-Anbieter — er sieht aus wie XXXXX-XXXXX"
       no_password_reset: "Wichtig: Melden Sie sich nicht bei Ihrem neuen Konto auf %{pds} an und setzen Sie dort das Passwort nicht zurück, bevor diese Migration abgeschlossen ist. Ein Zurücksetzen des Passworts macht die von der Migration verwendeten Zugangsdaten ungültig, und die Migration schlägt fehl."
+      plc_email_intro: "Sie erhalten in Kürze eine E-Mail von Ihrem alten PDS-Anbieter (%{pds}) mit dem Betreff:"
+      plc_code_info: "Diese E-Mail enthält einen Bestätigungscode (er sieht aus wie %{example})."
+      plc_enter_code: "Sie müssen diesen Code auf der Statusseite Ihrer Migration eingeben, um die Migration abzuschließen:"
+      plc_expiry: "Wichtig: Der Bestätigungscode läuft nach 1 Stunde ab. Wenn Sie die E-Mail nicht sehen, prüfen Sie Ihren Spam-Ordner. Sie kommt von Ihrem alten PDS-Anbieter, nicht von uns."
+      save_key_heading: "Speichern Sie diesen Schlüssel jetzt"
+      recovery_key_label: "Ihr Wiederherstellungsschlüssel:"
+      key_use_heading: "Was kann ich mit diesem Schlüssel tun?"
+      key_use: "Falls Sie Ihr Konto jemals wiederherstellen müssen, gehen Sie zu %{link} und stellen Sie mit diesem Schlüssel den Zugang wieder her. Das funktioniert auch, wenn Ihr Server komplett offline ist."
+      next_step_button: "Zur Migrationsseite, um Ihren PLC-Bestätigungscode einzugeben"
 
     plc_token_failed:
       subject: "Handlung erforderlich: Fordern Sie einen neuen PLC-Bestätigungscode an (%{token})"
@@ -749,6 +991,8 @@ de:
       step2: "Fordern Sie ein neues PLC-Token an (möglicherweise müssen Sie Ihr Passwort erneut eingeben)"
       step3: "Geben Sie das neue Token ein, sobald Sie es per E-Mail erhalten"
       error_detail: "Fehler: %{error}"
+      safe_text: "Das PLC-Verzeichnis wurde nicht geändert. Ihr Konto bleibt auf %{pds}, und alle Ihre Migrationsdaten (Repository, Dateien und Einstellungen) sind sicher gespeichert und bereit."
+      what_happened_text: "Der Bestätigungscode Ihres alten PDS-Anbieters ist abgelaufen, bevor er verwendet werden konnte. Diese Codes sind nur begrenzt gültig (meist 1 Stunde)."
 
     critical_plc_failure:
       subject: "Dringend: kritischer Migrationsfehler — starten Sie keine neue Migration (%{token})"
@@ -759,12 +1003,41 @@ de:
       key_help: "Sie benötigen diesen Schlüssel, um Ihr Konto wiederherzustellen:"
       contact: "Kontaktieren Sie sofort den Support:"
       error_detail: "Fehler: %{error}"
+      summary: "Bei der Migration Ihres AT Protocol-Kontos ist ein kritischer Fehler aufgetreten."
+      uncertain_state: "Ihr Konto befindet sich möglicherweise in einem unklaren Zustand."
+      do_not_heading: "Bitte tun Sie Folgendes nicht:"
+      do_not1: "Eine neue Migration starten"
+      do_not2: "Diese E-Mail löschen"
+      do_not3: "Das Konto ohne Support selbst wiederherstellen"
+      do_not4: "Ihre Kontoeinstellungen auf einem der beiden PDS ändern"
+      data_safe: "Ihre Kontodaten sind sicher, aber unser Support-Team muss den Zustand des PLC-Verzeichnisses prüfen, bevor Sie etwas unternehmen."
+      right_now_heading: "Was Sie jetzt tun sollten"
+      step_save_email: "Bewahren Sie diese E-Mail auf. Sie benötigen die folgenden Informationen."
+      step_save_token: "Speichern Sie Ihr Migrationstoken:"
+      step_reference_token: "Geben Sie Ihr Migrationstoken in Ihrer Supportanfrage an:"
+      what_happened_text: "Die Migration ist bei der Aktualisierung des PLC-Verzeichnisses fehlgeschlagen, dem entscheidenden Schritt, der Ihre DID auf den neuen PDS verweisen lässt."
+      support_will: "Unser Support-Team wird:"
+      support1: "den Zustand des PLC-Verzeichnisses für Ihre DID untersuchen"
+      support2: "herausfinden, ob die PLC-Operation erfolgreich war oder fehlgeschlagen ist"
+      support3: "Ihnen konkrete Anweisungen zur Wiederherstellung geben"
+      support4: "Sie innerhalb von 24 Stunden per E-Mail kontaktieren"
+      wait_for_support: "Unternehmen Sie nichts, bis Sie vom Support hören. Wir begleiten Sie durch die Wiederherstellung."
+      automated: "Dies ist eine automatische kritische Warnung von %{site}."
 
     invalid_invite_code:
       subject: "Migration fehlgeschlagen — ungültiger Einladungscode (%{token})"
       heading: "Ungültiger Einladungscode"
       intro: "Ihre Migration %{token} konnte nicht fortgesetzt werden, da der Einladungscode ungültig ist oder bereits verwendet wurde."
       what_to_do: "Um eine neue Migration mit einem gültigen Einladungscode zu starten:"
+      rejected: "Der für %{pds} angegebene Einladungscode wurde abgelehnt. Das kann passieren, wenn:"
+      reason1: "der Einladungscode falsch eingegeben wurde"
+      reason2: "der Einladungscode bereits verwendet wurde"
+      reason3: "der Einladungscode abgelaufen ist"
+      reason4: "der Einladungscode für diesen PDS nicht gültig ist"
+      safe1: "An Ihrem Konto auf %{pds} wurde nichts geändert"
+      safe2: "Es wurden keine Daten übertragen oder geändert"
+      safe3: "Ihr Konto funktioniert auf Ihrem aktuellen PDS ganz normal weiter"
+      start_new: "Neue Migration starten"
 
     orphaned_account_error:
       subject: "Migration pausiert — verwaistes Konto auf dem Zielserver (%{token})"
@@ -775,6 +1048,18 @@ de:
       option1: "Kontaktieren Sie den Administrator des Ziel-PDS unter %{email}, um das verwaiste Konto zu entfernen"
       option2: "Geben Sie Ihre DID an: %{did}"
       option3: "Nach der Entfernung wiederholen Sie die Migration über die Statusseite:"
+      contact_heading: "Nächster Schritt: Wenden Sie sich an den PDS-Anbieter"
+      contact_help: "Bitte wenden Sie sich an das Support-Team von %{pds} und bitten Sie um Entfernung des verwaisten Kontos."
+      email_support: "E-Mail an %{email}"
+      include_heading: "Geben Sie in Ihrer Nachricht an:"
+      after_heading: "Nachdem der Support geantwortet hat"
+      after1: "Kehren Sie zu Ihrer %{link} zurück"
+      after2: "Klicken Sie auf die Schaltfläche „Migration wiederholen“"
+      after3: "Ihre Migration wird automatisch fortgesetzt"
+      status_page_link: "Statusseite der Migration"
+      need_help: "Brauchen Sie Hilfe? Auf Ihrer %{link} finden Sie weitere Details."
+      mailto_subject: "Bitte um Entfernung eines verwaisten Kontos – Migration %{token}"
+      mailto_body: "Hallo,\n\nich versuche, zu %{pds} umzuziehen, bin dabei aber auf einen Fehler wegen eines verwaisten Kontos gestoßen.\n\nMigrationstoken: %{token}\nDID: %{did}\n\nKönnten Sie bitte das verwaiste Konto entfernen, damit ich meine Migration wiederholen kann?\n\nVielen Dank."
 
     reauthentication_required:
       subject: "Handlung erforderlich: Melden Sie sich erneut an (%{token})"
@@ -782,8 +1067,13 @@ de:
       intro: "Ihre Migration %{token} erfordert, dass Sie Ihr Passwort erneut eingeben, um fortzufahren."
       reason: "Ihre Sitzung mit dem alten PDS ist während des Migrationsprozesses abgelaufen."
       what_to_do: "Gehen Sie zur Migrationsseite und geben Sie Ihr Passwort erneut ein:"
-      error_detail: "Fehler: %{error}"
       step: "Fehlgeschlagener Schritt: %{step}"
+      step1: "Öffnen Sie die Statusseite Ihrer Migration"
+      step2: "Geben Sie Ihr Passwort für %{handle} ein, um sich erneut anzumelden"
+      step3: "Die Migration wird automatisch dort fortgesetzt, wo sie aufgehört hat"
+      button: "Erneut anmelden und fortfahren"
+      data_safe_heading: "Ihre Daten sind sicher."
+      data_safe: "Der gesamte Migrationsfortschritt bleibt erhalten. Sie müssen sich nur erneut anmelden, damit wir die Übertragung Ihres Kontos fortsetzen können."
 
     plc_token_reminder:
       subject: "Erinnerung: Schließen Sie Ihre Migration ab, indem Sie den PLC-Code eingeben (%{token})"
@@ -805,6 +1095,9 @@ de:
       confirm_help: "Klicken Sie auf den Link unten, um den Abbruch zu bestätigen:"
       confirm_link: "Abbruch bestätigen"
       not_you: "Wenn Sie diesen Abbruch nicht angefordert haben, können Sie diese E-Mail bedenkenlos ignorieren. Ihre Migration wird wie gewohnt fortgesetzt."
+      safe_text: "An Ihrem Konto wurde nichts geändert. Der Abbruch dieser Migration stoppt nur den Vorgang. Ihr Konto bleibt auf %{pds} und funktioniert ganz normal weiter."
+      cannot_undo: "Das lässt sich nicht rückgängig machen. Wenn Sie es sich anders überlegen, müssen Sie eine neue Migration starten."
+      not_you_heading: "Nicht von Ihnen angefordert?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

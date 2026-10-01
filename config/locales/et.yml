@@ -47,6 +47,7 @@ et:
   landing:
     page_title: "Viige oma konto üle"
     title: "Viige oma konto üle Euroopasse"
+    title_named: "Viige oma konto üle serverisse %{name}"
     lead: "Viige oma postitused, jälgimised ja identiteet üle Euroopa serverisse. Teie handle saab kaasa tulla ja teie jälgijad ei märka midagi."
     start: "Alusta migreerimist"
     how_it_works: "Kuidas see toimib"
@@ -61,6 +62,54 @@ et:
       confirm:
         label: "Kinnitage e-posti teel"
         text: "Kanname teie andmed üle ja palume teil viimane samm e-posti teel kinnitada. See võtab umbes 20–30 minutit."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Kuidas see toimib"
+    title: "Kuidas konto üleviimine toimib"
+    lead: "Teie konto viiakse umbes poole tunniga teise serverisse. Teie postitused, jälgimised ja identiteet tulevad kaasa ning inimesed, kes teid jälgivad, jälgivad teid ka edaspidi."
+    before:
+      title: "Enne alustamist"
+      credentials: "Teie praegune handle ja konto parool. Rakenduse paroolid ei tööta. Kui kasutate kaheastmelist autentimist, vajate ka sisselogimiskoodi, mida me küsime."
+      email: "Juurdepääs teie konto e-posti aadressile. Saadame teile sinna koodi ja hiljem saadab ka teie praegune server teile sinna koodi."
+      time: "Umbes pool tundi, mille jooksul te oma kontot ei kasuta."
+      invite: "Mõne serveri puhul kutsekood. Viisard ütleb teile, kas teie valitud server seda nõuab."
+    moves:
+      title: "Mis tuleb teiega kaasa"
+      everything: "Kõik, mis on teie kontol: teie postitused ja vastused, meeldimised ja taaspostitused, jälgimised, loendid ja blokeeringud, teie profiil, pildid ja videod ning rakenduse seaded, näiteks salvestatud voogud ja vaigistatud sõnad. Ka teie identiteet tuleb kaasa, nii et inimesed, kes teid jälgivad, jälgivad teid ka edaspidi."
+      handle: "Teie handle saab kaasa tulla, kui see on teie oma domeenil. Teie praeguse serveri domeenil olev handle, näiteks nimi.bsky.social, jääb maha: valite uues serveris endale uue."
+    steps:
+      title: "Samm-sammult"
+      sign_in:
+        title: "Logige sisse"
+        text: "Logige sisse oma praeguse handle'i ja parooliga. Kasutame neid üleviimise alustamiseks ega salvesta kunagi teie parooli."
+      choose:
+        title: "Valige sihtkoht"
+        text: "Valige server, nõustuge selle tingimustega, kui neid on, ja valige seal oma handle. Soovi korral saate tellida ka kogu oma konto varukoopia."
+      verify:
+        title: "Kinnitage oma e-posti aadress"
+        text: "Saadame teile e-postiga koodi. Üleviimine algab, kui sisestate selle oma migreerimise olekulehel."
+      copy:
+        title: "Kopeerime teie konto"
+        text: "Loome teie konto uues serveris ja kopeerime sinna kõik; olekulehel näete edenemist. Ärge vahepeal postitage, märkige midagi meeldivaks ega hakake kedagi jälgima: need muudatused ei tuleks kaasa."
+      confirm:
+        title: "Kinnitage üleviimine"
+        text: "Teie praegune server saadab teile e-postiga kinnituskoodi. Sisestage see tunni jooksul olekulehel või taotlege uus. See samm suunab teie identiteedi uude serverisse."
+      done:
+        title: "Valmis"
+        text: "Teie konto uues serveris aktiveeritakse ja vana konto deaktiveeritakse. Saadame teile e-postiga sisselogimise juhised koos teie uue konto parooliga."
+    know:
+      title: "Hea teada"
+      duration: "Enamik üleviimisi võtab aega 20–30 minutit. Paljude piltide ja videotega kontode puhul kulub rohkem aega."
+      cancel: "Kuni te pole 5. sammus kinnituskoodi sisestanud, saate üleviimise tühistada ja teie konto jääb sinna, kus see on."
+      recovery: "Identiteedi uude serverisse suunamist ei saa siin tagasi võtta. Anname teile taastamisvõtme, millega saab selle tagasi võtta, seega hoidke seda kindlas kohas."
+      old_account: "Teie vana konto deaktiveeritakse, mitte ei kustutata. Hiljem saate selle tööriistaga tagasi oma vanasse serverisse kolida."
+      backup: "Kui tellisite varukoopia, saate selle alla laadida 24 tunni jooksul."
+      deletion: "Kustutame teie üleviimise kirje ja kõik, mida selle jaoks säilitasime, 2 päeva pärast üleviimise lõppu."
+      sign_in: "Hiljem sisselogimiseks kasutage oma uut handle'it ja valige rakenduses majutusteenuse pakkujaks oma uus server."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ et:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Server piirab päringuid"
+        what_happened: "Server piirab päringuid, et vältida ülekoormust. See on tavaline, kui korraga toimub palju migreerimisi."
+        current_status:
+          retrying: "Automaatne korduskatse pikemate vahedega (katse %{attempt}/%{max_attempts})"
+          exhausted: "Automaatsed korduskatsed on otsas"
+        what_to_do:
+          wait: "Oodake automaatset korduskatset (soovitatav) — iga korduskatse ootab veidi kauem"
+          temporary: "Päringute piiramine on ajutine ja lõpeb tavaliselt mõne minutiga"
+          overloaded: "Kui see jätkub ka pärast %{max_attempts} korduskatset, võib server olla ülekoormatud"
+      network:
+        title: "Võrguühenduse viga"
+        what_happened:
+          repo_export: "Ühendus teie vana PDS-iga aegus või katkes teie hoidla eksportimise ajal."
+          blob_download: "Ühendus teie vana PDS-iga aegus või katkes teie blobide (piltide ja videote) allalaadimise ajal."
+          account_activation: "Ühendus teie uue PDS-iga aegus või katkes teie konto aktiveerimise ajal."
+          other: "Ühendus PDS-iga aegus või katkes migreerimise ajal."
+        current_status:
+          retrying: "Automaatne korduskatse (katse %{attempt}/%{max_attempts})"
+          exhausted: "Automaatsed korduskatsed on otsas"
+        what_to_do:
+          wait: "Oodake automaatset korduskatset (soovitatav)"
+          check_url: "Kontrollige, kas %{url} avaneb teie brauseris"
+          may_be_down: "Kui vead jätkuvad, võib PDS olla mõnda aega maas või suure koormuse all"
+          contact_admin: "Kui probleem püsib, võtke ühendust PDS-i administraatoriga"
+      authentication:
+        title: "Sisselogimine ebaõnnestus"
+        what_happened: "Me ei saanud teie PDS-i sisse logida. Tavaliselt tähendab see, et parool on vale või aegunud."
+        current_status: "Migreerimine on peatunud — vaja on uusi volitusi"
+        what_to_do:
+          check_password: "Kontrollige, et teie parool on õige"
+          check_expiry: "Kontrollige, kas teie volitused on aegunud (neid säilitatakse 48 tundi alates migreerimise algusest)"
+          start_new: "Alustage uut migreerimist õigete volitustega"
+          contact_admin: "Kui olete kindel, et parool on õige, võtke ühendust oma PDS-i administraatoriga"
+      email_taken:
+        title: "E-posti aadress on uues PDS-is juba kasutusel"
+        what_happened: "Serveris %{new_pds} on juba konto aadressiga %{email}, seega ei saanud me sinna teie DID-ile kontot luua. Teie konto serveris %{old_pds} on puutumata."
+        current_status: "Migreerimine on peatunud — teie identiteeti ei muudetud"
+        what_to_do:
+          account_is_yours: "Kui see konto on teie oma, logige sellesse serveris %{new_pds} sisse, muutke selle e-posti aadressi ja alustage seejärel uut migreerimist"
+          other_email: "Või alustage uut migreerimist teise e-posti aadressiga"
+          contact_provider: "Kui te seda kontot ei tunne, võtke ühendust PDS-i pakkujaga: %{contact_email}"
+      account_exists:
+        title: "Konto on uues PDS-is juba olemas"
+        what_happened: "Teie DID-ga konto on uues PDS-is (%{new_pds}) juba olemas. See hüljatud konto on tõenäoliselt jäänud alles mõnest varasemast ebaõnnestunud migreerimiskatsest."
+        current_status: "Migreerimine on ootel — PDS-i pakkuja peab hüljatud konto eemaldama"
+        what_to_do:
+          contact_provider: "Võtke ühendust uue PDS-i pakkujaga ja paluge tal hüljatud konto eemaldada:"
+          contact_email: "E-post: %{contact_email}"
+          include_details: "Lisage oma migreerimise token (%{token}) ja DID (%{did})"
+          retry_after_removal: "Kui hüljatud konto on eemaldatud, saate seda migreerimist uuesti proovida."
+          provider_only: "See nõuab PDS-i pakkuja sekkumist — te ei saa seda ise parandada."
+      plc_token_expired:
+        title: "PLC token on aegunud"
+        what_happened: "Teie sisestatud PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 1 tund pärast seda, kui teie vana PDS-i pakkuja need väljastab."
+        current_status: "Migreerimine on ootel — vajate uut PLC tokenit"
+        what_to_do:
+          request_token: "Kasutage allolevat nuppu „%{button}“, et taotleda uut tokenit"
+          check_email: "Otsige serverilt %{old_pds} e-kirja, milles on uus token"
+          submit_in_time: "Sisestage uus token 1 tunni jooksul pärast selle saamist"
+          data_safe: "Ülejäänud migreerimisandmed on kaitstud ja valmis — vajate vaid uut tokenit"
+      plc_pre_submission_failure:
+        title: "PLC uuendamist ei õnnestunud lõpule viia"
+        what_happened: "PLC kataloogi uuendamist ei õnnestunud lõpule viia, kuid teie konto on kaitstud. PLC kataloogi ei muudetud — teie konto on endiselt serveris %{old_pds}."
+        current_status: "Migreerimine on ootel — uuesti proovimiseks taotlege uus kinnituskood"
+        what_to_do:
+          request_code: "Kasutage allolevat nuppu „%{button}“, et saada uus kinnituskood"
+          check_email: "Otsige serverilt %{old_pds} e-kirja, milles on uus kood"
+          submit_in_time: "Sisestage uus kood 1 tunni jooksul pärast selle saamist"
+          data_safe: "Teie migreerimisandmed (hoidla, blobid, eelistused) on kaitstud ja valmis"
+      credentials_need_reauth:
+        title: "Seanss on aegunud — logige uuesti sisse"
+        what_happened: "Teie salvestatud volitused on aegunud. Teie turvalisuse huvides kustutatakse need automaatselt 48 tunni pärast. Migreerimise jätkamiseks logige uuesti sisse."
+        current_status: "Migreerimine on ootel — jätkamiseks logige uuesti sisse"
+        what_to_do:
+          enter_password: "Uuesti sisselogimiseks sisestage allpool oma parool"
+          data_safe: "Teie migreerimisandmed on kaitstud — vajate vaid uusi volitusi"
+          resume: "Pärast sisselogimist jätkub migreerimine sealt, kus see pooleli jäi"
+      blob_not_found:
+        title: "Mõnda blobi ei leitud"
+        what_happened: "Mõnda blobi (pilti või videot) ei leitud teie vanalt PDS-ilt. Need võivad olla kustutatud või pole enam saadaval."
+        current_status: "Migreerimine jätkub — puuduvad blobid jäetakse vahele"
+        what_to_do:
+          not_critical: "Tavaliselt pole see tõsine — migreerimine jätkub ilma nende blobideta"
+          media_may_be_missing: "Mõnda vanemat pilti või videot ei pruugita üle kanda"
+          check_report: "Pärast migreerimise lõppu vaadake üksikasju ebaõnnestunud blobide aruandest"
+          reupload: "Vajaduse korral saate puuduva meedia pärast migreerimist ise uuesti üles laadida"
+      data_corruption:
+        title: "Andmed said ülekande ajal kahjustada"
+        what_happened: "Andmed said ülekande ajal kahjustada. See võib juhtuda aeglaste või ebastabiilsete võrguühenduste korral."
+        current_status:
+          retrying: "Kahjustatud andmete uuesti allalaadimine (katse %{attempt}/%{max_attempts})"
+          exhausted: "Automaatsed korduskatsed on otsas"
+        what_to_do:
+          wait: "Oodake automaatset korduskatset — andmed laaditakse uuesti alla"
+          check_network: "Kui see kordub, kontrollige oma võrguühenduse kvaliteeti"
+          stable_network: "Proovige stabiilsemat võrguühendust"
+          large_repositories: "Suurte hoidlate puhul võib aeglasel ühendusel tekkida ajalõpp"
+      disk_space:
+        title: "Kettaruum on otsas"
+        what_happened: "Serveris või PDS-is on kettaruum otsa saanud."
+        current_status: "Migreerimine on peatunud — vaja on administraatori sekkumist"
+        what_to_do:
+          contact_admin: "Võtke ühendust serveri või PDS-i administraatoriga, et kettaruumi vabastada"
+          server_side: "See on serveripoolne probleem — uuesti proovimine seda ei lahenda"
+          retry_later: "Kui kettaruum on vabastatud, saate migreerimist uuesti proovida"
+      invite_code:
+        title: "Kutsekood on kehtetu või aegunud"
+        what_happened: "Teie sisestatud kutsekood on kehtetu, aegunud või juba kasutatud."
+        current_status: "Migreerimine on peatunud — vaja on kehtivat kutsekoodi"
+        what_to_do:
+          get_new_code: "Küsige uue PDS-i administraatorilt uus kutsekood"
+          check_copy: "Kontrollige, et kopeerisite kutsekoodi õigesti (ilma lisatühikuteta)"
+          start_new: "Alustage uut migreerimist õige kutsekoodiga"
+          may_not_be_needed: "Mõni PDS-server ei nõua kutsekoodi — küsige administraatorilt"
+      cancelled:
+        title: "Migreerimine tühistatud"
+        what_happened: "See migreerimine tühistati teie soovil. Teie kontol ei muudetud midagi."
+        current_status: "Migreerimine tühistatud — teie konto jääb serverisse %{old_pds}"
+        what_to_do:
+          account_safe: "Teie konto on serveris %{old_pds} kaitstud ja muutmata"
+          start_new: "Saate igal ajal uue migreerimise alustada"
+      critical_plc:
+        title: "PLC kataloogi uuendamine ebaõnnestus"
+        what_happened: "PLC kataloogi uuendamine jäi lõpule viimata. Teie konto andmed on kaitstud."
+        current_status:
+          not_updated: "PLC kataloogi ei muudetud — võite taotleda uue tokeni ja uuesti proovida."
+          maybe_updated: "PLC kataloog võib olla osaliselt uuendatud. Võtke ühendust toega."
+        what_to_do:
+          request_token: "Proovige taotleda uut PLC tokenit — uuendamist pole veel toimunud"
+          no_new_migration: "Ärge alustage uut migreerimist"
+          data_safe: "Teie konto andmed on kaitstud ja terved"
+          save_recovery_key: "Teie taastamisvõti on sellel lehel — salvestage see kindlasse kohta"
+          save_token: "Salvestage see migreerimise token: %{token}"
+          contact_support: "Kui probleem püsib, võtke ühendust toega: %{support_email}"
+      generic:
+        title: "Migreerimise viga"
+        what_happened: "Migreerimise ajal läks midagi valesti."
+        current_status:
+          retrying: "Automaatne korduskatse (katse %{attempt}/%{max_attempts})"
+          exhausted: "Automaatsed korduskatsed on otsas"
+        what_to_do:
+          wait: "Oodake automaatset korduskatset"
+          check_details: "Kui see kordub, vaadake allolevaid tehnilisi üksikasju"
+          contact_support: "Kui vajate abi, võtke ühendust toega: %{support_email}"
+      time_remaining:
+        a_few_moments: "mõne hetke pärast"
+        seconds:
+          one: "%{count} sekundi pärast"
+          other: "%{count} sekundi pärast"
+        minutes:
+          one: "%{count} minuti pärast"
+          other: "%{count} minuti pärast"
+        hours:
+          one: "%{count} tunni pärast"
+          other: "%{count} tunni pärast"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ et:
   mailers:
     common:
       eurosky_migration: "Eurosky migreerimisteenus"
+      hello: "Tere,"
+      migration_label: "Migreerimine %{token}"
+      migration_token: "Migreerimise token: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Vana handle"
+      label_new_handle: "Uus handle"
+      label_old_pds: "Vana PDS"
+      label_new_pds: "Uus PDS"
+      label_target_pds: "Siht-PDS"
+      label_support_contact: "Toe kontakt"
+      label_support_email: "Toe e-post"
+      label_email: "E-post"
+      label_migration_token: "Migreerimise token"
+      label_failed_step: "Ebaõnnestunud samm"
+      details_heading: "Migreerimise üksikasjad"
+      account_details: "Konto üksikasjad"
+      account_safe: "Teie konto on kaitstud"
+      what_happened: "Mis juhtus?"
+      what_happens_next: "Mis juhtub järgmisena?"
+      view_status: "Vaata migreerimise olekut"
+      select_to_copy: "Klõpsake valimiseks ja kopeerimiseks"
+      automated_notification: "See on automaatne teavitus teenuselt %{site}."
 
     email_verification:
       subject: "Teie kinnituskood: %{code} (%{token})"
@@ -594,6 +828,8 @@ et:
       reminder3: "Sulgege kõik rakendused ja brauseriaknad oma kontoga"
       reminder4: "Oodake lõpetamise e-kirja enne uuesti sisselogimist"
       not_you: "Kui te ei algatanud seda migreerimist, ignoreerige palun seda e-kirja."
+      your_code: "Teie kinnituskood"
+      go_to_page_button: "Mine migreerimise lehele"
 
     account_password:
       subject: "Teie uue konto parool kasutajale %{handle} (%{token})"
@@ -616,6 +852,7 @@ et:
       no_backup_step2: "Teie andmeid migreeritakse (ilma varukoopiata)"
       no_backup_step3: "Teid teavitatakse, kui migreerimine on lõppenud"
       track_progress: "Jälgige oma migreerimise edenemist:"
+      status_page_link: "Migreerimise olekuleht"
 
     migration_completed:
       subject: "Migreerimine lõpetatud (%{token})"
@@ -626,15 +863,15 @@ et:
       save_password: "Salvestage see parool kohe — hoidke seda paroolihalduris."
       change_password: "Saate seda muuta pärast esimest sisselogimist."
       backup_heading: "Varukoopiapakk saadaval"
-      backup_help: "Teie konto andmete varukoopia on allalaadimiseks saadaval järgmised 10 minutit:"
-      backup_expiry: "10 minuti pärast see link aegub ja varukoopia kustutatakse jäädavalt."
+      backup_help: "Teie konto andmete varukoopia on allalaadimiseks saadaval kuni %{time}:"
+      backup_expiry: "Pärast seda link enam ei tööta ja varukoopia kustutatakse jäädavalt."
       summary: "Migreerimise kokkuvõte"
       migration_token: "Migreerimise token: %{token}"
       did: "DID: %{did}"
       old_account: "Vana konto: %{handle} @ %{pds}"
       new_account: "Uus konto: %{handle} @ %{pds}"
       completed_at: "Lõpetatud: %{time}"
-      status_page: "Vaadake oleku lehte (saadaval 10 minutit):"
+      status_page: "Vaadake olekulehte (saadaval 2 päeva):"
       login_heading: "Kuidas oma uuele kontole sisse logida"
       login_help: "Kui te pole seda veel teinud, logige oma vanast kontost välja mistahes Bluesky rakenduses, seejärel logige sisse oma uue handle'iga:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ et:
       next3: "Kõik teie postitused, jälgimised ja andmed on üle kantud"
       next4: "Teie jälgijad peaksid automaatselt nägema teie uut asukohta (DID-põhine)"
       privacy_heading: "Privaatsus ja turvalisus"
-      privacy1: "See migreerimiskirje kustutatakse automaatselt 10 minuti pärast GDPR-i nõuete täitmiseks"
+      privacy1: "See migreerimiskirje kustutatakse GDPR-i nõuete täitmiseks automaatselt 2 päeva pärast"
       privacy2: "Kõik krüpteeritud volitused on meie serveritest turvaliselt kustutatud"
       support: "Kui teil on küsimusi või probleeme, võtke ühendust toega oma migreerimise tokeniga:"
       email_footer: "See e-kiri saadeti aadressile %{email}, kuna te algatasite konto migreerimise."
+      download_backup: "Laadi varukoopiapakk alla"
+      change_password_button: "Muuda oma parooli"
+      old_account_label: "Vana konto"
+      new_account_label: "Uus konto"
+      completed_at_label: "Lõpetatud"
 
     blobs_transfer_complete:
       subject: "Kõik failid üle kantud — teie migratsioon on täielikult lõpetatud (%{token})"
@@ -673,26 +915,6 @@ et:
       keep_password: "Seni ärge muutke oma konto parooli serveris %{pds} — muutmine katkestab ülekande lõplikult."
       support: "Kui katsed ebaõnnestuvad jätkuvalt, võtke ühendust toega ja lisage oma migratsiooni token:"
 
-    plc_otp:
-      subject: "PLC kinnituskood – tagasipöördumatu punkt (%{token})"
-      heading: "PLC kinnituskood"
-      critical: "Kriitiline: tagasipöördumatu punkt"
-      intro: "Teie migreerimine on valmis viimaseks, pöördumatuks sammuks. Olete esitamas oma PLC tokenit, et suunata oma DID uude PDS-i."
-      your_code: "Teie kinnituskood"
-      expires_in: "Kehtib %{time}"
-      point_of_no_return: "See on tagasipöördumatu punkt"
-      point_of_no_return_detail: "Kui esitate selle koodi koos oma PLC tokeniga, migreeritakse teie konto püsivalt uude PDS-i."
-      did_will_point: "Teie DID hakkab kohe viitama uuele PDS-ile"
-      cannot_undo: "Seda toimingut ei saa tagasi võtta"
-      ensure_ready: "Enne jätkamist veenduge, et teie uus konto on valmis"
-      how_to_use: "Kuidas seda koodi kasutada"
-      step1: "Minge oma migreerimise olekulehele"
-      step2: "Sisestage oma PLC token (vana PDS-i e-kirjast)"
-      step3: "Sisestage see kinnituskood: %{code}"
-      step4: "Esitage mõlemad, et migreerimine lõpule viia"
-      attempts_note: "Teil on õige koodi sisestamiseks 5 katset. Pärast seda peate taotlema uue koodi."
-      not_you: "Kui te seda koodi ei taotlenud, võib keegi üritada teie migreerimisele juurde pääseda."
-
 
     migration_failed:
       subject: "Migreerimine ebaõnnestus – vajalik tegevus (%{token})"
@@ -708,7 +930,7 @@ et:
       previous_retries: "Varasemad korduskatsed: %{count}"
       what_to_do: "Mida saate teha"
       do_step1: "Vaadake migreerimise olekut:"
-      do_step2: "Klõpsake nuppu \"Proovi migreerimist uuesti\", et migreerimist uuesti proovida"
+      do_step2: "Klõpsake nuppu „Proovi migreerimist uuesti“, et migreerimist uuesti proovida"
       do_step3: "Kui probleem püsib pärast mitut korduskatset, võtke palun ühendust toega oma migreerimise tokeniga: %{token}"
       common_issues: "Levinud probleemid ja lahendused"
       issue1: "Võrgu ajalõpud: lahenevad tavaliselt korduskatsel"
@@ -718,6 +940,17 @@ et:
       note1: "Teie andmed vanal PDS-il jäävad puutumatuks"
       note2: "Saate migreerimist turvaliselt uuesti proovida"
       note3: "Kui vajate abi, viidake oma migreerimise tokenile: %{token}"
+      retry_button: "Vaata migreerimist ja proovi uuesti"
+      plc_expired_heading: "PLC token on aegunud"
+      plc_expired_text: "Teie PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 1 tund pärast väljastamist."
+      plc_expired_steps: "Mida peate tegema"
+      plc_expired_step1: "Avage alloleva nupuga oma migreerimise olekuleht"
+      plc_expired_step2: "Klõpsake nuppu „Taotle uut PLC tokenit“"
+      plc_expired_step3: "Otsige oma postkastist serverilt %{pds} saabunud e-kirja uue tokeniga"
+      plc_expired_step4: "Esitage uus token 1 tunni jooksul"
+      plc_expired_button: "Vaata migreerimist ja taotle uut tokenit"
+      plc_expired_good_news: "Hea uudis:"
+      plc_expired_safe: "Teie migreerimisandmed on kaitstud ja valmis. Viimase sammu lõpetamiseks vajate vaid uut PLC tokenit."
 
     backup_ready:
       subject: "Teie Eurosky migreerimise varukoopia on valmis (%{token})"
@@ -728,6 +961,7 @@ et:
       expires: "See allalaadimislink aegub %{time}."
       expiry_warning: "Pärast aegumist kustutatakse varukoopia meie serveritest jäädavalt."
       whats_next: "Teie migreerimine jätkub taustal. Saate teise e-kirja, kui see on lõppenud."
+      size_label: "Varukoopia suurus"
 
     rotation_key_notice:
       subject: "Vajalik tegevus: kinnitage oma migreerimine PLC koodiga (%{token})"
@@ -736,9 +970,17 @@ et:
       key_heading: "Teie rotatsioonivõti (salvestage see esmalt)"
       key_help: "Enne jätkamist salvestage see rotatsioonivõti turvaliselt. See on teie ainus viis kontot taastada, kui midagi läheb valesti:"
       key_warning: "Hoidke seda võtit paroolihalduris või muus turvalises kohas. Te ei saa seda hiljem uuesti hankida."
-      next_step: "Minge migreerimise lehele, et sisestada oma PLC kinnituskood:"
       check_email: "Kontrollige oma e-posti koodi saamiseks oma vanalt PDS-i pakkujalt — see näeb välja nagu XXXXX-XXXXX"
       no_password_reset: "Tähtis: ärge logige oma uude kontosse serveris %{pds} sisse ega lähtestage seal parooli enne, kui see migratsioon on lõpetatud. Parooli lähtestamine muudab migratsiooni kasutatavad sisselogimisandmed kehtetuks ja migratsioon ebaõnnestub."
+      plc_email_intro: "Peagi saate oma vanalt PDS-i pakkujalt (%{pds}) e-kirja, mille teemarida on:"
+      plc_code_info: "Selles e-kirjas on kinnituskood (see näeb välja nagu %{example})."
+      plc_enter_code: "Migreerimise lõpuleviimiseks peate selle koodi sisestama oma migreerimise olekulehel:"
+      plc_expiry: "Oluline: kinnituskood aegub 1 tunni pärast. Kui te e-kirja ei näe, kontrollige oma rämpsposti kausta. See tuleb teie vanalt PDS-i pakkujalt, mitte meilt."
+      save_key_heading: "Salvestage see võti kohe"
+      recovery_key_label: "Teie taastamisvõti:"
+      key_use_heading: "Mida ma selle võtmega teha saan?"
+      key_use: "Kui teil peaks kunagi olema vaja oma kontot taastada, minge lehele %{link} ja kasutage juurdepääsu taastamiseks seda võtit. See toimib isegi siis, kui teie server on täiesti võrgust väljas."
+      next_step_button: "Mine migreerimise lehele PLC kinnituskoodi sisestama"
 
     plc_token_failed:
       subject: "Vajalik tegevus: taotlege uus PLC kinnituskood (%{token})"
@@ -749,6 +991,8 @@ et:
       step2: "Taotlege uut PLC tokenit (võimalik, et peate uuesti oma parooli sisestama)"
       step3: "Sisestage uus token, kui saate selle e-posti teel"
       error_detail: "Viga: %{error}"
+      safe_text: "PLC kataloogi ei muudetud. Teie konto on endiselt serveris %{pds} ning kõik teie migreerimisandmed (hoidla, failid ja eelistused) on turvaliselt salvestatud ja valmis."
+      what_happened_text: "Teie vana PDS-i pakkuja saadetud kinnituskood aegus enne, kui seda sai kasutada. Need koodid kehtivad ainult piiratud aja (tavaliselt 1 tund)."
 
     critical_plc_failure:
       subject: "Kiire: kriitiline migreerimise tõrge – ärge alustage uut migreerimist (%{token})"
@@ -759,12 +1003,41 @@ et:
       key_help: "Vajate seda võtit oma konto taastamiseks:"
       contact: "Võtke kohe ühendust toega:"
       error_detail: "Viga: %{error}"
+      summary: "Teie AT Protocol konto migreerimisel tekkis kriitiline viga."
+      uncertain_state: "Teie konto võib olla ebaselges olekus."
+      do_not_heading: "Palun ärge:"
+      do_not1: "Alustage uut migreerimist"
+      do_not2: "Kustutage seda e-kirja"
+      do_not3: "Proovige kontot ilma toeta ise taastada"
+      do_not4: "Muutke oma konto seadeid kummaski PDS-is"
+      data_safe: "Teie konto andmed on kaitstud, kuid meie tugimeeskond peab enne teie mis tahes tegevust kontrollima PLC kataloogi olekut."
+      right_now_heading: "Mida kohe teha"
+      step_save_email: "Salvestage see e-kiri. Vajate allolevat teavet."
+      step_save_token: "Salvestage oma migreerimise token:"
+      step_reference_token: "Lisage oma migreerimise token oma toetaotlusele:"
+      what_happened_text: "Migreerimine ebaõnnestus PLC kataloogi uuendamisel — see on kriitiline samm, mis suunab teie DID uude PDS-i."
+      support_will: "Meie tugimeeskond:"
+      support1: "Uurib teie DID-i olekut PLC kataloogis"
+      support2: "Selgitab välja, kas PLC operatsioon õnnestus või ebaõnnestus"
+      support3: "Annab teile konkreetsed taastamisjuhised"
+      support4: "Võtab teiega 24 tunni jooksul e-posti teel ühendust"
+      wait_for_support: "Ärge tehke midagi enne, kui tugi on teiega ühendust võtnud. Juhendame teid taastamisel."
+      automated: "See on automaatne kriitiline hoiatus teenuselt %{site}."
 
     invalid_invite_code:
       subject: "Migreerimine ebaõnnestus – kehtetu kutsekood (%{token})"
       heading: "Kehtetu kutsekood"
       intro: "Teie migreerimine %{token} ei saanud jätkuda, kuna kutsekood oli kehtetu või juba kasutatud."
       what_to_do: "Uue migreerimise alustamiseks kehtiva kutsekoodiga:"
+      rejected: "Serveri %{pds} jaoks esitatud kutsekood lükati tagasi. See võib juhtuda, kui:"
+      reason1: "Kutsekood sisestati valesti"
+      reason2: "Kutsekood on juba kasutatud"
+      reason3: "Kutsekood on aegunud"
+      reason4: "Kutsekood ei kehti selle PDS-i jaoks"
+      safe1: "Teie kontot serveris %{pds} ei muudetud"
+      safe2: "Andmeid ei kantud üle ega muudetud"
+      safe3: "Teie konto töötab teie praeguses PDS-is tavapäraselt edasi"
+      start_new: "Alusta uut migreerimist"
 
     orphaned_account_error:
       subject: "Migreerimine peatatud – hüljatud konto sihtserveris (%{token})"
@@ -775,6 +1048,18 @@ et:
       option1: "Võtke ühendust siht-PDS-i administraatoriga aadressil %{email}, et hüljatud konto eemaldada"
       option2: "Lisage oma DID: %{did}"
       option3: "Pärast eemaldamist proovige migreerimist uuesti oleku lehelt:"
+      contact_heading: "Järgmine samm: võtke ühendust PDS-i pakkujaga"
+      contact_help: "Palun võtke ühendust serveri %{pds} toega ja paluge hüljatud konto eemaldada."
+      email_support: "Kirjuta aadressile %{email}"
+      include_heading: "Lisage oma sõnumisse:"
+      after_heading: "Kui tugi on vastanud"
+      after1: "Avage uuesti oma %{link}"
+      after2: "Klõpsake nuppu „Proovi migreerimist uuesti“"
+      after3: "Teie migreerimine jätkub automaatselt"
+      status_page_link: "migreerimise olekuleht"
+      need_help: "Vajate abi? Lisateabe saamiseks avage oma %{link}."
+      mailto_subject: "Hüljatud konto eemaldamise taotlus – migreerimine %{token}"
+      mailto_body: "Tere,\n\nProovin migreerida serverisse %{pds}, kuid sain hüljatud konto vea.\n\nMigreerimise token: %{token}\nDID: %{did}\n\nKas saaksite palun hüljatud konto eemaldada, et saaksin migreerimist uuesti proovida?\n\nAitäh."
 
     reauthentication_required:
       subject: "Vajalik tegevus: logige uuesti sisse (%{token})"
@@ -782,8 +1067,13 @@ et:
       intro: "Teie migreerimine %{token} vajab jätkamiseks parooli uuesti sisestamist."
       reason: "Teie seanss vana PDS-iga on migreerimisprotsessi ajal aegunud."
       what_to_do: "Minge migreerimise lehele ja sisestage uuesti oma parool:"
-      error_detail: "Viga: %{error}"
       step: "Ebaõnnestunud samm: %{step}"
+      step1: "Avage oma migreerimise olekuleht"
+      step2: "Uuesti sisselogimiseks sisestage kasutaja %{handle} parool"
+      step3: "Migreerimine jätkub automaatselt sealt, kus see pooleli jäi"
+      button: "Logi uuesti sisse ja jätka"
+      data_safe_heading: "Teie andmed on kaitstud."
+      data_safe: "Kogu migreerimise edenemine on säilinud. Peate vaid uuesti sisse logima, et saaksime teie konto ülekandmist jätkata."
 
     plc_token_reminder:
       subject: "Meeldetuletus: lõpetage migreerimine, sisestades PLC koodi (%{token})"
@@ -805,6 +1095,9 @@ et:
       confirm_help: "Klõpsake alloleval lingil tühistamise kinnitamiseks:"
       confirm_link: "Kinnita tühistamine"
       not_you: "Kui te ei taotlenud seda tühistamist, saate seda e-kirja turvaliselt ignoreerida. Teie migreerimine jätkub tavapäraselt."
+      safe_text: "Teie kontol pole midagi muudetud. Selle migreerimise tühistamine peatab ainult protsessi. Teie konto jääb serverisse %{pds} ja töötab tavapäraselt edasi."
+      cannot_undo: "Seda ei saa tagasi võtta. Kui mõtlete ümber, peate alustama uut migreerimist."
+      not_you_heading: "Kas te ei taotlenud seda?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

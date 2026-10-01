@@ -47,6 +47,7 @@ nb:
   landing:
     page_title: "Flytt kontoen din"
     title: "Flytt kontoen din til Europa"
+    title_named: "Flytt kontoen din til %{name}"
     lead: "Ta med innleggene dine, hvem du følger og identiteten din til en europeisk server. Handlen din kan bli med deg, og følgerne dine vil ikke merke noe."
     start: "Start migrering"
     how_it_works: "Slik fungerer det"
@@ -61,6 +62,54 @@ nb:
       confirm:
         label: "Bekreft via e-post"
         text: "Vi overfører dataene dine og ber deg bekrefte det siste steget via e-post. Det tar omtrent 20–30 minutter."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Slik fungerer det"
+    title: "Slik flytter du kontoen din"
+    lead: "Kontoen din flyttes til en annen server på omtrent en halvtime. Innleggene dine, hvem du følger og identiteten din blir med deg, og de som følger deg, fortsetter å følge deg."
+    before:
+      title: "Før du begynner"
+      credentials: "Din nåværende handle og passordet til kontoen din. App-passord fungerer ikke. Hvis du bruker tofaktorautentisering, trenger du også innloggingskoden vi ber om."
+      email: "Tilgang til e-postadressen til kontoen din. Vi sender deg en kode dit, og senere sender også din nåværende server deg en."
+      time: "Omtrent en halvtime der du ikke bruker kontoen din."
+      invite: "For noen servere en invitasjonskode. Veiviseren forteller deg om serveren du velger, krever det."
+    moves:
+      title: "Dette blir med deg"
+      everything: "Alt på kontoen din: innleggene og svarene dine, likerklikk og reposter, hvem du følger, lister og blokkeringer, profilen din, bildene og videoene dine og appinnstillingene dine, som lagrede feeder og dempede ord. Identiteten din blir også med, så de som følger deg, fortsetter å følge deg."
+      handle: "Handlen din kan bli med hvis den er på ditt eget domene. En handle på domenet til din nåværende server, som navn.bsky.social, blir igjen: du velger en ny på den nye serveren."
+    steps:
+      title: "Steg for steg"
+      sign_in:
+        title: "Logg inn"
+        text: "Logg inn med din nåværende handle og passord. Vi bruker dem til å starte flyttingen og lagrer aldri passordet ditt."
+      choose:
+        title: "Velg hvor du skal"
+        text: "Velg en server, godta vilkårene dens hvis den har noen, og velg handlen din der. Du kan også be om en sikkerhetskopi av hele kontoen din."
+      verify:
+        title: "Bekreft e-posten din"
+        text: "Vi sender deg en kode på e-post. Flyttingen starter når du skriver den inn på statussiden for migreringen din."
+      copy:
+        title: "Vi kopierer kontoen din"
+        text: "Vi oppretter kontoen din på den nye serveren og kopierer alt dit; statussiden viser fremdriften. Ikke legg ut, lik eller følg noe i mellomtiden: de endringene ville ikke blitt med."
+      confirm:
+        title: "Bekreft flyttingen"
+        text: "Din nåværende server sender deg en bekreftelseskode på e-post. Skriv den inn på statussiden innen en time, eller be om en ny. Dette steget peker identiteten din til den nye serveren."
+      done:
+        title: "Ferdig"
+        text: "Kontoen din på den nye serveren slås på, og den gamle deaktiveres. Vi sender deg en e-post om hvordan du logger inn, sammen med passordet til den nye kontoen din."
+    know:
+      title: "Greit å vite"
+      duration: "De fleste flyttinger tar 20–30 minutter. Kontoer med mange bilder og videoer tar lengre tid."
+      cancel: "Frem til du skriver inn bekreftelseskoden i steg 5, kan du avbryte flyttingen, og kontoen din blir der den er."
+      recovery: "Å peke identiteten din til den nye serveren kan ikke angres her. Vi gir deg en gjenopprettingsnøkkel som kan angre det, så oppbevar den et trygt sted."
+      old_account: "Den gamle kontoen din deaktiveres, ikke slettes. Du kan flytte tilbake til serveren dens senere med dette verktøyet."
+      backup: "Hvis du ba om en sikkerhetskopi, kan du laste den ned i 24 timer."
+      deletion: "Vi sletter registreringen av flyttingen din, og alt vi har tatt vare på for den, 2 dager etter at flyttingen er fullført."
+      sign_in: "For å logge inn etterpå bruker du den nye handlen din og velger den nye serveren som hostingleverandør i appen din."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ nb:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Serveren begrenser forespørsler"
+        what_happened: "Serveren begrenser forespørsler for å unngå overbelastning. Dette er normalt når mange migreringer pågår."
+        current_status:
+          retrying: "Prøver automatisk på nytt med lengre pauser (forsøk %{attempt} av %{max_attempts})"
+          exhausted: "Ingen automatiske forsøk igjen"
+        what_to_do:
+          wait: "Vent på det automatiske nye forsøket (anbefalt) — hvert forsøk venter litt lenger"
+          temporary: "Begrensningen er midlertidig og forsvinner vanligvis i løpet av noen minutter"
+          overloaded: "Hvis det fortsetter etter %{max_attempts} forsøk, kan serveren være overbelastet"
+      network:
+        title: "Feil med nettverkstilkoblingen"
+        what_happened:
+          repo_export: "Tilkoblingen til din gamle PDS fikk tidsavbrudd eller ble brutt under eksporten av repositoriet ditt."
+          blob_download: "Tilkoblingen til din gamle PDS fikk tidsavbrudd eller ble brutt under nedlastingen av blobene dine (bilder og videoer)."
+          account_activation: "Tilkoblingen til din nye PDS fikk tidsavbrudd eller ble brutt under aktiveringen av kontoen din."
+          other: "Tilkoblingen til PDS-en fikk tidsavbrudd eller ble brutt under migreringen."
+        current_status:
+          retrying: "Prøver automatisk på nytt (forsøk %{attempt} av %{max_attempts})"
+          exhausted: "Ingen automatiske forsøk igjen"
+        what_to_do:
+          wait: "Vent på det automatiske nye forsøket (anbefalt)"
+          check_url: "Sjekk om %{url} åpnes i nettleseren din"
+          may_be_down: "Hvis feilene fortsetter, kan PDS-en være nede en stund eller sterkt belastet"
+          contact_admin: "Hvis problemet vedvarer, kontakt PDS-administratoren"
+      authentication:
+        title: "Innlogging mislyktes"
+        what_happened: "Vi kunne ikke logge inn på PDS-en din. Dette betyr vanligvis at passordet er feil eller har utløpt."
+        current_status: "Migreringen er stoppet — nye innloggingsdata trengs"
+        what_to_do:
+          check_password: "Sjekk at passordet ditt er riktig"
+          check_expiry: "Sjekk om innloggingsdataene dine har utløpt (de oppbevares i 48 timer fra starten av migreringen)"
+          start_new: "Start en ny migrering med riktige innloggingsdata"
+          contact_admin: "Hvis du er sikker på at passordet er riktig, kontakt administratoren for PDS-en din"
+      email_taken:
+        title: "E-postadressen er allerede i bruk på den nye PDS-en"
+        what_happened: "%{new_pds} har allerede en konto med %{email}, så vi kunne ikke opprette en konto for DID-en din der. Kontoen din på %{old_pds} er urørt."
+        current_status: "Migreringen er stoppet — ingenting er endret på identiteten din"
+        what_to_do:
+          account_is_yours: "Hvis den kontoen er din, logg inn på den på %{new_pds}, endre e-postadressen dens og start deretter en ny migrering"
+          other_email: "Eller start en ny migrering med en annen e-postadresse"
+          contact_provider: "Hvis du ikke kjenner igjen kontoen, kontakt PDS-leverandøren: %{contact_email}"
+      account_exists:
+        title: "Kontoen finnes allerede på den nye PDS-en"
+        what_happened: "En konto med din DID finnes allerede på den nye PDS-en (%{new_pds}). Denne foreldreløse kontoen er mest sannsynlig igjen etter et tidligere migreringsforsøk som mislyktes."
+        current_status: "Migreringen er satt på pause — PDS-leverandøren må fjerne den foreldreløse kontoen"
+        what_to_do:
+          contact_provider: "Kontakt leverandøren av den nye PDS-en og be dem fjerne den foreldreløse kontoen:"
+          contact_email: "E-post: %{contact_email}"
+          include_details: "Oppgi migreringstokenet ditt (%{token}) og DID-en din (%{did})"
+          retry_after_removal: "Når den foreldreløse kontoen er fjernet, kan du prøve denne migreringen på nytt."
+          provider_only: "Dette krever handling fra PDS-leverandøren — du kan ikke fikse det selv."
+      plc_token_expired:
+        title: "PLC-tokenet har utløpt"
+        what_happened: "PLC-operasjonstokenet du skrev inn, har utløpt. PLC-tokens er bare gyldige i 1 time etter at din gamle PDS-leverandør har utstedt dem."
+        current_status: "Migreringen er satt på pause — du trenger et nytt PLC-token"
+        what_to_do:
+          request_token: "Bruk \"%{button}\"-knappen nedenfor for å be om et nytt token"
+          check_email: "Se etter en e-post fra %{old_pds} med det nye tokenet"
+          submit_in_time: "Skriv inn det nye tokenet innen 1 time etter at du mottok det"
+          data_safe: "Resten av migreringsdataene dine er trygge og klare — du trenger bare et nytt token"
+      plc_pre_submission_failure:
+        title: "PLC-oppdateringen kunne ikke fullføres"
+        what_happened: "Oppdateringen av PLC-katalogen kunne ikke fullføres, men kontoen din er trygg. PLC-katalogen ble ikke endret — kontoen din er fortsatt på %{old_pds}."
+        current_status: "Migreringen er satt på pause — be om en ny bekreftelseskode for å prøve igjen"
+        what_to_do:
+          request_code: "Bruk \"%{button}\"-knappen nedenfor for å få en ny bekreftelseskode"
+          check_email: "Se etter en e-post fra %{old_pds} med den nye koden"
+          submit_in_time: "Skriv inn den nye koden innen 1 time etter at du mottok den"
+          data_safe: "Migreringsdataene dine (repositorium, blober, innstillinger) er trygge og klare"
+      credentials_need_reauth:
+        title: "Økten har utløpt — logg inn på nytt"
+        what_happened: "De lagrede innloggingsdataene dine har utløpt. Av sikkerhetshensyn slettes de automatisk etter 48 timer. Logg inn på nytt for å fortsette migreringen."
+        current_status: "Migreringen er satt på pause — logg inn på nytt for å fortsette"
+        what_to_do:
+          enter_password: "Skriv inn passordet ditt nedenfor for å logge inn på nytt"
+          data_safe: "Migreringsdataene dine er trygge — du trenger bare nye innloggingsdata"
+          resume: "Når du har logget inn, fortsetter migreringen der den slapp"
+      blob_not_found:
+        title: "Noen blober ble ikke funnet"
+        what_happened: "Noen blober (bilder og videoer) ble ikke funnet på din gamle PDS. De kan ha blitt slettet eller er ikke lenger tilgjengelige."
+        current_status: "Migreringen fortsetter — manglende blober hoppes over"
+        what_to_do:
+          not_critical: "Dette er vanligvis ikke alvorlig — migreringen fortsetter uten disse blobene"
+          media_may_be_missing: "Noen eldre bilder eller videoer blir kanskje ikke overført"
+          check_report: "Når migreringen er ferdig, kan du se rapporten over mislykkede blober for detaljer"
+          reupload: "Ved behov kan du laste opp manglende medier på nytt selv etter migreringen"
+      data_corruption:
+        title: "Data ble skadet under overføringen"
+        what_happened: "Data ble skadet under overføringen. Dette kan skje på trege eller ustabile nettverkstilkoblinger."
+        current_status:
+          retrying: "Laster ned de skadede dataene på nytt (forsøk %{attempt} av %{max_attempts})"
+          exhausted: "Ingen automatiske forsøk igjen"
+        what_to_do:
+          wait: "Vent på det automatiske nye forsøket — dataene lastes ned på nytt"
+          check_network: "Hvis det skjer igjen, sjekk kvaliteten på nettverkstilkoblingen din"
+          stable_network: "Prøv en mer stabil nettverkstilkobling"
+          large_repositories: "Store repositorier kan få tidsavbrudd på trege tilkoblinger"
+      disk_space:
+        title: "Tom for diskplass"
+        what_happened: "Serveren eller PDS-en har gått tom for diskplass."
+        current_status: "Migreringen er stoppet — en administrator må gripe inn"
+        what_to_do:
+          contact_admin: "Kontakt administratoren for serveren eller PDS-en for å frigjøre diskplass"
+          server_side: "Dette er et problem på serversiden — et nytt forsøk løser det ikke"
+          retry_later: "Når det er frigjort diskplass, kan du prøve migreringen på nytt"
+      invite_code:
+        title: "Invitasjonskoden er ugyldig eller utløpt"
+        what_happened: "Invitasjonskoden du skrev inn, er ugyldig, har utløpt eller er allerede brukt."
+        current_status: "Migreringen er stoppet — en gyldig invitasjonskode trengs"
+        what_to_do:
+          get_new_code: "Be administratoren for den nye PDS-en om en ny invitasjonskode"
+          check_copy: "Sjekk at du har kopiert invitasjonskoden riktig (uten ekstra mellomrom)"
+          start_new: "Start en ny migrering med riktig invitasjonskode"
+          may_not_be_needed: "Noen PDS-servere krever ikke invitasjonskode — sjekk med administratoren"
+      cancelled:
+        title: "Migreringen er avbrutt"
+        what_happened: "Denne migreringen ble avbrutt etter ønske fra deg. Ingenting er endret på kontoen din."
+        current_status: "Migreringen er avbrutt — kontoen din blir på %{old_pds}"
+        what_to_do:
+          account_safe: "Kontoen din er trygg og uendret på %{old_pds}"
+          start_new: "Du kan starte en ny migrering når som helst"
+      critical_plc:
+        title: "Oppdateringen av PLC-katalogen mislyktes"
+        what_happened: "Oppdateringen av PLC-katalogen ble ikke fullført. Kontodataene dine er trygge."
+        current_status:
+          not_updated: "PLC-katalogen ble ikke endret — du kan be om et nytt token og prøve igjen."
+          maybe_updated: "PLC-katalogen kan ha blitt delvis oppdatert. Kontakt support."
+        what_to_do:
+          request_token: "Prøv å be om et nytt PLC-token — oppdateringen har ikke skjedd ennå"
+          no_new_migration: "Ikke start en ny migrering"
+          data_safe: "Kontodataene dine er trygge og intakte"
+          save_recovery_key: "Gjenopprettingsnøkkelen din står på denne siden — oppbevar den et trygt sted"
+          save_token: "Lagre dette migreringstokenet: %{token}"
+          contact_support: "Hvis problemet vedvarer, kontakt support: %{support_email}"
+      generic:
+        title: "Migreringsfeil"
+        what_happened: "Noe gikk galt under migreringen."
+        current_status:
+          retrying: "Prøver automatisk på nytt (forsøk %{attempt} av %{max_attempts})"
+          exhausted: "Ingen automatiske forsøk igjen"
+        what_to_do:
+          wait: "Vent på det automatiske nye forsøket"
+          check_details: "Hvis det skjer igjen, se de tekniske detaljene nedenfor"
+          contact_support: "Hvis du trenger hjelp, kontakt support: %{support_email}"
+      time_remaining:
+        a_few_moments: "noen øyeblikk"
+        seconds:
+          one: "%{count} sekund"
+          other: "%{count} sekunder"
+        minutes:
+          one: "%{count} minutt"
+          other: "%{count} minutter"
+        hours:
+          one: "%{count} time"
+          other: "%{count} timer"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ nb:
   mailers:
     common:
       eurosky_migration: "Eurosky migreringstjeneste"
+      hello: "Hei,"
+      migration_label: "Migrering %{token}"
+      migration_token: "Migreringstoken: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Gammel handle"
+      label_new_handle: "Ny handle"
+      label_old_pds: "Gammel PDS"
+      label_new_pds: "Ny PDS"
+      label_target_pds: "Mål-PDS"
+      label_support_contact: "Supportkontakt"
+      label_support_email: "Support-e-post"
+      label_email: "E-post"
+      label_migration_token: "Migreringstoken"
+      label_failed_step: "Feilet steg"
+      details_heading: "Migreringsdetaljer"
+      account_details: "Kontodetaljer"
+      account_safe: "Kontoen din er trygg"
+      what_happened: "Hva skjedde?"
+      what_happens_next: "Hva skjer videre?"
+      view_status: "Se migreringsstatus"
+      select_to_copy: "Klikk for å merke og kopiere"
+      automated_notification: "Dette er et automatisk varsel fra %{site}."
 
     email_verification:
       subject: "Din bekreftelseskode: %{code} (%{token})"
@@ -594,6 +828,8 @@ nb:
       reminder3: "Lukk alle apper og nettleserfaner med kontoen din"
       reminder4: "Vent på fullførings-e-posten før du logger inn igjen"
       not_you: "Hvis du ikke startet denne migreringen, kan du ignorere denne e-posten."
+      your_code: "Bekreftelseskoden din"
+      go_to_page_button: "Gå til migreringssiden"
 
     account_password:
       subject: "Ditt nye kontopassord for %{handle} (%{token})"
@@ -616,6 +852,7 @@ nb:
       no_backup_step2: "Dataene dine migreres (uten sikkerhetskopi)"
       no_backup_step3: "Du blir varslet når migreringen er fullført"
       track_progress: "Følg migreringsfremdriften din her:"
+      status_page_link: "Statussiden for migreringen"
 
     migration_completed:
       subject: "Migrering fullført (%{token})"
@@ -626,15 +863,15 @@ nb:
       save_password: "Lagre dette passordet nå — lagre det i en passordbehandler."
       change_password: "Du kan endre det etter første innlogging."
       backup_heading: "Sikkerhetskopipakke tilgjengelig"
-      backup_help: "Sikkerhetskopien av kontodataene dine er tilgjengelig for nedlasting i de neste 10 minuttene:"
-      backup_expiry: "Etter 10 minutter utløper denne lenken og sikkerhetskopien slettes permanent."
+      backup_help: "Sikkerhetskopien av kontodataene dine kan lastes ned frem til %{time}:"
+      backup_expiry: "Etter det slutter lenken å fungere, og sikkerhetskopien slettes permanent."
       summary: "Migreringssammendrag"
       migration_token: "Migreringstoken: %{token}"
       did: "DID: %{did}"
       old_account: "Gammel konto: %{handle} @ %{pds}"
       new_account: "Ny konto: %{handle} @ %{pds}"
       completed_at: "Fullført: %{time}"
-      status_page: "Se statussiden (tilgjengelig i 10 minutter):"
+      status_page: "Se statussiden (tilgjengelig i 2 dager):"
       login_heading: "Slik logger du inn på din nye konto"
       login_help: "Hvis du ikke allerede har gjort det, logg ut av den gamle kontoen din i alle Bluesky-apper, og logg deretter inn med den nye handlen din:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ nb:
       next3: "Alle innlegg, følginger og data er overført"
       next4: "Følgerne dine bør automatisk se din nye plassering (DID-basert)"
       privacy_heading: "Personvern og sikkerhet"
-      privacy1: "Denne migreringsposten slettes automatisk om 10 minutter for GDPR-overholdelse"
+      privacy1: "Denne migreringsposten slettes automatisk om 2 dager for GDPR-overholdelse"
       privacy2: "All kryptert legitimasjon er sikkert slettet fra serverne våre"
       support: "Hvis du har spørsmål eller problemer, kontakt support med migreringtokenet ditt:"
       email_footer: "Denne e-posten ble sendt til %{email} fordi du startet en kontomigrering."
+      download_backup: "Last ned sikkerhetskopipakken"
+      change_password_button: "Endre passordet ditt"
+      old_account_label: "Gammel konto"
+      new_account_label: "Ny konto"
+      completed_at_label: "Fullført"
 
     blobs_transfer_complete:
       subject: "Alle filer overført — migreringen din er helt fullført (%{token})"
@@ -672,26 +914,6 @@ nb:
       what_to_do: "Åpne statussiden og bruk «Prøv mislykkede filer på nytt». Hvert forsøk bruker kopiene fra sikkerhetskopien din, så ingenting går tapt. Du får en siste e-post når alt har kommet frem:"
       keep_password: "Inntil da må du ikke endre passordet til kontoen din på %{pds} — en endring avbryter overføringen for godt."
       support: "Hvis forsøkene fortsetter å mislykkes, kontakt support og oppgi migreringstokenet ditt:"
-
-    plc_otp:
-      subject: "PLC-bekreftelseskode – punkt uten retur (%{token})"
-      heading: "PLC-bekreftelseskode"
-      critical: "Kritisk: punkt uten retur"
-      intro: "Migreringen din er klar for det siste, irreversible steget. Du er i ferd med å sende inn PLC-tokenet ditt for å omdirigere DID-en din til den nye PDS-en."
-      your_code: "Bekreftelseskoden din"
-      expires_in: "Utløper om %{time}"
-      point_of_no_return: "Dette er punktet uten retur"
-      point_of_no_return_detail: "Når du sender inn denne koden sammen med PLC-tokenet ditt, blir kontoen din permanent migrert til den nye PDS-en."
-      did_will_point: "DID-en din vil peke til den nye PDS-en umiddelbart"
-      cannot_undo: "Du kan ikke angre denne operasjonen"
-      ensure_ready: "Sørg for at den nye kontoen din er klar før du fortsetter"
-      how_to_use: "Slik bruker du denne koden"
-      step1: "Gå til statussiden for migreringen din"
-      step2: "Skriv inn PLC-tokenet ditt (fra e-posten fra din gamle PDS)"
-      step3: "Skriv inn denne bekreftelseskoden: %{code}"
-      step4: "Send inn begge for å fullføre migreringen"
-      attempts_note: "Du har 5 forsøk på å skrive inn riktig kode. Etter det må du be om en ny."
-      not_you: "Hvis du ikke ba om denne koden, kan noen forsøke å få tilgang til migreringen din."
 
 
     migration_failed:
@@ -718,6 +940,17 @@ nb:
       note1: "Dataene dine på den gamle PDS-en er intakte"
       note2: "Du kan trygt prøve migreringen på nytt"
       note3: "Hvis du trenger hjelp, referer til migreringtokenet ditt: %{token}"
+      retry_button: "Se migreringen og prøv på nytt"
+      plc_expired_heading: "PLC-tokenet har utløpt"
+      plc_expired_text: "PLC-operasjonstokenet ditt har utløpt. PLC-tokens er bare gyldige i 1 time etter at de er utstedt."
+      plc_expired_steps: "Hva du må gjøre"
+      plc_expired_step1: "Åpne statussiden for migreringen med knappen nedenfor"
+      plc_expired_step2: "Klikk på \"Be om nytt PLC-token\"-knappen"
+      plc_expired_step3: "Sjekk e-posten fra %{pds} med det nye tokenet"
+      plc_expired_step4: "Send inn det nye tokenet innen 1 time"
+      plc_expired_button: "Se migreringen og be om et nytt token"
+      plc_expired_good_news: "Gode nyheter:"
+      plc_expired_safe: "Migreringsdataene dine er trygge og klare. Du trenger bare et nytt PLC-token for å fullføre det siste steget."
 
     backup_ready:
       subject: "Sikkerhetskopien for Eurosky-migrering er klar (%{token})"
@@ -728,6 +961,7 @@ nb:
       expires: "Denne nedlastingslenken utløper %{time}."
       expiry_warning: "Etter utløp slettes sikkerhetskopien permanent fra serverne våre."
       whats_next: "Migreringen din fortsetter i bakgrunnen. Du mottar en ny e-post når den er fullført."
+      size_label: "Størrelse på sikkerhetskopien"
 
     rotation_key_notice:
       subject: "Handling påkrevd: bekreft migreringen med PLC-koden (%{token})"
@@ -736,9 +970,17 @@ nb:
       key_heading: "Din rotasjonsnøkkel (lagre denne først)"
       key_help: "Før du fortsetter, lagre denne rotasjonsnøkkelen sikkert. Det er din eneste måte å gjenopprette kontoen din hvis noe går galt:"
       key_warning: "Lagre denne nøkkelen i en passordbehandler eller et annet sikkert sted. Du vil ikke kunne hente den senere."
-      next_step: "Gå til migreringssiden for å skrive inn PLC-bekreftelseskoden:"
       check_email: "Sjekk e-posten din for en kode fra din gamle PDS-leverandør — den ser ut som XXXXX-XXXXX"
       no_password_reset: "Viktig: ikke logg inn på den nye kontoen din på %{pds}, og ikke tilbakestill passordet der, før denne migreringen er ferdig. Tilbakestilling av passordet ugyldiggjør innloggingsdataene migreringen bruker, og migreringen mislykkes."
+      plc_email_intro: "Du får snart en e-post fra din gamle PDS-leverandør (%{pds}) med emnet:"
+      plc_code_info: "Den e-posten inneholder en bekreftelseskode (den ser ut som %{example})."
+      plc_enter_code: "Du må skrive inn denne koden på statussiden for migreringen for å fullføre migreringen:"
+      plc_expiry: "Viktig: bekreftelseskoden utløper etter 1 time. Hvis du ikke ser e-posten, sjekk søppelpostmappen. Den kommer fra din gamle PDS-leverandør, ikke fra oss."
+      save_key_heading: "Lagre denne nøkkelen nå"
+      recovery_key_label: "Gjenopprettingsnøkkelen din:"
+      key_use_heading: "Hva kan jeg gjøre med denne nøkkelen?"
+      key_use: "Hvis du noen gang må gjenopprette kontoen din, gå til %{link} og bruk denne nøkkelen for å gjenopprette tilgangen. Det fungerer selv om serveren din er helt frakoblet."
+      next_step_button: "Gå til migreringssiden for å skrive inn PLC-bekreftelseskoden"
 
     plc_token_failed:
       subject: "Handling påkrevd: be om ny PLC-bekreftelseskode (%{token})"
@@ -749,6 +991,8 @@ nb:
       step2: "Be om et nytt PLC-token (du må kanskje skrive inn passordet ditt på nytt)"
       step3: "Skriv inn det nye tokenet når du mottar det via e-post"
       error_detail: "Feil: %{error}"
+      safe_text: "PLC-katalogen ble ikke endret. Kontoen din blir på %{pds}, og alle migreringsdataene dine (repositorium, filer og innstillinger) er trygt lagret og klare."
+      what_happened_text: "Bekreftelseskoden fra din gamle PDS-leverandør utløp før den kunne brukes. Disse kodene er bare gyldige en begrenset tid (vanligvis 1 time)."
 
     critical_plc_failure:
       subject: "Haster: kritisk migreringsfeil – ikke start en ny migrering (%{token})"
@@ -759,12 +1003,41 @@ nb:
       key_help: "Du trenger denne nøkkelen for å gjenopprette kontoen din:"
       contact: "Kontakt support umiddelbart:"
       error_detail: "Feil: %{error}"
+      summary: "Migreringen av AT Protocol-kontoen din har støtt på en kritisk feil."
+      uncertain_state: "Kontoen din kan være i en uviss tilstand."
+      do_not_heading: "Vennligst ikke:"
+      do_not1: "Start en ny migrering"
+      do_not2: "Slett denne e-posten"
+      do_not3: "Prøv å gjenopprette kontoen selv uten support"
+      do_not4: "Endre kontoinnstillingene på noen av PDS-ene"
+      data_safe: "Kontodataene dine er trygge, men supportteamet vårt må bekrefte tilstanden til PLC-katalogen før du gjør noe."
+      right_now_heading: "Hva du bør gjøre nå"
+      step_save_email: "Ta vare på denne e-posten. Du trenger informasjonen nedenfor."
+      step_save_token: "Lagre migreringstokenet ditt:"
+      step_reference_token: "Oppgi migreringstokenet ditt i supporthenvendelsen:"
+      what_happened_text: "Migreringen mislyktes under oppdateringen av PLC-katalogen, det kritiske steget som peker DID-en din til den nye PDS-en."
+      support_will: "Supportteamet vårt vil:"
+      support1: "Undersøke tilstanden til PLC-katalogen for DID-en din"
+      support2: "Finne ut om PLC-operasjonen lyktes eller mislyktes"
+      support3: "Gi deg konkrete instruksjoner for gjenoppretting"
+      support4: "Kontakte deg på e-post innen 24 timer"
+      wait_for_support: "Ikke gjør noe før du hører fra support. Vi veileder deg gjennom gjenopprettingen."
+      automated: "Dette er et automatisk kritisk varsel fra %{site}."
 
     invalid_invite_code:
       subject: "Migrering mislyktes – ugyldig invitasjonskode (%{token})"
       heading: "Ugyldig invitasjonskode"
       intro: "Migreringen din %{token} kunne ikke fortsette fordi invitasjonskoden var ugyldig eller allerede brukt."
       what_to_do: "For å starte en ny migrering med en gyldig invitasjonskode:"
+      rejected: "Invitasjonskoden som ble oppgitt for %{pds}, ble avvist. Mulige årsaker:"
+      reason1: "Invitasjonskoden ble skrevet feil"
+      reason2: "Invitasjonskoden er allerede brukt"
+      reason3: "Invitasjonskoden har utløpt"
+      reason4: "Invitasjonskoden er ikke gyldig for denne PDS-en"
+      safe1: "Ingen endringer er gjort på kontoen din på %{pds}"
+      safe2: "Ingen data er overført eller endret"
+      safe3: "Kontoen din fungerer som normalt på din nåværende PDS"
+      start_new: "Start en ny migrering"
 
     orphaned_account_error:
       subject: "Migrering satt på pause – foreldreløs konto på destinasjonsserveren (%{token})"
@@ -775,6 +1048,18 @@ nb:
       option1: "Kontakt mål-PDS-administratoren på %{email} for å fjerne den foreldreløse kontoen"
       option2: "Inkluder din DID: %{did}"
       option3: "Når den er fjernet, prøv migreringen på nytt fra statussiden:"
+      contact_heading: "Neste steg: kontakt PDS-leverandøren"
+      contact_help: "Kontakt supportteamet for %{pds} og be om at den foreldreløse kontoen fjernes."
+      email_support: "Send e-post til %{email}"
+      include_heading: "Ta med i meldingen:"
+      after_heading: "Når support har svart"
+      after1: "Gå tilbake til %{link}"
+      after2: "Klikk på \"Prøv migrering på nytt\"-knappen"
+      after3: "Migreringen din fortsetter automatisk"
+      status_page_link: "statussiden for migreringen din"
+      need_help: "Trenger du hjelp? Se %{link} for flere detaljer."
+      mailto_subject: "Forespørsel om fjerning av foreldreløs konto – migrering %{token}"
+      mailto_body: "Hei,\n\njeg prøver å migrere til %{pds}, men har fått en feil om en foreldreløs konto.\n\nMigreringstoken: %{token}\nDID: %{did}\n\nKan dere fjerne den foreldreløse kontoen, slik at jeg kan prøve migreringen på nytt?\n\nTakk."
 
     reauthentication_required:
       subject: "Handling påkrevd: logg inn på nytt (%{token})"
@@ -782,8 +1067,13 @@ nb:
       intro: "Migreringen din %{token} trenger at du skriver inn passordet ditt på nytt for å fortsette."
       reason: "Økten din med den gamle PDS-en har utløpt under migreringsprosessen."
       what_to_do: "Gå til migreringssiden og skriv inn passordet ditt på nytt:"
-      error_detail: "Feil: %{error}"
       step: "Feilet steg: %{step}"
+      step1: "Åpne statussiden for migreringen din"
+      step2: "Skriv inn passordet for %{handle} for å logge inn på nytt"
+      step3: "Migreringen fortsetter automatisk der den slapp"
+      button: "Logg inn på nytt og fortsett"
+      data_safe_heading: "Dataene dine er trygge."
+      data_safe: "All fremdrift i migreringen er tatt vare på. Du trenger bare å logge inn på nytt, så vi kan fortsette å overføre kontoen din."
 
     plc_token_reminder:
       subject: "Påminnelse: fullfør migreringen ved å skrive inn PLC-koden (%{token})"
@@ -805,6 +1095,9 @@ nb:
       confirm_help: "Klikk lenken nedenfor for å bekrefte avbrytingen:"
       confirm_link: "Bekreft avbryting"
       not_you: "Hvis du ikke ba om denne avbrytingen, kan du trygt ignorere denne e-posten. Migreringen din fortsetter som normalt."
+      safe_text: "Ingen endringer er gjort på kontoen din. Å avbryte denne migreringen stopper bare prosessen. Kontoen din blir på %{pds} og fungerer som normalt."
+      cannot_undo: "Dette kan ikke angres. Hvis du ombestemmer deg, må du starte en ny migrering."
+      not_you_heading: "Ba du ikke om dette?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

@@ -47,6 +47,7 @@ hu:
   landing:
     page_title: "Költöztesse át fiókját"
     title: "Költöztesse át fiókját Európába"
+    title_named: "Költöztesse át fiókját a(z) %{name} szolgáltatásba"
     lead: "Vigye át bejegyzéseit, követéseit és identitását egy európai szerverre. A handle-jét is megtarthatja, és a követői semmit sem fognak észrevenni."
     start: "Migráció indítása"
     how_it_works: "Hogyan működik"
@@ -61,6 +62,54 @@ hu:
       confirm:
         label: "Megerősítés e-mailben"
         text: "Átvisszük az adatait, és az utolsó lépést e-mailben kérjük megerősíteni. Körülbelül 20–30 percet vesz igénybe."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Hogyan működik"
+    title: "Hogyan működik a fiók átköltöztetése"
+    lead: "Fiókja körülbelül fél óra alatt átköltözik egy másik szerverre. Bejegyzései, követései és identitása Önnel tart, a követői pedig továbbra is követni fogják."
+    before:
+      title: "Mielőtt elkezdi"
+      credentials: "A jelenlegi handle-je és a fiókja jelszava. Az alkalmazásjelszavak nem működnek. Ha kétfaktoros hitelesítést használ, a bejelentkezési kódra is szüksége lesz, amelyet elkérünk."
+      email: "Hozzáférés a fiókja e-mail-címéhez. Oda küldünk egy kódot, később pedig a jelenlegi szervere is küld egyet."
+      time: "Körülbelül fél óra, amíg nem használja a fiókját."
+      invite: "Egyes szerverekhez meghívókód. A varázsló jelzi, ha a választott szerver ezt kéri."
+    moves:
+      title: "Mi költözik Önnel"
+      everything: "A fiókja teljes tartalma: bejegyzései és válaszai, kedvelései és megosztásai, követései, listái és tiltásai, profilja, képei és videói, valamint az alkalmazásbeállításai, például a mentett hírfolyamok és a némított szavak. Az identitása is költözik, így a követői továbbra is követni fogják."
+      handle: "A handle-je is jöhet, ha saját domainen van. A jelenlegi szervere domainjén lévő handle, például valaki.bsky.social, ott marad: az új szerveren újat választ."
+    steps:
+      title: "Lépésről lépésre"
+      sign_in:
+        title: "Bejelentkezés"
+        text: "Jelentkezzen be a jelenlegi handle-jével és jelszavával. Ezeket a költözés elindításához használjuk, a jelszavát soha nem tároljuk."
+      choose:
+        title: "Válassza ki, hová költözik"
+        text: "Válasszon szervert, fogadja el a feltételeit, ha vannak, és válassza ki ott a handle-jét. A teljes fiókjáról biztonsági mentést is kérhet."
+      verify:
+        title: "Erősítse meg e-mail-címét"
+        text: "E-mailben küldünk egy kódot. A költözés akkor indul, amikor megadja azt a migráció állapotoldalán."
+      copy:
+        title: "Átmásoljuk a fiókját"
+        text: "Létrehozzuk a fiókját az új szerveren, és mindent átmásolunk oda; az állapotoldal mutatja az előrehaladást. Közben ne posztoljon, ne kedveljen és ne kövessen senkit: ezek a változások nem kerülnének át."
+      confirm:
+        title: "Erősítse meg a költözést"
+        text: "A jelenlegi szervere e-mailben küld egy megerősítő kódot. Adja meg az állapotoldalon egy órán belül, vagy kérjen újat. Ez a lépés irányítja az identitását az új szerverre."
+      done:
+        title: "Kész"
+        text: "Az új szerveren lévő fiókja bekapcsol, a régi pedig deaktiválódik. E-mailben elküldjük, hogyan jelentkezhet be, az új fiókja jelszavával együtt."
+    know:
+      title: "Jó tudni"
+      duration: "A legtöbb költözés 20–30 percig tart. A sok képet és videót tartalmazó fiókoknál tovább tart."
+      cancel: "Amíg az 5. lépésben meg nem adja a megerősítő kódot, megszakíthatja a költözést, és a fiókja ott marad, ahol van."
+      recovery: "Az identitás új szerverre irányítása itt nem vonható vissza. Kap egy helyreállítási kulcsot, amellyel visszavonható, ezért tartsa biztonságos helyen."
+      old_account: "A régi fiókja deaktiválódik, nem törlődik. Ezzel az eszközzel később visszaköltözhet a szerverére."
+      backup: "Ha biztonsági mentést kért, 24 óráig töltheti le."
+      deletion: "A költözés befejezése után 2 nappal töröljük a költözés bejegyzését és mindent, amit hozzá megőriztünk."
+      sign_in: "A későbbi bejelentkezéshez használja az új handle-jét, és az alkalmazásában válassza az új szervert tárhelyszolgáltatóként."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ hu:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "A szerver korlátozza a kéréseket"
+        what_happened: "A szerver a túlterhelés elkerülése érdekében korlátozza a kéréseket. Ez normális, ha sok migráció fut egyszerre."
+        current_status:
+          retrying: "Automatikus újrapróbálás hosszabb várakozással (%{attempt}/%{max_attempts}. kísérlet)"
+          exhausted: "Nincs több automatikus újrapróbálás"
+        what_to_do:
+          wait: "Várja meg az automatikus újrapróbálást (ajánlott) — minden próbálkozás egy kicsit tovább vár"
+          temporary: "A korlátozás átmeneti, és általában néhány percen belül megszűnik"
+          overloaded: "Ha %{max_attempts} próbálkozás után is fennáll, a szerver valószínűleg túlterhelt"
+      network:
+        title: "Hálózati kapcsolati hiba"
+        what_happened:
+          repo_export: "A régi PDS-sel való kapcsolat túllépte az időkorlátot vagy megszakadt a tároló exportálása közben."
+          blob_download: "A régi PDS-sel való kapcsolat túllépte az időkorlátot vagy megszakadt a blobok (képek és videók) letöltése közben."
+          account_activation: "Az új PDS-sel való kapcsolat túllépte az időkorlátot vagy megszakadt a fiók aktiválása közben."
+          other: "A PDS-sel való kapcsolat túllépte az időkorlátot vagy megszakadt a migráció során."
+        current_status:
+          retrying: "Automatikus újrapróbálás (%{attempt}/%{max_attempts}. kísérlet)"
+          exhausted: "Nincs több automatikus újrapróbálás"
+        what_to_do:
+          wait: "Várja meg az automatikus újrapróbálást (ajánlott)"
+          check_url: "Ellenőrizze, hogy a(z) %{url} megnyílik-e a böngészőjében"
+          may_be_down: "Ha a hibák folytatódnak, a PDS átmenetileg nem érhető el, vagy erősen terhelt lehet"
+          contact_admin: "Ha a probléma továbbra is fennáll, forduljon a PDS rendszergazdájához"
+      authentication:
+        title: "Sikertelen bejelentkezés"
+        what_happened: "Nem tudtunk bejelentkezni a PDS-ére. Ez általában azt jelenti, hogy a jelszó hibás vagy lejárt."
+        current_status: "A migráció leállt — új hitelesítő adatok szükségesek"
+        what_to_do:
+          check_password: "Ellenőrizze, hogy a jelszava helyes-e"
+          check_expiry: "Ellenőrizze, hogy nem jártak-e le a hitelesítő adatai (a migráció kezdetétől számítva 48 óráig őrizzük meg őket)"
+          start_new: "Indítson új migrációt a helyes hitelesítő adatokkal"
+          contact_admin: "Ha biztos benne, hogy a jelszó helyes, forduljon a PDS rendszergazdájához"
+      email_taken:
+        title: "Az e-mail-cím már foglalt az új PDS-en"
+        what_happened: "A(z) %{new_pds} szerveren már létezik fiók a(z) %{email} címmel, ezért nem tudtunk ott fiókot létrehozni az Ön DID-jéhez. A(z) %{old_pds} szerveren lévő fiókja érintetlen."
+        current_status: "A migráció leállt — az identitásán semmi sem változott"
+        what_to_do:
+          account_is_yours: "Ha az a fiók az Öné, jelentkezzen be a(z) %{new_pds} szerveren, módosítsa az e-mail-címét, majd indítson új migrációt"
+          other_email: "Vagy indítson új migrációt egy másik e-mail-címmel"
+          contact_provider: "Ha nem ismeri fel a fiókot, forduljon a PDS szolgáltatójához: %{contact_email}"
+      account_exists:
+        title: "A fiók már létezik az új PDS-en"
+        what_happened: "Az Ön DID-jével már létezik fiók az új PDS-en (%{new_pds}). Ez az árva fiók valószínűleg egy korábbi, sikertelen migrációs kísérletből maradt meg."
+        current_status: "A migráció szünetel — a PDS szolgáltatójának el kell távolítania az árva fiókot"
+        what_to_do:
+          contact_provider: "Forduljon az új PDS szolgáltatójához, és kérje meg, hogy távolítsa el az árva fiókot:"
+          contact_email: "E-mail: %{contact_email}"
+          include_details: "Adja meg a migrációs tokenjét (%{token}) és a DID-jét (%{did})"
+          retry_after_removal: "Az árva fiók eltávolítása után újrapróbálhatja ezt a migrációt."
+          provider_only: "Ehhez a PDS szolgáltatójának beavatkozása szükséges — Ön ezt nem tudja megoldani."
+      plc_token_expired:
+        title: "A PLC token lejárt"
+        what_happened: "A megadott PLC műveleti token lejárt. A PLC tokenek csak 1 óráig érvényesek attól számítva, hogy a régi PDS-szolgáltatója kiállította őket."
+        current_status: "A migráció szünetel — új PLC tokenre van szüksége"
+        what_to_do:
+          request_token: "Új token kéréséhez használja az alábbi \"%{button}\" gombot"
+          check_email: "Keressen egy e-mailt a(z) %{old_pds} szervertől az új tokennel"
+          submit_in_time: "Az új tokent a kézhezvételtől számított 1 órán belül adja meg"
+          data_safe: "A migráció többi adata biztonságban van és készen áll — csak egy új tokenre van szüksége"
+      plc_pre_submission_failure:
+        title: "A PLC frissítés nem fejeződhetett be"
+        what_happened: "A PLC könyvtár frissítése nem fejeződhetett be, de a fiókja biztonságban van. A PLC könyvtár nem változott — a fiókja továbbra is a(z) %{old_pds} szerveren van."
+        current_status: "A migráció szünetel — kérjen új megerősítő kódot az újrapróbáláshoz"
+        what_to_do:
+          request_code: "Új megerősítő kód kéréséhez használja az alábbi \"%{button}\" gombot"
+          check_email: "Keressen egy e-mailt a(z) %{old_pds} szervertől az új kóddal"
+          submit_in_time: "Az új kódot a kézhezvételtől számított 1 órán belül adja meg"
+          data_safe: "A migrációs adatai (tároló, blobok, beállítások) biztonságban vannak és készen állnak"
+      credentials_need_reauth:
+        title: "A munkamenet lejárt — jelentkezzen be újra"
+        what_happened: "A tárolt hitelesítő adatai lejártak. Biztonsági okokból 48 óra után automatikusan törlődnek. A migráció folytatásához jelentkezzen be újra."
+        current_status: "A migráció szünetel — a folytatáshoz jelentkezzen be újra"
+        what_to_do:
+          enter_password: "Az újbóli bejelentkezéshez adja meg alább a jelszavát"
+          data_safe: "A migrációs adatai biztonságban vannak — csak új hitelesítő adatokra van szükség"
+          resume: "Bejelentkezés után a migráció ott folytatódik, ahol abbamaradt"
+      blob_not_found:
+        title: "Néhány blob nem található"
+        what_happened: "Néhány blob (kép és videó) nem található a régi PDS-en. Lehet, hogy törölték őket, vagy már nem érhetők el."
+        current_status: "A migráció folytatódik — a hiányzó blobokat kihagyjuk"
+        what_to_do:
+          not_critical: "Ez általában nem súlyos — a migráció ezek nélkül a blobok nélkül folytatódik"
+          media_may_be_missing: "Előfordulhat, hogy néhány régebbi kép vagy videó nem kerül át"
+          check_report: "A migráció befejezése után a részletekért nézze meg a sikertelen blobok jelentését"
+          reupload: "Szükség esetén a migráció után saját maga újra feltöltheti a hiányzó médiát"
+      data_corruption:
+        title: "Az adatok megsérültek az átvitel során"
+        what_happened: "Az adatok megsérültek az átvitel során. Ez lassú vagy instabil hálózati kapcsolat esetén fordulhat elő."
+        current_status:
+          retrying: "A sérült adatok újbóli letöltése (%{attempt}/%{max_attempts}. kísérlet)"
+          exhausted: "Nincs több automatikus újrapróbálás"
+        what_to_do:
+          wait: "Várja meg az automatikus újrapróbálást — az adatok újra letöltődnek"
+          check_network: "Ha ez ismétlődik, ellenőrizze a hálózati kapcsolata minőségét"
+          stable_network: "Próbáljon stabilabb hálózati kapcsolatot használni"
+          large_repositories: "Nagy tárolóknál lassú kapcsolaton időtúllépés fordulhat elő"
+      disk_space:
+        title: "Elfogyott a lemezterület"
+        what_happened: "A szerveren vagy a PDS-en elfogyott a lemezterület."
+        current_status: "A migráció leállt — rendszergazdai beavatkozás szükséges"
+        what_to_do:
+          contact_admin: "Forduljon a szerver vagy a PDS rendszergazdájához a lemezterület felszabadítása érdekében"
+          server_side: "Ez szerveroldali probléma — az újrapróbálás nem oldja meg"
+          retry_later: "Ha felszabadult lemezterület, újrapróbálhatja a migrációt"
+      invite_code:
+        title: "Érvénytelen vagy lejárt meghívókód"
+        what_happened: "A megadott meghívókód érvénytelen, lejárt, vagy már felhasználták."
+        current_status: "A migráció leállt — érvényes meghívókód szükséges"
+        what_to_do:
+          get_new_code: "Kérjen új meghívókódot az új PDS rendszergazdájától"
+          check_copy: "Ellenőrizze, hogy helyesen másolta-e ki a meghívókódot (felesleges szóközök nélkül)"
+          start_new: "Indítson új migrációt a helyes meghívókóddal"
+          may_not_be_needed: "Egyes PDS-szerverekhez nem kell meghívókód — érdeklődjön a rendszergazdánál"
+      cancelled:
+        title: "Migráció megszakítva"
+        what_happened: "Ezt a migrációt az Ön kérésére megszakítottuk. A fiókján semmi sem változott."
+        current_status: "Migráció megszakítva — a fiókja a(z) %{old_pds} szerveren marad"
+        what_to_do:
+          account_safe: "A fiókja biztonságban és változatlanul a(z) %{old_pds} szerveren van"
+          start_new: "Bármikor indíthat új migrációt"
+      critical_plc:
+        title: "A PLC könyvtár frissítése sikertelen"
+        what_happened: "A PLC könyvtár frissítése nem fejeződött be. A fiókadatai biztonságban vannak."
+        current_status:
+          not_updated: "A PLC könyvtár nem változott — kérhet új tokent, és újra megpróbálhatja."
+          maybe_updated: "Lehet, hogy a PLC könyvtár részben frissült. Forduljon a támogatáshoz."
+        what_to_do:
+          request_token: "Próbáljon új PLC tokent kérni — a frissítés még nem történt meg"
+          no_new_migration: "Ne indítson új migrációt"
+          data_safe: "A fiókadatai biztonságban és sértetlenül megvannak"
+          save_recovery_key: "A helyreállítási kulcsa ezen az oldalon található — tartsa biztonságos helyen"
+          save_token: "Mentse el ezt a migrációs tokent: %{token}"
+          contact_support: "Ha a probléma továbbra is fennáll, forduljon a támogatáshoz: %{support_email}"
+      generic:
+        title: "Migrációs hiba"
+        what_happened: "Valami hiba történt a migráció során."
+        current_status:
+          retrying: "Automatikus újrapróbálás (%{attempt}/%{max_attempts}. kísérlet)"
+          exhausted: "Nincs több automatikus újrapróbálás"
+        what_to_do:
+          wait: "Várja meg az automatikus újrapróbálást"
+          check_details: "Ha ez ismétlődik, nézze meg az alábbi technikai részleteket"
+          contact_support: "Ha segítségre van szüksége, forduljon a támogatáshoz: %{support_email}"
+      time_remaining:
+        a_few_moments: "néhány pillanat"
+        seconds:
+          one: "%{count} másodperc"
+          other: "%{count} másodperc"
+        minutes:
+          one: "%{count} perc"
+          other: "%{count} perc"
+        hours:
+          one: "%{count} óra"
+          other: "%{count} óra"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ hu:
   mailers:
     common:
       eurosky_migration: "Eurosky migrációs szolgáltatás"
+      hello: "Üdvözöljük,"
+      migration_label: "Migráció %{token}"
+      migration_token: "Migrációs token: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Régi handle"
+      label_new_handle: "Új handle"
+      label_old_pds: "Régi PDS"
+      label_new_pds: "Új PDS"
+      label_target_pds: "Cél-PDS"
+      label_support_contact: "Támogatási kapcsolat"
+      label_support_email: "Támogatási e-mail"
+      label_email: "E-mail"
+      label_migration_token: "Migrációs token"
+      label_failed_step: "Sikertelen lépés"
+      details_heading: "A migráció részletei"
+      account_details: "Fiók részletei"
+      account_safe: "A fiókja biztonságban van"
+      what_happened: "Mi történt?"
+      what_happens_next: "Mi történik ezután?"
+      view_status: "Migráció állapotának megtekintése"
+      select_to_copy: "Kattintson a kijelöléshez és másoláshoz"
+      automated_notification: "Ez egy automatikus értesítés a(z) %{site} szolgáltatástól."
 
     email_verification:
       subject: "Az Ön ellenőrző kódja: %{code} (%{token})"
@@ -594,6 +828,8 @@ hu:
       reminder3: "Zárja be az összes alkalmazást és böngészőlapot a fiókjával"
       reminder4: "Várja meg a befejezési e-mailt, mielőtt újra bejelentkezne"
       not_you: "Ha nem Ön indította el ezt a migrációt, kérem, hagyja figyelmen kívül ezt az e-mailt."
+      your_code: "Az Ön ellenőrző kódja"
+      go_to_page_button: "Ugrás a migrációs oldalra"
 
     account_password:
       subject: "Az Ön új fiókjelszava a(z) %{handle} fiókhoz (%{token})"
@@ -616,6 +852,7 @@ hu:
       no_backup_step2: "Adatai migrálása folyamatban (biztonsági mentés nélkül)"
       no_backup_step3: "Értesítést kap, amikor a migráció befejeződött"
       track_progress: "Kövesse nyomon a migráció előrehaladását itt:"
+      status_page_link: "A migráció állapotoldala"
 
     migration_completed:
       subject: "Migráció befejezve (%{token})"
@@ -626,15 +863,15 @@ hu:
       save_password: "Mentse el ezt a jelszót most — tárolja jelszókezelőben."
       change_password: "Az első bejelentkezés után megváltoztathatja."
       backup_heading: "Biztonsági mentés elérhető"
-      backup_help: "A fiókadatok biztonsági mentése a következő 10 percben letölthető:"
-      backup_expiry: "10 perc múlva ez a hivatkozás lejár, és a biztonsági mentés véglegesen törölve lesz."
+      backup_help: "A fiókadatok biztonsági mentése %{time}-ig tölthető le:"
+      backup_expiry: "Ezután a hivatkozás nem működik, és a biztonsági mentés véglegesen törlődik."
       summary: "Migrációs összefoglaló"
       migration_token: "Migrációs token: %{token}"
       did: "DID: %{did}"
       old_account: "Régi fiók: %{handle} @ %{pds}"
       new_account: "Új fiók: %{handle} @ %{pds}"
       completed_at: "Befejezve: %{time}"
-      status_page: "Állapotoldal megtekintése (10 percig elérhető):"
+      status_page: "Állapotoldal megtekintése (2 napig elérhető):"
       login_heading: "Hogyan jelentkezzen be az új fiókjába"
       login_help: "Ha még nem tette, jelentkezzen ki a régi fiókjából minden Bluesky alkalmazásban, majd jelentkezzen be az új handlevel:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ hu:
       next3: "Minden bejegyzése, követése és adata átkerült"
       next4: "Követői automatikusan látják az új helyet (DID-alapú)"
       privacy_heading: "Adatvédelem és biztonság"
-      privacy1: "Ez a migrációs bejegyzés a GDPR-megfelelés érdekében automatikusan törlődik 10 perc múlva"
+      privacy1: "Ez a migrációs bejegyzés a GDPR-megfelelés érdekében 2 nap múlva automatikusan törlődik"
       privacy2: "Minden titkosított hitelesítő adat biztonságosan törölve lett a szervereinkről"
       support: "Ha kérdése vagy problémája van, kérem, forduljon a támogatáshoz a migrációs tokenjével:"
       email_footer: "Ez az e-mail a(z) %{email} címre lett küldve, mert Ön fiókmigrációt indított."
+      download_backup: "Biztonsági mentés letöltése"
+      change_password_button: "Jelszó módosítása"
+      old_account_label: "Régi fiók"
+      new_account_label: "Új fiók"
+      completed_at_label: "Befejezve"
 
     blobs_transfer_complete:
       subject: "Minden fájl átkerült — a költöztetése teljesen befejeződött (%{token})"
@@ -672,26 +914,6 @@ hu:
       what_to_do: "Nyissa meg az állapotoldalt, és használja a „Sikertelen fájlok újrapróbálása” gombot. Minden próbálkozás a biztonsági mentésében lévő másolatokat használja, így semmi sem vész el. Amint minden megérkezett, záró e-mailt kap:"
       keep_password: "Addig ne változtassa meg a(z) %{pds} szerveren lévő fiókja jelszavát — a módosítás végleg megszakítja az átvitelt."
       support: "Ha a próbálkozások továbbra is sikertelenek, forduljon az ügyfélszolgálathoz, és adja meg a költöztetési tokenjét:"
-
-    plc_otp:
-      subject: "PLC ellenőrző kód – visszafordíthatatlan pont (%{token})"
-      heading: "PLC ellenőrző kód"
-      critical: "Kritikus: visszafordíthatatlan pont"
-      intro: "A migrációja készen áll az utolsó, visszafordíthatatlan lépésre. Hamarosan beküldi a PLC tokenjét, hogy a DID-je az új PDS-re mutasson."
-      your_code: "Az Ön ellenőrző kódja"
-      expires_in: "%{time} múlva lejár"
-      point_of_no_return: "Ez a visszafordíthatatlan pont"
-      point_of_no_return_detail: "Ha beküldi ezt a kódot a PLC tokennel együtt, a fiókja véglegesen átkerül az új PDS-re."
-      did_will_point: "A DID-je azonnal az új PDS-re fog mutatni"
-      cannot_undo: "Ezt a műveletet nem lehet visszavonni"
-      ensure_ready: "Folytatás előtt győződjön meg róla, hogy az új fiókja készen áll"
-      how_to_use: "A kód használata"
-      step1: "Nyissa meg a migráció állapotoldalát"
-      step2: "Adja meg a PLC tokent (a régi PDS-től kapott e-mailből)"
-      step3: "Adja meg ezt az ellenőrző kódot: %{code}"
-      step4: "Küldje be mindkettőt a migráció befejezéséhez"
-      attempts_note: "5 kísérlete van a helyes kód megadására. Ezután új kódot kell kérnie."
-      not_you: "Ha nem Ön kérte ezt a kódot, lehet, hogy valaki hozzá próbál férni a migrációjához."
 
 
     migration_failed:
@@ -718,6 +940,17 @@ hu:
       note1: "Az adatai a régi PDS-en érintetlenek maradnak"
       note2: "Biztonságosan újrapróbálható a migráció"
       note3: "Ha segítségre van szüksége, hivatkozzon a migrációs tokenjére: %{token}"
+      retry_button: "Migráció megtekintése és újrapróbálása"
+      plc_expired_heading: "A PLC token lejárt"
+      plc_expired_text: "A PLC műveleti tokenje lejárt. A PLC tokenek a kiállításuk után csak 1 óráig érvényesek."
+      plc_expired_steps: "Amit tennie kell"
+      plc_expired_step1: "Nyissa meg a migráció állapotoldalát az alábbi gombbal"
+      plc_expired_step2: "Kattintson az \"Új PLC token kérése\" gombra"
+      plc_expired_step3: "Keresse meg a(z) %{pds} által küldött e-mailt az új tokennel"
+      plc_expired_step4: "Az új tokent 1 órán belül küldje be"
+      plc_expired_button: "Migráció megtekintése és új token kérése"
+      plc_expired_good_news: "Jó hír:"
+      plc_expired_safe: "A migrációs adatai biztonságban vannak és készen állnak. Csak egy új PLC tokenre van szüksége az utolsó lépés befejezéséhez."
 
     backup_ready:
       subject: "Az Eurosky migrációs biztonsági mentése kész (%{token})"
@@ -728,6 +961,7 @@ hu:
       expires: "Ez a letöltési hivatkozás %{time}-kor jár le."
       expiry_warning: "A lejárás után a biztonsági mentés véglegesen törölve lesz a szervereinkről."
       whats_next: "A migrációja a háttérben folytatódik. Újabb e-mailt kap, amikor befejeződött."
+      size_label: "Biztonsági mentés mérete"
 
     rotation_key_notice:
       subject: "Beavatkozás szükséges: erősítse meg a migrációt a PLC kóddal (%{token})"
@@ -736,9 +970,17 @@ hu:
       key_heading: "Az Ön rotációs kulcsa (először mentse el ezt)"
       key_help: "A folytatás előtt mentse el biztonságosan ezt a rotációs kulcsot. Ez az egyetlen módja a fiók helyreállításának, ha valami balul üt ki:"
       key_warning: "Tárolja ezt a kulcsot jelszókezelőben vagy más biztonságos helyen. Később nem fogja tudni lekérni."
-      next_step: "Menjen a migrációs oldalra a PLC megerősítő kód megadásához:"
       check_email: "Ellenőrizze e-mailjeit a régi PDS-szolgáltatójától kapott kódért — így néz ki: XXXXX-XXXXX"
       no_password_reset: "Fontos: ne jelentkezzen be az új fiókjába a(z) %{pds} szerveren, és ne állítsa vissza ott a jelszót, amíg ez a költöztetés be nem fejeződik. A jelszó visszaállítása érvényteleníti a költöztetés által használt hitelesítő adatokat, és a költöztetés meghiúsul."
+      plc_email_intro: "Hamarosan e-mailt kap a régi PDS-szolgáltatójától (%{pds}) a következő tárggyal:"
+      plc_code_info: "Ez az e-mail egy megerősítő kódot tartalmaz (így néz ki: %{example})."
+      plc_enter_code: "A migráció véglegesítéséhez ezt a kódot a migráció állapotoldalán kell megadnia:"
+      plc_expiry: "Fontos: a megerősítő kód 1 óra után lejár. Ha nem látja az e-mailt, nézze meg a spam mappát. Az e-mailt a régi PDS-szolgáltatója küldi, nem mi."
+      save_key_heading: "Mentse el most ezt a kulcsot"
+      recovery_key_label: "Az Ön helyreállítási kulcsa:"
+      key_use_heading: "Mire használhatom ezt a kulcsot?"
+      key_use: "Ha valaha helyre kell állítania a fiókját, látogasson el ide: %{link}, és ezzel a kulccsal állítsa vissza a hozzáférést. Akkor is működik, ha a szervere teljesen elérhetetlen."
+      next_step_button: "Ugrás a migrációs oldalra a PLC megerősítő kód megadásához"
 
     plc_token_failed:
       subject: "Beavatkozás szükséges: kérjen új PLC megerősítő kódot (%{token})"
@@ -749,6 +991,8 @@ hu:
       step2: "Kérjen új PLC tokent (lehetséges, hogy újra meg kell adnia a jelszavát)"
       step3: "Adja meg az új tokent, amikor e-mailben megkapja"
       error_detail: "Hiba: %{error}"
+      safe_text: "A PLC könyvtár nem változott. A fiókja a(z) %{pds} szerveren marad, és minden migrációs adata (tároló, fájlok és beállítások) biztonságosan tárolva, készen áll."
+      what_happened_text: "A régi PDS-szolgáltatójától kapott megerősítő kód lejárt, mielőtt fel lehetett volna használni. Ezek a kódok csak korlátozott ideig (általában 1 óráig) érvényesek."
 
     critical_plc_failure:
       subject: "Sürgős: kritikus migrációs hiba – ne indítson új migrációt (%{token})"
@@ -759,12 +1003,41 @@ hu:
       key_help: "Szüksége lesz erre a kulcsra a fiókja helyreállításához:"
       contact: "Azonnal forduljon a támogatáshoz:"
       error_detail: "Hiba: %{error}"
+      summary: "Az AT Protocol-fiókja migrációja kritikus hibába ütközött."
+      uncertain_state: "Lehet, hogy a fiókja bizonytalan állapotban van."
+      do_not_heading: "Kérjük, ne tegye a következőket:"
+      do_not1: "Új migráció indítása"
+      do_not2: "Ennek az e-mailnek a törlése"
+      do_not3: "A fiók önálló helyreállítása a támogatás nélkül"
+      do_not4: "A fiókbeállítások módosítása bármelyik PDS-en"
+      data_safe: "A fiókadatai biztonságban vannak, de támogatási csapatunknak ellenőriznie kell a PLC könyvtár állapotát, mielőtt Ön bármit tenne."
+      right_now_heading: "Mit tegyen most"
+      step_save_email: "Mentse el ezt az e-mailt. Szüksége lesz az alábbi információkra."
+      step_save_token: "Mentse el a migrációs tokenjét:"
+      step_reference_token: "Adja meg a migrációs tokenjét a támogatási kérelmében:"
+      what_happened_text: "A migráció a PLC könyvtár frissítése közben hiúsult meg, abban a kritikus lépésben, amely a DID-jét az új PDS-re irányítja."
+      support_will: "Támogatási csapatunk:"
+      support1: "Megvizsgálja a DID-jéhez tartozó PLC könyvtár állapotát"
+      support2: "Kideríti, hogy a PLC művelet sikerült-e"
+      support3: "Konkrét helyreállítási útmutatást ad"
+      support4: "24 órán belül e-mailben felveszi Önnel a kapcsolatot"
+      wait_for_support: "Ne tegyen semmit, amíg a támogatás nem jelentkezik. Végigvezetjük a helyreállításon."
+      automated: "Ez egy automatikus kritikus riasztás a(z) %{site} szolgáltatástól."
 
     invalid_invite_code:
       subject: "Migráció sikertelen – érvénytelen meghívókód (%{token})"
       heading: "Érvénytelen meghívókód"
       intro: "A(z) %{token} migráció nem tudott továbblépni, mert a meghívókód érvénytelen vagy már felhasznált."
       what_to_do: "Új migráció indításához érvényes meghívókóddal:"
+      rejected: "A(z) %{pds} szerverhez megadott meghívókódot elutasították. Ennek lehetséges okai:"
+      reason1: "A meghívókódot elgépelték"
+      reason2: "A meghívókódot már felhasználták"
+      reason3: "A meghívókód lejárt"
+      reason4: "A meghívókód nem érvényes ehhez a PDS-hez"
+      safe1: "A(z) %{pds} szerveren lévő fiókján semmi sem változott"
+      safe2: "Semmilyen adat nem került átvitelre vagy módosításra"
+      safe3: "A fiókja továbbra is a megszokott módon működik a jelenlegi PDS-én"
+      start_new: "Új migráció indítása"
 
     orphaned_account_error:
       subject: "Migráció szüneteltetve – árva fiók a célszerveren (%{token})"
@@ -775,6 +1048,18 @@ hu:
       option1: "Forduljon a cél-PDS rendszergazdájához a(z) %{email} címen az árva fiók eltávolításáért"
       option2: "Mellékelje a DID-jét: %{did}"
       option3: "Az eltávolítás után próbálja újra a migrációt az állapotoldalról:"
+      contact_heading: "Következő lépés: forduljon a PDS szolgáltatójához"
+      contact_help: "Kérjük, forduljon a(z) %{pds} támogatási csapatához, és kérje az árva fiók eltávolítását."
+      email_support: "E-mail küldése: %{email}"
+      include_heading: "Az üzenetben adja meg:"
+      after_heading: "Miután a támogatás válaszolt"
+      after1: "Térjen vissza ide: %{link}"
+      after2: "Kattintson a \"Migráció újrapróbálása\" gombra"
+      after3: "A migráció automatikusan folytatódik"
+      status_page_link: "a migráció állapotoldala"
+      need_help: "Segítségre van szüksége? További részletekért látogasson el ide: %{link}."
+      mailto_subject: "Árva fiók eltávolítási kérelme – %{token} migráció"
+      mailto_body: "Üdvözlöm,\n\na(z) %{pds} szerverre szeretnék átköltözni, de árva fiók miatti hibába ütköztem.\n\nMigrációs token: %{token}\nDID: %{did}\n\nEltávolítanák az árva fiókot, hogy újra megpróbálhassam a migrációt?\n\nKöszönöm."
 
     reauthentication_required:
       subject: "Beavatkozás szükséges: jelentkezzen be újra (%{token})"
@@ -782,8 +1067,13 @@ hu:
       intro: "A(z) %{token} migrációjának folytatásához újra meg kell adnia a jelszavát."
       reason: "A régi PDS-szel fenntartott munkamenete lejárt a migráció során."
       what_to_do: "Menjen a migrációs oldalra, és adja meg újra a jelszavát:"
-      error_detail: "Hiba: %{error}"
       step: "Sikertelen lépés: %{step}"
+      step1: "Nyissa meg a migráció állapotoldalát"
+      step2: "Adja meg a(z) %{handle} fiók jelszavát az újbóli bejelentkezéshez"
+      step3: "A migráció automatikusan ott folytatódik, ahol abbamaradt"
+      button: "Újbóli bejelentkezés és folytatás"
+      data_safe_heading: "Az adatai biztonságban vannak."
+      data_safe: "A migráció eddigi előrehaladása megmaradt. Csak újra be kell jelentkeznie, hogy folytathassuk a fiókja átvitelét."
 
     plc_token_reminder:
       subject: "Emlékeztető: fejezze be a migrációt a PLC-kód megadásával (%{token})"
@@ -805,6 +1095,9 @@ hu:
       confirm_help: "Kattintson az alanti hivatkozásra a megszakítás megerősítéséhez:"
       confirm_link: "Megszakítás megerősítése"
       not_you: "Ha nem Ön kérelmezte ezt a megszakítást, nyugodtan hagyja figyelmen kívül ezt az e-mailt. A migrációja normális módon folytatódik."
+      safe_text: "A fiókján semmi sem változott. A migráció megszakítása csak leállítja a folyamatot. A fiókja a(z) %{pds} szerveren marad, és a megszokott módon működik tovább."
+      cannot_undo: "Ez nem vonható vissza. Ha meggondolja magát, új migrációt kell indítania."
+      not_you_heading: "Nem Ön kérte ezt?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

@@ -47,6 +47,7 @@ nl:
   landing:
     page_title: "Verhuis uw account"
     title: "Verhuis uw account naar Europa"
+    title_named: "Verhuis uw account naar %{name}"
     lead: "Breng uw berichten, de accounts die u volgt en uw identiteit naar een Europese server. Uw handle kan mee, en uw volgers merken er niets van."
     start: "Migratie starten"
     how_it_works: "Zo werkt het"
@@ -61,6 +62,54 @@ nl:
       confirm:
         label: "Per e-mail bevestigen"
         text: "We zetten uw gegevens over en vragen u de laatste stap per e-mail te bevestigen. Dit duurt ongeveer 20–30 minuten."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Zo werkt het"
+    title: "Zo werkt het verhuizen van uw account"
+    lead: "Uw account verhuist in ongeveer een half uur naar een andere server. Uw berichten, de accounts die u volgt en uw identiteit gaan mee, en de mensen die u volgen, blijven u volgen."
+    before:
+      title: "Voordat u begint"
+      credentials: "Uw huidige handle en uw accountwachtwoord. App-wachtwoorden werken niet. Als u tweefactorauthenticatie gebruikt, hebt u ook de aanmeldcode nodig waar we om vragen."
+      email: "Toegang tot het e-mailadres van uw account. We sturen u daar een code, en later stuurt uw huidige server u er ook een."
+      time: "Ongeveer een half uur waarin u uw account niet gebruikt."
+      invite: "Voor sommige servers een uitnodigingscode. De wizard laat u weten of de server die u kiest er een nodig heeft."
+    moves:
+      title: "Wat er meeverhuist"
+      everything: "Alles in uw account: uw berichten en antwoorden, likes en reposts, de accounts die u volgt, lijsten en blokkeringen, uw profiel, uw afbeeldingen en video's, en uw app-instellingen, zoals opgeslagen feeds en gedempte woorden. Ook uw identiteit verhuist mee, zodat de mensen die u volgen, u blijven volgen."
+      handle: "Uw handle kan mee als die op uw eigen domein staat. Een handle op het domein van uw huidige server, zoals naam.bsky.social, blijft achter: u kiest een nieuwe op de nieuwe server."
+    steps:
+      title: "Stap voor stap"
+      sign_in:
+        title: "Inloggen"
+        text: "Log in met uw huidige handle en wachtwoord. We gebruiken ze om de verhuizing te starten en slaan uw wachtwoord nooit op."
+      choose:
+        title: "Kies waar u naartoe gaat"
+        text: "Kies een server, accepteer de voorwaarden als die er zijn, en kies daar uw handle. U kunt ook een back-up van uw hele account aanvragen."
+      verify:
+        title: "Bevestig uw e-mailadres"
+        text: "We mailen u een code. De verhuizing begint zodra u die invoert op de statuspagina van uw migratie."
+      copy:
+        title: "Wij kopiëren uw account"
+        text: "We maken uw account aan op de nieuwe server en kopiëren alles daarheen; de statuspagina toont de voortgang. Plaats intussen geen berichten, likes of follows: die wijzigingen gaan niet mee."
+      confirm:
+        title: "Bevestig de verhuizing"
+        text: "Uw huidige server mailt u een bevestigingscode. Voer die binnen een uur in op de statuspagina, of vraag een nieuwe aan. Met deze stap gaat uw identiteit naar de nieuwe server verwijzen."
+      done:
+        title: "Klaar"
+        text: "Uw account op de nieuwe server wordt ingeschakeld en het oude wordt gedeactiveerd. We mailen u hoe u inlogt, samen met het wachtwoord van uw nieuwe account."
+    know:
+      title: "Goed om te weten"
+      duration: "De meeste verhuizingen duren 20–30 minuten. Accounts met veel afbeeldingen en video's duren langer."
+      cancel: "Tot u in stap 5 de bevestigingscode invoert, kunt u de verhuizing annuleren en blijft uw account waar het is."
+      recovery: "Het doorverwijzen van uw identiteit naar de nieuwe server kan hier niet ongedaan worden gemaakt. We geven u een herstelsleutel waarmee dat wel kan, dus bewaar die op een veilige plek."
+      old_account: "Uw oude account wordt gedeactiveerd, niet verwijderd. U kunt later met deze tool terugverhuizen naar de server ervan."
+      backup: "Als u een back-up hebt aangevraagd, kunt u die 24 uur lang downloaden."
+      deletion: "We verwijderen het record van uw verhuizing, en alles wat we ervoor hebben bewaard, 2 dagen nadat de verhuizing is voltooid."
+      sign_in: "Log daarna in met uw nieuwe handle en kies in uw app uw nieuwe server als hostingprovider."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ nl:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Snelheidslimiet van de server bereikt"
+        what_happened: "De server beperkt het aantal verzoeken om overbelasting te voorkomen. Dit is normaal wanneer er veel migraties tegelijk lopen."
+        current_status:
+          retrying: "Automatisch opnieuw proberen met langere tussenpozen (poging %{attempt} van %{max_attempts})"
+          exhausted: "Geen automatische pogingen meer over"
+        what_to_do:
+          wait: "Wacht op de automatische nieuwe poging (aanbevolen) — elke poging wacht iets langer"
+          temporary: "De snelheidsbeperking is tijdelijk en verdwijnt meestal binnen enkele minuten"
+          overloaded: "Als het na %{max_attempts} pogingen aanhoudt, is de server mogelijk overbelast"
+      network:
+        title: "Netwerkverbindingsfout"
+        what_happened:
+          repo_export: "De verbinding met uw oude PDS is verlopen of onderbroken tijdens het exporteren van uw repository."
+          blob_download: "De verbinding met uw oude PDS is verlopen of onderbroken tijdens het downloaden van uw blobs (afbeeldingen en video's)."
+          account_activation: "De verbinding met uw nieuwe PDS is verlopen of onderbroken tijdens het activeren van uw account."
+          other: "De verbinding met de PDS is verlopen of onderbroken tijdens de migratie."
+        current_status:
+          retrying: "Automatisch opnieuw proberen (poging %{attempt} van %{max_attempts})"
+          exhausted: "Geen automatische pogingen meer over"
+        what_to_do:
+          wait: "Wacht op de automatische nieuwe poging (aanbevolen)"
+          check_url: "Controleer of %{url} in uw browser opent"
+          may_be_down: "Als de fouten aanhouden, is de PDS mogelijk tijdelijk onbereikbaar of zwaar belast"
+          contact_admin: "Neem contact op met de PDS-beheerder als het probleem aanhoudt"
+      authentication:
+        title: "Inloggen mislukt"
+        what_happened: "We konden niet inloggen bij uw PDS. Dit betekent meestal dat het wachtwoord onjuist of verlopen is."
+        current_status: "Migratie gestopt — nieuwe inloggegevens nodig"
+        what_to_do:
+          check_password: "Controleer of uw wachtwoord juist is"
+          check_expiry: "Controleer of uw inloggegevens zijn verlopen (ze worden 48 uur bewaard vanaf het begin van de migratie)"
+          start_new: "Start een nieuwe migratie met de juiste inloggegevens"
+          contact_admin: "Als u zeker weet dat het wachtwoord juist is, neem dan contact op met uw PDS-beheerder"
+      email_taken:
+        title: "E-mailadres al in gebruik op de nieuwe PDS"
+        what_happened: "%{new_pds} heeft al een account met %{email}, dus we konden daar geen account voor uw DID aanmaken. Uw account op %{old_pds} is onaangeroerd."
+        current_status: "Migratie gestopt — er is niets aan uw identiteit gewijzigd"
+        what_to_do:
+          account_is_yours: "Als dat account van u is, log er dan op in op %{new_pds}, wijzig het e-mailadres en start daarna een nieuwe migratie"
+          other_email: "Of start een nieuwe migratie met een ander e-mailadres"
+          contact_provider: "Als u het account niet herkent, neem dan contact op met de PDS-provider: %{contact_email}"
+      account_exists:
+        title: "Account bestaat al op de nieuwe PDS"
+        what_happened: "Er bestaat al een account met uw DID op de nieuwe PDS (%{new_pds}). Dit verweesde account is waarschijnlijk overgebleven van een eerdere migratiepoging die is mislukt."
+        current_status: "Migratie gepauzeerd — de PDS-provider moet het verweesde account verwijderen"
+        what_to_do:
+          contact_provider: "Neem contact op met de provider van de nieuwe PDS en vraag om het verweesde account te verwijderen:"
+          contact_email: "E-mail: %{contact_email}"
+          include_details: "Vermeld uw migratietoken (%{token}) en DID (%{did})"
+          retry_after_removal: "Zodra het verweesde account is verwijderd, kunt u deze migratie opnieuw proberen."
+          provider_only: "Hiervoor is actie van de PDS-provider nodig — u kunt dit niet zelf oplossen."
+      plc_token_expired:
+        title: "PLC-token verlopen"
+        what_happened: "Het PLC-bewerkingstoken dat u hebt ingevoerd, is verlopen. PLC-tokens zijn slechts 1 uur geldig nadat uw oude PDS-provider ze heeft uitgegeven."
+        current_status: "Migratie gepauzeerd — u hebt een nieuw PLC-token nodig"
+        what_to_do:
+          request_token: "Gebruik de knop \"%{button}\" hieronder om een nieuw token aan te vragen"
+          check_email: "Zoek naar een e-mail van %{old_pds} met het nieuwe token"
+          submit_in_time: "Voer het nieuwe token binnen 1 uur na ontvangst in"
+          data_safe: "De rest van uw migratiegegevens is veilig en gereed — u hebt alleen een nieuw token nodig"
+      plc_pre_submission_failure:
+        title: "PLC-update kon niet worden voltooid"
+        what_happened: "De update van de PLC-catalogus kon niet worden voltooid, maar uw account is veilig. De PLC-catalogus is niet gewijzigd — uw account staat nog op %{old_pds}."
+        current_status: "Migratie gepauzeerd — vraag een nieuwe bevestigingscode aan om het opnieuw te proberen"
+        what_to_do:
+          request_code: "Gebruik de knop \"%{button}\" hieronder om een nieuwe bevestigingscode te krijgen"
+          check_email: "Zoek naar een e-mail van %{old_pds} met de nieuwe code"
+          submit_in_time: "Voer de nieuwe code binnen 1 uur na ontvangst in"
+          data_safe: "Uw migratiegegevens (repository, blobs, voorkeuren) zijn veilig en gereed"
+      credentials_need_reauth:
+        title: "Sessie verlopen — log opnieuw in"
+        what_happened: "Uw opgeslagen inloggegevens zijn verlopen. Voor uw veiligheid worden ze na 48 uur automatisch verwijderd. Log opnieuw in om de migratie voort te zetten."
+        current_status: "Migratie gepauzeerd — log opnieuw in om door te gaan"
+        what_to_do:
+          enter_password: "Voer hieronder uw wachtwoord in om opnieuw in te loggen"
+          data_safe: "Uw migratiegegevens zijn veilig — u hebt alleen nieuwe inloggegevens nodig"
+          resume: "Nadat u bent ingelogd, gaat de migratie verder waar ze was gebleven"
+      blob_not_found:
+        title: "Sommige blobs zijn niet gevonden"
+        what_happened: "Sommige blobs (afbeeldingen en video's) zijn niet gevonden op uw oude PDS. Ze zijn mogelijk verwijderd of niet meer beschikbaar."
+        current_status: "Migratie gaat door — ontbrekende blobs worden overgeslagen"
+        what_to_do:
+          not_critical: "Dit is meestal niet ernstig — de migratie gaat door zonder deze blobs"
+          media_may_be_missing: "Sommige oudere afbeeldingen of video's worden mogelijk niet overgezet"
+          check_report: "Bekijk na afloop van de migratie het rapport van mislukte blobs voor details"
+          reupload: "Indien nodig kunt u ontbrekende media na de migratie zelf opnieuw uploaden"
+      data_corruption:
+        title: "Gegevens beschadigd tijdens de overdracht"
+        what_happened: "Gegevens zijn tijdens de overdracht beschadigd geraakt. Dit kan gebeuren bij trage of instabiele netwerkverbindingen."
+        current_status:
+          retrying: "De beschadigde gegevens worden opnieuw gedownload (poging %{attempt} van %{max_attempts})"
+          exhausted: "Geen automatische pogingen meer over"
+        what_to_do:
+          wait: "Wacht op de automatische nieuwe poging — de gegevens worden opnieuw gedownload"
+          check_network: "Als het blijft gebeuren, controleer dan de kwaliteit van uw netwerkverbinding"
+          stable_network: "Probeer een stabielere netwerkverbinding"
+          large_repositories: "Bij grote repository's kan een trage verbinding een time-out geven"
+      disk_space:
+        title: "Schijfruimte vol"
+        what_happened: "De server of PDS heeft geen schijfruimte meer."
+        current_status: "Migratie gestopt — een beheerder moet ingrijpen"
+        what_to_do:
+          contact_admin: "Neem contact op met de server- of PDS-beheerder om schijfruimte vrij te maken"
+          server_side: "Dit is een probleem aan de serverkant — opnieuw proberen lost het niet op"
+          retry_later: "Zodra er schijfruimte is vrijgemaakt, kunt u de migratie opnieuw proberen"
+      invite_code:
+        title: "Uitnodigingscode ongeldig of verlopen"
+        what_happened: "De uitnodigingscode die u hebt ingevoerd, is ongeldig, verlopen of al gebruikt."
+        current_status: "Migratie gestopt — een geldige uitnodigingscode is nodig"
+        what_to_do:
+          get_new_code: "Vraag de beheerder van de nieuwe PDS om een nieuwe uitnodigingscode"
+          check_copy: "Controleer of u de uitnodigingscode correct hebt gekopieerd (zonder extra spaties)"
+          start_new: "Start een nieuwe migratie met de juiste uitnodigingscode"
+          may_not_be_needed: "Sommige PDS-servers hebben geen uitnodigingscode nodig — vraag het na bij de beheerder"
+      cancelled:
+        title: "Migratie geannuleerd"
+        what_happened: "Deze migratie is op uw verzoek geannuleerd. Er is niets aan uw account gewijzigd."
+        current_status: "Migratie geannuleerd — uw account blijft op %{old_pds}"
+        what_to_do:
+          account_safe: "Uw account is veilig en ongewijzigd op %{old_pds}"
+          start_new: "U kunt op elk moment een nieuwe migratie starten"
+      critical_plc:
+        title: "Update van de PLC-catalogus mislukt"
+        what_happened: "De update van de PLC-catalogus is niet voltooid. Uw accountgegevens zijn veilig."
+        current_status:
+          not_updated: "De PLC-catalogus is niet gewijzigd — u kunt een nieuw token aanvragen en het opnieuw proberen."
+          maybe_updated: "De PLC-catalogus is mogelijk gedeeltelijk bijgewerkt. Neem contact op met support."
+        what_to_do:
+          request_token: "Probeer een nieuw PLC-token aan te vragen — de update heeft nog niet plaatsgevonden"
+          no_new_migration: "Start geen nieuwe migratie"
+          data_safe: "Uw accountgegevens zijn veilig en intact"
+          save_recovery_key: "Uw herstelsleutel staat op deze pagina — bewaar die op een veilige plek"
+          save_token: "Bewaar dit migratietoken: %{token}"
+          contact_support: "Neem contact op met support als het probleem aanhoudt: %{support_email}"
+      generic:
+        title: "Migratiefout"
+        what_happened: "Er is iets misgegaan tijdens de migratie."
+        current_status:
+          retrying: "Automatisch opnieuw proberen (poging %{attempt} van %{max_attempts})"
+          exhausted: "Geen automatische pogingen meer over"
+        what_to_do:
+          wait: "Wacht op de automatische nieuwe poging"
+          check_details: "Als het blijft gebeuren, bekijk dan de technische details hieronder"
+          contact_support: "Als u hulp nodig hebt, neem dan contact op met support: %{support_email}"
+      time_remaining:
+        a_few_moments: "enkele ogenblikken"
+        seconds:
+          one: "%{count} seconde"
+          other: "%{count} seconden"
+        minutes:
+          one: "%{count} minuut"
+          other: "%{count} minuten"
+        hours:
+          one: "%{count} uur"
+          other: "%{count} uur"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ nl:
   mailers:
     common:
       eurosky_migration: "Eurosky Migratieservice"
+      hello: "Hallo,"
+      migration_label: "Migratie %{token}"
+      migration_token: "Migratietoken: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Token"
+      label_did: "DID"
+      label_old_handle: "Oude handle"
+      label_new_handle: "Nieuwe handle"
+      label_old_pds: "Oude PDS"
+      label_new_pds: "Nieuwe PDS"
+      label_target_pds: "Doel-PDS"
+      label_support_contact: "Supportcontact"
+      label_support_email: "Support-e-mail"
+      label_email: "E-mail"
+      label_migration_token: "Migratietoken"
+      label_failed_step: "Mislukte stap"
+      details_heading: "Migratiedetails"
+      account_details: "Accountdetails"
+      account_safe: "Uw account is veilig"
+      what_happened: "Wat is er gebeurd?"
+      what_happens_next: "Wat gebeurt er hierna?"
+      view_status: "Migratiestatus bekijken"
+      select_to_copy: "Klik om te selecteren en te kopiëren"
+      automated_notification: "Dit is een automatische melding van %{site}."
 
     email_verification:
       subject: "Uw verificatiecode: %{code} (%{token})"
@@ -594,6 +828,8 @@ nl:
       reminder3: "Sluit alle apps en browsertabbladen met uw account"
       reminder4: "Wacht op de voltooiingsmail voordat u weer inlogt"
       not_you: "Als u deze migratie niet hebt gestart, kunt u deze e-mail negeren."
+      your_code: "Uw verificatiecode"
+      go_to_page_button: "Ga naar de migratiepagina"
 
     account_password:
       subject: "Uw nieuwe accountwachtwoord voor %{handle} (%{token})"
@@ -616,6 +852,7 @@ nl:
       no_backup_step2: "Uw gegevens worden gemigreerd (zonder back-up)"
       no_backup_step3: "U wordt op de hoogte gesteld wanneer de migratie is voltooid"
       track_progress: "Volg de voortgang van uw migratie op:"
+      status_page_link: "Migratiestatuspagina"
 
     migration_completed:
       subject: "Migratie voltooid (%{token})"
@@ -626,15 +863,15 @@ nl:
       save_password: "Bewaar dit wachtwoord nu — sla het op in een wachtwoordbeheerder."
       change_password: "U kunt het wijzigen na uw eerste aanmelding."
       backup_heading: "Back-uppakket beschikbaar"
-      backup_help: "Uw accountgegevensback-up is beschikbaar om te downloaden gedurende de komende 10 minuten:"
-      backup_expiry: "Na 10 minuten verloopt deze link en wordt de back-up permanent verwijderd."
+      backup_help: "Uw accountgegevensback-up kan worden gedownload tot %{time}:"
+      backup_expiry: "Daarna werkt de link niet meer en wordt de back-up permanent verwijderd."
       summary: "Migratieoverzicht"
       migration_token: "Migratietoken: %{token}"
       did: "DID: %{did}"
       old_account: "Oud account: %{handle} @ %{pds}"
       new_account: "Nieuw account: %{handle} @ %{pds}"
       completed_at: "Voltooid op: %{time}"
-      status_page: "Bekijk de statuspagina (10 minuten beschikbaar):"
+      status_page: "Bekijk de statuspagina (2 dagen beschikbaar):"
       login_heading: "Hoe in te loggen op uw nieuwe account"
       login_help: "Als u dit nog niet hebt gedaan, log dan uit bij uw oude account in alle Bluesky-apps en log vervolgens in met uw nieuwe handle:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ nl:
       next3: "Al uw berichten, volgers en gegevens zijn overgedragen"
       next4: "Uw volgers zouden automatisch uw nieuwe locatie moeten zien (DID-gebaseerd)"
       privacy_heading: "Privacy en beveiliging"
-      privacy1: "Dit migratierecord wordt automatisch verwijderd over 10 minuten voor AVG-naleving"
+      privacy1: "Dit migratierecord wordt over 2 dagen automatisch verwijderd voor AVG-naleving"
       privacy2: "Alle versleutelde inloggegevens zijn veilig gewist van onze servers"
       support: "Als u vragen of problemen hebt, neem dan contact op met support met uw migratietoken:"
       email_footer: "Deze e-mail is gestuurd naar %{email} omdat u een accountmigratie hebt gestart."
+      download_backup: "Back-uppakket downloaden"
+      change_password_button: "Wijzig uw wachtwoord"
+      old_account_label: "Oud account"
+      new_account_label: "Nieuw account"
+      completed_at_label: "Voltooid op"
 
     blobs_transfer_complete:
       subject: "Alle bestanden overgezet — uw migratie is volledig afgerond (%{token})"
@@ -672,26 +914,6 @@ nl:
       what_to_do: "Open de statuspagina en gebruik \"Mislukte bestanden opnieuw proberen\". Elke poging gebruikt de kopieën uit uw back-up, dus er gaat niets verloren. U ontvangt een laatste e-mail zodra alles is aangekomen:"
       keep_password: "Wijzig tot die tijd het wachtwoord van uw account op %{pds} niet — wijzigen breekt de overdracht definitief af."
       support: "Als de pogingen blijven mislukken, neem dan contact op met de support en vermeld uw migratietoken:"
-
-    plc_otp:
-      subject: "PLC-verificatiecode – punt van geen terugkeer (%{token})"
-      heading: "PLC-verificatiecode"
-      critical: "Kritiek: punt van geen terugkeer"
-      intro: "Uw migratie is klaar voor de laatste, onomkeerbare stap. U staat op het punt uw PLC-token in te dienen om uw DID door te verwijzen naar de nieuwe PDS."
-      your_code: "Uw verificatiecode"
-      expires_in: "Verloopt over %{time}"
-      point_of_no_return: "Dit is het punt van geen terugkeer"
-      point_of_no_return_detail: "Zodra u deze code samen met uw PLC-token indient, wordt uw account permanent gemigreerd naar de nieuwe PDS."
-      did_will_point: "Uw DID verwijst onmiddellijk naar de nieuwe PDS"
-      cannot_undo: "U kunt deze bewerking niet ongedaan maken"
-      ensure_ready: "Zorg ervoor dat uw nieuwe account gereed is voordat u doorgaat"
-      how_to_use: "Zo gebruikt u deze code"
-      step1: "Ga naar uw migratiestatuspagina"
-      step2: "Voer uw PLC-token in (uit de e-mail van uw oude PDS)"
-      step3: "Voer deze verificatiecode in: %{code}"
-      step4: "Dien beide in om de migratie te voltooien"
-      attempts_note: "U hebt 5 pogingen om de juiste code in te voeren. Daarna moet u een nieuwe aanvragen."
-      not_you: "Als u deze code niet hebt aangevraagd, probeert iemand mogelijk toegang te krijgen tot uw migratie."
 
 
     migration_failed:
@@ -718,6 +940,17 @@ nl:
       note1: "Uw gegevens op de oude PDS blijven intact"
       note2: "U kunt de migratie veilig opnieuw proberen"
       note3: "Als u hulp nodig hebt, vermeld dan uw migratietoken: %{token}"
+      retry_button: "Migratie bekijken en opnieuw proberen"
+      plc_expired_heading: "PLC-token verlopen"
+      plc_expired_text: "Uw PLC-bewerkingstoken is verlopen. PLC-tokens zijn slechts 1 uur geldig nadat ze zijn uitgegeven."
+      plc_expired_steps: "Wat u moet doen"
+      plc_expired_step1: "Open uw migratiestatuspagina met de knop hieronder"
+      plc_expired_step2: "Klik op de knop \"Nieuw PLC-token aanvragen\""
+      plc_expired_step3: "Controleer uw e-mail van %{pds} op het nieuwe token"
+      plc_expired_step4: "Dien het nieuwe token binnen 1 uur in"
+      plc_expired_button: "Migratie bekijken en een nieuw token aanvragen"
+      plc_expired_good_news: "Goed nieuws:"
+      plc_expired_safe: "Uw migratiegegevens zijn veilig en gereed. U hebt alleen een nieuw PLC-token nodig om de laatste stap te voltooien."
 
     backup_ready:
       subject: "Uw Eurosky-migratieback-up is gereed (%{token})"
@@ -728,6 +961,7 @@ nl:
       expires: "Deze downloadlink verloopt op %{time}."
       expiry_warning: "Na het verlopen wordt de back-up permanent verwijderd van onze servers."
       whats_next: "Uw migratie gaat door op de achtergrond. U ontvangt een e-mail wanneer deze is voltooid."
+      size_label: "Back-upgrootte"
 
     rotation_key_notice:
       subject: "Actie vereist: bevestig uw migratie met de PLC-code (%{token})"
@@ -736,9 +970,17 @@ nl:
       key_heading: "Uw rotatiesleutel (bewaar deze eerst)"
       key_help: "Voordat u verdergaat, bewaar deze rotatiesleutel veilig. Dit is uw enige manier om uw account te herstellen als er iets misgaat:"
       key_warning: "Bewaar deze sleutel in een wachtwoordbeheerder of een andere veilige locatie. U kunt deze later niet meer ophalen."
-      next_step: "Ga naar de migratiepagina om uw PLC-bevestigingscode in te voeren:"
       check_email: "Controleer uw e-mail voor een code van uw oude PDS-provider — deze ziet eruit als XXXXX-XXXXX"
       no_password_reset: "Belangrijk: log niet in op uw nieuwe account op %{pds} en reset daar het wachtwoord niet voordat deze migratie is afgerond. Het resetten van het wachtwoord maakt de inloggegevens die de migratie gebruikt ongeldig, en de migratie mislukt dan."
+      plc_email_intro: "U ontvangt binnenkort een e-mail van uw oude PDS-provider (%{pds}) met de onderwerpregel:"
+      plc_code_info: "Die e-mail bevat een bevestigingscode (die eruitziet als %{example})."
+      plc_enter_code: "U moet deze code invoeren op uw migratiestatuspagina om de migratie af te ronden:"
+      plc_expiry: "Belangrijk: de bevestigingscode verloopt na 1 uur. Als u de e-mail niet ziet, controleer dan uw spammap. Hij komt van uw oude PDS-provider, niet van ons."
+      save_key_heading: "Bewaar deze sleutel nu"
+      recovery_key_label: "Uw herstelsleutel:"
+      key_use_heading: "Wat kan ik met deze sleutel doen?"
+      key_use: "Als u ooit uw account moet herstellen, ga dan naar %{link} en gebruik deze sleutel om weer toegang te krijgen. Dit werkt zelfs als uw server volledig offline is."
+      next_step_button: "Ga naar de migratiepagina om uw PLC-bevestigingscode in te voeren"
 
     plc_token_failed:
       subject: "Actie vereist: vraag een nieuwe PLC-bevestigingscode aan (%{token})"
@@ -749,6 +991,8 @@ nl:
       step2: "Vraag een nieuw PLC-token aan (mogelijk moet u uw wachtwoord opnieuw invoeren)"
       step3: "Voer het nieuwe token in wanneer u het per e-mail ontvangt"
       error_detail: "Fout: %{error}"
+      safe_text: "De PLC-catalogus is niet gewijzigd. Uw account blijft op %{pds}, en al uw migratiegegevens (repository, bestanden en voorkeuren) zijn veilig opgeslagen en gereed."
+      what_happened_text: "De bevestigingscode van uw oude PDS-provider is verlopen voordat die kon worden gebruikt. Deze codes zijn maar beperkte tijd geldig (meestal 1 uur)."
 
     critical_plc_failure:
       subject: "Dringend: kritieke migratiefout – start geen nieuwe migratie (%{token})"
@@ -759,12 +1003,41 @@ nl:
       key_help: "U hebt deze sleutel nodig om uw account te herstellen:"
       contact: "Neem onmiddellijk contact op met support:"
       error_detail: "Fout: %{error}"
+      summary: "Uw AT Protocol-accountmigratie is op een kritieke fout gestuit."
+      uncertain_state: "Uw account bevindt zich mogelijk in een onzekere toestand."
+      do_not_heading: "Doe het volgende niet:"
+      do_not1: "Een nieuwe migratie starten"
+      do_not2: "Deze e-mail verwijderen"
+      do_not3: "Zelf proberen het account te herstellen zonder support"
+      do_not4: "Uw accountinstellingen op een van beide PDS'en wijzigen"
+      data_safe: "Uw accountgegevens zijn veilig, maar ons supportteam moet de toestand van de PLC-catalogus controleren voordat u iets onderneemt."
+      right_now_heading: "Wat u nu moet doen"
+      step_save_email: "Bewaar deze e-mail. U hebt de onderstaande informatie nodig."
+      step_save_token: "Bewaar uw migratietoken:"
+      step_reference_token: "Vermeld uw migratietoken in uw supportverzoek:"
+      what_happened_text: "De migratie is mislukt tijdens de update van de PLC-catalogus, de kritieke stap die uw DID naar de nieuwe PDS laat verwijzen."
+      support_will: "Ons supportteam zal:"
+      support1: "De toestand van de PLC-catalogus voor uw DID onderzoeken"
+      support2: "Nagaan of de PLC-bewerking is geslaagd of mislukt"
+      support3: "U specifieke herstelinstructies geven"
+      support4: "Binnen 24 uur per e-mail contact met u opnemen"
+      wait_for_support: "Onderneem niets totdat u van support hebt gehoord. We begeleiden u bij het herstel."
+      automated: "Dit is een automatische kritieke waarschuwing van %{site}."
 
     invalid_invite_code:
       subject: "Migratie mislukt – ongeldige uitnodigingscode (%{token})"
       heading: "Ongeldige uitnodigingscode"
       intro: "Uw migratie %{token} kon niet doorgaan omdat de uitnodigingscode ongeldig was of al is gebruikt."
       what_to_do: "Om een nieuwe migratie te starten met een geldige uitnodigingscode:"
+      rejected: "De uitnodigingscode voor %{pds} is geweigerd. Dit kan gebeuren als:"
+      reason1: "De uitnodigingscode is verkeerd getypt"
+      reason2: "De uitnodigingscode is al gebruikt"
+      reason3: "De uitnodigingscode is verlopen"
+      reason4: "De uitnodigingscode is niet geldig voor deze PDS"
+      safe1: "Er is niets gewijzigd aan uw account op %{pds}"
+      safe2: "Er zijn geen gegevens overgedragen of gewijzigd"
+      safe3: "Uw account blijft gewoon werken op uw huidige PDS"
+      start_new: "Nieuwe migratie starten"
 
     orphaned_account_error:
       subject: "Migratie gepauzeerd – verweesd account op de doelserver (%{token})"
@@ -775,6 +1048,18 @@ nl:
       option1: "Neem contact op met de doel-PDS-beheerder op %{email} om het verweesde account te verwijderen"
       option2: "Vermeld uw DID: %{did}"
       option3: "Zodra het is verwijderd, probeer de migratie opnieuw via de statuspagina:"
+      contact_heading: "Volgende stap: neem contact op met de PDS-provider"
+      contact_help: "Neem contact op met het supportteam van %{pds} en vraag om het verweesde account te verwijderen."
+      email_support: "E-mail %{email}"
+      include_heading: "Vermeld in uw bericht:"
+      after_heading: "Nadat support heeft gereageerd"
+      after1: "Ga terug naar uw %{link}"
+      after2: "Klik op de knop \"Migratie opnieuw proberen\""
+      after3: "Uw migratie wordt automatisch hervat"
+      status_page_link: "migratiestatuspagina"
+      need_help: "Hulp nodig? Bezoek uw %{link} voor meer informatie."
+      mailto_subject: "Verzoek om verwijdering van verweesd account – migratie %{token}"
+      mailto_body: "Hallo,\n\nIk probeer te migreren naar %{pds}, maar kreeg een foutmelding over een verweesd account.\n\nMigratietoken: %{token}\nDID: %{did}\n\nKunt u het verweesde account verwijderen, zodat ik mijn migratie opnieuw kan proberen?\n\nBedankt."
 
     reauthentication_required:
       subject: "Actie vereist: log opnieuw in (%{token})"
@@ -782,8 +1067,13 @@ nl:
       intro: "Uw migratie %{token} vereist dat u uw wachtwoord opnieuw invoert om door te gaan."
       reason: "Uw sessie met de oude PDS is verlopen tijdens het migratieproces."
       what_to_do: "Ga naar de migratiepagina en voer uw wachtwoord opnieuw in:"
-      error_detail: "Fout: %{error}"
       step: "Mislukte stap: %{step}"
+      step1: "Open uw migratiestatuspagina"
+      step2: "Voer uw wachtwoord voor %{handle} in om opnieuw in te loggen"
+      step3: "De migratie gaat automatisch verder waar ze was gebleven"
+      button: "Opnieuw inloggen en doorgaan"
+      data_safe_heading: "Uw gegevens zijn veilig."
+      data_safe: "Alle migratievoortgang is bewaard. U hoeft alleen opnieuw in te loggen, zodat we uw account verder kunnen overzetten."
 
     plc_token_reminder:
       subject: "Herinnering: voltooi uw migratie door de PLC-code in te voeren (%{token})"
@@ -805,6 +1095,9 @@ nl:
       confirm_help: "Klik op de onderstaande link om de annulering te bevestigen:"
       confirm_link: "Annulering bevestigen"
       not_you: "Als u deze annulering niet hebt aangevraagd, kunt u deze e-mail veilig negeren. Uw migratie gaat normaal verder."
+      safe_text: "Er is niets aan uw account gewijzigd. Het annuleren van deze migratie stopt alleen het proces. Uw account blijft op %{pds} en blijft gewoon werken."
+      cannot_undo: "Dit kan niet ongedaan worden gemaakt. Als u van gedachten verandert, moet u een nieuwe migratie starten."
+      not_you_heading: "Hebt u dit niet aangevraagd?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations

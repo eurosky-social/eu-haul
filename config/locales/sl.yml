@@ -47,6 +47,7 @@ sl:
   landing:
     page_title: "Preselite svoj račun"
     title: "Preselite svoj račun v Evropo"
+    title_named: "Preselite svoj račun na %{name}"
     lead: "Prenesite svoje objave, sledenja in identiteto na evropski strežnik. Vaš handle lahko gre z vami, vaši sledilci pa ne bodo opazili ničesar."
     start: "Začni selitev"
     how_it_works: "Kako deluje"
@@ -61,6 +62,54 @@ sl:
       confirm:
         label: "Potrditev po e-pošti"
         text: "Prenesemo vaše podatke in vas prosimo, da zadnji korak potrdite po e-pošti. Traja približno 20–30 minut."
+
+  # ──────────────────────────────────────────
+  # How it works (/how-it-works)
+  # ──────────────────────────────────────────
+  how_it_works:
+    page_title: "Kako deluje"
+    title: "Kako poteka selitev računa"
+    lead: "Vaš račun se v približno pol ure preseli na drug strežnik. Vaše objave, sledenja in identiteta gredo z vami, ljudje, ki vam sledijo, pa vam bodo še naprej sledili."
+    before:
+      title: "Preden začnete"
+      credentials: "Vaš trenutni handle in geslo računa. Gesla za aplikacije ne delujejo. Če uporabljate dvostopenjsko avtentikacijo, boste potrebovali tudi prijavno kodo, ki jo zahtevamo."
+      email: "Dostop do e-poštnega naslova vašega računa. Tja vam pošljemo kodo, pozneje pa vam jo pošlje tudi vaš trenutni strežnik."
+      time: "Približno pol ure, v kateri računa ne uporabljate."
+      invite: "Za nekatere strežnike koda za povabilo. Čarovnik vam pove, ali jo izbrani strežnik potrebuje."
+    moves:
+      title: "Kaj se preseli z vami"
+      everything: "Vse v vašem računu: vaše objave in odgovori, všečki in ponovne objave, sledenja, seznami in blokade, vaš profil, slike in videoposnetki ter nastavitve aplikacije, kot so shranjeni viri in utišane besede. Preseli se tudi vaša identiteta, zato vam bodo ljudje, ki vam sledijo, še naprej sledili."
+      handle: "Vaš handle lahko gre z vami, če je na vaši lastni domeni. Handle na domeni vašega trenutnega strežnika, kot je ime.bsky.social, ostane za vami: na novem strežniku izberete novega."
+    steps:
+      title: "Korak za korakom"
+      sign_in:
+        title: "Prijava"
+        text: "Prijavite se s trenutnim handle in geslom. Uporabimo ju za začetek selitve in vašega gesla nikoli ne shranimo."
+      choose:
+        title: "Izbira cilja"
+        text: "Izberite strežnik, sprejmite njegove pogoje, če jih ima, in tam izberite svoj handle. Zahtevate lahko tudi varnostno kopijo celotnega računa."
+      verify:
+        title: "Potrditev e-pošte"
+        text: "Po e-pošti vam pošljemo kodo. Selitev se začne, ko jo vnesete na strani s stanjem selitve."
+      copy:
+        title: "Kopiramo vaš račun"
+        text: "Na novem strežniku ustvarimo vaš račun in nanj kopiramo vse; napredek je prikazan na strani s stanjem. Medtem ne objavljajte, ne všečkajte in ne sledite nikomur: te spremembe se ne bi prenesle."
+      confirm:
+        title: "Potrditev selitve"
+        text: "Vaš trenutni strežnik vam po e-pošti pošlje potrditveno kodo. Vnesite jo na strani s stanjem v eni uri ali zahtevajte novo. S tem korakom vaša identiteta začne kazati na novi strežnik."
+      done:
+        title: "Končano"
+        text: "Vaš račun na novem strežniku se vklopi, stari pa se deaktivira. Po e-pošti vam pošljemo navodila za prijavo skupaj z geslom za vaš novi račun."
+    know:
+      title: "Dobro je vedeti"
+      duration: "Večina selitev traja 20–30 minut. Računi z veliko slikami in videoposnetki potrebujejo več časa."
+      cancel: "Dokler v 5. koraku ne vnesete potrditvene kode, lahko selitev prekličete in vaš račun ostane, kjer je."
+      recovery: "Preusmeritve identitete na novi strežnik tukaj ni mogoče razveljaviti. Damo vam ključ za obnovitev, s katerim jo je mogoče razveljaviti, zato ga shranite na varno mesto."
+      old_account: "Vaš stari račun se deaktivira, ne izbriše. Pozneje se lahko s tem orodjem preselite nazaj na njegov strežnik."
+      backup: "Če ste zahtevali varnostno kopijo, jo lahko prenašate 24 ur."
+      deletion: "Zapis o vaši selitvi in vse, kar smo hranili zanjo, izbrišemo 2 dni po dokončani selitvi."
+      sign_in: "Za poznejšo prijavo uporabite novi handle in v aplikaciji kot ponudnika gostovanja izberite novi strežnik."
+
 
   # ──────────────────────────────────────────
   # Wizard form (migrations/new)
@@ -455,6 +504,167 @@ sl:
       did_label: "DID"
 
     # ──────────────────────────────────────────
+    # Error explanations on the status page (MigrationErrorHelper)
+    # ──────────────────────────────────────────
+    error_messages:
+      rate_limit:
+        title: "Strežnik je omejil zahteve"
+        what_happened: "Strežnik omejuje zahteve, da prepreči preobremenitev. To je običajno, ko poteka veliko selitev hkrati."
+        current_status:
+          retrying: "Samodejni ponovni poskusi z daljšimi premori (poskus %{attempt} od %{max_attempts})"
+          exhausted: "Samodejnih ponovnih poskusov ni več"
+        what_to_do:
+          wait: "Počakajte na samodejni ponovni poskus (priporočeno) — vsak poskus čaka malo dlje"
+          temporary: "Omejitev je začasna in običajno izgine v nekaj minutah"
+          overloaded: "Če se nadaljuje tudi po %{max_attempts} poskusih, je strežnik morda preobremenjen"
+      network:
+        title: "Napaka omrežne povezave"
+        what_happened:
+          repo_export: "Povezava z vašim starim PDS je med izvozom vašega repozitorija potekla ali bila prekinjena."
+          blob_download: "Povezava z vašim starim PDS je med prenosom vaših blobov (slik in videoposnetkov) potekla ali bila prekinjena."
+          account_activation: "Povezava z vašim novim PDS je med aktiviranjem vašega računa potekla ali bila prekinjena."
+          other: "Povezava s PDS je med selitvijo potekla ali bila prekinjena."
+        current_status:
+          retrying: "Samodejni ponovni poskus (poskus %{attempt} od %{max_attempts})"
+          exhausted: "Samodejnih ponovnih poskusov ni več"
+        what_to_do:
+          wait: "Počakajte na samodejni ponovni poskus (priporočeno)"
+          check_url: "Preverite, ali se %{url} odpre v vašem brskalniku"
+          may_be_down: "Če se napake nadaljujejo, je PDS morda nekaj časa nedosegljiv ali močno obremenjen"
+          contact_admin: "Če se težava nadaljuje, se obrnite na administratorja PDS"
+      authentication:
+        title: "Prijava ni uspela"
+        what_happened: "V vaš PDS se nismo mogli prijaviti. To običajno pomeni, da je geslo napačno ali je poteklo."
+        current_status: "Selitev ustavljena — potrebne so nove poverilnice"
+        what_to_do:
+          check_password: "Preverite, ali je vaše geslo pravilno"
+          check_expiry: "Preverite, ali so vaše poverilnice potekle (hranimo jih 48 ur od začetka selitve)"
+          start_new: "Začnite novo selitev s pravilnimi poverilnicami"
+          contact_admin: "Če ste prepričani, da je geslo pravilno, se obrnite na administratorja svojega PDS"
+      email_taken:
+        title: "E-poštni naslov se na novem PDS že uporablja"
+        what_happened: "%{new_pds} že ima račun z naslovom %{email}, zato tam nismo mogli ustvariti računa za vaš DID. Vaš račun na %{old_pds} je ostal nedotaknjen."
+        current_status: "Selitev ustavljena — vaša identiteta se ni spremenila"
+        what_to_do:
+          account_is_yours: "Če je ta račun vaš, se vanj prijavite na %{new_pds}, spremenite njegov e-poštni naslov in nato začnite novo selitev"
+          other_email: "Ali pa začnite novo selitev z drugim e-poštnim naslovom"
+          contact_provider: "Če računa ne prepoznate, se obrnite na ponudnika PDS: %{contact_email}"
+      account_exists:
+        title: "Račun na novem PDS že obstaja"
+        what_happened: "Na novem PDS (%{new_pds}) že obstaja račun z vašim DID. Ta osireli račun je najverjetneje ostal od prejšnjega poskusa selitve, ki ni uspel."
+        current_status: "Selitev zaustavljena — ponudnik PDS mora odstraniti osireli račun"
+        what_to_do:
+          contact_provider: "Obrnite se na ponudnika novega PDS in ga prosite, naj odstrani osireli račun:"
+          contact_email: "E-pošta: %{contact_email}"
+          include_details: "Navedite žeton selitve (%{token}) in svoj DID (%{did})"
+          retry_after_removal: "Ko je osireli račun odstranjen, lahko to selitev poskusite znova."
+          provider_only: "Za to mora ukrepati ponudnik PDS — sami tega ne morete odpraviti."
+      plc_token_expired:
+        title: "Žeton PLC je potekel"
+        what_happened: "Žeton operacije PLC, ki ste ga vnesli, je potekel. Žetoni PLC veljajo le 1 uro, potem ko jih izda vaš stari ponudnik PDS."
+        current_status: "Selitev zaustavljena — potrebujete nov žeton PLC"
+        what_to_do:
+          request_token: "Z gumbom \"%{button}\" spodaj zahtevajte nov žeton"
+          check_email: "Poiščite e-pošto od %{old_pds} z novim žetonom"
+          submit_in_time: "Novi žeton vnesite v 1 uri po prejemu"
+          data_safe: "Preostali podatki vaše selitve so varni in pripravljeni — potrebujete le nov žeton"
+      plc_pre_submission_failure:
+        title: "Posodobitve PLC ni bilo mogoče dokončati"
+        what_happened: "Posodobitve imenika PLC ni bilo mogoče dokončati, vendar je vaš račun varen. Imenik PLC se ni spremenil — vaš račun je še vedno na %{old_pds}."
+        current_status: "Selitev zaustavljena — za ponovni poskus zahtevajte novo potrditveno kodo"
+        what_to_do:
+          request_code: "Z gumbom \"%{button}\" spodaj pridobite novo potrditveno kodo"
+          check_email: "Poiščite e-pošto od %{old_pds} z novo kodo"
+          submit_in_time: "Novo kodo vnesite v 1 uri po prejemu"
+          data_safe: "Podatki vaše selitve (repozitorij, blobi, nastavitve) so varni in pripravljeni"
+      credentials_need_reauth:
+        title: "Seja je potekla — znova se prijavite"
+        what_happened: "Vaše shranjene poverilnice so potekle. Zaradi vaše varnosti se po 48 urah samodejno izbrišejo. Za nadaljevanje selitve se znova prijavite."
+        current_status: "Selitev zaustavljena — za nadaljevanje se znova prijavite"
+        what_to_do:
+          enter_password: "Spodaj vnesite geslo, da se znova prijavite"
+          data_safe: "Podatki vaše selitve so varni — potrebujete le nove poverilnice"
+          resume: "Ko se prijavite, se selitev nadaljuje tam, kjer se je ustavila"
+      blob_not_found:
+        title: "Nekaterih blobov ni bilo mogoče najti"
+        what_happened: "Nekaterih blobov (slik in videoposnetkov) na vašem starem PDS ni bilo mogoče najti. Morda so bili izbrisani ali niso več na voljo."
+        current_status: "Selitev se nadaljuje — manjkajoči blobi bodo izpuščeni"
+        what_to_do:
+          not_critical: "To običajno ni resno — selitev se nadaljuje brez teh blobov"
+          media_may_be_missing: "Nekatere starejše slike ali videoposnetki morda ne bodo preneseni"
+          check_report: "Po končani selitvi si podrobnosti oglejte v poročilu o neuspelih blobih"
+          reupload: "Po potrebi lahko manjkajoče medije po selitvi sami znova naložite"
+      data_corruption:
+        title: "Podatki so se med prenosom poškodovali"
+        what_happened: "Podatki so se med prenosom poškodovali. To se lahko zgodi pri počasnih ali nestabilnih omrežnih povezavah."
+        current_status:
+          retrying: "Ponovni prenos poškodovanih podatkov (poskus %{attempt} od %{max_attempts})"
+          exhausted: "Samodejnih ponovnih poskusov ni več"
+        what_to_do:
+          wait: "Počakajte na samodejni ponovni poskus — podatki bodo znova preneseni"
+          check_network: "Če se to ponavlja, preverite kakovost svoje omrežne povezave"
+          stable_network: "Poskusite s stabilnejšo omrežno povezavo"
+          large_repositories: "Pri počasnih povezavah lahko pri velikih repozitorijih poteče časovna omejitev"
+      disk_space:
+        title: "Na disku ni več prostora"
+        what_happened: "Strežniku ali PDS je zmanjkalo prostora na disku."
+        current_status: "Selitev ustavljena — potreben je poseg administratorja"
+        what_to_do:
+          contact_admin: "Obrnite se na administratorja strežnika ali PDS, da sprosti prostor na disku"
+          server_side: "To je težava na strani strežnika — ponovni poskus je ne odpravi"
+          retry_later: "Ko se sprosti prostor na disku, lahko selitev poskusite znova"
+      invite_code:
+        title: "Koda za povabilo je neveljavna ali je potekla"
+        what_happened: "Koda za povabilo, ki ste jo vnesli, je neveljavna, je potekla ali je bila že uporabljena."
+        current_status: "Selitev ustavljena — potrebna je veljavna koda za povabilo"
+        what_to_do:
+          get_new_code: "Administratorja novega PDS prosite za novo kodo za povabilo"
+          check_copy: "Preverite, ali ste kodo za povabilo pravilno kopirali (brez odvečnih presledkov)"
+          start_new: "Začnite novo selitev s pravilno kodo za povabilo"
+          may_not_be_needed: "Nekateri strežniki PDS ne potrebujejo kode za povabilo — preverite pri administratorju"
+      cancelled:
+        title: "Selitev preklicana"
+        what_happened: "Ta selitev je bila preklicana na vašo zahtevo. Na vašem računu ni bilo nič spremenjeno."
+        current_status: "Selitev preklicana — vaš račun ostane na %{old_pds}"
+        what_to_do:
+          account_safe: "Vaš račun je varen in nespremenjen na %{old_pds}"
+          start_new: "Novo selitev lahko začnete kadar koli"
+      critical_plc:
+        title: "Posodobitev imenika PLC ni uspela"
+        what_happened: "Posodobitev imenika PLC se ni dokončala. Podatki vašega računa so varni."
+        current_status:
+          not_updated: "Imenik PLC se ni spremenil — zahtevate lahko nov žeton in poskusite znova."
+          maybe_updated: "Imenik PLC je bil morda delno posodobljen. Obrnite se na podporo."
+        what_to_do:
+          request_token: "Poskusite zahtevati nov žeton PLC — posodobitev se še ni zgodila"
+          no_new_migration: "Ne začnite nove selitve"
+          data_safe: "Podatki vašega računa so varni in nedotaknjeni"
+          save_recovery_key: "Vaš ključ za obnovitev je na tej strani — shranite ga na varno mesto"
+          save_token: "Shranite ta žeton selitve: %{token}"
+          contact_support: "Če se težava nadaljuje, se obrnite na podporo: %{support_email}"
+      generic:
+        title: "Napaka pri selitvi"
+        what_happened: "Med selitvijo je šlo nekaj narobe."
+        current_status:
+          retrying: "Samodejni ponovni poskus (poskus %{attempt} od %{max_attempts})"
+          exhausted: "Samodejnih ponovnih poskusov ni več"
+        what_to_do:
+          wait: "Počakajte na samodejni ponovni poskus"
+          check_details: "Če se to ponavlja, si oglejte tehnične podrobnosti spodaj"
+          contact_support: "Če potrebujete pomoč, se obrnite na podporo: %{support_email}"
+      time_remaining:
+        a_few_moments: "nekaj trenutkov"
+        seconds:
+          one: "%{count} s"
+          other: "%{count} s"
+        minutes:
+          one: "%{count} min"
+          other: "%{count} min"
+        hours:
+          one: "%{count} h"
+          other: "%{count} h"
+
+    # ──────────────────────────────────────────
     # PLC Warning partial
     # ──────────────────────────────────────────
     plc_warning:
@@ -575,6 +785,30 @@ sl:
   mailers:
     common:
       eurosky_migration: "Storitev za selitev Eurosky"
+      hello: "Pozdravljeni,"
+      migration_label: "Selitev %{token}"
+      migration_token: "Žeton selitve: %{token}"
+      label_value: "%{label}: %{value}"
+      label_token: "Žeton"
+      label_did: "DID"
+      label_old_handle: "Stari handle"
+      label_new_handle: "Nov handle"
+      label_old_pds: "Stari PDS"
+      label_new_pds: "Novi PDS"
+      label_target_pds: "Ciljni PDS"
+      label_support_contact: "Kontakt za podporo"
+      label_support_email: "E-pošta podpore"
+      label_email: "E-pošta"
+      label_migration_token: "Žeton selitve"
+      label_failed_step: "Neuspeli korak"
+      details_heading: "Podrobnosti selitve"
+      account_details: "Podrobnosti računa"
+      account_safe: "Vaš račun je varen"
+      what_happened: "Kaj se je zgodilo?"
+      what_happens_next: "Kaj sledi?"
+      view_status: "Ogled stanja selitve"
+      select_to_copy: "Kliknite, da izberete in kopirate"
+      automated_notification: "To je samodejno obvestilo storitve %{site}."
 
     email_verification:
       subject: "Vaša potrditvena koda: %{code} (%{token})"
@@ -594,6 +828,8 @@ sl:
       reminder3: "Zaprite vse aplikacije in zavihke brskalnika z vašim računom"
       reminder4: "Počakajte na e-pošto o dokončanju, preden se znova prijavite"
       not_you: "Če te selitve niste sprožili vi, prosimo, prezrite to e-pošto."
+      your_code: "Vaša potrditvena koda"
+      go_to_page_button: "Pojdite na stran selitve"
 
     account_password:
       subject: "Vaše novo geslo računa za %{handle} (%{token})"
@@ -616,6 +852,7 @@ sl:
       no_backup_step2: "Vaši podatki se selijo (brez varnostne kopije)"
       no_backup_step3: "Obveščeni boste, ko bo selitev dokončana"
       track_progress: "Spremljajte napredek selitve na:"
+      status_page_link: "Stran s stanjem selitve"
 
     migration_completed:
       subject: "Selitev dokončana (%{token})"
@@ -626,15 +863,15 @@ sl:
       save_password: "Shranite to geslo zdaj — shranite ga v upravitelju gesel."
       change_password: "Spremenite ga lahko po prvi prijavi."
       backup_heading: "Varnostna kopija na voljo"
-      backup_help: "Varnostna kopija podatkov vašega računa je na voljo za prenos naslednjih 10 minut:"
-      backup_expiry: "Po 10 minutah bo ta povezava potekla in varnostna kopija bo trajno izbrisana."
+      backup_help: "Varnostno kopijo podatkov vašega računa lahko prenesete do %{time}:"
+      backup_expiry: "Nato povezava preneha delovati in varnostna kopija bo trajno izbrisana."
       summary: "Povzetek selitve"
       migration_token: "Žeton selitve: %{token}"
       did: "DID: %{did}"
       old_account: "Stari račun: %{handle} @ %{pds}"
       new_account: "Nov račun: %{handle} @ %{pds}"
       completed_at: "Dokončano: %{time}"
-      status_page: "Ogled strani stanja (na voljo 10 minut):"
+      status_page: "Ogled strani stanja (na voljo 2 dni):"
       login_heading: "Kako se prijaviti v novi račun"
       login_help: "Če tega še niste storili, se odjavite iz starega računa v kateri koli aplikaciji Bluesky in se nato prijavite z novim handle:"
       login_handle: "Handle: %{handle}"
@@ -652,10 +889,15 @@ sl:
       next3: "Vse vaše objave, sledenja in podatki so bili preneseni"
       next4: "Vaši sledilci bi morali samodejno videti vašo novo lokacijo (na podlagi DID)"
       privacy_heading: "Zasebnost in varnost"
-      privacy1: "Ta zapis o selitvi bo samodejno izbrisan čez 10 minut za skladnost z GDPR"
+      privacy1: "Ta zapis o selitvi bo zaradi skladnosti z GDPR samodejno izbrisan čez 2 dni"
       privacy2: "Vse šifrirane poverilnice so bile varno izbrisane z naših strežnikov"
       support: "Če imate vprašanja ali težave, kontaktirajte podporo s svojim žetonom selitve:"
       email_footer: "Ta e-pošta je bila poslana na %{email}, ker ste sprožili selitev računa."
+      download_backup: "Prenesi varnostno kopijo"
+      change_password_button: "Spremenite geslo"
+      old_account_label: "Stari račun"
+      new_account_label: "Nov račun"
+      completed_at_label: "Dokončano"
 
     blobs_transfer_complete:
       subject: "Vse datoteke prenesene — vaša selitev je v celoti zaključena (%{token})"
@@ -673,26 +915,6 @@ sl:
       keep_password: "Do takrat ne spreminjajte gesla svojega računa na %{pds} — sprememba dokončno prekine prenos."
       support: "Če poskusi še naprej ne uspevajo, se obrnite na podporo in navedite svoj selitveni žeton:"
 
-    plc_otp:
-      subject: "Potrditvena koda PLC – točka brez vrnitve (%{token})"
-      heading: "Potrditvena koda PLC"
-      critical: "Kritično: točka brez vrnitve"
-      intro: "Vaša selitev je pripravljena na zadnji, nepovratni korak. Pravkar boste poslali žeton PLC, da preusmerite svoj DID na novi PDS."
-      your_code: "Vaša potrditvena koda"
-      expires_in: "Poteče čez %{time}"
-      point_of_no_return: "To je točka brez vrnitve"
-      point_of_no_return_detail: "Ko pošljete to kodo skupaj z žetonom PLC, bo vaš račun trajno preseljen na novi PDS."
-      did_will_point: "Vaš DID bo takoj kazal na novi PDS"
-      cannot_undo: "Te operacije ne morete razveljaviti"
-      ensure_ready: "Preden nadaljujete, se prepričajte, da je vaš novi račun pripravljen"
-      how_to_use: "Kako uporabiti to kodo"
-      step1: "Pojdite na stran s stanjem selitve"
-      step2: "Vnesite žeton PLC (iz e-pošte vašega starega PDS)"
-      step3: "Vnesite to potrditveno kodo: %{code}"
-      step4: "Pošljite oboje, da dokončate selitev"
-      attempts_note: "Za vnos pravilne kode imate 5 poskusov. Nato boste morali zahtevati novo."
-      not_you: "Če te kode niste zahtevali vi, morda nekdo poskuša dostopati do vaše selitve."
-
 
     migration_failed:
       subject: "Selitev neuspešna – zahtevano je ukrepanje (%{token})"
@@ -708,7 +930,7 @@ sl:
       previous_retries: "Prejšnji ponovni poskusi: %{count}"
       what_to_do: "Kaj lahko storite"
       do_step1: "Preglejte stanje selitve:"
-      do_step2: "Kliknite gumb \"Ponovi selitev\" za ponovni poskus"
+      do_step2: "Kliknite gumb \"Ponovi selitev\" in poskusite selitev znova"
       do_step3: "Če se težava nadaljuje po več ponovnih poskusih, kontaktirajte podporo z žetonom selitve: %{token}"
       common_issues: "Pogoste težave in rešitve"
       issue1: "Časovne omejitve omrežja: običajno se razrešijo ob ponovnem poskusu"
@@ -718,6 +940,17 @@ sl:
       note1: "Vaši podatki na starem PDS ostajajo nedotaknjeni"
       note2: "Selitev lahko varno ponovite"
       note3: "Če potrebujete pomoč, navedite žeton selitve: %{token}"
+      retry_button: "Ogled selitve in ponovni poskus"
+      plc_expired_heading: "Žeton PLC je potekel"
+      plc_expired_text: "Vaš žeton operacije PLC je potekel. Žetoni PLC veljajo le 1 uro po izdaji."
+      plc_expired_steps: "Kaj morate storiti"
+      plc_expired_step1: "Z gumbom spodaj odprite stran s stanjem selitve"
+      plc_expired_step2: "Kliknite gumb \"Zahtevaj nov žeton PLC\""
+      plc_expired_step3: "V e-pošti od %{pds} poiščite novi žeton"
+      plc_expired_step4: "Novi žeton pošljite v 1 uri"
+      plc_expired_button: "Ogled selitve in zahteva za nov žeton"
+      plc_expired_good_news: "Dobra novica:"
+      plc_expired_safe: "Podatki vaše selitve so varni in pripravljeni. Za dokončanje zadnjega koraka potrebujete le nov žeton PLC."
 
     backup_ready:
       subject: "Vaša varnostna kopija Eurosky je pripravljena (%{token})"
@@ -728,6 +961,7 @@ sl:
       expires: "Ta povezava za prenos poteče ob %{time}."
       expiry_warning: "Po poteku bo varnostna kopija trajno izbrisana z naših strežnikov."
       whats_next: "Vaša selitev se nadaljuje v ozadju. Prejeli boste še eno e-pošto, ko bo dokončana."
+      size_label: "Velikost varnostne kopije"
 
     rotation_key_notice:
       subject: "Zahtevano je ukrepanje: potrdite selitev s kodo PLC (%{token})"
@@ -736,9 +970,17 @@ sl:
       key_heading: "Vaš rotacijski ključ (najprej ga shranite)"
       key_help: "Preden nadaljujete, varno shranite ta rotacijski ključ. To je vaš edini način za obnovitev računa, če gre kaj narobe:"
       key_warning: "Shranite ta ključ v upravitelju gesel ali na drugem varnem mestu. Pozneje ga ne boste mogli pridobiti."
-      next_step: "Pojdite na stran selitve za vnos potrditvene kode PLC:"
       check_email: "Preverite e-pošto za kodo od vašega starega ponudnika PDS — videti je kot XXXXX-XXXXX"
       no_password_reset: "Pomembno: ne prijavljajte se v nov račun na %{pds} in tam ne ponastavljajte gesla, dokler ta selitev ni zaključena. Ponastavitev gesla razveljavi poverilnice, ki jih selitev uporablja, in selitev ne bo uspela."
+      plc_email_intro: "Kmalu boste prejeli e-pošto od svojega starega ponudnika PDS (%{pds}) z zadevo:"
+      plc_code_info: "Ta e-pošta vsebuje potrditveno kodo (videti je kot %{example})."
+      plc_enter_code: "To kodo morate vnesti na strani s stanjem selitve, da dokončate selitev:"
+      plc_expiry: "Pomembno: potrditvena koda poteče po 1 uri. Če e-pošte ne vidite, preverite mapo z neželeno pošto. Prihaja od vašega starega ponudnika PDS, ne od nas."
+      save_key_heading: "Shranite ta ključ zdaj"
+      recovery_key_label: "Vaš ključ za obnovitev:"
+      key_use_heading: "Kaj lahko naredim s tem ključem?"
+      key_use: "Če boste kdaj morali obnoviti svoj račun, pojdite na %{link} in s tem ključem obnovite dostop. Deluje tudi, če je vaš strežnik popolnoma nedosegljiv."
+      next_step_button: "Pojdite na stran selitve in vnesite potrditveno kodo PLC"
 
     plc_token_failed:
       subject: "Zahtevano je ukrepanje: zahtevajte novo potrditveno kodo PLC (%{token})"
@@ -749,6 +991,8 @@ sl:
       step2: "Zahtevajte nov žeton PLC (morda boste morali znova vnesti geslo)"
       step3: "Vnesite nov žeton, ko ga prejmete po e-pošti"
       error_detail: "Napaka: %{error}"
+      safe_text: "Imenik PLC se ni spremenil. Vaš račun ostaja na %{pds}, vsi podatki vaše selitve (repozitorij, datoteke in nastavitve) pa so varno shranjeni in pripravljeni."
+      what_happened_text: "Potrditvena koda vašega starega ponudnika PDS je potekla, preden je bila uporabljena. Te kode veljajo le omejen čas (običajno 1 uro)."
 
     critical_plc_failure:
       subject: "Nujno: kritična napaka selitve – ne začnite nove selitve (%{token})"
@@ -759,12 +1003,41 @@ sl:
       key_help: "Ta ključ boste potrebovali za obnovitev računa:"
       contact: "Takoj kontaktirajte podporo:"
       error_detail: "Napaka: %{error}"
+      summary: "Pri selitvi vašega računa AT Protocol je prišlo do kritične napake."
+      uncertain_state: "Vaš račun je morda v negotovem stanju."
+      do_not_heading: "Česa ne smete storiti:"
+      do_not1: "Ne začnite nove selitve"
+      do_not2: "Ne izbrišite te e-pošte"
+      do_not3: "Ne poskušajte sami obnoviti računa brez podpore"
+      do_not4: "Ne spreminjajte nastavitev računa na nobenem od PDS"
+      data_safe: "Podatki vašega računa so varni, vendar mora naša ekipa za podporo preveriti stanje imenika PLC, preden karkoli storite."
+      right_now_heading: "Kaj storiti zdaj"
+      step_save_email: "Shranite to e-pošto. Potrebovali boste spodnje informacije."
+      step_save_token: "Shranite žeton selitve:"
+      step_reference_token: "V zahtevi za podporo navedite žeton selitve:"
+      what_happened_text: "Selitev ni uspela med posodobitvijo imenika PLC, kritičnim korakom, ki vaš DID usmeri na novi PDS."
+      support_will: "Naša ekipa za podporo bo:"
+      support1: "Preverila stanje imenika PLC za vaš DID"
+      support2: "Ugotovila, ali je operacija PLC uspela ali ne"
+      support3: "Vam dala konkretna navodila za obnovitev"
+      support4: "Se vam v 24 urah oglasila po e-pošti"
+      wait_for_support: "Ničesar ne ukrepajte, dokler se vam podpora ne oglasi. Skozi obnovitev vas bomo vodili."
+      automated: "To je samodejno kritično opozorilo storitve %{site}."
 
     invalid_invite_code:
       subject: "Selitev neuspešna – neveljavna koda za povabilo (%{token})"
       heading: "Neveljavna koda za povabilo"
       intro: "Vaša selitev %{token} ni mogla nadaljevati, ker je bila koda za povabilo neveljavna ali že uporabljena."
       what_to_do: "Za začetek nove selitve z veljavno kodo za povabilo:"
+      rejected: "Koda za povabilo za %{pds} je bila zavrnjena. To se lahko zgodi, če:"
+      reason1: "Koda za povabilo je bila napačno vnesena"
+      reason2: "Koda za povabilo je bila že uporabljena"
+      reason3: "Koda za povabilo je potekla"
+      reason4: "Koda za povabilo ni veljavna za ta PDS"
+      safe1: "Na vašem računu na %{pds} ni bilo nič spremenjeno"
+      safe2: "Nobeni podatki niso bili preneseni ali spremenjeni"
+      safe3: "Vaš račun na trenutnem PDS še naprej normalno deluje"
+      start_new: "Začni novo selitev"
 
     orphaned_account_error:
       subject: "Selitev zaustavljena – osirel račun na ciljnem strežniku (%{token})"
@@ -775,6 +1048,18 @@ sl:
       option1: "Kontaktirajte administratorja ciljnega PDS na %{email} za odstranitev osirelega računa"
       option2: "Vključite svoj DID: %{did}"
       option3: "Ko je odstranjen, ponovite selitev s strani stanja:"
+      contact_heading: "Naslednji korak: obrnite se na ponudnika PDS"
+      contact_help: "Obrnite se na ekipo za podporo %{pds} in zahtevajte odstranitev osirelega računa."
+      email_support: "Pišite na %{email}"
+      include_heading: "V sporočilo vključite:"
+      after_heading: "Ko podpora odgovori"
+      after1: "Vrnite se na svojo %{link}"
+      after2: "Kliknite gumb \"Ponovi selitev\""
+      after3: "Vaša selitev se bo samodejno nadaljevala"
+      status_page_link: "stran s stanjem selitve"
+      need_help: "Potrebujete pomoč? Za več podrobnosti obiščite svojo %{link}."
+      mailto_subject: "Zahteva za odstranitev osirelega računa – selitev %{token}"
+      mailto_body: "Pozdravljeni,\n\nposkušam se preseliti na %{pds}, vendar sem naletel/a na napako osirelega računa.\n\nŽeton selitve: %{token}\nDID: %{did}\n\nAli lahko prosim odstranite osireli račun, da lahko selitev poskusim znova?\n\nHvala."
 
     reauthentication_required:
       subject: "Zahtevano je ukrepanje: znova se prijavite (%{token})"
@@ -782,8 +1067,13 @@ sl:
       intro: "Vaša selitev %{token} zahteva, da znova vnesete geslo za nadaljevanje."
       reason: "Vaša seja s starim PDS je med postopkom selitve potekla."
       what_to_do: "Pojdite na stran selitve in znova vnesite geslo:"
-      error_detail: "Napaka: %{error}"
       step: "Neuspeli korak: %{step}"
+      step1: "Odprite stran s stanjem selitve"
+      step2: "Vnesite geslo za %{handle}, da se znova prijavite"
+      step3: "Selitev se samodejno nadaljuje tam, kjer se je ustavila"
+      button: "Znova se prijavi in nadaljuj"
+      data_safe_heading: "Vaši podatki so varni."
+      data_safe: "Ves napredek selitve je ohranjen. Samo znova se morate prijaviti, da lahko nadaljujemo s prenosom vašega računa."
 
     plc_token_reminder:
       subject: "Opomnik: dokončajte selitev tako, da vnesete kodo PLC (%{token})"
@@ -805,6 +1095,9 @@ sl:
       confirm_help: "Kliknite spodnjo povezavo za potrditev preklica:"
       confirm_link: "Potrdi preklic"
       not_you: "Če tega preklica niste zahtevali vi, lahko to e-pošto varno prezrete. Vaša selitev bo nadaljevala normalno."
+      safe_text: "Na vašem računu ni bilo nič spremenjeno. Preklic te selitve le ustavi postopek. Vaš račun ostane na %{pds} in še naprej normalno deluje."
+      cannot_undo: "Tega ni mogoče razveljaviti. Če si premislite, boste morali začeti novo selitev."
+      not_you_heading: "Tega niste zahtevali?"
 
   # ──────────────────────────────────────────
   # ActiveRecord model validations
