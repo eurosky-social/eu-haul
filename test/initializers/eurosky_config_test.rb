@@ -4,7 +4,7 @@ class EuroskyConfigTest < ActiveSupport::TestCase
   test "blank TARGET_PDS_OPTIONS falls back to the built-in destinations" do
     assert_equal EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS, EuroskyConfig.parse_target_pds_options(nil)
     assert_equal EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS, EuroskyConfig.parse_target_pds_options("  ")
-    assert_equal %w[https://eurosky.social https://blacksky.app https://myatproto.social https://bsky.social],
+    assert_equal %w[https://eurosky.social https://blacksky.app https://myatproto.social https://aster.id https://bsky.social],
                  EuroskyConfig::DEFAULT_TARGET_PDS_OPTIONS.map { |o| o[:url] }
   end
 

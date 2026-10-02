@@ -65,6 +65,7 @@ module EuroskyConfig
     { label: 'Eurosky (eurosky.social)', url: 'https://eurosky.social' },
     { label: 'Blacksky (blacksky.app)', url: 'https://blacksky.app' },
     { label: 'myatproto (myatproto.social)', url: 'https://myatproto.social' },
+    { label: 'Aster (aster.id)', url: 'https://aster.id' },
     { label: 'Bluesky (bsky.social)', url: 'https://bsky.social' }
   ].map(&:freeze).freeze
 
