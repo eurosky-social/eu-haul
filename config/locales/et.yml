@@ -154,6 +154,7 @@ et:
         email_readonly_help: "E-posti aadress on teie kontolt tuvastatud"
         email_manual_help: "Me ei suutnud teie e-posti aadressi tuvastada. Palun sisestage see käsitsi."
         confirm_access: "Mul on juurdepääs sellele e-posti aadressile ja saan kätte sellele saadetud kinnituskoodi."
+        one_account_per_email: "Sellest aadressist saab ka teie konto e-posti aadress uues serveris, ja server lubab ühe aadressi kohta ainult ühte kontot. Kui olete seal selle aadressiga juba registreerunud, kustutage see konto või muutke kõigepealt selle e-posti aadressi — muidu migreerimine peatub."
         back: "Tagasi"
         continue: "Jätka"
 
@@ -543,11 +544,12 @@ et:
           contact_admin: "Kui olete kindel, et parool on õige, võtke ühendust oma PDS-i administraatoriga"
       email_taken:
         title: "E-posti aadress on uues PDS-is juba kasutusel"
-        what_happened: "Serveris %{new_pds} on juba konto aadressiga %{email}, seega ei saanud me sinna teie DID-ile kontot luua. Teie konto serveris %{old_pds} on puutumata."
+        what_happened: "Serveris %{new_pds} on juba teine konto aadressiga %{email}. Server lubab ühe e-posti aadressi kohta ainult ühte kontot, seega ei saanud teie kontot sinna luua. Teie konto serveris %{old_pds} on puutumata."
         current_status: "Migreerimine on peatunud — teie identiteeti ei muudetud"
         what_to_do:
-          account_is_yours: "Kui see konto on teie oma, logige sellesse serveris %{new_pds} sisse, muutke selle e-posti aadressi ja alustage seejärel uut migreerimist"
-          other_email: "Või alustage uut migreerimist teise e-posti aadressiga"
+          account_is_yours: "Kui see konto on teie oma, logige sellesse serveris %{new_pds} sisse ja kustutage see või muutke selle e-posti aadressi, kui soovite selle alles jätta. Veenduge, et olete sisse logitud sellesse kontosse, mitte kontosse @%{handle}"
+          keep_both: "Migreerimine kasutab alati teisaldatava konto e-posti aadressi. Teise aadressi kasutamiseks muutke see kõigepealt serveris %{old_pds}"
+          start_new: "Seejärel alustage uut migreerimist — seda ei saa jätkata"
           contact_provider: "Kui te seda kontot ei tunne, võtke ühendust PDS-i pakkujaga: %{contact_email}"
       account_exists:
         title: "Konto on uues PDS-is juba olemas"
@@ -951,6 +953,23 @@ et:
       plc_expired_button: "Vaata migreerimist ja taotle uut tokenit"
       plc_expired_good_news: "Hea uudis:"
       plc_expired_safe: "Teie migreerimisandmed on kaitstud ja valmis. Viimase sammu lõpetamiseks vajate vaid uut PLC tokenit."
+
+    email_taken:
+      why_heading: "Miks teie migreerimine peatus"
+      why_text: "Serveris %{new_pds} on juba teine konto e-posti aadressiga %{email}. Server lubab ühe e-posti aadressi kohta ainult ühte kontot, seega ei saanud teie kontot sinna luua. Teie konto @%{handle} on muutmata — midagi ei teisaldatud ega läinud kaotsi."
+      steps_heading: "Kuidas kolimine lõpule viia"
+      step1: "Logige teise kontosse serveris %{new_pds} sisse, näiteks Bluesky rakenduses, valides majutusteenuse pakkujaks %{new_pds}. Kui te parooli enam ei mäleta, saadab „Unustasid parooli?” koodi aadressile %{email}."
+      step2: "Kustutage see konto selle seadetes või muutke selle e-posti aadressi, kui soovite selle alles jätta. Veenduge, et olete sisse logitud teise kontosse, mitte kontosse %{handle}."
+      step3: "Alustage uut migreerimist. Vana ei saa jätkata."
+      button: "Alusta uut migreerimist"
+      keep_both: "Kas jätaksite teise konto pigem puutumata? Migreerimine kasutab alati teisaldatava konto (@%{handle}) e-posti aadressi, seega muutke kõigepealt see aadress oma praeguse teenusepakkuja juures ja alustage siis uut migreerimist."
+      unknown_account: "Te ei tunne teist kontot ära? Kirjutage aadressile %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kuidas konto @%{handle} kolimine lõpule viia"
+      heading: "Teie kolimine võib veel õnnestuda"
+      intro: "%{date} proovisite teisaldada oma kontot @%{handle} serverisse %{new_pds}. Migreerimine peatus enne, kui midagi muudeti."
+      apology: "Meie toonane e-kiri soovitas uuesti proovida. Uus katse ei oleks saanud õnnestuda — vabandame segaduse pärast. Allpool selgitame, mis läks valesti ja kuidas seda parandada."
 
     backup_ready:
       subject: "Teie Eurosky migreerimise varukoopia on valmis (%{token})"

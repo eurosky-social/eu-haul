@@ -1,0 +1,13 @@
+<%= t('mailers.email_taken_followup.heading') %>
+==========================================
+
+<%= t('mailers.common.hello') %>
+
+<%= t('mailers.email_taken_followup.intro', date: @attempted_on, handle: @migration.old_handle, new_pds: @new_pds_name) %>
+
+<%= t('mailers.email_taken_followup.apology') %>
+
+<%= render 'migration_mailer/email_taken_steps' %>
+
+---
+<%= t('mailers.common.eurosky_migration') %>

@@ -154,6 +154,7 @@ ga:
         email_readonly_help: "Fuarthas seoladh ríomhphoist ó do chuntas"
         email_manual_help: "Níorbh fhéidir linn do ríomhphost a fháil. Cuir isteach de láimh é le do thoil."
         confirm_access: "Tá rochtain agam ar an seoladh ríomhphoist seo agus is féidir liom cód deimhnithe a sheoltar chuige a fháil."
+        one_account_per_email: "Beidh an seoladh seo ina sheoladh ríomhphoist ag do chuntas ar an bhfreastalaí nua freisin, agus ní cheadaíonn freastalaí ach cuntas amháin in aghaidh an tseolta. Má chláraigh tú ansin leis cheana, scrios an cuntas sin nó athraigh a sheoladh ríomhphoist ar dtús — nó stopfaidh an imirce."
         back: "Siar"
         continue: "Lean ar aghaidh"
 
@@ -543,11 +544,12 @@ ga:
           contact_admin: "Má tá tú cinnte go bhfuil an pasfhocal ceart, déan teagmháil le riarthóir do PDS"
       email_taken:
         title: "Seoladh ríomhphoist in úsáid cheana ar an PDS nua"
-        what_happened: "Tá cuntas ag %{new_pds} cheana le %{email}, mar sin níorbh fhéidir linn cuntas a chruthú do do DID ansin. Níor athraíodh do chuntas ar %{old_pds}."
+        what_happened: "Tá cuntas eile ag %{new_pds} cheana le %{email}. Ní cheadaíonn freastalaí ach cuntas amháin in aghaidh an tseolta ríomhphoist, mar sin níorbh fhéidir do chuntas a chruthú ansin. Níor athraíodh do chuntas ar %{old_pds}."
         current_status: "Imirce stoptha — níor athraíodh aon rud ar d'aitheantas"
         what_to_do:
-          account_is_yours: "Más leatsa an cuntas sin, logáil isteach ann ar %{new_pds}, athraigh a sheoladh ríomhphoist, agus ansin tosaigh imirce nua"
-          other_email: "Nó tosaigh imirce nua le seoladh ríomhphoist eile"
+          account_is_yours: "Más leatsa an cuntas sin, logáil isteach ann ar %{new_pds} agus scrios é, nó athraigh a sheoladh ríomhphoist más mian leat é a choinneáil. Bí cinnte go bhfuil tú logáilte isteach sa chuntas sin agus ní in @%{handle}"
+          keep_both: "Úsáideann an imirce seoladh ríomhphoist an chuntais atá á bhogadh agat i gcónaí. Chun seoladh eile a úsáid, athraigh é ar %{old_pds} ar dtús"
+          start_new: "Ansin tosaigh imirce nua — ní féidir leanúint leis an gceann seo"
           contact_provider: "Mura n-aithníonn tú an cuntas, déan teagmháil le soláthraí an PDS: %{contact_email}"
       account_exists:
         title: "Tá cuntas ann cheana ar an PDS nua"
@@ -951,6 +953,23 @@ ga:
       plc_expired_button: "Féach ar an imirce agus iarr comhartha nua"
       plc_expired_good_news: "Dea-scéala:"
       plc_expired_safe: "Tá sonraí d'imirce slán agus réidh. Níl uait ach comhartha PLC nua chun an chéim dheireanach a chríochnú."
+
+    email_taken:
+      why_heading: "An fáth ar stop d'imirce"
+      why_text: "Tá cuntas eile ag %{new_pds} cheana leis an seoladh ríomhphoist %{email}. Ní cheadaíonn freastalaí ach cuntas amháin in aghaidh an tseolta ríomhphoist, mar sin níorbh fhéidir do chuntas a chruthú ansin. Níor athraíodh do chuntas @%{handle} — níor bogadh ná níor cailleadh aon rud."
+      steps_heading: "Conas d'aistriú a chríochnú"
+      step1: "Logáil isteach sa chuntas eile ar %{new_pds}, mar shampla san aip Bluesky le %{new_pds} mar sholáthraí óstála. Mura cuimhin leat an pasfhocal, seolfaidh „Pasfhocal dearmadta?“ cód chuig %{email}."
+      step2: "Scrios an cuntas sin ina shocruithe, nó athraigh a sheoladh ríomhphoist más mian leat é a choinneáil. Bí cinnte go bhfuil tú logáilte isteach sa chuntas eile agus ní in %{handle}."
+      step3: "Tosaigh imirce nua. Ní féidir leanúint leis an seancheann."
+      button: "Tosaigh imirce nua"
+      keep_both: "Arbh fhearr leat an cuntas eile a fhágáil mar atá? Úsáideann an imirce seoladh ríomhphoist an chuntais atá á bhogadh agat (@%{handle}) i gcónaí, mar sin athraigh an seoladh sin ag do sholáthraí reatha ar dtús agus ansin tosaigh imirce nua."
+      unknown_account: "Ní aithníonn tú an cuntas eile? Scríobh chuig %{contact_email}."
+
+    email_taken_followup:
+      subject: "Conas aistriú @%{handle} a chríochnú"
+      heading: "Is féidir le d'aistriú éirí leis fós"
+      intro: "Ar %{date} rinne tú iarracht do chuntas @%{handle} a bhogadh go %{new_pds}. Stop an imirce sular athraíodh aon rud."
+      apology: "Mhol ár ríomhphost ag an am triail eile a bhaint as. Ní fhéadfadh triail eile oibriú — ár leithscéal as an mearbhall. Seo thíos cad a chuaigh mícheart agus conas é a réiteach."
 
     backup_ready:
       subject: "Tá do chóip chúltaca imirce Eurosky réidh (%{token})"

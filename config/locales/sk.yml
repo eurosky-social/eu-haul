@@ -154,6 +154,7 @@ sk:
         email_readonly_help: "E-mail získaný z vášho účtu"
         email_manual_help: "Nepodarilo sa získať váš e-mail. Prosím, zadajte ho manuálne."
         confirm_access: "Mám prístup k tejto e-mailovej adrese a môžem získať potvrdzovací kód, ktorý na ňu bude odoslaný."
+        one_account_per_email: "Táto adresa bude zároveň e-mailom vášho účtu na novom serveri a server povoľuje len jeden účet na adresu. Ak ste sa tam s ňou už zaregistrovali, najprv ten účet vymažte alebo zmeňte jeho e-mail — inak sa migrácia zastaví."
         back: "Späť"
         continue: "Pokračovať"
 
@@ -543,11 +544,12 @@ sk:
           contact_admin: "Ak ste si istí, že heslo je správne, kontaktujte administrátora svojho PDS"
       email_taken:
         title: "E-mailová adresa sa na novom PDS už používa"
-        what_happened: "%{new_pds} už má účet s adresou %{email}, preto sme tam nemohli vytvoriť účet pre váš DID. Váš účet na %{old_pds} zostal nedotknutý."
+        what_happened: "Na %{new_pds} už existuje iný účet s adresou %{email}. Server povoľuje len jeden účet na e-mailovú adresu, preto tam váš účet nemohol byť vytvorený. Váš účet na %{old_pds} zostal nedotknutý."
         current_status: "Migrácia zastavená — vaša identita sa nezmenila"
         what_to_do:
-          account_is_yours: "Ak je ten účet váš, prihláste sa doň na %{new_pds}, zmeňte jeho e-mailovú adresu a potom spustite novú migráciu"
-          other_email: "Alebo spustite novú migráciu s inou e-mailovou adresou"
+          account_is_yours: "Ak je ten účet váš, prihláste sa doň na %{new_pds} a vymažte ho, alebo zmeňte jeho e-mailovú adresu, ak si ho chcete ponechať. Uistite sa, že ste prihlásení do tohto účtu, a nie do @%{handle}"
+          keep_both: "Migrácia vždy používa e-mailovú adresu presúvaného účtu. Ak chcete použiť inú adresu, najprv ju zmeňte na %{old_pds}"
+          start_new: "Potom spustite novú migráciu — túto nie je možné obnoviť"
           contact_provider: "Ak účet nepoznáte, kontaktujte poskytovateľa PDS: %{contact_email}"
       account_exists:
         title: "Účet už na novom PDS existuje"
@@ -951,6 +953,23 @@ sk:
       plc_expired_button: "Zobraziť migráciu a vyžiadať nový token"
       plc_expired_good_news: "Dobrá správa:"
       plc_expired_safe: "Dáta migrácie sú v bezpečí a pripravené. Na dokončenie posledného kroku potrebujete iba nový token PLC."
+
+    email_taken:
+      why_heading: "Prečo sa vaša migrácia zastavila"
+      why_text: "Na %{new_pds} už existuje iný účet s e-mailovou adresou %{email}. Server povoľuje len jeden účet na e-mailovú adresu, preto tam váš účet nemohol byť vytvorený. Váš účet @%{handle} je nezmenený — nič sa nepresunulo ani nestratilo."
+      steps_heading: "Ako dokončiť presun"
+      step1: "Prihláste sa do druhého účtu na %{new_pds}, napríklad v aplikácii Bluesky s %{new_pds} ako poskytovateľom hostingu. Ak si heslo nepamätáte, „Zabudnuté heslo“ pošle kód na %{email}."
+      step2: "Vymažte ten účet v jeho nastaveniach, alebo zmeňte jeho e-mailovú adresu, ak si ho chcete ponechať. Uistite sa, že ste prihlásení do druhého účtu, a nie do %{handle}."
+      step3: "Spustite novú migráciu. Tú starú nie je možné obnoviť."
+      button: "Spustiť novú migráciu"
+      keep_both: "Chcete druhý účet radšej nechať tak? Migrácia vždy používa e-mailovú adresu presúvaného účtu (@%{handle}), takže najprv zmeňte túto adresu u svojho súčasného poskytovateľa a potom spustite novú migráciu."
+      unknown_account: "Druhý účet nepoznáte? Napíšte na %{contact_email}."
+
+    email_taken_followup:
+      subject: "Ako dokončiť presun účtu @%{handle}"
+      heading: "Váš presun sa ešte môže podariť"
+      intro: "Dňa %{date} ste sa pokúsili presunúť svoj účet @%{handle} na %{new_pds}. Migrácia sa zastavila skôr, ako sa čokoľvek zmenilo."
+      apology: "Náš vtedajší e-mail odporúčal skúsiť to znova. Ďalší pokus však nemohol uspieť — ospravedlňujeme sa za zmätok. Nižšie nájdete, čo sa pokazilo a ako to napraviť."
 
     backup_ready:
       subject: "Vaša záloha Eurosky je pripravená (%{token})"

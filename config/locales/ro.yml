@@ -154,6 +154,7 @@ ro:
         email_readonly_help: "Email preluat din contul dumneavoastră"
         email_manual_help: "Nu am putut prelua adresa de email. Vă rugăm să o introduceți manual."
         confirm_access: "Am acces la această adresă de email și pot primi un cod de confirmare trimis la aceasta."
+        one_account_per_email: "Această adresă va deveni și adresa de email a contului dumneavoastră pe noul server, iar un server permite un singur cont pentru fiecare adresă. Dacă v-ați înregistrat deja acolo cu ea, ștergeți acel cont sau schimbați-i mai întâi adresa de email — altfel migrarea se va opri."
         back: "Înapoi"
         continue: "Continuare"
 
@@ -543,11 +544,12 @@ ro:
           contact_admin: "Dacă sunteți sigur că parola este corectă, contactați administratorul PDS-ului dumneavoastră"
       email_taken:
         title: "Adresa de email este deja folosită pe noul PDS"
-        what_happened: "%{new_pds} are deja un cont cu %{email}, așa că nu am putut crea acolo un cont pentru DID-ul dumneavoastră. Contul de pe %{old_pds} nu a fost atins."
+        what_happened: "%{new_pds} are deja un alt cont cu %{email}. Un server permite un singur cont pentru fiecare adresă de email, așa că nu am putut crea acolo contul dumneavoastră. Contul de pe %{old_pds} nu a fost atins."
         current_status: "Migrare oprită — identitatea dumneavoastră nu a fost modificată"
         what_to_do:
-          account_is_yours: "Dacă acel cont este al dumneavoastră, autentificați-vă în el pe %{new_pds}, schimbați-i adresa de email, apoi porniți o migrare nouă"
-          other_email: "Sau porniți o migrare nouă cu o altă adresă de email"
+          account_is_yours: "Dacă acel cont este al dumneavoastră, autentificați-vă în el pe %{new_pds} și ștergeți-l sau schimbați-i adresa de email dacă doriți să îl păstrați. Asigurați-vă că lucrați în acel cont și nu în @%{handle}"
+          keep_both: "Migrarea folosește întotdeauna adresa de email a contului pe care îl mutați. Pentru a folosi altă adresă, schimbați-o mai întâi pe %{old_pds}"
+          start_new: "Apoi porniți o migrare nouă — aceasta nu poate fi reluată"
           contact_provider: "Dacă nu recunoașteți contul, contactați furnizorul PDS: %{contact_email}"
       account_exists:
         title: "Contul există deja pe noul PDS"
@@ -951,6 +953,23 @@ ro:
       plc_expired_button: "Vedeți migrarea și solicitați un token nou"
       plc_expired_good_news: "Vești bune:"
       plc_expired_safe: "Datele de migrare sunt în siguranță și pregătite. Aveți nevoie doar de un token PLC nou pentru a finaliza ultimul pas."
+
+    email_taken:
+      why_heading: "De ce s-a oprit migrarea dumneavoastră"
+      why_text: "%{new_pds} are deja un alt cont cu adresa de email %{email}. Un server permite un singur cont pentru fiecare adresă de email, așa că nu am putut crea acolo contul dumneavoastră. Contul @%{handle} este neschimbat — nimic nu a fost mutat sau pierdut."
+      steps_heading: "Cum vă finalizați mutarea"
+      step1: "Autentificați-vă în celălalt cont pe %{new_pds}, de exemplu în aplicația Bluesky, cu %{new_pds} ca furnizor de găzduire. Dacă nu mai știți parola, opțiunea „Ați uitat parola?” trimite un cod la %{email}."
+      step2: "Ștergeți acel cont din setările lui sau schimbați-i adresa de email dacă doriți să îl păstrați. Asigurați-vă că lucrați în celălalt cont și nu în %{handle}."
+      step3: "Porniți o migrare nouă. Cea veche nu poate fi reluată."
+      button: "Porniți o migrare nouă"
+      keep_both: "Preferați să lăsați celălalt cont neschimbat? Migrarea folosește întotdeauna adresa de email a contului pe care îl mutați (@%{handle}), așa că schimbați mai întâi acea adresă la furnizorul actual, apoi porniți o migrare nouă."
+      unknown_account: "Nu recunoașteți celălalt cont? Scrieți la %{contact_email}."
+
+    email_taken_followup:
+      subject: "Cum finalizați mutarea contului @%{handle}"
+      heading: "Mutarea dumneavoastră încă poate reuși"
+      intro: "Pe %{date} ați încercat să mutați contul @%{handle} pe %{new_pds}. Migrarea s-a oprit înainte să se schimbe ceva."
+      apology: "Emailul nostru de atunci vă sugera să reîncercați. O nouă încercare nu avea cum să funcționeze — ne cerem scuze pentru confuzie. Iată ce nu a mers și cum puteți rezolva."
 
     backup_ready:
       subject: "Copia de siguranță Eurosky este gata (%{token})"

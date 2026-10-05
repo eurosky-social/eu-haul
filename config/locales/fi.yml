@@ -154,6 +154,7 @@ fi:
         email_readonly_help: "Sähköpostiosoite haettu tililtäsi"
         email_manual_help: "Emme pystyneet hakemaan sähköpostiosoitettasi. Syötä se manuaalisesti."
         confirm_access: "Minulla on pääsy tähän sähköpostiosoitteeseen ja voin noutaa siihen lähetetyn vahvistuskoodin."
+        one_account_per_email: "Tästä osoitteesta tulee myös tilisi sähköpostiosoite uudella palvelimella, ja palvelin sallii vain yhden tilin osoitetta kohden. Jos olet jo rekisteröitynyt sinne tällä osoitteella, poista se tili tai vaihda sen sähköpostiosoite ensin — muuten siirto pysähtyy."
         back: "Takaisin"
         continue: "Jatka"
 
@@ -543,11 +544,12 @@ fi:
           contact_admin: "Jos olet varma, että salasana on oikein, ota yhteyttä PDS:si ylläpitäjään"
       email_taken:
         title: "Sähköpostiosoite on jo käytössä uudella PDS:llä"
-        what_happened: "Palvelimella %{new_pds} on jo tili osoitteella %{email}, joten emme voineet luoda sinne tiliä DID-tunnuksellesi. Tiliisi palvelimella %{old_pds} ei ole koskettu."
+        what_happened: "Palvelimella %{new_pds} on jo toinen tili osoitteella %{email}. Palvelin sallii vain yhden tilin sähköpostiosoitetta kohden, joten tiliäsi ei voitu luoda sinne. Tiliisi palvelimella %{old_pds} ei ole koskettu."
         current_status: "Siirto pysäytetty — identiteettiisi ei tehty muutoksia"
         what_to_do:
-          account_is_yours: "Jos tili on sinun, kirjaudu siihen palvelimella %{new_pds}, vaihda sen sähköpostiosoite ja aloita sitten uusi siirto"
-          other_email: "Tai aloita uusi siirto eri sähköpostiosoitteella"
+          account_is_yours: "Jos tili on sinun, kirjaudu siihen palvelimella %{new_pds} ja poista se, tai vaihda sen sähköpostiosoite, jos haluat säilyttää sen. Varmista, että olet kirjautuneena siihen tiliin etkä tiliin @%{handle}"
+          keep_both: "Siirto käyttää aina siirrettävän tilin sähköpostiosoitetta. Jos haluat käyttää toista osoitetta, vaihda se ensin palvelimella %{old_pds}"
+          start_new: "Aloita sitten uusi siirto — tätä ei voi jatkaa"
           contact_provider: "Jos et tunnista tiliä, ota yhteyttä PDS-palveluntarjoajaan: %{contact_email}"
       account_exists:
         title: "Tili on jo olemassa uudella PDS:llä"
@@ -951,6 +953,23 @@ fi:
       plc_expired_button: "Näytä siirto ja pyydä uusi token"
       plc_expired_good_news: "Hyviä uutisia:"
       plc_expired_safe: "Siirtotietosi ovat turvassa ja valmiina. Tarvitset vain uuden PLC-tokenin viimeisen vaiheen suorittamiseen."
+
+    email_taken:
+      why_heading: "Miksi siirtosi pysähtyi"
+      why_text: "Palvelimella %{new_pds} on jo toinen tili sähköpostiosoitteella %{email}. Palvelin sallii vain yhden tilin sähköpostiosoitetta kohden, joten tiliäsi ei voitu luoda sinne. Tilisi @%{handle} on ennallaan — mitään ei siirretty eikä mitään kadonnut."
+      steps_heading: "Näin viet siirron loppuun"
+      step1: "Kirjaudu toiseen tiliin palvelimella %{new_pds}, esimerkiksi Bluesky-sovelluksessa valitsemalla palveluntarjoajaksi %{new_pds}. Jos et enää muista salasanaa, ”Unohtuiko salasana?” lähettää koodin osoitteeseen %{email}."
+      step2: "Poista se tili sen asetuksista tai vaihda sen sähköpostiosoite, jos haluat säilyttää sen. Varmista, että olet kirjautuneena toiseen tiliin etkä tiliin %{handle}."
+      step3: "Aloita uusi siirto. Vanhaa ei voi jatkaa."
+      button: "Aloita uusi siirto"
+      keep_both: "Haluatko mieluummin jättää toisen tilin ennalleen? Siirto käyttää aina siirrettävän tilin (@%{handle}) sähköpostiosoitetta, joten vaihda ensin se osoite nykyisellä palveluntarjoajallasi ja aloita sitten uusi siirto."
+      unknown_account: "Etkö tunnista toista tiliä? Kirjoita osoitteeseen %{contact_email}."
+
+    email_taken_followup:
+      subject: "Näin viet tilin @%{handle} siirron loppuun"
+      heading: "Siirtosi voi vielä onnistua"
+      intro: "Yritit %{date} siirtää tilisi @%{handle} palvelimelle %{new_pds}. Siirto pysähtyi ennen kuin mitään muutettiin."
+      apology: "Silloinen sähköpostimme ehdotti uutta yritystä. Uusi yritys ei olisi voinut onnistua — pahoittelemme sekaannusta. Alla kerromme, mikä meni vikaan ja miten sen voi korjata."
 
     backup_ready:
       subject: "Eurosky-siirron varmuuskopiosi on valmis (%{token})"

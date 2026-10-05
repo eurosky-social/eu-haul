@@ -154,6 +154,7 @@ hu:
         email_readonly_help: "A fiókjából lekért e-mail cím"
         email_manual_help: "Nem sikerült lekérni az e-mail címet. Kérem, adja meg kézzel."
         confirm_access: "Hozzáférek ehhez az e-mail címhez, és le tudom kérni a rá küldött megerősítő kódot."
+        one_account_per_email: "Ez a cím lesz a fiókja e-mail-címe az új szerveren is, és egy szerveren címenként csak egy fiók lehet. Ha már regisztrált ott ezzel a címmel, előbb törölje azt a fiókot, vagy módosítsa az e-mail-címét — különben a migráció leáll."
         back: "Vissza"
         continue: "Tovább"
 
@@ -543,11 +544,12 @@ hu:
           contact_admin: "Ha biztos benne, hogy a jelszó helyes, forduljon a PDS rendszergazdájához"
       email_taken:
         title: "Az e-mail-cím már foglalt az új PDS-en"
-        what_happened: "A(z) %{new_pds} szerveren már létezik fiók a(z) %{email} címmel, ezért nem tudtunk ott fiókot létrehozni az Ön DID-jéhez. A(z) %{old_pds} szerveren lévő fiókja érintetlen."
+        what_happened: "A(z) %{new_pds} szerveren már van egy másik fiók a(z) %{email} címmel. Egy szerveren e-mail-címenként csak egy fiók lehet, ezért az Ön fiókját nem lehetett ott létrehozni. A(z) %{old_pds} szerveren lévő fiókja érintetlen."
         current_status: "A migráció leállt — az identitásán semmi sem változott"
         what_to_do:
-          account_is_yours: "Ha az a fiók az Öné, jelentkezzen be a(z) %{new_pds} szerveren, módosítsa az e-mail-címét, majd indítson új migrációt"
-          other_email: "Vagy indítson új migrációt egy másik e-mail-címmel"
+          account_is_yours: "Ha az a fiók az Öné, jelentkezzen be a(z) %{new_pds} szerveren, és törölje, vagy módosítsa az e-mail-címét, ha meg szeretné tartani. Ügyeljen arra, hogy abba a fiókba legyen bejelentkezve, ne a(z) @%{handle} fiókba"
+          keep_both: "A migráció mindig az áthelyezett fiók e-mail-címét használja. Ha másik címet szeretne használni, előbb módosítsa a(z) %{old_pds} szerveren"
+          start_new: "Ezután indítson új migrációt — ez nem folytatható"
           contact_provider: "Ha nem ismeri fel a fiókot, forduljon a PDS szolgáltatójához: %{contact_email}"
       account_exists:
         title: "A fiók már létezik az új PDS-en"
@@ -951,6 +953,23 @@ hu:
       plc_expired_button: "Migráció megtekintése és új token kérése"
       plc_expired_good_news: "Jó hír:"
       plc_expired_safe: "A migrációs adatai biztonságban vannak és készen állnak. Csak egy új PLC tokenre van szüksége az utolsó lépés befejezéséhez."
+
+    email_taken:
+      why_heading: "Miért állt le a migrációja"
+      why_text: "A(z) %{new_pds} szerveren már van egy másik fiók a(z) %{email} e-mail-címmel. Egy szerveren e-mail-címenként csak egy fiók lehet, ezért az Ön fiókját nem lehetett ott létrehozni. A(z) @%{handle} fiókja változatlan — semmi sem költözött el, és semmi sem veszett el."
+      steps_heading: "Így fejezheti be a költözést"
+      step1: "Jelentkezzen be a másik fiókba a(z) %{new_pds} szerveren, például a Bluesky alkalmazásban, tárhelyszolgáltatóként a(z) %{new_pds} címet megadva. Ha már nem tudja a jelszót, az „Elfelejtett jelszó” kódot küld a(z) %{email} címre."
+      step2: "Törölje azt a fiókot a beállításaiban, vagy módosítsa az e-mail-címét, ha meg szeretné tartani. Ügyeljen arra, hogy a másik fiókba legyen bejelentkezve, ne a(z) %{handle} fiókba."
+      step3: "Indítson új migrációt. A régi nem folytatható."
+      button: "Új migráció indítása"
+      keep_both: "Inkább érintetlenül hagyná a másik fiókot? A migráció mindig az áthelyezett fiók (@%{handle}) e-mail-címét használja, ezért előbb azt a címet módosítsa a jelenlegi szolgáltatójánál, majd indítson új migrációt."
+      unknown_account: "Nem ismeri fel a másik fiókot? Írjon a(z) %{contact_email} címre."
+
+    email_taken_followup:
+      subject: "Így fejezheti be a(z) @%{handle} fiók költöztetését"
+      heading: "A költözés még sikerülhet"
+      intro: "%{date} napján megpróbálta áthelyezni a(z) @%{handle} fiókját ide: %{new_pds}. A migráció leállt, mielőtt bármi megváltozott volna."
+      apology: "Akkori e-mailünk azt javasolta, hogy próbálja újra. Egy újabb próbálkozás nem működhetett volna — elnézést kérünk a félreértésért. Alább leírjuk, mi történt, és hogyan hozhatja helyre."
 
     backup_ready:
       subject: "Az Eurosky migrációs biztonsági mentése kész (%{token})"

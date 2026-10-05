@@ -154,6 +154,7 @@ lt:
         email_readonly_help: "El. paštas gautas iš jūsų paskyros"
         email_manual_help: "Nepavyko gauti jūsų el. pašto. Įveskite jį rankiniu būdu."
         confirm_access: "Turiu prieigą prie šio el. pašto adreso ir galiu gauti jam atsiųstą patvirtinimo kodą."
+        one_account_per_email: "Šis adresas taip pat taps jūsų paskyros el. pašto adresu naujajame serveryje, o serveris leidžia tik vieną paskyrą vienam adresui. Jei jau užsiregistravote ten su juo, pirmiausia ištrinkite tą paskyrą arba pakeiskite jos el. pašto adresą — kitaip perkėlimas sustos."
         back: "Atgal"
         continue: "Tęsti"
 
@@ -543,11 +544,12 @@ lt:
           contact_admin: "Jei esate tikri, kad slaptažodis teisingas, susisiekite su savo PDS administratoriumi"
       email_taken:
         title: "El. pašto adresas jau naudojamas naujajame PDS"
-        what_happened: "%{new_pds} jau turi paskyrą su %{email}, todėl ten negalėjome sukurti paskyros jūsų DID. Jūsų paskyra %{old_pds} nepaliesta."
+        what_happened: "%{new_pds} jau turi kitą paskyrą su %{email}. Serveris leidžia tik vieną paskyrą vienam el. pašto adresui, todėl jūsų paskyros ten sukurti nepavyko. Jūsų paskyra %{old_pds} nepaliesta."
         current_status: "Perkėlimas sustabdytas — jūsų tapatybė nepakeista"
         what_to_do:
-          account_is_yours: "Jei ta paskyra jūsų, prisijunkite prie jos %{new_pds}, pakeiskite jos el. pašto adresą ir pradėkite naują perkėlimą"
-          other_email: "Arba pradėkite naują perkėlimą su kitu el. pašto adresu"
+          account_is_yours: "Jei ta paskyra jūsų, prisijunkite prie jos %{new_pds} ir ją ištrinkite arba pakeiskite jos el. pašto adresą, jei norite ją pasilikti. Įsitikinkite, kad esate prisijungę prie tos paskyros, o ne prie @%{handle}"
+          keep_both: "Perkėlimas visada naudoja perkeliamos paskyros el. pašto adresą. Jei norite naudoti kitą adresą, pirmiausia pakeiskite jį %{old_pds}"
+          start_new: "Tada pradėkite naują perkėlimą — šio tęsti negalima"
           contact_provider: "Jei paskyros neatpažįstate, susisiekite su PDS teikėju: %{contact_email}"
       account_exists:
         title: "Paskyra jau egzistuoja naujajame PDS"
@@ -951,6 +953,23 @@ lt:
       plc_expired_button: "Peržiūrėti perkėlimą ir prašyti naujo žetono"
       plc_expired_good_news: "Gera žinia:"
       plc_expired_safe: "Jūsų perkėlimo duomenys saugūs ir paruošti. Paskutiniam žingsniui užbaigti reikia tik naujo PLC žetono."
+
+    email_taken:
+      why_heading: "Kodėl jūsų perkėlimas sustojo"
+      why_text: "%{new_pds} jau turi kitą paskyrą su el. pašto adresu %{email}. Serveris leidžia tik vieną paskyrą vienam el. pašto adresui, todėl jūsų paskyros ten sukurti nepavyko. Jūsų paskyra @%{handle} nepakito — niekas nebuvo perkelta ar prarasta."
+      steps_heading: "Kaip užbaigti persikėlimą"
+      step1: "Prisijunkite prie kitos paskyros %{new_pds}, pavyzdžiui, Bluesky programėlėje, nurodydami %{new_pds} kaip prieglobos paslaugų teikėją. Jei nebeprisimenate slaptažodžio, „Pamiršote slaptažodį?“ išsiųs kodą adresu %{email}."
+      step2: "Ištrinkite tą paskyrą jos nustatymuose arba pakeiskite jos el. pašto adresą, jei norite ją pasilikti. Įsitikinkite, kad esate prisijungę prie kitos paskyros, o ne prie %{handle}."
+      step3: "Pradėkite naują perkėlimą. Senojo tęsti negalima."
+      button: "Pradėti naują perkėlimą"
+      keep_both: "Norėtumėte kitą paskyrą palikti nepakeistą? Perkėlimas visada naudoja perkeliamos paskyros (@%{handle}) el. pašto adresą, todėl pirmiausia pakeiskite šį adresą pas dabartinį paslaugų teikėją, o tada pradėkite naują perkėlimą."
+      unknown_account: "Neatpažįstate kitos paskyros? Rašykite adresu %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kaip užbaigti paskyros @%{handle} persikėlimą"
+      heading: "Jūsų persikėlimas dar gali pavykti"
+      intro: "%{date} bandėte perkelti savo paskyrą @%{handle} į %{new_pds}. Perkėlimas sustojo dar prieš ką nors pakeičiant."
+      apology: "Mūsų tuometiniame el. laiške buvo patarta bandyti dar kartą. Naujas bandymas negalėjo pavykti — atsiprašome dėl painiavos. Toliau paaiškiname, kas nutiko ir kaip tai ištaisyti."
 
     backup_ready:
       subject: "Jūsų Eurosky perkėlimo atsarginė kopija paruošta (%{token})"

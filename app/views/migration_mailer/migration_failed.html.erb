@@ -39,6 +39,8 @@
     <%= email_text tag.strong(t('mailers.migration_failed.plc_expired_good_news')) %>
     <%= email_text t('mailers.migration_failed.plc_expired_safe') %>
   <% end %>
+<% elsif @email_taken %>
+  <%= render 'migration_mailer/email_taken_steps' %>
 <% else %>
   <%= email_heading t('mailers.migration_failed.what_to_do') %>
   <%= email_list [t('mailers.migration_failed.do_step1')], ordered: true %>
@@ -55,11 +57,12 @@
 
 <%= email_warning do %>
   <%= email_text tag.strong(t('mailers.migration_failed.important')) %>
+  <%# A retry can't get past an email address that is taken: no "safely retry" %>
   <%= email_list [
     t('mailers.migration_failed.note1'),
-    t('mailers.migration_failed.note2'),
+    (t('mailers.migration_failed.note2') unless @email_taken),
     email_t('mailers.migration_failed.note3', token: @migration.token)
-  ] %>
+  ].compact %>
 <% end %>
 
 <% email_footer do %>

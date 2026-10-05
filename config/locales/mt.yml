@@ -154,6 +154,7 @@ mt:
         email_readonly_help: "Email miksub mill-kont tiegħek"
         email_manual_help: "Ma stajniex niksbu l-email tiegħek. Jekk jogħġbok daħħlu manwalment."
         confirm_access: "Għandi aċċess għal dan l-indirizz tal-email u nista' nikseb kodiċi ta' konferma mibgħut lilu."
+        one_account_per_email: "Dan l-indirizz isir ukoll l-email tal-kont tiegħek fuq is-server il-ġdid, u server jippermetti kont wieħed biss għal kull indirizz. Jekk diġà rreġistrajt hemmhekk bih, l-ewwel ħassar dak il-kont jew ibdel l-email tiegħu — inkella l-migrazzjoni tieqaf."
         back: "Lura"
         continue: "Kompli"
 
@@ -543,11 +544,12 @@ mt:
           contact_admin: "Jekk inti ċert li l-password hija korretta, ikkuntattja lill-amministratur tal-PDS tiegħek"
       email_taken:
         title: "L-indirizz tal-email diġà jintuża fuq il-PDS il-ġdid"
-        what_happened: "%{new_pds} diġà għandu kont b'%{email}, għalhekk ma stajniex noħolqu kont għad-DID tiegħek hemmhekk. Il-kont tiegħek fuq %{old_pds} ma ntmessx."
+        what_happened: "%{new_pds} diġà għandu kont ieħor b'%{email}. Server jippermetti kont wieħed biss għal kull indirizz tal-email, għalhekk il-kont tiegħek ma setax jinħoloq hemmhekk. Il-kont tiegħek fuq %{old_pds} ma ntmessx."
         current_status: "Il-migrazzjoni waqfet — ma nbidel xejn fl-identità tiegħek"
         what_to_do:
-          account_is_yours: "Jekk dak il-kont huwa tiegħek, idħol fih fuq %{new_pds}, ibdel l-indirizz tal-email tiegħu, imbagħad ibda migrazzjoni ġdida"
-          other_email: "Jew ibda migrazzjoni ġdida b'indirizz tal-email ieħor"
+          account_is_yours: "Jekk dak il-kont huwa tiegħek, idħol fih fuq %{new_pds} u ħassru, jew ibdel l-indirizz tal-email tiegħu jekk trid iżżommu. Kun żgur li dħalt f'dak il-kont u mhux f'@%{handle}"
+          keep_both: "Il-migrazzjoni dejjem tuża l-indirizz tal-email tal-kont li qed tittrasferixxi. Biex tuża indirizz ieħor, l-ewwel ibdlu fuq %{old_pds}"
+          start_new: "Imbagħad ibda migrazzjoni ġdida — din ma tistax titkompla"
           contact_provider: "Jekk ma tagħrafx il-kont, ikkuntattja lill-fornitur tal-PDS: %{contact_email}"
       account_exists:
         title: "Il-kont diġà jeżisti fuq il-PDS il-ġdid"
@@ -951,6 +953,23 @@ mt:
       plc_expired_button: "Ara l-migrazzjoni u itlob token ġdid"
       plc_expired_good_news: "Aħbar tajba:"
       plc_expired_safe: "Id-data tal-migrazzjoni tiegħek hija sigura u lesta. Għandek bżonn biss token PLC ġdid biex tlesti l-aħħar pass."
+
+    email_taken:
+      why_heading: "Għaliex il-migrazzjoni tiegħek waqfet"
+      why_text: "%{new_pds} diġà għandu kont ieħor bl-indirizz tal-email %{email}. Server jippermetti kont wieħed biss għal kull indirizz tal-email, għalhekk il-kont tiegħek ma setax jinħoloq hemmhekk. Il-kont tiegħek @%{handle} ma nbidilx — xejn ma ġie mċaqlaq jew mitluf."
+      steps_heading: "Kif tlesti t-trasferiment"
+      step1: "Idħol fil-kont l-ieħor fuq %{new_pds}, pereżempju fl-app Bluesky b'%{new_pds} bħala l-fornitur tal-hosting. Jekk m'għadekx tiftakar il-password, \"Insejt il-password?\" jibgħat kodiċi lil %{email}."
+      step2: "Ħassar dak il-kont mis-settings tiegħu, jew ibdel l-indirizz tal-email tiegħu jekk trid iżżommu. Kun żgur li dħalt fil-kont l-ieħor u mhux f'%{handle}."
+      step3: "Ibda migrazzjoni ġdida. Dik il-qadima ma tistax titkompla."
+      button: "Ibda migrazzjoni ġdida"
+      keep_both: "Tippreferi tħalli l-kont l-ieħor kif inhu? Il-migrazzjoni dejjem tuża l-indirizz tal-email tal-kont li qed tittrasferixxi (@%{handle}), għalhekk l-ewwel ibdel dak l-indirizz għand il-fornitur attwali tiegħek u mbagħad ibda migrazzjoni ġdida."
+      unknown_account: "Ma tagħrafx il-kont l-ieħor? Ikteb lil %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kif tlesti t-trasferiment ta' @%{handle}"
+      heading: "It-trasferiment tiegħek għadu jista' jirnexxi"
+      intro: "Fil-%{date} ippruvajt tittrasferixxi l-kont tiegħek @%{handle} lejn %{new_pds}. Il-migrazzjoni waqfet qabel ma nbidel xejn."
+      apology: "L-email tagħna ta' dak iż-żmien issuġġeriet li terġa' tipprova. Tentattiv ġdid ma setax jaħdem — skużana għall-konfużjoni. Hawn taħt nispjegaw x'mar ħażin u kif issolvih."
 
     backup_ready:
       subject: "Il-backup tal-migrazzjoni Eurosky tiegħek lest (%{token})"

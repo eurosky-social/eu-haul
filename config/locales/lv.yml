@@ -154,6 +154,7 @@ lv:
         email_readonly_help: "E-pasts iegūts no jūsu konta"
         email_manual_help: "Neizdevās iegūt jūsu e-pastu. Lūdzu, ievadiet to manuāli."
         confirm_access: "Man ir piekļuve šai e-pasta adresei, un es varu saņemt uz to nosūtīto apstiprinājuma kodu."
+        one_account_per_email: "Šī adrese kļūs arī par jūsu konta e-pasta adresi jaunajā serverī, un serveris atļauj tikai vienu kontu katrai adresei. Ja jums tur jau ir konts ar šo adresi, vispirms izdzēsiet to vai nomainiet tā e-pasta adresi — citādi migrācija apstāsies."
         back: "Atpakaļ"
         continue: "Turpināt"
 
@@ -543,11 +544,12 @@ lv:
           contact_admin: "Ja esat pārliecināts, ka parole ir pareiza, sazinieties ar sava PDS administratoru"
       email_taken:
         title: "E-pasta adrese jau tiek izmantota jaunajā PDS"
-        what_happened: "%{new_pds} jau ir konts ar adresi %{email}, tāpēc mēs tur nevarējām izveidot kontu jūsu DID. Jūsu konts %{old_pds} nav skarts."
+        what_happened: "%{new_pds} jau ir cits konts ar adresi %{email}. Serveris atļauj tikai vienu kontu katrai e-pasta adresei, tāpēc jūsu kontu tur nevarēja izveidot. Jūsu konts %{old_pds} nav skarts."
         current_status: "Migrācija apturēta — jūsu identitāte netika mainīta"
         what_to_do:
-          account_is_yours: "Ja šis konts ir jūsu, piesakieties tajā %{new_pds}, nomainiet tā e-pasta adresi un pēc tam sāciet jaunu migrāciju"
-          other_email: "Vai arī sāciet jaunu migrāciju ar citu e-pasta adresi"
+          account_is_yours: "Ja šis konts ir jūsu, piesakieties tajā %{new_pds} un izdzēsiet to vai nomainiet tā e-pasta adresi, ja vēlaties to paturēt. Pārliecinieties, ka darbojaties šajā kontā, nevis @%{handle}"
+          keep_both: "Migrācija vienmēr izmanto pārvietojamā konta e-pasta adresi. Lai izmantotu citu adresi, vispirms nomainiet to %{old_pds}"
+          start_new: "Pēc tam sāciet jaunu migrāciju — šo nevar turpināt"
           contact_provider: "Ja neatpazīstat šo kontu, sazinieties ar PDS nodrošinātāju: %{contact_email}"
       account_exists:
         title: "Konts jaunajā PDS jau pastāv"
@@ -951,6 +953,23 @@ lv:
       plc_expired_button: "Skatīt migrāciju un pieprasīt jaunu žetonu"
       plc_expired_good_news: "Labā ziņa:"
       plc_expired_safe: "Jūsu migrācijas dati ir drošībā un gatavi. Lai pabeigtu pēdējo soli, nepieciešams tikai jauns PLC žetons."
+
+    email_taken:
+      why_heading: "Kāpēc jūsu migrācija apstājās"
+      why_text: "%{new_pds} jau ir cits konts ar e-pasta adresi %{email}. Serveris atļauj tikai vienu kontu katrai e-pasta adresei, tāpēc jūsu kontu tur nevarēja izveidot. Jūsu konts @%{handle} nav mainīts — nekas netika pārvietots vai pazaudēts."
+      steps_heading: "Kā pabeigt pārcelšanos"
+      step1: "Piesakieties otrā kontā %{new_pds}, piemēram, Bluesky lietotnē, kā mitināšanas pakalpojumu sniedzēju norādot %{new_pds}. Ja vairs neatceraties paroli, „Aizmirsāt paroli?” nosūta kodu uz %{email}."
+      step2: "Izdzēsiet šo kontu tā iestatījumos vai nomainiet tā e-pasta adresi, ja vēlaties to paturēt. Pārliecinieties, ka darbojaties otrā kontā, nevis %{handle}."
+      step3: "Sāciet jaunu migrāciju. Veco nevar turpināt."
+      button: "Sākt jaunu migrāciju"
+      keep_both: "Vai otru kontu labprātāk atstātu neskartu? Migrācija vienmēr izmanto pārvietojamā konta (@%{handle}) e-pasta adresi, tāpēc vispirms nomainiet šo adresi pie sava pašreizējā pakalpojumu sniedzēja un pēc tam sāciet jaunu migrāciju."
+      unknown_account: "Neatpazīstat otru kontu? Rakstiet uz %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kā pabeigt konta @%{handle} pārcelšanu"
+      heading: "Jūsu pārcelšanās vēl var izdoties"
+      intro: "%{date} jūs mēģinājāt pārvietot savu kontu @%{handle} uz %{new_pds}. Migrācija apstājās, pirms kaut kas tika mainīts."
+      apology: "Mūsu toreizējā e-pasta vēstulē bija ieteikts mēģināt vēlreiz. Atkārtots mēģinājums nevarēja izdoties — atvainojamies par neskaidrību. Zemāk paskaidrojam, kas nogāja greizi un kā to labot."
 
     backup_ready:
       subject: "Jūsu Eurosky migrācijas rezerves kopija ir gatava (%{token})"

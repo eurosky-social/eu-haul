@@ -154,6 +154,7 @@ da:
         email_readonly_help: "E-mail hentet fra din konto"
         email_manual_help: "Vi kunne ikke hente din e-mail. Indtast den venligst manuelt."
         confirm_access: "Jeg har adgang til denne e-mailadresse og kan modtage en bekræftelseskode sendt til den."
+        one_account_per_email: "Denne adresse bliver også e-mailadressen for din konto på den nye server, og en server tillader kun én konto pr. adresse. Hvis du allerede har oprettet dig dér med den, så slet den konto eller skift først dens e-mailadresse — ellers stopper migreringen."
         back: "Tilbage"
         continue: "Fortsæt"
 
@@ -543,11 +544,12 @@ da:
           contact_admin: "Hvis du er sikker på, at adgangskoden er korrekt, så kontakt administratoren af din PDS"
       email_taken:
         title: "E-mailadressen er allerede i brug på den nye PDS"
-        what_happened: "%{new_pds} har allerede en konto med %{email}, så vi kunne ikke oprette en konto til dit DID dér. Din konto på %{old_pds} er uberørt."
+        what_happened: "%{new_pds} har allerede en anden konto med %{email}. En server tillader kun én konto pr. e-mailadresse, så din konto kunne ikke oprettes dér. Din konto på %{old_pds} er uberørt."
         current_status: "Migrering stoppet — der er ikke foretaget ændringer af din identitet"
         what_to_do:
-          account_is_yours: "Hvis den konto er din, så log ind på den på %{new_pds}, skift dens e-mailadresse, og start derefter en ny migrering"
-          other_email: "Eller start en ny migrering med en anden e-mailadresse"
+          account_is_yours: "Hvis den konto er din, så log ind på den på %{new_pds} og slet den, eller skift dens e-mailadresse, hvis du vil beholde den. Sørg for, at du er logget ind på den konto og ikke på @%{handle}"
+          keep_both: "Migreringen bruger altid e-mailadressen fra den konto, du flytter. Hvis du vil bruge en anden adresse, så skift den først på %{old_pds}"
+          start_new: "Start derefter en ny migrering — denne kan ikke genoptages"
           contact_provider: "Hvis du ikke genkender kontoen, så kontakt PDS-udbyderen: %{contact_email}"
       account_exists:
         title: "Kontoen findes allerede på den nye PDS"
@@ -951,6 +953,23 @@ da:
       plc_expired_button: "Se migreringen, og anmod om et nyt token"
       plc_expired_good_news: "Den gode nyhed:"
       plc_expired_safe: "Dine migreringsdata er sikre og klar. Du skal kun bruge et nyt PLC-token for at gennemføre det sidste trin."
+
+    email_taken:
+      why_heading: "Hvorfor din migrering stoppede"
+      why_text: "%{new_pds} har allerede en anden konto med e-mailadressen %{email}. En server tillader kun én konto pr. e-mailadresse, så din konto kunne ikke oprettes dér. Din konto @%{handle} er uændret — intet er flyttet eller gået tabt."
+      steps_heading: "Sådan gør du flytningen færdig"
+      step1: "Log ind på den anden konto på %{new_pds}, for eksempel i Bluesky-appen med %{new_pds} som hostingudbyder. Hvis du ikke længere kan huske adgangskoden, sender „Glemt adgangskode“ en kode til %{email}."
+      step2: "Slet den konto i dens indstillinger, eller skift dens e-mailadresse, hvis du vil beholde den. Sørg for, at du er logget ind på den anden konto og ikke på %{handle}."
+      step3: "Start en ny migrering. Den gamle kan ikke genoptages."
+      button: "Start en ny migrering"
+      keep_both: "Vil du hellere lade den anden konto være? Migreringen bruger altid e-mailadressen fra den konto, du flytter (@%{handle}), så skift først den adresse hos din nuværende udbyder, og start derefter en ny migrering."
+      unknown_account: "Kan du ikke genkende den anden konto? Skriv til %{contact_email}."
+
+    email_taken_followup:
+      subject: "Sådan gør du flytningen af @%{handle} færdig"
+      heading: "Din flytning kan stadig lykkes"
+      intro: "Den %{date} prøvede du at flytte din konto @%{handle} til %{new_pds}. Migreringen stoppede, før noget blev ændret."
+      apology: "Vores e-mail dengang foreslog at prøve igen. Et nyt forsøg kunne ikke have virket — undskyld forvirringen. Her kan du læse, hvad der gik galt, og hvordan du løser det."
 
     backup_ready:
       subject: "Din Eurosky-migreringssikkerhedskopi er klar (%{token})"

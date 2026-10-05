@@ -56,6 +56,13 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
   # Invite code
   INVITE_CODE_INVALID              = 'Invalid invite code: INVITE-XYZ'
 
+  # Email already used by another account on the target (CreateAccountJob).
+  # The address is quoted, so digits in it must not trip rate_limit/authentication.
+  EMAIL_TAKEN                      = 'The email address joe429+401@network.example is already used by another account on https://eurosky.social. ' \
+                                     'Sign in to that account on https://eurosky.social and delete it or change its email address, then start a new migration.'
+  # Before EmailTakenError: GoatError text, filed as "generic" after three retries
+  EMAIL_TAKEN_LEGACY               = 'Failed to create account on new PDS: Failed to create account on new PDS: Email already taken: joe429@network.example'
+
   # Blob not found
   BLOB_NOT_FOUND                   = 'blob not found: bafybeiabc123 returned 404'
 
@@ -168,6 +175,13 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
 
   test "detects invalid invite code" do
     assert_equal :invite_code, detect(INVITE_CODE_INVALID)
+  end
+
+  # --- Email taken ---
+
+  test "detects an email address taken on the target, whatever digits the address holds" do
+    assert_equal :email_taken, detect(EMAIL_TAKEN)
+    assert_equal :email_taken, detect(EMAIL_TAKEN_LEGACY)
   end
 
   # --- Blob not found ---
@@ -341,6 +355,8 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
     ACCOUNT_EXISTS                   => :account_exists,
     ACCOUNT_ORPHANED                 => :account_exists,
     INVITE_CODE_INVALID              => :invite_code,
+    EMAIL_TAKEN                      => :email_taken,
+    EMAIL_TAKEN_LEGACY               => :email_taken,
     BLOB_NOT_FOUND                   => :blob_not_found,
     DATA_CORRUPT                     => :data_corruption,
     DISK_FULL                        => :disk_space,
@@ -361,7 +377,7 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
     expected_types = %i[
       plc_token_expired critical_plc plc_pre_submission_failure
       credentials_need_reauth rate_limit network authentication
-      account_exists invite_code blob_not_found data_corruption
+      account_exists invite_code email_taken blob_not_found data_corruption
       disk_space cancelled
     ].sort
 
@@ -518,6 +534,19 @@ class MigrationErrorHelperDetectErrorTypeTest < ActiveSupport::TestCase
         end
       end
     end
+  end
+
+  test "an old email-taken failure filed as generic gets the email-taken advice, not a retry" do
+    migration = migrations(:pending_migration)
+    migration.update!(status: :failed, last_error: EMAIL_TAKEN_LEGACY, error_code: "generic", progress_data: {})
+
+    context = MigrationErrorHelper.explain_error(migration)
+
+    assert_equal title_for(:email_taken), context[:title]
+    refute context[:show_retry_button]
+    assert context[:show_new_migration_button]
+    refute(context[:what_to_do].any? { |step| step.include?("different email address") },
+           "the wizard locks the email to the old account's, so advice to use another one can't be followed")
   end
 
   test "format_time_remaining is localised and pluralised" do

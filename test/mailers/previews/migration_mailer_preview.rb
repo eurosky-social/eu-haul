@@ -71,6 +71,30 @@ class MigrationMailerPreview < ActionMailer::Preview
     ))
   end
 
+  # The email-taken branch: no retry, the way out instead.
+  def migration_failed_email_taken
+    MigrationMailer.migration_failed(migration(
+      status: 'failed',
+      current_job_step: 'CreateAccountJob',
+      error_code: 'email_taken',
+      last_error: 'The email address jane@example.eu is already used by another account on https://eurosky.social. ' \
+                  'Sign in to that account on https://eurosky.social and delete it or change its email address, then start a new migration.',
+      target_pds_contact_email: 'admin@eurosky.social'
+    ))
+  end
+
+  # The one-off follow-up to migrations that stopped on a taken address.
+  def email_taken_followup
+    MigrationMailer.email_taken_followup(migration(
+      status: 'failed',
+      current_job_step: 'CreateAccountJob',
+      error_code: 'generic',
+      last_error: 'Failed to create account on new PDS: Email already taken: jane@example.eu',
+      target_pds_contact_email: 'admin@eurosky.social',
+      created_at: 45.days.ago
+    ))
+  end
+
   def plc_token_failed
     MigrationMailer.plc_token_failed(migration(
       status: 'pending_plc',

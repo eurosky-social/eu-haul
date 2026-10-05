@@ -17,6 +17,9 @@
 - <%= t('mailers.migration_failed.error', error: @error_message) %>
 - <%= t('mailers.migration_failed.previous_retries', count: @retry_count) %>
 
+<% if @email_taken %>
+<%= render 'migration_mailer/email_taken_steps' %>
+<% else %>
 <%= t('mailers.migration_failed.what_to_do') %>
 
 1. <%= t('mailers.migration_failed.do_step1') %>
@@ -30,10 +33,13 @@
 - <%= t('mailers.migration_failed.issue1') %>
 - <%= t('mailers.migration_failed.issue2') %>
 - <%= t('mailers.migration_failed.issue3') %>
+<% end %>
 
 <%= t('mailers.migration_failed.important') %>
 - <%= t('mailers.migration_failed.note1') %>
+<% unless @email_taken %>
 - <%= t('mailers.migration_failed.note2') %>
+<% end %>
 - <%= t('mailers.migration_failed.note3', token: @migration.token) %>
 
 ---

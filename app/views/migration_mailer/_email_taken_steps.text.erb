@@ -1,0 +1,16 @@
+<%= t('mailers.email_taken.why_heading') %>
+
+<%= t('mailers.email_taken.why_text', new_pds: @new_pds_name, email: @migration.email, handle: @migration.old_handle) %>
+
+<%= t('mailers.email_taken.steps_heading') %>
+
+1. <%= t('mailers.email_taken.step1', new_pds: @new_pds_name, email: @migration.email) %>
+
+2. <%= t('mailers.email_taken.step2', handle: "@#{@migration.old_handle}") %>
+
+3. <%= t('mailers.email_taken.step3') %>
+   <%= @new_migration_url %>
+
+<%= t('mailers.email_taken.keep_both', handle: @migration.old_handle) %>
+
+<%= t('mailers.email_taken.unknown_account', contact_email: @contact_email) %>

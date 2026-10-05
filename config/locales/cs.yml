@@ -154,6 +154,7 @@ cs:
         email_readonly_help: "E-mail byl získán z vašeho účtu"
         email_manual_help: "Nepodařilo se nám získat váš e-mail. Zadejte jej prosím ručně."
         confirm_access: "Mám přístup k této e-mailové adrese a mohu získat potvrzovací kód, který na ni bude odeslán."
+        one_account_per_email: "Tato adresa bude zároveň e-mailem vašeho účtu na novém serveru a server povoluje jen jeden účet na adresu. Pokud jste se tam s ní už zaregistrovali, nejprve onen účet smažte nebo změňte jeho e-mail — jinak se migrace zastaví."
         back: "Zpět"
         continue: "Pokračovat"
 
@@ -543,11 +544,12 @@ cs:
           contact_admin: "Pokud jste si jisti, že heslo je správné, kontaktujte správce svého PDS"
       email_taken:
         title: "E-mailová adresa se na novém PDS již používá"
-        what_happened: "Na %{new_pds} již existuje účet s adresou %{email}, proto jsme tam nemohli vytvořit účet pro váš DID. Váš účet na %{old_pds} zůstal nedotčen."
+        what_happened: "Na %{new_pds} již existuje jiný účet s adresou %{email}. Server povoluje jen jeden účet na e-mailovou adresu, proto tam váš účet nemohl být vytvořen. Váš účet na %{old_pds} zůstal nedotčen."
         current_status: "Migrace zastavena — vaše identita nebyla nijak změněna"
         what_to_do:
-          account_is_yours: "Pokud je tento účet váš, přihlaste se k němu na %{new_pds}, změňte jeho e-mailovou adresu a poté zahajte novou migraci"
-          other_email: "Nebo zahajte novou migraci s jinou e-mailovou adresou"
+          account_is_yours: "Pokud je tento účet váš, přihlaste se k němu na %{new_pds} a smažte ho, nebo změňte jeho e-mailovou adresu, pokud si ho chcete ponechat. Ujistěte se, že jste přihlášeni k tomuto účtu, a ne k @%{handle}"
+          keep_both: "Migrace vždy používá e-mailovou adresu přesouvaného účtu. Chcete-li použít jinou adresu, nejprve ji změňte na %{old_pds}"
+          start_new: "Poté zahajte novou migraci — tuto nelze obnovit"
           contact_provider: "Pokud účet nepoznáváte, kontaktujte poskytovatele PDS: %{contact_email}"
       account_exists:
         title: "Účet na novém PDS již existuje"
@@ -951,6 +953,23 @@ cs:
       plc_expired_button: "Zobrazit migraci a vyžádat nový token"
       plc_expired_good_news: "Dobrá zpráva:"
       plc_expired_safe: "Data vaší migrace jsou v bezpečí a připravena. K dokončení posledního kroku potřebujete jen nový PLC token."
+
+    email_taken:
+      why_heading: "Proč se vaše migrace zastavila"
+      why_text: "Na %{new_pds} již existuje jiný účet s e-mailovou adresou %{email}. Server povoluje jen jeden účet na e-mailovou adresu, proto tam váš účet nemohl být vytvořen. Váš účet @%{handle} je beze změny — nic nebylo přesunuto ani ztraceno."
+      steps_heading: "Jak dokončit přesun"
+      step1: "Přihlaste se k druhému účtu na %{new_pds}, například v aplikaci Bluesky s %{new_pds} jako poskytovatelem hostingu. Pokud si heslo nepamatujete, „Zapomenuté heslo“ pošle kód na %{email}."
+      step2: "Smažte tento účet v jeho nastavení, nebo změňte jeho e-mailovou adresu, pokud si ho chcete ponechat. Ujistěte se, že jste přihlášeni k druhému účtu, a ne k %{handle}."
+      step3: "Zahajte novou migraci. Tu starou nelze obnovit."
+      button: "Zahájit novou migraci"
+      keep_both: "Chcete druhý účet raději nechat beze změny? Migrace vždy používá e-mailovou adresu přesouvaného účtu (@%{handle}), takže nejprve změňte tuto adresu u svého současného poskytovatele a pak zahajte novou migraci."
+      unknown_account: "Druhý účet nepoznáváte? Napište na %{contact_email}."
+
+    email_taken_followup:
+      subject: "Jak dokončit přesun účtu @%{handle}"
+      heading: "Váš přesun se ještě může podařit"
+      intro: "Dne %{date} jste se pokusili přesunout svůj účet @%{handle} na %{new_pds}. Migrace se zastavila dřív, než se cokoli změnilo."
+      apology: "Náš tehdejší e-mail doporučoval zkusit to znovu. Další pokus ale nemohl uspět — omlouváme se za zmatek. Níže najdete, co se pokazilo a jak to napravit."
 
     backup_ready:
       subject: "Záloha migrace Eurosky je připravena (%{token})"

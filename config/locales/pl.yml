@@ -154,6 +154,7 @@ pl:
         email_readonly_help: "Adres e-mail pobrany z Twojego konta"
         email_manual_help: "Nie udało się pobrać Twojego adresu e-mail. Proszę wpisać go ręcznie."
         confirm_access: "Mam dostęp do tego adresu e-mail i mogę odebrać wysłany na niego kod potwierdzający."
+        one_account_per_email: "Ten adres stanie się też adresem e-mail Twojego konta na nowym serwerze, a serwer pozwala na tylko jedno konto na adres. Jeśli masz już tam konto z tym adresem, najpierw je usuń lub zmień jego adres e-mail — w przeciwnym razie migracja zostanie przerwana."
         back: "Wstecz"
         continue: "Kontynuuj"
 
@@ -543,11 +544,12 @@ pl:
           contact_admin: "Jeśli masz pewność, że hasło jest prawidłowe, skontaktuj się z administratorem swojego PDS"
       email_taken:
         title: "Adres e-mail jest już używany na nowym PDS"
-        what_happened: "Na %{new_pds} istnieje już konto z adresem %{email}, więc nie mogliśmy utworzyć tam konta dla Twojego DID. Twoje konto na %{old_pds} pozostało nienaruszone."
+        what_happened: "Na %{new_pds} istnieje już inne konto z adresem %{email}. Serwer pozwala na tylko jedno konto na adres e-mail, więc nie udało się tam utworzyć Twojego konta. Twoje konto na %{old_pds} pozostało nienaruszone."
         current_status: "Migracja zatrzymana — Twoja tożsamość nie została zmieniona"
         what_to_do:
-          account_is_yours: "Jeśli to konto należy do Ciebie, zaloguj się na nie na %{new_pds}, zmień jego adres e-mail, a potem rozpocznij nową migrację"
-          other_email: "Możesz też rozpocząć nową migrację z innym adresem e-mail"
+          account_is_yours: "Jeśli to konto należy do Ciebie, zaloguj się na nie na %{new_pds} i usuń je albo zmień jego adres e-mail, jeśli chcesz je zachować. Upewnij się, że działasz na tym koncie, a nie na @%{handle}"
+          keep_both: "Migracja zawsze używa adresu e-mail przenoszonego konta. Aby użyć innego adresu, najpierw zmień go na %{old_pds}"
+          start_new: "Następnie rozpocznij nową migrację — tej nie można wznowić"
           contact_provider: "Jeśli nie rozpoznajesz tego konta, skontaktuj się z dostawcą PDS: %{contact_email}"
       account_exists:
         title: "Konto już istnieje na nowym PDS"
@@ -951,6 +953,23 @@ pl:
       plc_expired_button: "Zobacz migrację i zamów nowy token"
       plc_expired_good_news: "Dobra wiadomość:"
       plc_expired_safe: "Dane migracji są bezpieczne i gotowe. Do wykonania ostatniego kroku potrzebujesz tylko nowego tokenu PLC."
+
+    email_taken:
+      why_heading: "Dlaczego Twoja migracja została zatrzymana"
+      why_text: "Na %{new_pds} istnieje już inne konto z adresem e-mail %{email}. Serwer pozwala na tylko jedno konto na adres e-mail, więc nie udało się tam utworzyć Twojego konta. Twoje konto @%{handle} nie zmieniło się — nic nie zostało przeniesione ani utracone."
+      steps_heading: "Jak dokończyć przeprowadzkę"
+      step1: "Zaloguj się na to drugie konto na %{new_pds}, na przykład w aplikacji Bluesky, podając %{new_pds} jako dostawcę hostingu. Jeśli nie pamiętasz hasła, opcja „Nie pamiętasz hasła?” wyśle kod na %{email}."
+      step2: "Usuń to konto w jego ustawieniach albo zmień jego adres e-mail, jeśli chcesz je zachować. Upewnij się, że działasz na tym drugim koncie, a nie na %{handle}."
+      step3: "Rozpocznij nową migrację. Starej nie można wznowić."
+      button: "Rozpocznij nową migrację"
+      keep_both: "Wolisz nie ruszać drugiego konta? Migracja zawsze używa adresu e-mail przenoszonego konta (@%{handle}), więc najpierw zmień ten adres u obecnego dostawcy, a potem rozpocznij nową migrację."
+      unknown_account: "Nie rozpoznajesz drugiego konta? Napisz na %{contact_email}."
+
+    email_taken_followup:
+      subject: "Jak dokończyć przeprowadzkę @%{handle}"
+      heading: "Twoja przeprowadzka wciąż może się udać"
+      intro: "W dniu %{date} została podjęta próba przeniesienia Twojego konta @%{handle} na %{new_pds}. Migracja została zatrzymana, zanim cokolwiek zmieniono."
+      apology: "Nasz ówczesny e-mail sugerował ponowną próbę. Ponowna próba nie mogła się udać — przepraszamy za zamieszanie. Poniżej wyjaśniamy, co poszło nie tak i jak to naprawić."
 
     backup_ready:
       subject: "Twoja kopia zapasowa migracji Eurosky jest gotowa (%{token})"

@@ -154,6 +154,7 @@ sv:
         email_readonly_help: "E-postadress hämtad från ditt konto"
         email_manual_help: "Vi kunde inte hämta din e-postadress. Vänligen ange den manuellt."
         confirm_access: "Jag har tillgång till denna e-postadress och kan hämta en bekräftelsekod som skickas till den."
+        one_account_per_email: "Den här adressen blir också e-postadressen för ditt konto på den nya servern, och en server tillåter bara ett konto per adress. Om du redan har registrerat dig där med den, radera det kontot eller ändra dess e-postadress först — annars stoppas flytten."
         back: "Tillbaka"
         continue: "Fortsätt"
 
@@ -543,11 +544,12 @@ sv:
           contact_admin: "Om du är säker på att lösenordet är rätt, kontakta administratören för din PDS"
       email_taken:
         title: "E-postadressen används redan på den nya PDS:en"
-        what_happened: "%{new_pds} har redan ett konto med %{email}, så vi kunde inte skapa ett konto för ditt DID där. Ditt konto på %{old_pds} är orört."
+        what_happened: "%{new_pds} har redan ett annat konto med %{email}. En server tillåter bara ett konto per e-postadress, så ditt konto kunde inte skapas där. Ditt konto på %{old_pds} är orört."
         current_status: "Flytten har stoppats — inga ändringar har gjorts i din identitet"
         what_to_do:
-          account_is_yours: "Om det kontot är ditt loggar du in på det på %{new_pds}, ändrar dess e-postadress och startar sedan en ny flytt"
-          other_email: "Eller starta en ny flytt med en annan e-postadress"
+          account_is_yours: "Om det kontot är ditt loggar du in på det på %{new_pds} och raderar det, eller ändrar dess e-postadress om du vill behålla det. Se till att du är inloggad på det kontot och inte på @%{handle}"
+          keep_both: "Flytten använder alltid e-postadressen för kontot du flyttar. Vill du använda en annan adress ändrar du den först på %{old_pds}"
+          start_new: "Starta sedan en ny flytt — den här kan inte återupptas"
           contact_provider: "Om du inte känner igen kontot, kontakta PDS-leverantören: %{contact_email}"
       account_exists:
         title: "Kontot finns redan på den nya PDS:en"
@@ -951,6 +953,23 @@ sv:
       plc_expired_button: "Visa flytten och begär en ny token"
       plc_expired_good_news: "Goda nyheter:"
       plc_expired_safe: "Dina flyttdata är säkra och redo. Du behöver bara en ny PLC-token för att slutföra det sista steget."
+
+    email_taken:
+      why_heading: "Varför din flytt stoppades"
+      why_text: "%{new_pds} har redan ett annat konto med e-postadressen %{email}. En server tillåter bara ett konto per e-postadress, så ditt konto kunde inte skapas där. Ditt konto @%{handle} är oförändrat — inget har flyttats eller gått förlorat."
+      steps_heading: "Så slutför du flytten"
+      step1: "Logga in på det andra kontot på %{new_pds}, till exempel i Bluesky-appen med %{new_pds} som värdleverantör. Om du inte längre minns lösenordet skickar ”Glömt lösenordet” en kod till %{email}."
+      step2: "Radera det kontot i dess inställningar, eller ändra dess e-postadress om du vill behålla det. Se till att du är inloggad på det andra kontot och inte på %{handle}."
+      step3: "Starta en ny flytt. Den gamla kan inte återupptas."
+      button: "Starta en ny flytt"
+      keep_both: "Vill du hellre låta det andra kontot vara? Flytten använder alltid e-postadressen för kontot du flyttar (@%{handle}), så ändra först den adressen hos din nuvarande leverantör och starta sedan en ny flytt."
+      unknown_account: "Känner du inte igen det andra kontot? Skriv till %{contact_email}."
+
+    email_taken_followup:
+      subject: "Så slutför du flytten av @%{handle}"
+      heading: "Din flytt kan fortfarande lyckas"
+      intro: "Den %{date} försökte du flytta ditt konto @%{handle} till %{new_pds}. Flytten stoppades innan något ändrades."
+      apology: "Vårt mejl då föreslog att du skulle försöka igen. Ett nytt försök kunde inte ha fungerat — förlåt förvirringen. Här är vad som gick fel och hur du löser det."
 
     backup_ready:
       subject: "Din Eurosky-säkerhetskopia är klar (%{token})"

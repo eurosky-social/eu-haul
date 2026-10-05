@@ -154,6 +154,7 @@ es:
         email_readonly_help: "Correo electrónico obtenido de su cuenta"
         email_manual_help: "No pudimos obtener su correo electrónico. Por favor, introdúzcalo manualmente."
         confirm_access: "Tengo acceso a esta dirección de correo electrónico y puedo recuperar un código de confirmación enviado a ella."
+        one_account_per_email: "Esta dirección también será el correo electrónico de su cuenta en el nuevo servidor, y un servidor solo permite una cuenta por dirección. Si ya se registró allí con ella, elimine esa cuenta o cambie primero su correo electrónico — de lo contrario, la migración se detendrá."
         back: "Atrás"
         continue: "Continuar"
 
@@ -543,11 +544,12 @@ es:
           contact_admin: "Si está seguro de que la contraseña es correcta, contacte con el administrador de su PDS"
       email_taken:
         title: "La dirección de correo electrónico ya está en uso en el nuevo PDS"
-        what_happened: "%{new_pds} ya tiene una cuenta con %{email}, así que no pudimos crear allí una cuenta para su DID. Su cuenta en %{old_pds} no se ha modificado."
+        what_happened: "%{new_pds} ya tiene otra cuenta con %{email}. Un servidor solo permite una cuenta por dirección de correo electrónico, así que no se pudo crear allí su cuenta. Su cuenta en %{old_pds} no se ha modificado."
         current_status: "Migración detenida — no se ha hecho ningún cambio en su identidad"
         what_to_do:
-          account_is_yours: "Si esa cuenta es suya, inicie sesión en ella en %{new_pds}, cambie su dirección de correo electrónico y después inicie una nueva migración"
-          other_email: "O inicie una nueva migración con otra dirección de correo electrónico"
+          account_is_yours: "Si esa cuenta es suya, inicie sesión en ella en %{new_pds} y elimínela, o cambie su dirección de correo electrónico si quiere conservarla. Asegúrese de haber iniciado sesión en esa cuenta y no en @%{handle}"
+          keep_both: "La migración siempre usa la dirección de correo electrónico de la cuenta que traslada. Para usar otra dirección, cámbiela primero en %{old_pds}"
+          start_new: "Después inicie una nueva migración — esta no se puede reanudar"
           contact_provider: "Si no reconoce la cuenta, contacte con el proveedor del PDS: %{contact_email}"
       account_exists:
         title: "La cuenta ya existe en el nuevo PDS"
@@ -951,6 +953,23 @@ es:
       plc_expired_button: "Ver la migración y solicitar un nuevo token"
       plc_expired_good_news: "Buenas noticias:"
       plc_expired_safe: "Los datos de su migración están seguros y listos. Solo necesita un nuevo token PLC para completar el último paso."
+
+    email_taken:
+      why_heading: "Por qué se detuvo su migración"
+      why_text: "%{new_pds} ya tiene otra cuenta con la dirección de correo electrónico %{email}. Un servidor solo permite una cuenta por dirección de correo electrónico, así que no se pudo crear allí su cuenta. Su cuenta @%{handle} no ha cambiado — no se ha movido ni perdido nada."
+      steps_heading: "Cómo completar su migración"
+      step1: "Inicie sesión en la otra cuenta en %{new_pds}, por ejemplo en la app de Bluesky con %{new_pds} como proveedor de alojamiento. Si ya no recuerda la contraseña, «¿Olvidó su contraseña?» envía un código a %{email}."
+      step2: "Elimine esa cuenta desde sus ajustes, o cambie su dirección de correo electrónico si quiere conservarla. Asegúrese de haber iniciado sesión en la otra cuenta y no en %{handle}."
+      step3: "Inicie una nueva migración. La anterior no se puede reanudar."
+      button: "Iniciar una nueva migración"
+      keep_both: "¿Prefiere dejar la otra cuenta como está? La migración siempre usa la dirección de correo electrónico de la cuenta que traslada (@%{handle}), así que cambie primero esa dirección en su proveedor actual y luego inicie una nueva migración."
+      unknown_account: "¿No reconoce la otra cuenta? Escriba a %{contact_email}."
+
+    email_taken_followup:
+      subject: "Cómo completar la migración de @%{handle}"
+      heading: "Su migración todavía puede salir bien"
+      intro: "El %{date} intentó trasladar su cuenta @%{handle} a %{new_pds}. La migración se detuvo antes de que se cambiara nada."
+      apology: "Nuestro correo de entonces sugería volver a intentarlo. Un nuevo intento no podía funcionar — disculpe la confusión. Aquí le explicamos qué falló y cómo solucionarlo."
 
     backup_ready:
       subject: "Su copia de seguridad de migración de Eurosky está lista (%{token})"

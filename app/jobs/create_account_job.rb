@@ -153,9 +153,11 @@ class CreateAccountJob < ApplicationJob
   rescue GoatService::EmailTakenError => e
     Rails.logger.error("[CreateAccountJob] Email already taken for migration #{migration&.token}: #{e.message}")
     if migration
+      # The wizard takes the email from the old account and locks the field, so
+      # "use a different address" is not something the user can do here.
       migration.mark_failed!(
-        "#{e.message} Log in to that account on #{migration.new_pds_host} and change its email address, " \
-        "or start a new migration with a different email address.",
+        "#{e.message} Sign in to that account on #{migration.new_pds_host} and delete it or change its " \
+        "email address, then start a new migration.",
         error_code: :email_taken
       )
 

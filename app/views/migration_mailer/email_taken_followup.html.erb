@@ -1,0 +1,12 @@
+<%= email_title t('mailers.email_taken_followup.heading') %>
+
+<%= email_text t('mailers.common.hello') %>
+<%= email_text email_t('mailers.email_taken_followup.intro',
+                       date: @attempted_on, handle: @migration.old_handle, new_pds: tag.strong(@new_pds_name)) %>
+<%= email_text t('mailers.email_taken_followup.apology') %>
+
+<%= render 'migration_mailer/email_taken_steps' %>
+
+<% email_footer do %>
+  <%= email_text t('mailers.common.eurosky_migration'), small: true %>
+<% end %>

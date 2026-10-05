@@ -154,6 +154,7 @@ hr:
         email_readonly_help: "E-pošta preuzeta s vašeg računa"
         email_manual_help: "Nismo mogli dohvatiti vašu e-poštu. Unesite je ručno."
         confirm_access: "Imam pristup ovoj adresi e-pošte i mogu preuzeti potvrdni kod poslan na nju."
+        one_account_per_email: "Ova adresa postat će i adresa e-pošte vašeg računa na novom poslužitelju, a poslužitelj dopušta samo jedan račun po adresi. Ako ste se ondje već registrirali s njom, najprije izbrišite taj račun ili promijenite njegovu adresu e-pošte — inače će se migracija zaustaviti."
         back: "Natrag"
         continue: "Nastavi"
 
@@ -543,11 +544,12 @@ hr:
           contact_admin: "Ako ste sigurni da je lozinka ispravna, kontaktirajte administratora svog PDS-a"
       email_taken:
         title: "Adresa e-pošte već se koristi na novom PDS-u"
-        what_happened: "%{new_pds} već ima račun s adresom %{email}, pa ondje nismo mogli stvoriti račun za vaš DID. Vaš račun na %{old_pds} nije diran."
+        what_happened: "%{new_pds} već ima drugi račun s adresom %{email}. Poslužitelj dopušta samo jedan račun po adresi e-pošte, pa vaš račun ondje nije mogao biti stvoren. Vaš račun na %{old_pds} nije diran."
         current_status: "Migracija zaustavljena — vaš identitet nije promijenjen"
         what_to_do:
-          account_is_yours: "Ako je taj račun vaš, prijavite se u njega na %{new_pds}, promijenite njegovu adresu e-pošte, a zatim pokrenite novu migraciju"
-          other_email: "Ili pokrenite novu migraciju s drugom adresom e-pošte"
+          account_is_yours: "Ako je taj račun vaš, prijavite se u njega na %{new_pds} i izbrišite ga ili promijenite njegovu adresu e-pošte ako ga želite zadržati. Provjerite jeste li prijavljeni u taj račun, a ne u @%{handle}"
+          keep_both: "Migracija uvijek koristi adresu e-pošte računa koji premještate. Ako želite koristiti drugu adresu, najprije je promijenite na %{old_pds}"
+          start_new: "Zatim pokrenite novu migraciju — ova se ne može nastaviti"
           contact_provider: "Ako ne prepoznajete račun, kontaktirajte pružatelja PDS-a: %{contact_email}"
       account_exists:
         title: "Račun već postoji na novom PDS-u"
@@ -951,6 +953,23 @@ hr:
       plc_expired_button: "Pogledaj migraciju i zatraži novi token"
       plc_expired_good_news: "Dobra vijest:"
       plc_expired_safe: "Podaci vaše migracije sigurni su i spremni. Trebate samo novi PLC token da biste dovršili posljednji korak."
+
+    email_taken:
+      why_heading: "Zašto se vaša migracija zaustavila"
+      why_text: "%{new_pds} već ima drugi račun s adresom e-pošte %{email}. Poslužitelj dopušta samo jedan račun po adresi e-pošte, pa vaš račun ondje nije mogao biti stvoren. Vaš račun @%{handle} je nepromijenjen — ništa nije premješteno ni izgubljeno."
+      steps_heading: "Kako dovršiti preseljenje"
+      step1: "Prijavite se u drugi račun na %{new_pds}, na primjer u aplikaciji Bluesky s %{new_pds} kao pružateljem hostinga. Ako više ne znate lozinku, opcija „Zaboravljena lozinka” šalje kod na %{email}."
+      step2: "Izbrišite taj račun u njegovim postavkama ili promijenite njegovu adresu e-pošte ako ga želite zadržati. Provjerite jeste li prijavljeni u drugi račun, a ne u %{handle}."
+      step3: "Pokrenite novu migraciju. Stara se ne može nastaviti."
+      button: "Pokreni novu migraciju"
+      keep_both: "Želite li drugi račun radije ostaviti kakav jest? Migracija uvijek koristi adresu e-pošte računa koji premještate (@%{handle}), pa najprije promijenite tu adresu kod svog trenutačnog pružatelja, a zatim pokrenite novu migraciju."
+      unknown_account: "Ne prepoznajete drugi račun? Pišite na %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kako dovršiti preseljenje računa @%{handle}"
+      heading: "Vaše preseljenje još može uspjeti"
+      intro: "Dana %{date} pokušali ste premjestiti svoj račun @%{handle} na %{new_pds}. Migracija se zaustavila prije nego što se išta promijenilo."
+      apology: "Naša tadašnja poruka e-pošte predložila je ponovni pokušaj. Ponovni pokušaj nije mogao uspjeti — ispričavamo se zbog zabune. U nastavku pišemo što je pošlo po zlu i kako to riješiti."
 
     backup_ready:
       subject: "Vaša Eurosky sigurnosna kopija za migraciju je spremna (%{token})"

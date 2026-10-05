@@ -22,6 +22,12 @@
 module MigrationErrorHelper
   I18N_SCOPE = "migrations.error_messages".freeze
 
+  EMAIL_TAKEN_PATTERN = /email already taken|already used by another account/i
+
+  def self.email_taken_message?(error_message)
+    error_message.to_s.match?(EMAIL_TAKEN_PATTERN)
+  end
+
   # Localised text for this helper; key is relative to migrations.error_messages
   def self.t(key, **values)
     I18n.t(key, scope: I18N_SCOPE, **values)
@@ -43,6 +49,10 @@ module MigrationErrorHelper
       detect_error_type(error_message)
     end
 
+    # Before CreateAccountJob had its own email_taken code, the clash ended as
+    # "generic" after three pointless retries; give those rows the right advice.
+    error_type = :email_taken if error_type == :generic && email_taken_message?(error_message)
+
     # Build context based on error type and migration stage
     context = build_error_context(
       error_type: error_type,
@@ -63,6 +73,13 @@ module MigrationErrorHelper
   # messages each pattern targets.
   def self.detect_error_type(error_message)
     case error_message
+    # First: these messages quote the email address, which could contain "429",
+    # "401" or "network" and trip a pattern below.
+    # Target PDS refused createAccount because another account there has the email
+    #   GoatService: "The email address ... is already used by another account on ..."
+    #   older images: "Failed to create account on new PDS: ... Email already taken: ..."
+    when EMAIL_TAKEN_PATTERN
+      :email_taken
     when /rate limit|429|RateLimitExceeded/i
       :rate_limit
 
@@ -254,12 +271,14 @@ module MigrationErrorHelper
                        new_pds: migration.new_pds_host, email: migration.email, old_pds: migration.old_pds_host),
       current_status: t("email_taken.current_status"),
       what_to_do: [
-        t("email_taken.what_to_do.account_is_yours", new_pds: migration.new_pds_host),
-        t("email_taken.what_to_do.other_email"),
+        t("email_taken.what_to_do.account_is_yours", new_pds: migration.new_pds_host, handle: migration.old_handle),
+        t("email_taken.what_to_do.keep_both", old_pds: migration.old_pds_host),
+        t("email_taken.what_to_do.start_new"),
         t("email_taken.what_to_do.contact_provider", contact_email: contact_email)
       ],
       show_retry_button: false,
       show_retry_info: false,
+      show_new_migration_button: true,
       show_contact_support: true,
       support_email: contact_email,
       migration_token: migration.token,

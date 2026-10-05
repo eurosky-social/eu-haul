@@ -1344,6 +1344,10 @@
           <div class="es-hint form-text"><%= t('migrations.new.step2.email_help') %></div>
         </div>
 
+        <%# The address is locked to the old account's, so a clash with an account
+            the user already made on the target can only be fixed there, up front %>
+        <p class="eh-well eh-well-tight eh-sm"><%= t('migrations.new.step2.one_account_per_email') %></p>
+
         <label class="eh-check eh-check-well" for="confirm-email-access">
           <input type="checkbox" id="confirm-email-access">
           <span><%= t('migrations.new.step2.confirm_access') %></span>

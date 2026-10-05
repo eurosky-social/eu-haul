@@ -1,0 +1,20 @@
+<%# Why a migration stopped on "email already taken" and how to get past it.
+    Shared by migration_failed and email_taken_followup; the mailer sets
+    @new_pds_name, @new_migration_url and @contact_email. %>
+<%= email_heading t('mailers.email_taken.why_heading') %>
+<%= email_text email_t('mailers.email_taken.why_text',
+                       new_pds: tag.strong(@new_pds_name), email: tag.strong(@migration.email), handle: @migration.old_handle) %>
+
+<%= email_heading t('mailers.email_taken.steps_heading') %>
+<%= email_list [
+  email_t('mailers.email_taken.step1', new_pds: tag.strong(@new_pds_name), email: @migration.email),
+  email_t('mailers.email_taken.step2', handle: tag.strong("@#{@migration.old_handle}")),
+  t('mailers.email_taken.step3')
+], ordered: true %>
+
+<%= email_button t('mailers.email_taken.button'), @new_migration_url %>
+
+<%= email_well do %>
+  <%= email_text email_t('mailers.email_taken.keep_both', handle: @migration.old_handle) %>
+  <%= email_text email_t('mailers.email_taken.unknown_account', contact_email: email_link(@contact_email, "mailto:#{@contact_email}")) %>
+<% end %>

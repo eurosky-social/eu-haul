@@ -154,6 +154,7 @@ en:
         email_readonly_help: "Email retrieved from your account"
         email_manual_help: "We couldn't retrieve your email. Please enter it manually."
         confirm_access: "I have access to this email address and can retrieve a confirmation code sent to it."
+        one_account_per_email: "This address also becomes the email of your account on the new server, and a server allows only one account per address. If you have already signed up there with it, delete that account or change its email first — otherwise the migration will stop."
         back: "Back"
         continue: "Continue"
 
@@ -543,11 +544,12 @@ en:
           contact_admin: "If you're sure the password is correct, contact your PDS administrator"
       email_taken:
         title: "Email address already in use on the new PDS"
-        what_happened: "%{new_pds} already has an account with %{email}, so we couldn't create an account for your DID there. Your account on %{old_pds} is untouched."
+        what_happened: "%{new_pds} already has another account with %{email}. A server allows only one account per email address, so your account couldn't be created there. Your account on %{old_pds} is untouched."
         current_status: "Migration stopped — no changes were made to your identity"
         what_to_do:
-          account_is_yours: "If that account is yours, sign in to it on %{new_pds}, change its email address, then start a new migration"
-          other_email: "Or start a new migration with a different email address"
+          account_is_yours: "If that account is yours, sign in to it on %{new_pds} and delete it, or change its email address if you want to keep it. Make sure you are signed in to that account, not to @%{handle}"
+          keep_both: "The migration always uses the email address of the account you are moving. To use a different address, change it on %{old_pds} first"
+          start_new: "Then start a new migration — this one can't be resumed"
           contact_provider: "If you don't recognise the account, contact the PDS provider: %{contact_email}"
       account_exists:
         title: "Account already exists on the new PDS"
@@ -934,6 +936,23 @@ en:
       plc_expired_button: "View migration and request a new token"
       plc_expired_good_news: "Good news:"
       plc_expired_safe: "Your migration data is safe and ready. You only need a new PLC token to complete the final step."
+
+    email_taken:
+      why_heading: "Why your migration stopped"
+      why_text: "%{new_pds} already has another account with the email address %{email}. A server allows only one account per email address, so your account couldn't be created there. Your account @%{handle} is unchanged — nothing was moved or lost."
+      steps_heading: "How to finish your move"
+      step1: "Sign in to that other account on %{new_pds}, for example in the Bluesky app with %{new_pds} as the hosting provider. If you no longer know the password, \"Forgot password\" sends a code to %{email}."
+      step2: "Delete that account in its settings, or change its email address if you want to keep it. Make sure you are signed in to the other account and not to %{handle}."
+      step3: "Start a new migration. The old one can't be resumed."
+      button: "Start a new migration"
+      keep_both: "Would you rather leave the other account as it is? The migration always uses the email address of the account you are moving (@%{handle}), so change that address at your current provider first, then start a new migration."
+      unknown_account: "Don't recognise the other account? Write to %{contact_email}."
+
+    email_taken_followup:
+      subject: "How to finish moving @%{handle}"
+      heading: "Your move can still work"
+      intro: "On %{date} you tried to move your account @%{handle} to %{new_pds}. The migration stopped before anything was changed."
+      apology: "Our email at the time suggested retrying. A retry could not have worked — sorry for the confusion. Here is what went wrong and how to fix it."
 
     backup_ready:
       subject: "Your Eurosky migration backup is ready (%{token})"

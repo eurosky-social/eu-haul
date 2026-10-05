@@ -154,6 +154,7 @@ fr:
         email_readonly_help: "Adresse e-mail récupérée depuis votre compte"
         email_manual_help: "Nous n'avons pas pu récupérer votre adresse e-mail. Veuillez la saisir manuellement."
         confirm_access: "J'ai accès à cette adresse e-mail et je peux récupérer un code de confirmation qui y serait envoyé."
+        one_account_per_email: "Cette adresse deviendra aussi l'adresse e-mail de votre compte sur le nouveau serveur, et un serveur n'autorise qu'un seul compte par adresse. Si vous avez déjà un compte là-bas avec cette adresse, supprimez-le ou changez d'abord son adresse e-mail — sinon la migration s'arrêtera."
         back: "Retour"
         continue: "Continuer"
 
@@ -543,11 +544,12 @@ fr:
           contact_admin: "Si vous êtes sûr que le mot de passe est correct, contactez l'administrateur de votre PDS"
       email_taken:
         title: "Adresse e-mail déjà utilisée sur le nouveau PDS"
-        what_happened: "%{new_pds} a déjà un compte avec %{email}, nous n'avons donc pas pu y créer de compte pour votre DID. Votre compte sur %{old_pds} n'a pas été modifié."
+        what_happened: "%{new_pds} a déjà un autre compte avec %{email}. Un serveur n'autorise qu'un seul compte par adresse e-mail, votre compte n'a donc pas pu y être créé. Votre compte sur %{old_pds} n'a pas été modifié."
         current_status: "Migration arrêtée — aucune modification n'a été apportée à votre identité"
         what_to_do:
-          account_is_yours: "Si ce compte est le vôtre, connectez-vous-y sur %{new_pds}, changez son adresse e-mail, puis démarrez une nouvelle migration"
-          other_email: "Ou démarrez une nouvelle migration avec une autre adresse e-mail"
+          account_is_yours: "Si ce compte est le vôtre, connectez-vous-y sur %{new_pds} et supprimez-le, ou changez son adresse e-mail si vous souhaitez le garder. Vérifiez que c'est bien ce compte qui est connecté, et non @%{handle}"
+          keep_both: "La migration utilise toujours l'adresse e-mail du compte que vous déplacez. Pour utiliser une autre adresse, modifiez-la d'abord sur %{old_pds}"
+          start_new: "Démarrez ensuite une nouvelle migration — celle-ci ne peut pas être reprise"
           contact_provider: "Si vous ne reconnaissez pas ce compte, contactez le fournisseur du PDS : %{contact_email}"
       account_exists:
         title: "Un compte existe déjà sur le nouveau PDS"
@@ -951,6 +953,23 @@ fr:
       plc_expired_button: "Voir la migration et demander un nouveau jeton"
       plc_expired_good_news: "Bonne nouvelle :"
       plc_expired_safe: "Vos données de migration sont en sécurité et prêtes. Il vous faut seulement un nouveau jeton PLC pour terminer la dernière étape."
+
+    email_taken:
+      why_heading: "Pourquoi votre migration s'est arrêtée"
+      why_text: "%{new_pds} a déjà un autre compte avec l'adresse e-mail %{email}. Un serveur n'autorise qu'un seul compte par adresse e-mail, votre compte n'a donc pas pu y être créé. Votre compte @%{handle} n'a pas changé — rien n'a été déplacé ni perdu."
+      steps_heading: "Comment terminer votre migration"
+      step1: "Connectez-vous à l'autre compte sur %{new_pds}, par exemple dans l'app Bluesky en indiquant %{new_pds} comme hébergeur. Si vous ne connaissez plus le mot de passe, « Mot de passe oublié » envoie un code à %{email}."
+      step2: "Supprimez ce compte dans ses paramètres, ou changez son adresse e-mail si vous souhaitez le garder. Vérifiez que c'est bien l'autre compte qui est connecté, et non %{handle}."
+      step3: "Démarrez une nouvelle migration. L'ancienne ne peut pas être reprise."
+      button: "Démarrer une nouvelle migration"
+      keep_both: "Vous préférez ne pas toucher à l'autre compte ? La migration utilise toujours l'adresse e-mail du compte que vous déplacez (@%{handle}) : modifiez donc d'abord cette adresse chez votre fournisseur actuel, puis démarrez une nouvelle migration."
+      unknown_account: "Vous ne reconnaissez pas l'autre compte ? Écrivez à %{contact_email}."
+
+    email_taken_followup:
+      subject: "Comment terminer la migration de @%{handle}"
+      heading: "Votre migration peut encore aboutir"
+      intro: "Le %{date}, vous avez essayé de déplacer votre compte @%{handle} vers %{new_pds}. La migration s'est arrêtée avant que quoi que ce soit ne soit modifié."
+      apology: "Notre e-mail de l'époque suggérait de réessayer. Une nouvelle tentative n'aurait pas pu fonctionner — désolés pour la confusion. Voici ce qui s'est passé et comment y remédier."
 
     backup_ready:
       subject: "Votre sauvegarde de migration Eurosky est prête (%{token})"

@@ -154,6 +154,7 @@ sl:
         email_readonly_help: "E-poštni naslov pridobljen iz vašega računa"
         email_manual_help: "Vašega e-poštnega naslova nismo uspeli pridobiti. Prosimo, vnesite ga ročno."
         confirm_access: "Imam dostop do tega e-poštnega naslova in lahko prevzamem potrditveno kodo, poslano nanj."
+        one_account_per_email: "Ta naslov bo tudi e-poštni naslov vašega računa na novem strežniku, strežnik pa dovoli le en račun na naslov. Če ste se tam z njim že registrirali, najprej izbrišite tisti račun ali spremenite njegov e-poštni naslov — sicer se bo selitev ustavila."
         back: "Nazaj"
         continue: "Naprej"
 
@@ -543,11 +544,12 @@ sl:
           contact_admin: "Če ste prepričani, da je geslo pravilno, se obrnite na administratorja svojega PDS"
       email_taken:
         title: "E-poštni naslov se na novem PDS že uporablja"
-        what_happened: "%{new_pds} že ima račun z naslovom %{email}, zato tam nismo mogli ustvariti računa za vaš DID. Vaš račun na %{old_pds} je ostal nedotaknjen."
+        what_happened: "%{new_pds} že ima drug račun z naslovom %{email}. Strežnik dovoli le en račun na e-poštni naslov, zato vašega računa tam ni bilo mogoče ustvariti. Vaš račun na %{old_pds} je ostal nedotaknjen."
         current_status: "Selitev ustavljena — vaša identiteta se ni spremenila"
         what_to_do:
-          account_is_yours: "Če je ta račun vaš, se vanj prijavite na %{new_pds}, spremenite njegov e-poštni naslov in nato začnite novo selitev"
-          other_email: "Ali pa začnite novo selitev z drugim e-poštnim naslovom"
+          account_is_yours: "Če je ta račun vaš, se vanj prijavite na %{new_pds} in ga izbrišite ali spremenite njegov e-poštni naslov, če ga želite obdržati. Prepričajte se, da ste prijavljeni v ta račun in ne v @%{handle}"
+          keep_both: "Selitev vedno uporabi e-poštni naslov računa, ki ga selite. Če želite uporabiti drug naslov, ga najprej spremenite na %{old_pds}"
+          start_new: "Nato začnite novo selitev — te ni mogoče nadaljevati"
           contact_provider: "Če računa ne prepoznate, se obrnite na ponudnika PDS: %{contact_email}"
       account_exists:
         title: "Račun na novem PDS že obstaja"
@@ -951,6 +953,23 @@ sl:
       plc_expired_button: "Ogled selitve in zahteva za nov žeton"
       plc_expired_good_news: "Dobra novica:"
       plc_expired_safe: "Podatki vaše selitve so varni in pripravljeni. Za dokončanje zadnjega koraka potrebujete le nov žeton PLC."
+
+    email_taken:
+      why_heading: "Zakaj se je vaša selitev ustavila"
+      why_text: "%{new_pds} že ima drug račun z e-poštnim naslovom %{email}. Strežnik dovoli le en račun na e-poštni naslov, zato vašega računa tam ni bilo mogoče ustvariti. Vaš račun @%{handle} je nespremenjen — nič ni bilo premaknjeno ali izgubljeno."
+      steps_heading: "Kako dokončati selitev"
+      step1: "Prijavite se v drugi račun na %{new_pds}, na primer v aplikaciji Bluesky s %{new_pds} kot ponudnikom gostovanja. Če gesla ne veste več, možnost »Pozabljeno geslo« pošlje kodo na %{email}."
+      step2: "Izbrišite ta račun v njegovih nastavitvah ali spremenite njegov e-poštni naslov, če ga želite obdržati. Prepričajte se, da ste prijavljeni v drugi račun in ne v %{handle}."
+      step3: "Začnite novo selitev. Stare ni mogoče nadaljevati."
+      button: "Začni novo selitev"
+      keep_both: "Bi drugi račun raje pustili, kakršen je? Selitev vedno uporabi e-poštni naslov računa, ki ga selite (@%{handle}), zato najprej spremenite ta naslov pri svojem trenutnem ponudniku in nato začnite novo selitev."
+      unknown_account: "Drugega računa ne prepoznate? Pišite na %{contact_email}."
+
+    email_taken_followup:
+      subject: "Kako dokončati selitev računa @%{handle}"
+      heading: "Vaša selitev lahko še uspe"
+      intro: "Dne %{date} ste poskušali preseliti svoj račun @%{handle} na %{new_pds}. Selitev se je ustavila, preden se je karkoli spremenilo."
+      apology: "Naše takratno e-sporočilo je predlagalo ponovni poskus. Ponovni poskus ne bi mogel uspeti — opravičujemo se za zmedo. Spodaj je razloženo, kaj je šlo narobe in kako to popraviti."
 
     backup_ready:
       subject: "Vaša varnostna kopija Eurosky je pripravljena (%{token})"

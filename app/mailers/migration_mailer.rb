@@ -34,6 +34,8 @@ class MigrationMailer < ApplicationMailer
     @error_message = migration.last_error
     @failed_step = migration.current_job_step || migration.status
     @retry_count = migration.retry_count
+    @email_taken = migration.error_code == 'email_taken' || MigrationErrorHelper.email_taken_message?(migration.last_error)
+    assign_email_taken_details(migration) if @email_taken
 
     I18n.with_locale(migration.locale || :en) do
       mail(
@@ -214,4 +216,40 @@ class MigrationMailer < ApplicationMailer
       )
     end
   end
+
+  # One-off follow-up for a migration that stopped because the email address
+  # already belonged to another account on the target PDS. Its failure email
+  # offered a retry that could never work; this one explains the way out.
+  # Sent by EmailTakenFollowup.
+  def email_taken_followup(migration)
+    @migration = migration
+    @attempted_on = migration.created_at.to_date.iso8601
+    assign_email_taken_details(migration)
+
+    I18n.with_locale(migration.locale || :en) do
+      mail(
+        to: migration.email,
+        subject: I18n.t('mailers.email_taken_followup.subject', handle: migration.old_handle)
+      )
+    end
+  end
+
+
+  private
+
+  # What the email-taken instructions need: where to start over, the target's
+  # bare host name (what the user types as "hosting provider" in an app) and
+  # who to ask about an account they don't recognise.
+  def assign_email_taken_details(migration)
+    @new_migration_url = new_migration_url(host: ENV.fetch('DOMAIN', 'localhost:3001'))
+    @contact_email = migration.target_pds_contact_email.presence || ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
+    @new_pds_name = host_name(migration.new_pds_host)
+  end
+
+  def host_name(url)
+    URI.parse(url.to_s).host.presence || url
+  rescue URI::InvalidURIError
+    url
+  end
+
 end

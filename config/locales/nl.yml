@@ -154,6 +154,7 @@ nl:
         email_readonly_help: "E-mailadres opgehaald uit uw account"
         email_manual_help: "We konden uw e-mailadres niet ophalen. Voer het handmatig in."
         confirm_access: "Ik heb toegang tot dit e-mailadres en kan een bevestigingscode ontvangen die ernaar wordt gestuurd."
+        one_account_per_email: "Dit adres wordt ook het e-mailadres van uw account op de nieuwe server, en een server staat maar één account per adres toe. Hebt u zich daar al met dit adres aangemeld, verwijder dat account dan of wijzig eerst het e-mailadres — anders stopt de migratie."
         back: "Terug"
         continue: "Doorgaan"
 
@@ -543,11 +544,12 @@ nl:
           contact_admin: "Als u zeker weet dat het wachtwoord juist is, neem dan contact op met uw PDS-beheerder"
       email_taken:
         title: "E-mailadres al in gebruik op de nieuwe PDS"
-        what_happened: "%{new_pds} heeft al een account met %{email}, dus we konden daar geen account voor uw DID aanmaken. Uw account op %{old_pds} is onaangeroerd."
+        what_happened: "%{new_pds} heeft al een ander account met %{email}. Een server staat maar één account per e-mailadres toe, dus uw account kon daar niet worden aangemaakt. Uw account op %{old_pds} is onaangeroerd."
         current_status: "Migratie gestopt — er is niets aan uw identiteit gewijzigd"
         what_to_do:
-          account_is_yours: "Als dat account van u is, log er dan op in op %{new_pds}, wijzig het e-mailadres en start daarna een nieuwe migratie"
-          other_email: "Of start een nieuwe migratie met een ander e-mailadres"
+          account_is_yours: "Als dat account van u is, log er dan op in op %{new_pds} en verwijder het, of wijzig het e-mailadres als u het wilt houden. Zorg dat u bij dat account bent ingelogd en niet bij @%{handle}"
+          keep_both: "De migratie gebruikt altijd het e-mailadres van het account dat u verhuist. Wilt u een ander adres gebruiken, wijzig het dan eerst op %{old_pds}"
+          start_new: "Start daarna een nieuwe migratie — deze kan niet worden hervat"
           contact_provider: "Als u het account niet herkent, neem dan contact op met de PDS-provider: %{contact_email}"
       account_exists:
         title: "Account bestaat al op de nieuwe PDS"
@@ -951,6 +953,23 @@ nl:
       plc_expired_button: "Migratie bekijken en een nieuw token aanvragen"
       plc_expired_good_news: "Goed nieuws:"
       plc_expired_safe: "Uw migratiegegevens zijn veilig en gereed. U hebt alleen een nieuw PLC-token nodig om de laatste stap te voltooien."
+
+    email_taken:
+      why_heading: "Waarom uw migratie is gestopt"
+      why_text: "%{new_pds} heeft al een ander account met het e-mailadres %{email}. Een server staat maar één account per e-mailadres toe, dus uw account kon daar niet worden aangemaakt. Uw account @%{handle} is ongewijzigd — er is niets verplaatst of verloren gegaan."
+      steps_heading: "Zo rondt u uw verhuizing af"
+      step1: "Log in op het andere account op %{new_pds}, bijvoorbeeld in de Bluesky-app met %{new_pds} als hostingprovider. Weet u het wachtwoord niet meer, dan stuurt „Wachtwoord vergeten” een code naar %{email}."
+      step2: "Verwijder dat account via de instellingen, of wijzig het e-mailadres als u het wilt houden. Zorg dat u bij het andere account bent ingelogd en niet bij %{handle}."
+      step3: "Start een nieuwe migratie. De oude kan niet worden hervat."
+      button: "Nieuwe migratie starten"
+      keep_both: "Wilt u het andere account liever laten zoals het is? De migratie gebruikt altijd het e-mailadres van het account dat u verhuist (@%{handle}). Wijzig dus eerst dat adres bij uw huidige provider en start daarna een nieuwe migratie."
+      unknown_account: "Herkent u het andere account niet? Schrijf naar %{contact_email}."
+
+    email_taken_followup:
+      subject: "Zo rondt u de verhuizing van @%{handle} af"
+      heading: "Uw verhuizing kan nog lukken"
+      intro: "Op %{date} hebt u geprobeerd uw account @%{handle} naar %{new_pds} te verhuizen. De migratie is gestopt voordat er iets werd gewijzigd."
+      apology: "Onze e-mail van toen raadde aan het opnieuw te proberen. Een nieuwe poging kon niet werken — sorry voor de verwarring. Hieronder leest u wat er misging en hoe u het oplost."
 
     backup_ready:
       subject: "Uw Eurosky-migratieback-up is gereed (%{token})"

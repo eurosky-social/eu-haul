@@ -154,6 +154,7 @@ de:
         email_readonly_help: "E-Mail-Adresse wurde aus Ihrem Konto abgerufen"
         email_manual_help: "Wir konnten Ihre E-Mail-Adresse nicht abrufen. Bitte geben Sie sie manuell ein."
         confirm_access: "Ich habe Zugang zu dieser E-Mail-Adresse und kann einen dorthin gesendeten Bestätigungscode abrufen."
+        one_account_per_email: "Diese Adresse wird auch die E-Mail-Adresse Ihres Kontos auf dem neuen Server, und ein Server erlaubt pro Adresse nur ein Konto. Wenn Sie sich dort bereits damit registriert haben, löschen Sie dieses Konto oder ändern Sie zuerst seine E-Mail-Adresse — sonst bricht die Migration ab."
         back: "Zurück"
         continue: "Weiter"
 
@@ -543,11 +544,12 @@ de:
           contact_admin: "Wenn Sie sicher sind, dass das Passwort stimmt, wenden Sie sich an Ihren PDS-Administrator"
       email_taken:
         title: "E-Mail-Adresse auf dem neuen PDS bereits vergeben"
-        what_happened: "Auf %{new_pds} gibt es bereits ein Konto mit %{email}, daher konnten wir dort kein Konto für Ihre DID anlegen. Ihr Konto auf %{old_pds} ist unverändert."
+        what_happened: "Auf %{new_pds} gibt es bereits ein anderes Konto mit %{email}. Ein Server erlaubt pro E-Mail-Adresse nur ein Konto, deshalb konnte Ihr Konto dort nicht angelegt werden. Ihr Konto auf %{old_pds} ist unverändert."
         current_status: "Migration gestoppt — an Ihrer Identität wurde nichts geändert"
         what_to_do:
-          account_is_yours: "Wenn dieses Konto Ihnen gehört, melden Sie sich auf %{new_pds} daran an, ändern Sie seine E-Mail-Adresse und starten Sie dann eine neue Migration"
-          other_email: "Oder starten Sie eine neue Migration mit einer anderen E-Mail-Adresse"
+          account_is_yours: "Wenn dieses Konto Ihnen gehört, melden Sie sich auf %{new_pds} daran an und löschen Sie es oder ändern Sie seine E-Mail-Adresse, wenn Sie es behalten möchten. Achten Sie darauf, dass Sie bei diesem Konto angemeldet sind und nicht bei @%{handle}"
+          keep_both: "Die Migration verwendet immer die E-Mail-Adresse des Kontos, das Sie umziehen. Wenn Sie eine andere Adresse verwenden möchten, ändern Sie sie zuerst auf %{old_pds}"
+          start_new: "Starten Sie danach eine neue Migration — diese hier lässt sich nicht fortsetzen"
           contact_provider: "Wenn Sie das Konto nicht kennen, wenden Sie sich an den PDS-Anbieter: %{contact_email}"
       account_exists:
         title: "Konto existiert bereits auf dem neuen PDS"
@@ -951,6 +953,23 @@ de:
       plc_expired_button: "Migration ansehen und neues Token anfordern"
       plc_expired_good_news: "Gute Nachricht:"
       plc_expired_safe: "Ihre Migrationsdaten sind sicher und bereit. Sie brauchen nur ein neues PLC-Token, um den letzten Schritt abzuschließen."
+
+    email_taken:
+      why_heading: "Warum Ihre Migration angehalten wurde"
+      why_text: "Auf %{new_pds} gibt es bereits ein anderes Konto mit der E-Mail-Adresse %{email}. Ein Server erlaubt pro E-Mail-Adresse nur ein Konto, deshalb konnte Ihr Konto dort nicht angelegt werden. Ihr Konto @%{handle} ist unverändert — nichts wurde verschoben oder ist verloren gegangen."
+      steps_heading: "So schließen Sie den Umzug ab"
+      step1: "Melden Sie sich bei dem anderen Konto auf %{new_pds} an, zum Beispiel in der Bluesky-App mit %{new_pds} als Hosting-Anbieter. Wenn Sie das Passwort nicht mehr wissen, schickt „Passwort vergessen“ einen Code an %{email}."
+      step2: "Löschen Sie dieses Konto in seinen Einstellungen oder ändern Sie seine E-Mail-Adresse, wenn Sie es behalten möchten. Achten Sie darauf, dass Sie beim anderen Konto angemeldet sind und nicht bei %{handle}."
+      step3: "Starten Sie eine neue Migration. Die alte lässt sich nicht fortsetzen."
+      button: "Neue Migration starten"
+      keep_both: "Sie möchten das andere Konto lieber unverändert lassen? Die Migration verwendet immer die E-Mail-Adresse des Kontos, das Sie umziehen (@%{handle}). Ändern Sie also zuerst diese Adresse bei Ihrem jetzigen Anbieter und starten Sie dann eine neue Migration."
+      unknown_account: "Sie kennen das andere Konto nicht? Schreiben Sie an %{contact_email}."
+
+    email_taken_followup:
+      subject: "So schließen Sie den Umzug von @%{handle} ab"
+      heading: "Ihr Umzug kann noch klappen"
+      intro: "Am %{date} haben Sie versucht, Ihr Konto @%{handle} zu %{new_pds} umzuziehen. Die Migration wurde angehalten, bevor irgendetwas geändert wurde."
+      apology: "Unsere damalige E-Mail hat empfohlen, es erneut zu versuchen. Ein erneuter Versuch hätte nicht funktionieren können — entschuldigen Sie die Verwirrung. Hier erfahren Sie, was schiefgelaufen ist und wie Sie es beheben."
 
     backup_ready:
       subject: "Ihre Eurosky-Migrationssicherungskopie ist bereit (%{token})"
