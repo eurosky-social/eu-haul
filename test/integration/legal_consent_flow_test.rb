@@ -7,7 +7,8 @@ require "webmock/minitest"
 # 1. Server-side validation rejects form submission without legal consent
 # 2. A LegalConsent record is created when consent is given
 # 3. Consent records survive migration deletion
-# 4. LegalSnapshot.current is used for consent references
+# 4. The consent points at the snapshot of the page as the server renders it,
+#    not at whichever snapshot row is newest
 class LegalConsentFlowTest < ActionDispatch::IntegrationTest
   def setup
     WebMock.disable_net_connect!(allow_localhost: true)
@@ -19,7 +20,8 @@ class LegalConsentFlowTest < ActionDispatch::IntegrationTest
     @did = "did:plc:consenttest123"
     @email = "consent@example.com"
 
-    # Create legal snapshots (normally done at boot time)
+    # Newer rows with other content, as another process (Sidekiq, without the
+    # OPERATOR_* settings) would leave behind at boot
     @tos_snapshot = LegalSnapshot.create!(
       document_type: "terms_of_service",
       content_hash: Digest::SHA256.hexdigest("tos content"),
@@ -95,8 +97,10 @@ class LegalConsentFlowTest < ActionDispatch::IntegrationTest
     consent = LegalConsent.last
     assert_equal @did, consent.did
     assert_equal Migration.last.token, consent.migration_token
-    assert_equal @tos_snapshot, consent.tos_snapshot
-    assert_equal @pp_snapshot, consent.privacy_policy_snapshot
+    assert_equal LegalDocuments.render("terms_of_service"), consent.tos_snapshot.rendered_content
+    assert_equal LegalDocuments.render("privacy_policy"), consent.privacy_policy_snapshot.rendered_content
+    refute_equal @tos_snapshot, consent.tos_snapshot
+    refute_equal @pp_snapshot, consent.privacy_policy_snapshot
     assert consent.accepted_at.present?
     assert consent.ip_address.present?
   end

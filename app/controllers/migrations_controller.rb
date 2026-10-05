@@ -654,8 +654,9 @@ class MigrationsController < ApplicationController
         LegalConsent.create!(
           did: @migration.did,
           migration_token: @migration.token,
-          tos_snapshot: LegalSnapshot.current('terms_of_service'),
-          privacy_policy_snapshot: LegalSnapshot.current('privacy_policy'),
+          # What this server renders now, not the newest row (see LegalDocuments)
+          tos_snapshot: LegalDocuments.snapshot('terms_of_service'),
+          privacy_policy_snapshot: LegalDocuments.snapshot('privacy_policy'),
           ip_address: request.remote_ip,
           accepted_at: Time.current
         )

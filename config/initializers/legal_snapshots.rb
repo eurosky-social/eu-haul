@@ -1,14 +1,29 @@
 # Boot-time legal document snapshotting
 #
-# On each boot (web and sidekiq processes), renders the Privacy Policy and Terms of Service
-# templates, computes a SHA256 hash, and stores a new snapshot if the content has changed.
-# This ensures every version of the legal documents is archived without manual intervention.
+# On each boot of a process that serves the pages (web, console, runner), renders
+# the Privacy Policy and Terms of Service templates, computes a SHA256 hash, and
+# stores a new snapshot if the content has changed. This ensures every version of
+# the legal documents is archived without manual intervention. Consents don't rely
+# on it: they point at the snapshot of what the request renders (LegalDocuments).
+#
+# Not in Sidekiq: its containers have no OPERATOR_* settings, so it would archive
+# pages reading "UNCONFIGURED" that nobody is ever shown.
+#
+# Runs on after_routes_loaded rather than after_initialize: the pages link with
+# route helpers (root_path), and Rails draws the routes only after the
+# after_initialize callbacks. The hook fires again on every route reload in
+# development, so it snapshots once per process.
 #
 # The unique index on [document_type, content_hash] prevents duplicate snapshots when
 # multiple processes boot simultaneously.
 
-Rails.application.config.after_initialize do
-  next if Rails.env.test?
+snapshotted = false
+
+ActiveSupport.on_load(:after_routes_loaded) do
+  next if snapshotted || Rails.env.test?
+  next if defined?(Sidekiq) && Sidekiq.server?
+
+  snapshotted = true
 
   begin
     # Verify the table exists (may not yet if migrations haven't run)
@@ -18,12 +33,7 @@ Rails.application.config.after_initialize do
     end
 
     %w[privacy_policy terms_of_service].each do |doc_type|
-      rendered = ApplicationController.render(
-        template: "legal/#{doc_type}",
-        layout: false
-      )
-
-      snapshot = LegalSnapshot.snapshot_if_changed!(doc_type, rendered)
+      snapshot = LegalDocuments.snapshot(doc_type)
       was_new = snapshot.previously_new_record?
 
       if was_new
