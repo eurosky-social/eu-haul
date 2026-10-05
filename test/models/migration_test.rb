@@ -25,6 +25,17 @@ class MigrationTest < ActiveSupport::TestCase
     assert migration.valid?, "Migration should be valid with all required attributes"
   end
 
+  test "stores the language the migration was started in" do
+    # The column defaults to "en", which once kept every migration in English
+    migration = I18n.with_locale(:de) { Migration.create!(@valid_attributes) }
+    assert_equal "de", migration.reload.locale
+  end
+
+  test "keeps a language set on the record" do
+    migration = I18n.with_locale(:de) { Migration.create!(@valid_attributes.merge(locale: "fr")) }
+    assert_equal "fr", migration.reload.locale
+  end
+
   test "requires did" do
     migration = Migration.new(@valid_attributes.except(:did))
     assert_not migration.valid?

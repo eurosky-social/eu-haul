@@ -578,9 +578,11 @@ class Migration < ApplicationRecord
     end
   end
 
-  # Store the user's locale at migration creation time
+  # Store the user's locale at migration creation time. The column defaults to
+  # "en", so a new record is never blank here: take the request locale unless
+  # the caller set a different one.
   def set_locale
-    self.locale ||= I18n.locale.to_s
+    self.locale = I18n.locale.to_s unless will_save_change_to_locale?
   end
 
   # Normalize PDS hosts to include https:// prefix
