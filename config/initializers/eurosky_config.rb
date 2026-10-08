@@ -182,6 +182,17 @@ module EuroskyConfig
     !invite_code_hidden?
   end
 
+  # Whether the built-in legal pages carry the operator's details rather than
+  # "UNCONFIGURED". A process started without the OPERATOR_* settings (Sidekiq,
+  # a one-off container) renders pages nobody is shown.
+  def self.legal_pages_configured?
+    legal_values_configured?(OPERATOR_NAME, EFFECTIVE_DATE, GOVERNING_JURISDICTION)
+  end
+
+  def self.legal_values_configured?(*values)
+    values.none? { |value| value.to_s.strip.empty? || value == 'UNCONFIGURED' }
+  end
+
   # Destination servers for the wizard dropdown: TARGET_PDS_OPTIONS if set,
   # otherwise DEFAULT_TARGET_PDS_OPTIONS.
   def self.target_pds_options

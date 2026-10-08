@@ -103,4 +103,12 @@ class EuroskyConfigHandleSuffixesTest < ActiveSupport::TestCase
     assert_equal "#02bc60", EuroskyConfig::DEFAULT_PRIMARY_COLOR
     assert_match(/\A#\h{6}\z/, EuroskyConfig.accent_hex)
   end
+
+  test "the legal pages count as configured only when every operator detail is set" do
+    assert EuroskyConfig.legal_values_configured?("Stichting Modal", "2026-02-17", "The Netherlands")
+    refute EuroskyConfig.legal_values_configured?("UNCONFIGURED", "2026-02-17", "The Netherlands")
+    refute EuroskyConfig.legal_values_configured?("Stichting Modal", "UNCONFIGURED", "The Netherlands")
+    refute EuroskyConfig.legal_values_configured?("Stichting Modal", "2026-02-17", " ")
+  end
+
 end
