@@ -27,6 +27,9 @@
 #   GET  /migrations/:id/status (JSON only)
 
 class MigrationsController < ApplicationController
+  # Letters and digits in the PLC confirmation code every PDS issues (XXXXX-XXXXX).
+  PLC_TOKEN_LENGTH = 10
+
   before_action :set_migration, only: [:show, :verify_email, :resend_verification, :submit_plc_token, :request_new_plc_token, :reauthenticate, :reauthenticate_new_pds, :status, :download_backup, :retry, :export_recovery_data, :retry_failed_blobs, :confirm_delete, :request_cancellation, :confirm_cancellation]
   before_action :set_security_headers
 
@@ -811,12 +814,23 @@ class MigrationsController < ApplicationController
   #   - Success: Redirects to status page with success message
   #   - Failure: Redirects to status page with error message
   def submit_plc_token
-    plc_token = params[:plc_token]
-
-    if plc_token.blank?
+    if params[:plc_token].blank?
       Rails.logger.warn("PLC token submission failed for migration #{@migration.token}: Token blank")
       redirect_to migration_by_token_path(@migration.token),
                   alert: I18n.t('controllers.migrations.plc_blank')
+      return
+    end
+
+    # The PDS upper-cases the code and otherwise compares it verbatim, so a
+    # pasted trailing space only surfaces as "Token is invalid" after a failed
+    # signing round trip. Normalise to the XXXXX-XXXXX every PDS issues and
+    # bounce anything else here, while the user can still correct it.
+    plc_token = normalize_plc_token(params[:plc_token])
+    if plc_token.nil?
+      Rails.logger.warn("PLC token submission failed for migration #{@migration.token}: not in XXXXX-XXXXX form")
+      redirect_to migration_by_token_path(@migration.token),
+                  alert: I18n.t('controllers.migrations.plc_format_invalid',
+                                sender: PlcMailSender.display(@migration.old_pds_host))
       return
     end
 
@@ -903,7 +917,7 @@ class MigrationsController < ApplicationController
         @migration.progress_data['plc_token_resent'] = true
         @migration.save!
 
-        notice_msg = I18n.t('controllers.migrations.plc_requested', pds: @migration.old_pds_host)
+        notice_msg = I18n.t('controllers.migrations.plc_requested', pds: PlcMailSender.display(@migration.old_pds_host))
       rescue StandardError => e
         Rails.logger.error("Failed to request new PLC token for migration #{@migration.token}: #{e.message}")
         Rails.logger.error(e.backtrace.join("\n"))
@@ -1001,7 +1015,7 @@ class MigrationsController < ApplicationController
         begin
           service = GoatService.new(@migration)
           service.request_plc_token
-          notice_msg = I18n.t('controllers.migrations.reauth_success_plc_requested', pds: @migration.old_pds_host)
+          notice_msg = I18n.t('controllers.migrations.reauth_success_plc_requested', pds: PlcMailSender.display(@migration.old_pds_host))
         rescue StandardError => e
           Rails.logger.error("Failed to request PLC token after re-auth for #{@migration.token}: #{e.message}")
           notice_msg = I18n.t('controllers.migrations.reauth_success_plc_failed', error: e.message)
@@ -1814,6 +1828,17 @@ class MigrationsController < ApplicationController
 
   # Authenticate and fetch profile with email
   # Requires valid credentials to access private account information
+  # The letters and digits of the code the old PDS mailed, in the XXXXX-XXXXX
+  # form it was issued in: "abcde-fghij ", "ABCDEFGHIJ" and "ABCDE–FGHIJ" all
+  # become "ABCDE-FGHIJ". Anything that is not ten letters/digits once the
+  # separators are dropped is nil.
+  def normalize_plc_token(raw)
+    chars = raw.to_s.upcase.gsub(/[^A-Z0-9]/, '')
+    return nil unless chars.length == PLC_TOKEN_LENGTH
+
+    "#{chars[0, 5]}-#{chars[5, 5]}"
+  end
+
   def authenticate_and_fetch_profile(pds_host, identifier, password, auth_factor_token: nil)
     # Create session to authenticate
     session_url = "#{pds_host}/xrpc/com.atproto.server.createSession"

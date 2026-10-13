@@ -96,7 +96,7 @@ da:
         text: "Vi opretter din konto på den nye server og kopierer alt dertil; statussiden viser, hvor langt vi er. Lad være med at lave opslag, like eller følge nogen imens: de ændringer kommer ikke med."
       confirm:
         title: "Bekræft flytningen"
-        text: "Din nuværende server sender dig en bekræftelseskode via e-mail. Indtast den på statussiden inden for en time, eller anmod om en ny. Dette trin får din identitet til at pege på den nye server."
+        text: "Din nuværende server sender dig en bekræftelseskode via e-mail. Indtast den på statussiden inden for 15 minutter, eller anmod om en ny. Dette trin får din identitet til at pege på den nye server."
       done:
         title: "Færdig"
         text: "Din konto på den nye server bliver aktiveret, og den gamle bliver deaktiveret. Vi sender dig en e-mail om, hvordan du logger ind, sammen med adgangskoden til din nye konto."
@@ -427,14 +427,14 @@ da:
       didnt_receive_plc: "Modtog du ikke e-mailen?"
       plc_check_spam: "Tjek din spam- eller uønsket post-mappe"
       plc_from_old_pds: "E-mailen kommer fra din nuværende server (%{pds}), ikke fra os"
-      plc_expires: "Koden udløber efter 1 time"
+      plc_expires: "Koden udløber efter 15 minutter"
       plc_new_code_help: "Hvis du har brug for en ny kode, indtast din adgangskode nedenfor, og vi anmoder om en:"
       plc_password_placeholder: "Adgangskode til %{handle}"
       request_new_code: "Anmod om ny kode"
       technical_details: "Tekniske detaljer"
       plc_explanation: "Bekræftelseskoden er et <strong>PLC-operationstoken</strong> — det autoriserer opdatering af dit DID-dokument i PLC-kataloget til at pege på din nye Personal Data Server."
       plc_irreversible: "<strong>Dette er irreversibelt.</strong> Når det er indsendt, vil din kontoidentitet (DID) permanent pege på <strong>%{new_pds}</strong> i stedet for <strong>%{old_pds}</strong>."
-      plc_expiry_note: "PLC-tokens udløber efter 1 time. Hvis dit er udløbet, kan du anmode om et nyt."
+      plc_expiry_note: "PLC-tokens udløber efter 15 minutter. Hvis dit er udløbet, kan du anmode om et nyt."
 
       # Sidebar
       download_backup: "Download din sikkerhedskopi"
@@ -563,13 +563,20 @@ da:
           provider_only: "Det kræver handling fra PDS-udbyderen — du kan ikke selv løse det."
       plc_token_expired:
         title: "PLC-token udløbet"
-        what_happened: "Det PLC-operationstoken, du indtastede, er udløbet. PLC-tokens er kun gyldige i 1 time, efter at din gamle PDS-udbyder har udstedt dem."
+        what_happened: "Det PLC-operationstoken, du indtastede, er udløbet. PLC-tokens er kun gyldige i 15 minutter, efter at din gamle PDS-udbyder har udstedt dem."
         current_status: "Migrering sat på pause — du skal bruge et nyt PLC-token"
         what_to_do:
           request_token: "Brug knappen \"%{button}\" nedenfor til at anmode om et nyt token"
           check_email: "Se efter en e-mail fra %{old_pds} med det nye token"
-          submit_in_time: "Indtast det nye token inden for 1 time efter, at du har modtaget det"
+          submit_in_time: "Indtast det nye token inden for 15 minutter efter, at du har modtaget det"
           data_safe: "Resten af dine migreringsdata er sikre og klar — du skal bare bruge et nyt token"
+      plc_token_invalid:
+        title: "Bekræftelseskoden blev ikke genkendt"
+        what_happened: "Din gamle server genkendte ikke den bekræftelseskode, du indtastede. PLC-kataloget blev ikke ændret — din konto ligger stadig på %{old_pds}."
+        current_status: "Migrering sat på pause — anmod om en ny bekræftelseskode, og indtast den præcis som den blev sendt"
+        what_to_do:
+          use_latest: "Brug kun koden fra den nyeste e-mail: hver ny anmodning erstatter den forrige kode, og en kode udløber 15 minutter efter, at den er sendt"
+          copy_exactly: "Kopiér hele koden i formen XXXXX-XXXXX, uden mellemrum eller andre tegn"
       plc_pre_submission_failure:
         title: "PLC-opdateringen kunne ikke gennemføres"
         what_happened: "Opdateringen af PLC-kataloget kunne ikke gennemføres, men din konto er sikker. PLC-kataloget blev ikke ændret — din konto ligger stadig på %{old_pds}."
@@ -577,7 +584,7 @@ da:
         what_to_do:
           request_code: "Brug knappen \"%{button}\" nedenfor til at få en ny bekræftelseskode"
           check_email: "Se efter en e-mail fra %{old_pds} med den nye kode"
-          submit_in_time: "Indtast den nye kode inden for 1 time efter, at du har modtaget den"
+          submit_in_time: "Indtast den nye kode inden for 15 minutter efter, at du har modtaget den"
           data_safe: "Dine migreringsdata (repository, blobs, præferencer) er sikre og klar"
       credentials_need_reauth:
         title: "Sessionen er udløbet — log ind igen"
@@ -718,6 +725,7 @@ da:
       # PLC token
       plc_submitted: "PLC-token indsendt! Dit DID opdateres snart."
       plc_blank: "PLC-token må ikke være tomt"
+      plc_format_invalid: "Det ligner ikke en bekræftelseskode. Koden i e-mailen fra %{sender} har formen XXXXX-XXXXX. Kopiér den fra den nyeste e-mail, uden mellemrum."
       session_expired: "Din session er udløbet. Indtast venligst din adgangskode igen for at fortsætte."
       old_session_expired: "Din session med %{pds} er udløbet. Indtast venligst din adgangskode igen for at fortsætte."
       credentials_expired: "Dine loginoplysninger er udløbet. Indtast venligst din adgangskode igen for at fortsætte."
@@ -944,12 +952,12 @@ da:
       note3: "Har du brug for hjælp, angiv dit migreringstoken: %{token}"
       retry_button: "Se migreringen, og prøv igen"
       plc_expired_heading: "PLC-token udløbet"
-      plc_expired_text: "Dit PLC-operationstoken er udløbet. PLC-tokens er kun gyldige i 1 time, efter at de er udstedt."
+      plc_expired_text: "Dit PLC-operationstoken er udløbet. PLC-tokens er kun gyldige i 15 minutter, efter at de er udstedt."
       plc_expired_steps: "Det skal du gøre"
       plc_expired_step1: "Åbn statussiden for din migrering med knappen nedenfor"
       plc_expired_step2: "Klik på knappen \"Anmod om nyt PLC-token\""
       plc_expired_step3: "Find det nye token i e-mailen fra %{pds}"
-      plc_expired_step4: "Indsend det nye token inden for 1 time"
+      plc_expired_step4: "Indsend det nye token inden for 15 minutter"
       plc_expired_button: "Se migreringen, og anmod om et nyt token"
       plc_expired_good_news: "Den gode nyhed:"
       plc_expired_safe: "Dine migreringsdata er sikre og klar. Du skal kun bruge et nyt PLC-token for at gennemføre det sidste trin."
@@ -994,7 +1002,7 @@ da:
       plc_email_intro: "Du modtager snart en e-mail fra din gamle PDS-udbyder (%{pds}) med emnelinjen:"
       plc_code_info: "Den e-mail indeholder en bekræftelseskode (den ser ud som %{example})."
       plc_enter_code: "Du skal indtaste denne kode på statussiden for din migrering for at gennemføre migreringen:"
-      plc_expiry: "Vigtigt: bekræftelseskoden udløber efter 1 time. Hvis du ikke kan se e-mailen, så tjek din spammappe. Den kommer fra din gamle PDS-udbyder, ikke fra os."
+      plc_expiry: "Vigtigt: bekræftelseskoden udløber efter 15 minutter. Hvis du ikke kan se e-mailen, så tjek din spammappe. Den kommer fra din gamle PDS-udbyder, ikke fra os."
       save_key_heading: "Gem denne nøgle nu"
       recovery_key_label: "Din gendannelsesnøgle:"
       key_use_heading: "Hvad kan jeg bruge denne nøgle til?"
@@ -1002,6 +1010,9 @@ da:
       next_step_button: "Gå til migreringssiden for at indtaste din PLC-bekræftelseskode"
 
     plc_token_failed:
+      invalid_heading: "Bekræftelseskoden blev ikke genkendt"
+      invalid_intro: "Din gamle server genkendte ikke den PLC-bekræftelseskode, du indtastede for migrering %{token}."
+      invalid_what_happened_text: "Koden var ikke den, din gamle server forventede. Det skyldes som regel en tastefejl, en kode fra en ældre e-mail (hver ny anmodning erstatter den forrige kode) eller en kode fra en anden e-mail. Anmod om én ny kode, og kopiér den præcis fra den e-mail."
       subject: "Handling påkrævet: anmod om en ny PLC-bekræftelseskode (%{token})"
       heading: "PLC-token udløbet eller ugyldigt"
       intro: "PLC-bekræftelseskoden for din migrering %{token} er udløbet eller var ugyldig."
@@ -1011,7 +1022,7 @@ da:
       step3: "Indtast det nye token, når du modtager det via e-mail"
       error_detail: "Fejl: %{error}"
       safe_text: "PLC-kataloget blev ikke ændret. Din konto ligger stadig på %{pds}, og alle dine migreringsdata (repository, filer og præferencer) er gemt sikkert og klar."
-      what_happened_text: "Bekræftelseskoden fra din gamle PDS-udbyder udløb, før den kunne bruges. Disse koder er kun gyldige i begrænset tid (som regel 1 time)."
+      what_happened_text: "Bekræftelseskoden fra din gamle PDS-udbyder udløb, før den kunne bruges. Disse koder er kun gyldige i begrænset tid (som regel 15 minutter)."
 
     critical_plc_failure:
       subject: "Haster: kritisk migreringsfejl — start ikke en ny migrering (%{token})"

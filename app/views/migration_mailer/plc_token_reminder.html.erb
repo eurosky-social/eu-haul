@@ -4,7 +4,7 @@
 
 <%= email_warning do %>
   <%= email_heading t('mailers.plc_token_reminder.action_title') %>
-  <%= email_text t('mailers.plc_token_reminder.action_help', pds: @migration.old_pds_host) %>
+  <%= email_text t('mailers.plc_token_reminder.action_help', pds: PlcMailSender.display(@migration.old_pds_host)) %>
   <%= email_button t('mailers.plc_token_reminder.go_to_page'), @migration_url %>
 <% end %>
 
@@ -12,7 +12,7 @@
   <%= email_heading t('mailers.plc_token_reminder.help_title') %>
   <%= email_list [
     t('mailers.plc_token_reminder.help_check_spam'),
-    t('mailers.plc_token_reminder.help_from_old_pds', pds: @migration.old_pds_host),
+    t('mailers.plc_token_reminder.help_from_old_pds', pds: PlcMailSender.display(@migration.old_pds_host)),
     t('mailers.plc_token_reminder.help_code_format'),
     t('mailers.plc_token_reminder.help_request_new')
   ] %>

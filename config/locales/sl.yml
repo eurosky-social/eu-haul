@@ -96,7 +96,7 @@ sl:
         text: "Na novem strežniku ustvarimo vaš račun in nanj kopiramo vse; napredek je prikazan na strani s stanjem. Medtem ne objavljajte, ne všečkajte in ne sledite nikomur: te spremembe se ne bi prenesle."
       confirm:
         title: "Potrditev selitve"
-        text: "Vaš trenutni strežnik vam po e-pošti pošlje potrditveno kodo. Vnesite jo na strani s stanjem v eni uri ali zahtevajte novo. S tem korakom vaša identiteta začne kazati na novi strežnik."
+        text: "Vaš trenutni strežnik vam po e-pošti pošlje potrditveno kodo. Vnesite jo na strani s stanjem v 15 minutah ali zahtevajte novo. S tem korakom vaša identiteta začne kazati na novi strežnik."
       done:
         title: "Končano"
         text: "Vaš račun na novem strežniku se vklopi, stari pa se deaktivira. Po e-pošti vam pošljemo navodila za prijavo skupaj z geslom za vaš novi račun."
@@ -427,14 +427,14 @@ sl:
       didnt_receive_plc: "Niste prejeli e-pošte?"
       plc_check_spam: "Preverite mapo z neželeno pošto"
       plc_from_old_pds: "E-pošta prihaja z vašega trenutnega strežnika (%{pds}), ne od nas"
-      plc_expires: "Koda poteče po 1 uri"
+      plc_expires: "Koda poteče po 15 minutah"
       plc_new_code_help: "Če potrebujete novo kodo, vnesite geslo spodaj in jo bomo zahtevali:"
       plc_password_placeholder: "Geslo za %{handle}"
       request_new_code: "Zahtevaj novo kodo"
       technical_details: "Tehnične podrobnosti"
       plc_explanation: "Potrditvena koda je <strong>žeton operacije PLC</strong> — pooblašča posodobitev vašega dokumenta DID v imeniku PLC, da kaže na vaš novi Personal Data Server."
       plc_irreversible: "<strong>To je nepreklicno.</strong> Ko je poslano, bo identiteta vašega računa (DID) trajno kazala na <strong>%{new_pds}</strong> namesto na <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Žetoni PLC potečejo po 1 uri. Če je vaš potekel, lahko zahtevate novega."
+      plc_expiry_note: "Žetoni PLC potečejo po 15 minutah. Če je vaš potekel, lahko zahtevate novega."
 
       # Sidebar
       download_backup: "Prenesite varnostno kopijo"
@@ -563,13 +563,20 @@ sl:
           provider_only: "Za to mora ukrepati ponudnik PDS — sami tega ne morete odpraviti."
       plc_token_expired:
         title: "Žeton PLC je potekel"
-        what_happened: "Žeton operacije PLC, ki ste ga vnesli, je potekel. Žetoni PLC veljajo le 1 uro, potem ko jih izda vaš stari ponudnik PDS."
+        what_happened: "Žeton operacije PLC, ki ste ga vnesli, je potekel. Žetoni PLC veljajo le 15 minut, potem ko jih izda vaš stari ponudnik PDS."
         current_status: "Selitev zaustavljena — potrebujete nov žeton PLC"
         what_to_do:
           request_token: "Z gumbom \"%{button}\" spodaj zahtevajte nov žeton"
           check_email: "Poiščite e-pošto od %{old_pds} z novim žetonom"
-          submit_in_time: "Novi žeton vnesite v 1 uri po prejemu"
+          submit_in_time: "Novi žeton vnesite v 15 minutah po prejemu"
           data_safe: "Preostali podatki vaše selitve so varni in pripravljeni — potrebujete le nov žeton"
+      plc_token_invalid:
+        title: "Potrditvena koda ni bila prepoznana"
+        what_happened: "Vaš stari strežnik ni prepoznal vnesene potrditvene kode. Imenik PLC se ni spremenil — vaš račun je še vedno na %{old_pds}."
+        current_status: "Selitev zaustavljena — zahtevajte novo potrditveno kodo in jo vnesite natanko tako, kot je bila poslana"
+        what_to_do:
+          use_latest: "Uporabite samo kodo iz najnovejše e-pošte: vsaka nova zahteva nadomesti prejšnjo kodo, koda pa poteče 15 minut po pošiljanju"
+          copy_exactly: "Kopirajte celotno kodo v obliki XXXXX-XXXXX, brez presledkov ali drugih znakov"
       plc_pre_submission_failure:
         title: "Posodobitve PLC ni bilo mogoče dokončati"
         what_happened: "Posodobitve imenika PLC ni bilo mogoče dokončati, vendar je vaš račun varen. Imenik PLC se ni spremenil — vaš račun je še vedno na %{old_pds}."
@@ -577,7 +584,7 @@ sl:
         what_to_do:
           request_code: "Z gumbom \"%{button}\" spodaj pridobite novo potrditveno kodo"
           check_email: "Poiščite e-pošto od %{old_pds} z novo kodo"
-          submit_in_time: "Novo kodo vnesite v 1 uri po prejemu"
+          submit_in_time: "Novo kodo vnesite v 15 minutah po prejemu"
           data_safe: "Podatki vaše selitve (repozitorij, blobi, nastavitve) so varni in pripravljeni"
       credentials_need_reauth:
         title: "Seja je potekla — znova se prijavite"
@@ -718,6 +725,7 @@ sl:
       # PLC token
       plc_submitted: "Žeton PLC poslan! Vaš DID bo kmalu posodobljen."
       plc_blank: "Žeton PLC ne sme biti prazen"
+      plc_format_invalid: "To ni videti kot potrditvena koda. Koda v e-pošti od %{sender} ima obliko XXXXX-XXXXX. Kopirajte jo iz najnovejše e-pošte, brez presledkov."
       session_expired: "Vaša seja je potekla. Prosimo, znova vnesite geslo za nadaljevanje."
       old_session_expired: "Vaša seja s %{pds} je potekla. Prosimo, znova vnesite geslo za nadaljevanje."
       credentials_expired: "Vaše poverilnice so potekle. Prosimo, znova vnesite geslo za nadaljevanje."
@@ -944,12 +952,12 @@ sl:
       note3: "Če potrebujete pomoč, navedite žeton selitve: %{token}"
       retry_button: "Ogled selitve in ponovni poskus"
       plc_expired_heading: "Žeton PLC je potekel"
-      plc_expired_text: "Vaš žeton operacije PLC je potekel. Žetoni PLC veljajo le 1 uro po izdaji."
+      plc_expired_text: "Vaš žeton operacije PLC je potekel. Žetoni PLC veljajo le 15 minut po izdaji."
       plc_expired_steps: "Kaj morate storiti"
       plc_expired_step1: "Z gumbom spodaj odprite stran s stanjem selitve"
       plc_expired_step2: "Kliknite gumb \"Zahtevaj nov žeton PLC\""
       plc_expired_step3: "V e-pošti od %{pds} poiščite novi žeton"
-      plc_expired_step4: "Novi žeton pošljite v 1 uri"
+      plc_expired_step4: "Novi žeton pošljite v 15 minutah"
       plc_expired_button: "Ogled selitve in zahteva za nov žeton"
       plc_expired_good_news: "Dobra novica:"
       plc_expired_safe: "Podatki vaše selitve so varni in pripravljeni. Za dokončanje zadnjega koraka potrebujete le nov žeton PLC."
@@ -994,7 +1002,7 @@ sl:
       plc_email_intro: "Kmalu boste prejeli e-pošto od svojega starega ponudnika PDS (%{pds}) z zadevo:"
       plc_code_info: "Ta e-pošta vsebuje potrditveno kodo (videti je kot %{example})."
       plc_enter_code: "To kodo morate vnesti na strani s stanjem selitve, da dokončate selitev:"
-      plc_expiry: "Pomembno: potrditvena koda poteče po 1 uri. Če e-pošte ne vidite, preverite mapo z neželeno pošto. Prihaja od vašega starega ponudnika PDS, ne od nas."
+      plc_expiry: "Pomembno: potrditvena koda poteče po 15 minutah. Če e-pošte ne vidite, preverite mapo z neželeno pošto. Prihaja od vašega starega ponudnika PDS, ne od nas."
       save_key_heading: "Shranite ta ključ zdaj"
       recovery_key_label: "Vaš ključ za obnovitev:"
       key_use_heading: "Kaj lahko naredim s tem ključem?"
@@ -1002,6 +1010,9 @@ sl:
       next_step_button: "Pojdite na stran selitve in vnesite potrditveno kodo PLC"
 
     plc_token_failed:
+      invalid_heading: "Potrditvena koda ni bila prepoznana"
+      invalid_intro: "Vaš stari strežnik ni prepoznal potrditvene kode PLC, ki ste jo vnesli za selitev %{token}."
+      invalid_what_happened_text: "Koda ni bila tista, ki jo je pričakoval vaš stari strežnik. Običajno gre za tipkarsko napako, kodo iz starejše e-pošte (vsaka nova zahteva nadomesti prejšnjo kodo) ali kodo iz druge e-pošte. Zahtevajte eno novo kodo in jo natanko prekopirajte iz te e-pošte."
       subject: "Zahtevano je ukrepanje: zahtevajte novo potrditveno kodo PLC (%{token})"
       heading: "Žeton PLC je potekel ali neveljaven"
       intro: "Potrditvena koda PLC za vašo selitev %{token} je potekla ali je bila neveljavna."
@@ -1011,7 +1022,7 @@ sl:
       step3: "Vnesite nov žeton, ko ga prejmete po e-pošti"
       error_detail: "Napaka: %{error}"
       safe_text: "Imenik PLC se ni spremenil. Vaš račun ostaja na %{pds}, vsi podatki vaše selitve (repozitorij, datoteke in nastavitve) pa so varno shranjeni in pripravljeni."
-      what_happened_text: "Potrditvena koda vašega starega ponudnika PDS je potekla, preden je bila uporabljena. Te kode veljajo le omejen čas (običajno 1 uro)."
+      what_happened_text: "Potrditvena koda vašega starega ponudnika PDS je potekla, preden je bila uporabljena. Te kode veljajo le omejen čas (običajno 15 minut)."
 
     critical_plc_failure:
       subject: "Nujno: kritična napaka selitve – ne začnite nove selitve (%{token})"

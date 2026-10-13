@@ -96,7 +96,7 @@ ga:
         text: "Cruthaímid do chuntas ar an bhfreastalaí nua agus cóipeálaimid gach rud chuige; taispeánann an leathanach stádais an dul chun cinn. Ná postáil, ná taitin agus ná lean aon rud idir an dá linn: ní thiocfadh na hathruithe sin leat."
       confirm:
         title: "Deimhnigh an bogadh"
-        text: "Seolann do fhreastalaí reatha cód deimhnithe chugat i ríomhphost. Cuir isteach é ar an leathanach stádais laistigh d'uair an chloig, nó iarr ceann nua. Díríonn an chéim seo d'aitheantas ar an bhfreastalaí nua."
+        text: "Seolann do fhreastalaí reatha cód deimhnithe chugat i ríomhphost. Cuir isteach é ar an leathanach stádais laistigh de 15 nóiméad, nó iarr ceann nua. Díríonn an chéim seo d'aitheantas ar an bhfreastalaí nua."
       done:
         title: "Críochnaithe"
         text: "Cuirtear do chuntas ar an bhfreastalaí nua ar siúl agus díghníomhachtaítear an seancheann. Seolaimid ríomhphost chugat faoi conas logáil isteach, mar aon le pasfhocal do chuntais nua."
@@ -427,14 +427,14 @@ ga:
       didnt_receive_plc: "Ní bhfuair tú an ríomhphost?"
       plc_check_spam: "Seiceáil d'fhillteán dramhphoist"
       plc_from_old_pds: "Tagann an ríomhphost ó do fhreastalaí reatha (%{pds}), ní uainne"
-      plc_expires: "Téann an cód in éag tar éis 1 uair"
+      plc_expires: "Téann an cód in éag tar éis 15 nóiméad"
       plc_new_code_help: "Más gá cód nua a fháil, cuir isteach do phasfhocal thíos agus iarrfaimid ceann:"
       plc_password_placeholder: "Pasfhocal do %{handle}"
       request_new_code: "Iarr cód nua"
       technical_details: "Sonraí teicniúla"
       plc_explanation: "Is <strong>comhartha oibríochta PLC</strong> é an cód deimhnithe — údaraíonn sé nuashonrú do dhoiciméad DID san eolaire PLC chun díriú ar do Fhreastalaí Sonraí Pearsanta nua."
       plc_irreversible: "<strong>Tá sé seo do-aisiompaithe.</strong> Nuair a chuirtear isteach é, díreoidh aitheantas do chuntais (DID) go buan ar <strong>%{new_pds}</strong> in ionad <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Téann comharthaí PLC in éag tar éis 1 uair. Má tá do cheann imithe in éag, is féidir leat ceann nua a iarraidh."
+      plc_expiry_note: "Téann comharthaí PLC in éag tar éis 15 nóiméad. Má tá do cheann imithe in éag, is féidir leat ceann nua a iarraidh."
 
       # Sidebar
       download_backup: "Íoslódáil do chóip chúltaca"
@@ -563,13 +563,20 @@ ga:
           provider_only: "Tá gníomh ag teastáil ó sholáthraí an PDS — ní féidir leat é a réiteach thú féin."
       plc_token_expired:
         title: "Comhartha PLC imithe in éag"
-        what_happened: "Tá an comhartha oibríochta PLC a chuir tú isteach imithe in éag. Níl comharthaí PLC bailí ach ar feadh uair an chloig tar éis do do sheansoláthraí PDS iad a eisiúint."
+        what_happened: "Tá an comhartha oibríochta PLC a chuir tú isteach imithe in éag. Níl comharthaí PLC bailí ach ar feadh 15 nóiméad tar éis do do sheansoláthraí PDS iad a eisiúint."
         current_status: "Imirce ar sos — tá comhartha PLC nua ag teastáil uait"
         what_to_do:
           request_token: "Úsáid an cnaipe \"%{button}\" thíos chun comhartha nua a iarraidh"
           check_email: "Lorg ríomhphost ó %{old_pds} leis an gcomhartha nua"
-          submit_in_time: "Cuir isteach an comhartha nua laistigh d'uair an chloig tar éis duit é a fháil"
+          submit_in_time: "Cuir isteach an comhartha nua laistigh de 15 nóiméad tar éis duit é a fháil"
           data_safe: "Tá an chuid eile de shonraí d'imirce slán agus réidh — níl uait ach comhartha nua"
+      plc_token_invalid:
+        title: "Níor aithníodh an cód deimhnithe"
+        what_happened: "Níor aithin do sheanfhreastalaí an cód deimhnithe a chuir tú isteach. Níor athraíodh an t-eolaire PLC — tá do chuntas fós ar %{old_pds}."
+        current_status: "Imirce ar sos — iarr cód deimhnithe nua agus cuir isteach é díreach mar a seoladh é"
+        what_to_do:
+          use_latest: "Ná húsáid ach an cód ón ríomhphost is déanaí: cuireann gach iarratas nua an cód roimhe sin ar ceal, agus téann cód in éag 15 nóiméad tar éis a sheolta"
+          copy_exactly: "Cóipeáil an cód iomlán san fhoirm XXXXX-XXXXX, gan spásanna ná carachtair eile"
       plc_pre_submission_failure:
         title: "Níorbh fhéidir an nuashonrú PLC a chríochnú"
         what_happened: "Níorbh fhéidir nuashonrú an eolaire PLC a chríochnú, ach tá do chuntas slán. Níor athraíodh an t-eolaire PLC — tá do chuntas fós ar %{old_pds}."
@@ -577,7 +584,7 @@ ga:
         what_to_do:
           request_code: "Úsáid an cnaipe \"%{button}\" thíos chun cód deimhnithe nua a fháil"
           check_email: "Lorg ríomhphost ó %{old_pds} leis an gcód nua"
-          submit_in_time: "Cuir isteach an cód nua laistigh d'uair an chloig tar éis duit é a fháil"
+          submit_in_time: "Cuir isteach an cód nua laistigh de 15 nóiméad tar éis duit é a fháil"
           data_safe: "Tá sonraí d'imirce (stór, bloib, sainroghanna) slán agus réidh"
       credentials_need_reauth:
         title: "Seisiún imithe in éag — logáil isteach arís"
@@ -718,6 +725,7 @@ ga:
       # PLC token
       plc_submitted: "Comhartha PLC curtha isteach! Nuashonrófar do DID go luath."
       plc_blank: "Ní féidir leis an gcomhartha PLC a bheith folamh"
+      plc_format_invalid: "Ní cosúil le cód deimhnithe é sin. Tá an cód sa ríomhphost ó %{sender} san fhoirm XXXXX-XXXXX. Cóipeáil é ón ríomhphost is déanaí, gan spásanna."
       session_expired: "Tá do sheisiún imithe in éag. Cuir isteach do phasfhocal arís le do thoil chun leanúint ar aghaidh."
       old_session_expired: "Tá do sheisiún le %{pds} imithe in éag. Cuir isteach do phasfhocal arís le do thoil chun leanúint ar aghaidh."
       credentials_expired: "Tá do dhintiúir imithe in éag. Cuir isteach do phasfhocal arís le do thoil chun leanúint ar aghaidh."
@@ -944,12 +952,12 @@ ga:
       note3: "Más gá cabhair, tagair do do chomhartha imirce: %{token}"
       retry_button: "Féach ar an imirce agus bain triail eile as"
       plc_expired_heading: "Comhartha PLC imithe in éag"
-      plc_expired_text: "Tá do chomhartha oibríochta PLC imithe in éag. Níl comharthaí PLC bailí ach ar feadh uair an chloig tar éis iad a eisiúint."
+      plc_expired_text: "Tá do chomhartha oibríochta PLC imithe in éag. Níl comharthaí PLC bailí ach ar feadh 15 nóiméad tar éis iad a eisiúint."
       plc_expired_steps: "Cad atá le déanamh agat"
       plc_expired_step1: "Oscail leathanach stádais d'imirce leis an gcnaipe thíos"
       plc_expired_step2: "Cliceáil ar an gcnaipe \"Iarr comhartha PLC nua\""
       plc_expired_step3: "Seiceáil do ríomhphost ó %{pds} don chomhartha nua"
-      plc_expired_step4: "Cuir isteach an comhartha nua laistigh d'uair an chloig"
+      plc_expired_step4: "Cuir isteach an comhartha nua laistigh de 15 nóiméad"
       plc_expired_button: "Féach ar an imirce agus iarr comhartha nua"
       plc_expired_good_news: "Dea-scéala:"
       plc_expired_safe: "Tá sonraí d'imirce slán agus réidh. Níl uait ach comhartha PLC nua chun an chéim dheireanach a chríochnú."
@@ -994,7 +1002,7 @@ ga:
       plc_email_intro: "Gheobhaidh tú ríomhphost go luath ó do sheansoláthraí PDS (%{pds}) leis an líne ábhair seo:"
       plc_code_info: "Tá cód deimhnithe sa ríomhphost sin (breathnaíonn sé cosúil le %{example})."
       plc_enter_code: "Ní mór duit an cód seo a chur isteach ar leathanach stádais d'imirce chun an imirce a chur i gcrích:"
-      plc_expiry: "Tábhachtach: téann an cód deimhnithe in éag tar éis uair an chloig. Mura bhfeiceann tú an ríomhphost, seiceáil d'fhillteán dramhphoist. Tagann sé ó do sheansoláthraí PDS, ní uainne."
+      plc_expiry: "Tábhachtach: téann an cód deimhnithe in éag tar éis 15 nóiméad. Mura bhfeiceann tú an ríomhphost, seiceáil d'fhillteán dramhphoist. Tagann sé ó do sheansoláthraí PDS, ní uainne."
       save_key_heading: "Sábháil an eochair seo anois"
       recovery_key_label: "D'eochair aisghabhála:"
       key_use_heading: "Cad is féidir liom a dhéanamh leis an eochair seo?"
@@ -1002,6 +1010,9 @@ ga:
       next_step_button: "Téigh chuig leathanach na himirce chun do chód deimhnithe PLC a chur isteach"
 
     plc_token_failed:
+      invalid_heading: "Níor aithníodh an cód deimhnithe"
+      invalid_intro: "Níor aithin do sheanfhreastalaí an cód deimhnithe PLC a chuir tú isteach don imirce %{token}."
+      invalid_what_happened_text: "Níorbh é an cód a raibh do sheanfhreastalaí ag súil leis. De ghnáth is botún clóscríofa is cúis leis, cód ó ríomhphost níos sine (cuireann gach iarratas nua an cód roimhe sin ar ceal), nó cód ó ríomhphost eile. Iarr cód nua amháin agus cóipeáil go cruinn ón ríomhphost sin é."
       subject: "Gníomh ag teastáil: iarr cód deimhnithe PLC nua (%{token})"
       heading: "Comhartha PLC imithe in éag nó neamhbhailí"
       intro: "Tá cód deimhnithe PLC d'imirce %{token} imithe in éag nó bhí sé neamhbhailí."
@@ -1011,7 +1022,7 @@ ga:
       step3: "Cuir isteach an comhartha nua nuair a fhaigheann tú é trí ríomhphost"
       error_detail: "Earráid: %{error}"
       safe_text: "Níor athraíodh an t-eolaire PLC. Fanann do chuntas ar %{pds}, agus tá sonraí d'imirce go léir (stór, comhaid agus sainroghanna) stóráilte go slán agus réidh."
-      what_happened_text: "Chuaigh an cód deimhnithe ó do sheansoláthraí PDS in éag sular úsáideadh é. Níl na cóid seo bailí ach ar feadh tréimhse teoranta (uair an chloig de ghnáth)."
+      what_happened_text: "Chuaigh an cód deimhnithe ó do sheansoláthraí PDS in éag sular úsáideadh é. Níl na cóid seo bailí ach ar feadh tréimhse teoranta (15 nóiméad de ghnáth)."
 
     critical_plc_failure:
       subject: "Práinneach: teip chriticiúil imirce – ná tosaigh imirce nua (%{token})"

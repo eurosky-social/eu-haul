@@ -96,7 +96,7 @@ lv:
         text: "Mēs izveidojam jūsu kontu jaunajā serverī un nokopējam uz to visu; statusa lapā redzams progress. Pa to laiku nepublicējiet, neatzīmējiet „patīk“ un nesekojiet nevienam: šīs izmaiņas netiktu pārnestas."
       confirm:
         title: "Apstipriniet pārcelšanu"
-        text: "Jūsu pašreizējais serveris nosūta jums apstiprinājuma kodu pa e-pastu. Ievadiet to statusa lapā stundas laikā vai pieprasiet jaunu. Šis solis novirza jūsu identitāti uz jauno serveri."
+        text: "Jūsu pašreizējais serveris nosūta jums apstiprinājuma kodu pa e-pastu. Ievadiet to statusa lapā 15 minūšu laikā vai pieprasiet jaunu. Šis solis novirza jūsu identitāti uz jauno serveri."
       done:
         title: "Gatavs"
         text: "Jūsu konts jaunajā serverī tiek ieslēgts, un vecais tiek deaktivizēts. Mēs pa e-pastu nosūtām norādes, kā pieteikties, kopā ar jaunā konta paroli."
@@ -427,14 +427,14 @@ lv:
       didnt_receive_plc: "Nesaņēmāt e-pastu?"
       plc_check_spam: "Pārbaudiet surogātpasta vai nevēlamā pasta mapi"
       plc_from_old_pds: "E-pastu sūta jūsu pašreizējais serveris (%{pds}), nevis mēs"
-      plc_expires: "Koda derīguma termiņš beidzas pēc 1 stundas"
+      plc_expires: "Koda derīguma termiņš beidzas pēc 15 minūtēm"
       plc_new_code_help: "Ja nepieciešams jauns kods, ievadiet paroli zemāk un mēs to pieprasīsim:"
       plc_password_placeholder: "Parole %{handle}"
       request_new_code: "Pieprasīt jaunu kodu"
       technical_details: "Tehniskie dati"
       plc_explanation: "Apstiprinājuma kods ir <strong>PLC operācijas žetons</strong> — tas autorizē jūsu DID dokumenta atjaunināšanu PLC katalogā, lai norādītu uz jauno Personal Data Server."
       plc_irreversible: "<strong>Šī darbība ir neatgriezeniska.</strong> Pēc iesniegšanas jūsu konta identitāte (DID) pastāvīgi norādīs uz <strong>%{new_pds}</strong> nevis <strong>%{old_pds}</strong>."
-      plc_expiry_note: "PLC žetonu derīguma termiņš beidzas pēc 1 stundas. Ja jūsējais ir beidzies, varat pieprasīt jaunu."
+      plc_expiry_note: "PLC žetonu derīguma termiņš beidzas pēc 15 minūtēm. Ja jūsējais ir beidzies, varat pieprasīt jaunu."
 
       # Sidebar
       download_backup: "Lejupielādēt rezerves kopiju"
@@ -563,13 +563,20 @@ lv:
           provider_only: "Tam nepieciešama PDS nodrošinātāja rīcība — jūs to nevarat novērst pats."
       plc_token_expired:
         title: "PLC žetona derīguma termiņš ir beidzies"
-        what_happened: "Jūsu ievadītā PLC operācijas žetona derīguma termiņš ir beidzies. PLC žetoni ir derīgi tikai 1 stundu pēc tam, kad tos izsniedz jūsu vecais PDS nodrošinātājs."
+        what_happened: "Jūsu ievadītā PLC operācijas žetona derīguma termiņš ir beidzies. PLC žetoni ir derīgi tikai 15 minūtes pēc tam, kad tos izsniedz jūsu vecais PDS nodrošinātājs."
         current_status: "Migrācija apturēta — nepieciešams jauns PLC žetons"
         what_to_do:
           request_token: "Izmantojiet tālāk redzamo pogu \"%{button}\", lai pieprasītu jaunu žetonu"
           check_email: "Meklējiet e-pastu no %{old_pds} ar jauno žetonu"
-          submit_in_time: "Ievadiet jauno žetonu 1 stundas laikā pēc tā saņemšanas"
+          submit_in_time: "Ievadiet jauno žetonu 15 minūšu laikā pēc tā saņemšanas"
           data_safe: "Pārējie jūsu migrācijas dati ir drošībā un gatavi — nepieciešams tikai jauns žetons"
+      plc_token_invalid:
+        title: "Apstiprinājuma kods netika atpazīts"
+        what_happened: "Jūsu vecais serveris neatpazina ievadīto apstiprinājuma kodu. PLC katalogs netika mainīts — jūsu konts joprojām ir %{old_pds}."
+        current_status: "Migrācija apturēta — pieprasiet jaunu apstiprinājuma kodu un ievadiet to tieši tā, kā tas tika nosūtīts"
+        what_to_do:
+          use_latest: "Izmantojiet tikai jaunākā e-pasta kodu: katrs jauns pieprasījums aizstāj iepriekšējo kodu, un kods zaudē derīgumu 15 minūtes pēc nosūtīšanas"
+          copy_exactly: "Nokopējiet visu kodu formā XXXXX-XXXXX, bez atstarpēm vai citām rakstzīmēm"
       plc_pre_submission_failure:
         title: "PLC atjaunināšanu neizdevās pabeigt"
         what_happened: "PLC kataloga atjaunināšanu neizdevās pabeigt, taču jūsu konts ir drošībā. PLC katalogs netika mainīts — jūsu konts joprojām ir %{old_pds}."
@@ -577,7 +584,7 @@ lv:
         what_to_do:
           request_code: "Izmantojiet tālāk redzamo pogu \"%{button}\", lai saņemtu jaunu apstiprinājuma kodu"
           check_email: "Meklējiet e-pastu no %{old_pds} ar jauno kodu"
-          submit_in_time: "Ievadiet jauno kodu 1 stundas laikā pēc tā saņemšanas"
+          submit_in_time: "Ievadiet jauno kodu 15 minūšu laikā pēc tā saņemšanas"
           data_safe: "Jūsu migrācijas dati (repozitorijs, blob, preferences) ir drošībā un gatavi"
       credentials_need_reauth:
         title: "Sesija beigusies — piesakieties vēlreiz"
@@ -718,6 +725,7 @@ lv:
       # PLC token
       plc_submitted: "PLC žetons iesniegts! Jūsu DID drīz tiks atjaunināts."
       plc_blank: "PLC žetons nedrīkst būt tukšs"
+      plc_format_invalid: "Tas neizskatās pēc apstiprinājuma koda. Kods e-pastā no %{sender} ir formā XXXXX-XXXXX. Nokopējiet to no jaunākā e-pasta, bez atstarpēm."
       session_expired: "Jūsu sesija ir beigusies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
       old_session_expired: "Jūsu sesija ar %{pds} ir beigusies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
       credentials_expired: "Jūsu pieteikšanās dati ir beigušies. Lūdzu, atkārtoti ievadiet paroli, lai turpinātu."
@@ -944,12 +952,12 @@ lv:
       note3: "Ja nepieciešama palīdzība, norādiet migrācijas žetonu: %{token}"
       retry_button: "Skatīt migrāciju un mēģināt vēlreiz"
       plc_expired_heading: "PLC žetona derīguma termiņš ir beidzies"
-      plc_expired_text: "Jūsu PLC operācijas žetona derīguma termiņš ir beidzies. PLC žetoni ir derīgi tikai 1 stundu pēc to izsniegšanas."
+      plc_expired_text: "Jūsu PLC operācijas žetona derīguma termiņš ir beidzies. PLC žetoni ir derīgi tikai 15 minūtes pēc to izsniegšanas."
       plc_expired_steps: "Kas jums jādara"
       plc_expired_step1: "Atveriet migrācijas statusa lapu ar pogu zemāk"
       plc_expired_step2: "Noklikšķiniet uz pogas \"Pieprasīt jaunu PLC žetonu\""
       plc_expired_step3: "Pārbaudiet e-pastu no %{pds} ar jauno žetonu"
-      plc_expired_step4: "Iesniedziet jauno žetonu 1 stundas laikā"
+      plc_expired_step4: "Iesniedziet jauno žetonu 15 minūšu laikā"
       plc_expired_button: "Skatīt migrāciju un pieprasīt jaunu žetonu"
       plc_expired_good_news: "Labā ziņa:"
       plc_expired_safe: "Jūsu migrācijas dati ir drošībā un gatavi. Lai pabeigtu pēdējo soli, nepieciešams tikai jauns PLC žetons."
@@ -994,7 +1002,7 @@ lv:
       plc_email_intro: "Drīzumā saņemsiet e-pastu no sava vecā PDS nodrošinātāja (%{pds}) ar tematu:"
       plc_code_info: "Šajā e-pastā ir apstiprinājuma kods (tas izskatās šādi: %{example})."
       plc_enter_code: "Šis kods jāievada migrācijas statusa lapā, lai pabeigtu migrāciju:"
-      plc_expiry: "Svarīgi: apstiprinājuma koda derīguma termiņš beidzas pēc 1 stundas. Ja neredzat e-pastu, pārbaudiet surogātpasta mapi. To sūta jūsu vecais PDS nodrošinātājs, nevis mēs."
+      plc_expiry: "Svarīgi: apstiprinājuma koda derīguma termiņš beidzas pēc 15 minūtēm. Ja neredzat e-pastu, pārbaudiet surogātpasta mapi. To sūta jūsu vecais PDS nodrošinātājs, nevis mēs."
       save_key_heading: "Saglabājiet šo atslēgu tūlīt"
       recovery_key_label: "Jūsu atjaunošanas atslēga:"
       key_use_heading: "Ko es varu darīt ar šo atslēgu?"
@@ -1002,6 +1010,9 @@ lv:
       next_step_button: "Doties uz migrācijas lapu, lai ievadītu PLC apstiprinājuma kodu"
 
     plc_token_failed:
+      invalid_heading: "Apstiprinājuma kods netika atpazīts"
+      invalid_intro: "Jūsu vecais serveris neatpazina PLC apstiprinājuma kodu, ko ievadījāt migrācijai %{token}."
+      invalid_what_happened_text: "Kods nebija tas, ko gaidīja jūsu vecais serveris. Parasti iemesls ir pārrakstīšanās kļūda, kods no vecāka e-pasta (katrs jauns pieprasījums aizstāj iepriekšējo kodu) vai kods no cita e-pasta. Pieprasiet vienu jaunu kodu un nokopējiet to precīzi no tā e-pasta."
       subject: "Nepieciešama darbība: pieprasiet jaunu PLC apstiprinājuma kodu (%{token})"
       heading: "PLC žetons beidzies vai nederīgs"
       intro: "PLC apstiprinājuma kods jūsu migrācijai %{token} ir beidzies vai bija nederīgs."
@@ -1011,7 +1022,7 @@ lv:
       step3: "Ievadiet jauno žetonu, kad to saņemsiet pa e-pastu"
       error_detail: "Kļūda: %{error}"
       safe_text: "PLC katalogs netika mainīts. Jūsu konts paliek %{pds}, un visi jūsu migrācijas dati (repozitorijs, faili un preferences) ir droši saglabāti un gatavi."
-      what_happened_text: "Apstiprinājuma koda no jūsu vecā PDS nodrošinātāja derīguma termiņš beidzās, pirms to varēja izmantot. Šie kodi ir derīgi tikai ierobežotu laiku (parasti 1 stundu)."
+      what_happened_text: "Apstiprinājuma koda no jūsu vecā PDS nodrošinātāja derīguma termiņš beidzās, pirms to varēja izmantot. Šie kodi ir derīgi tikai ierobežotu laiku (parasti 15 minūtes)."
 
     critical_plc_failure:
       subject: "Steidzami: kritiska migrācijas kļūda – neuzsāciet jaunu migrāciju (%{token})"

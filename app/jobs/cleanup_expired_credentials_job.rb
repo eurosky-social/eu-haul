@@ -10,7 +10,7 @@
 #   3. Logs cleanup statistics
 #
 # Security Rationale:
-#   - PLC tokens are single-use and short-lived (max 1 hour) - always safe to clear
+#   - PLC tokens are single-use and short-lived (15 minutes) - always safe to clear
 #   - Passwords (for new PDS) and old PDS tokens are needed until PLC update completes
 #   - For pre-PLC migrations, only the PLC token is cleared (password + old tokens kept)
 #   - For post-PLC or abandoned (failed > 7 days) migrations, all credentials cleared

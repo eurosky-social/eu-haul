@@ -1,5 +1,5 @@
-<%= email_title t('mailers.plc_token_failed.heading') %>
-<%= email_text t('mailers.plc_token_failed.intro', token: @migration.token) %>
+<%= email_title t(@heading_key) %>
+<%= email_text t(@intro_key, token: @migration.token) %>
 
 <%= email_well do %>
   <%= email_heading t('mailers.common.account_safe') %>
@@ -8,7 +8,7 @@
 
 <%= email_warning do %>
   <%= email_heading t('mailers.common.what_happened') %>
-  <%= email_text t('mailers.plc_token_failed.what_happened_text') %>
+  <%= email_text t(@what_happened_key) %>
   <% if @error_message.present? %>
     <%= email_text tag.strong(t('mailers.plc_token_failed.error_detail', error: @error_message)) %>
   <% end %>

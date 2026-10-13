@@ -11,7 +11,7 @@
 <%= t('mailers.rotation_key_notice.check_email') %>
 ================================================================================
 
-<%= t('mailers.rotation_key_notice.plc_email_intro', pds: @migration.old_pds_host) %>
+<%= t('mailers.rotation_key_notice.plc_email_intro', pds: PlcMailSender.display(@migration.old_pds_host)) %>
 
     "PLC Update Operation Requested"
 

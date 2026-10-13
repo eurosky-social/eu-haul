@@ -44,7 +44,7 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
     assert_equal "⏰", context[:icon]
     assert_equal "PLC token expired", context[:title]
     assert_match(/PLC operation token.*expired/i, context[:what_happened])
-    assert_match(/only valid for 1 hour/i, context[:what_happened])
+    assert_match(/only valid for 15 minutes/i, context[:what_happened])
     assert_equal "Migration paused — you need a new PLC token", context[:current_status]
   end
 
@@ -54,8 +54,10 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
     assert context[:what_to_do].is_a?(Array)
     # Names the button exactly as the page labels it
     assert context[:what_to_do].any? { |step| step.include?(I18n.t("migrations.error_details.request_plc_action")) }
-    assert context[:what_to_do].any? { |step| step.include?(@migration.old_pds_host) }
-    assert context[:what_to_do].any? { |step| step.include?("within 1 hour") }
+    # The sender is named the way the inbox shows it: bare host, no scheme
+    assert context[:what_to_do].any? { |step| step.include?("oldpds.example.com") }
+    refute context[:what_to_do].any? { |step| step.include?("https://oldpds") }
+    assert context[:what_to_do].any? { |step| step.include?("within 15 minutes") }
     assert context[:what_to_do].any? { |step| step.include?("migration data is safe") }
   end
 
@@ -101,4 +103,38 @@ class MigrationErrorHelperPlcTest < ActiveSupport::TestCase
     # Should not raise error, even with nil old_pds_host
     assert context[:what_to_do].any? { |step| step.is_a?(String) }
   end
+
+# ============================================================================
+# Code the old PDS did not recognise ("Token is invalid")
+# ============================================================================
+
+NOT_RECOGNISED = "PLC confirmation code not recognised by your old PDS. Request a new code and enter it exactly as it appears in the newest email."
+
+test "detect_error_type identifies a PLC code the old PDS did not recognise" do
+  assert_equal :plc_token_invalid, MigrationErrorHelper.detect_error_type(NOT_RECOGNISED)
+end
+
+test "plc_token_invalid_context tells the user to use only the newest code, copied exactly" do
+  @migration.update!(error_code: "plc_token_invalid", last_error: NOT_RECOGNISED)
+
+  context = MigrationErrorHelper.explain_error(@migration)
+
+  assert_equal :warning, context[:severity]
+  assert_equal I18n.t("migrations.error_messages.plc_token_invalid.title"), context[:title]
+  assert_includes context[:what_happened], @migration.old_pds_host
+  assert context[:show_request_new_plc_token]
+  refute context[:show_retry_button]
+  assert context[:what_to_do].any? { |step| step.include?("most recent email") }
+  assert context[:what_to_do].any? { |step| step.include?("XXXXX-XXXXX") }
+  assert context[:what_to_do].any? { |step| step.include?(I18n.t("migrations.error_details.request_plc_action")) }
+end
+
+test "the advice names Bluesky as the sender for a Bluesky-hosted account" do
+  @migration.update!(old_pds_host: "https://shimeji.us-east.host.bsky.network")
+
+  context = MigrationErrorHelper.explain_error(@migration)
+
+  assert context[:what_to_do].any? { |step| step.include?("Bluesky (noreply@bsky.app)") }
+  refute context[:what_to_do].any? { |step| step.include?("shimeji") }
+end
 end

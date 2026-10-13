@@ -244,6 +244,63 @@ RSpec.describe UpdatePlcJob, type: :job do
       end
     end
 
+    # The old PDS answers signPlcOperation with "Token is invalid" for a code it
+    # never issued (typo, stray character, or superseded by a later request) and
+    # "Token is expired" once the code's 15 minutes are up. Both are
+    # pre-submission: the PLC directory is untouched and the user is mailed.
+    context 'when the old PDS does not recognise the code' do
+      before do
+        allow(goat_service).to receive(:get_recommended_plc_operation).and_return(unsigned_op_path)
+        allow(goat_service).to receive(:sign_plc_operation).and_raise(
+          GoatService::GoatError, 'Failed to sign PLC operation: 400 Bad Request: Token is invalid'
+        )
+      end
+
+      it 'fails the migration as plc_token_invalid with advice to use the newest code' do
+        expect { described_class.perform_now(migration.id) }.to raise_error(GoatService::GoatError)
+
+        migration.reload
+        expect(migration.status).to eq('failed')
+        expect(migration.error_code).to eq('plc_token_invalid')
+        expect(migration.last_error).to match(/not recognised/)
+        expect(migration.progress_data['plc_operation_submitted_at']).to be_nil
+      end
+
+      it 'does not submit anything to the PLC directory' do
+        expect(goat_service).not_to receive(:submit_plc_operation)
+
+        expect { described_class.perform_now(migration.id) }.to raise_error(GoatService::GoatError)
+      end
+
+      it 'mails the user the plc_token_failed notice' do
+        expect {
+          begin
+            described_class.perform_now(migration.id)
+          rescue GoatService::GoatError
+            nil
+          end
+        }.to have_enqueued_mail(MigrationMailer, :plc_token_failed).once
+      end
+    end
+
+    context 'when the old PDS reports the code expired' do
+      before do
+        allow(goat_service).to receive(:get_recommended_plc_operation).and_return(unsigned_op_path)
+        allow(goat_service).to receive(:sign_plc_operation).and_raise(
+          GoatService::GoatError, 'Failed to sign PLC operation: 400 Bad Request: Token is expired'
+        )
+      end
+
+      it 'fails the migration as plc_token_expired' do
+        expect { described_class.perform_now(migration.id) }.to raise_error(GoatService::GoatError)
+
+        migration.reload
+        expect(migration.status).to eq('failed')
+        expect(migration.error_code).to eq('plc_token_expired')
+        expect(migration.last_error).to match(/expired/)
+      end
+    end
+
     context 'when submitting PLC operation fails' do
       before do
         allow(goat_service).to receive(:get_recommended_plc_operation).and_return(unsigned_op_path)

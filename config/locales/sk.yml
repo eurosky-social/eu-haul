@@ -96,7 +96,7 @@ sk:
         text: "Vytvoríme váš účet na novom serveri a skopírujeme naň všetko; priebeh uvidíte na stránke stavu. Medzitým nič neuverejňujte, nehodnoťte ani nikoho nesledujte: tieto zmeny by sa nepreniesli."
       confirm:
         title: "Potvrdenie presunu"
-        text: "Váš aktuálny server vám pošle e-mailom potvrdzovací kód. Zadajte ho na stránke stavu do jednej hodiny alebo si vyžiadajte nový. Tento krok nasmeruje vašu identitu na nový server."
+        text: "Váš aktuálny server vám pošle e-mailom potvrdzovací kód. Zadajte ho na stránke stavu do 15 minút alebo si vyžiadajte nový. Tento krok nasmeruje vašu identitu na nový server."
       done:
         title: "Hotovo"
         text: "Váš účet na novom serveri sa zapne a starý sa deaktivuje. E-mailom vám pošleme pokyny na prihlásenie spolu s heslom k novému účtu."
@@ -427,14 +427,14 @@ sk:
       didnt_receive_plc: "Nedostali ste e-mail?"
       plc_check_spam: "Skontrolujte priečinok so spamom alebo nevyžiadanou poštou"
       plc_from_old_pds: "E-mail prichádza z vášho súčasného servera (%{pds}), nie od nás"
-      plc_expires: "Kód vyprší po 1 hodine"
+      plc_expires: "Kód vyprší po 15 minútach"
       plc_new_code_help: "Ak potrebujete nový kód, zadajte heslo nižšie a vyžiadame ho:"
       plc_password_placeholder: "Heslo pre %{handle}"
       request_new_code: "Vyžiadať nový kód"
       technical_details: "Technické podrobnosti"
       plc_explanation: "Potvrdzovací kód je <strong>token operácie PLC</strong> — autorizuje aktualizáciu vášho dokumentu DID v adresári PLC, aby ukazoval na váš nový Personal Data Server."
       plc_irreversible: "<strong>Toto je nezvratné.</strong> Po odoslaní bude identita vášho účtu (DID) natrvalo ukazovať na <strong>%{new_pds}</strong> namiesto <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Tokeny PLC vyprší po 1 hodine. Ak váš vypršal, môžete si vyžiadať nový."
+      plc_expiry_note: "Tokeny PLC vyprší po 15 minútach. Ak váš vypršal, môžete si vyžiadať nový."
 
       # Sidebar
       download_backup: "Stiahnuť zálohu"
@@ -563,13 +563,20 @@ sk:
           provider_only: "Vyžaduje si to zásah poskytovateľa PDS — sami to opraviť nemôžete."
       plc_token_expired:
         title: "Platnosť tokenu PLC vypršala"
-        what_happened: "Platnosť zadaného tokenu operácie PLC vypršala. Tokeny PLC platia iba 1 hodinu od vydania vaším starým poskytovateľom PDS."
+        what_happened: "Platnosť zadaného tokenu operácie PLC vypršala. Tokeny PLC platia iba 15 minút od vydania vaším starým poskytovateľom PDS."
         current_status: "Migrácia pozastavená — potrebujete nový token PLC"
         what_to_do:
           request_token: "Použite tlačidlo \"%{button}\" nižšie a vyžiadajte si nový token"
           check_email: "Vyhľadajte e-mail od %{old_pds} s novým tokenom"
-          submit_in_time: "Zadajte nový token do 1 hodiny od jeho prijatia"
+          submit_in_time: "Zadajte nový token do 15 minút od jeho prijatia"
           data_safe: "Ostatné dáta migrácie sú v bezpečí a pripravené — potrebujete iba nový token"
+      plc_token_invalid:
+        title: "Potvrdzovací kód nebol rozpoznaný"
+        what_happened: "Váš starý server nerozpoznal zadaný potvrdzovací kód. Adresár PLC sa nezmenil — váš účet je stále na %{old_pds}."
+        current_status: "Migrácia pozastavená — vyžiadajte si nový potvrdzovací kód a zadajte ho presne tak, ako bol odoslaný"
+        what_to_do:
+          use_latest: "Použite iba kód z najnovšieho e-mailu: každá nová žiadosť nahradí predchádzajúci kód a kód vyprší 15 minút po odoslaní"
+          copy_exactly: "Skopírujte celý kód v tvare XXXXX-XXXXX, bez medzier a iných znakov"
       plc_pre_submission_failure:
         title: "Aktualizáciu PLC sa nepodarilo dokončiť"
         what_happened: "Aktualizáciu adresára PLC sa nepodarilo dokončiť, ale váš účet je v bezpečí. Adresár PLC sa nezmenil — váš účet je stále na %{old_pds}."
@@ -577,7 +584,7 @@ sk:
         what_to_do:
           request_code: "Použite tlačidlo \"%{button}\" nižšie a získajte nový potvrdzovací kód"
           check_email: "Vyhľadajte e-mail od %{old_pds} s novým kódom"
-          submit_in_time: "Zadajte nový kód do 1 hodiny od jeho prijatia"
+          submit_in_time: "Zadajte nový kód do 15 minút od jeho prijatia"
           data_safe: "Dáta migrácie (repozitár, bloby, preferencie) sú v bezpečí a pripravené"
       credentials_need_reauth:
         title: "Relácia vypršala — prihláste sa znova"
@@ -718,6 +725,7 @@ sk:
       # PLC token
       plc_submitted: "Token PLC odoslaný! Váš DID bude čoskoro aktualizovaný."
       plc_blank: "Token PLC nemôže byť prázdny"
+      plc_format_invalid: "Toto nevyzerá ako potvrdzovací kód. Kód v e-maile od %{sender} má tvar XXXXX-XXXXX. Skopírujte ho z najnovšieho e-mailu, bez medzier."
       session_expired: "Vaša relácia vypršala. Prosím, znova zadajte heslo pre pokračovanie."
       old_session_expired: "Vaša relácia s %{pds} vypršala. Prosím, znova zadajte heslo pre pokračovanie."
       credentials_expired: "Vaše prihlasovacie údaje vypršali. Prosím, znova zadajte heslo pre pokračovanie."
@@ -944,12 +952,12 @@ sk:
       note3: "Ak potrebujete pomoc, uveďte token migrácie: %{token}"
       retry_button: "Zobraziť migráciu a zopakovať"
       plc_expired_heading: "Platnosť tokenu PLC vypršala"
-      plc_expired_text: "Platnosť vášho tokenu operácie PLC vypršala. Tokeny PLC platia iba 1 hodinu od vydania."
+      plc_expired_text: "Platnosť vášho tokenu operácie PLC vypršala. Tokeny PLC platia iba 15 minút od vydania."
       plc_expired_steps: "Čo musíte urobiť"
       plc_expired_step1: "Otvorte stránku stavu migrácie tlačidlom nižšie"
       plc_expired_step2: "Kliknite na tlačidlo \"Vyžiadať nový token PLC\""
       plc_expired_step3: "Vyhľadajte e-mail od %{pds} s novým tokenom"
-      plc_expired_step4: "Odošlite nový token do 1 hodiny"
+      plc_expired_step4: "Odošlite nový token do 15 minút"
       plc_expired_button: "Zobraziť migráciu a vyžiadať nový token"
       plc_expired_good_news: "Dobrá správa:"
       plc_expired_safe: "Dáta migrácie sú v bezpečí a pripravené. Na dokončenie posledného kroku potrebujete iba nový token PLC."
@@ -994,7 +1002,7 @@ sk:
       plc_email_intro: "Čoskoro dostanete e-mail od svojho starého poskytovateľa PDS (%{pds}) s predmetom:"
       plc_code_info: "Tento e-mail obsahuje potvrdzovací kód (vyzerá ako %{example})."
       plc_enter_code: "Na dokončenie migrácie musíte tento kód zadať na stránke stavu migrácie:"
-      plc_expiry: "Dôležité: platnosť potvrdzovacieho kódu vyprší po 1 hodine. Ak e-mail nevidíte, skontrolujte priečinok so spamom. Prichádza od vášho starého poskytovateľa PDS, nie od nás."
+      plc_expiry: "Dôležité: platnosť potvrdzovacieho kódu vyprší po 15 minútach. Ak e-mail nevidíte, skontrolujte priečinok so spamom. Prichádza od vášho starého poskytovateľa PDS, nie od nás."
       save_key_heading: "Uložte si tento kľúč hneď teraz"
       recovery_key_label: "Váš kľúč na obnovenie:"
       key_use_heading: "Na čo mi je tento kľúč?"
@@ -1002,6 +1010,9 @@ sk:
       next_step_button: "Prejsť na stránku migrácie a zadať potvrdzovací kód PLC"
 
     plc_token_failed:
+      invalid_heading: "Potvrdzovací kód nebol rozpoznaný"
+      invalid_intro: "Váš starý server nerozpoznal potvrdzovací kód PLC, ktorý ste zadali pre migráciu %{token}."
+      invalid_what_happened_text: "Kód nebol ten, ktorý váš starý server očakával. Zvyčajne ide o preklep, kód zo staršieho e-mailu (každá nová žiadosť nahradí predchádzajúci kód) alebo kód z iného e-mailu. Vyžiadajte si jeden nový kód a skopírujte ho presne z tohto e-mailu."
       subject: "Vyžaduje sa akcia: vyžiadajte si nový potvrdzovací kód PLC (%{token})"
       heading: "Token PLC vypršal alebo je neplatný"
       intro: "Potvrdzovací kód PLC pre vašu migráciu %{token} vypršal alebo bol neplatný."
@@ -1011,7 +1022,7 @@ sk:
       step3: "Zadajte nový token, keď ho dostanete e-mailom"
       error_detail: "Chyba: %{error}"
       safe_text: "Adresár PLC sa nezmenil. Váš účet zostáva na %{pds} a všetky dáta migrácie (repozitár, súbory a preferencie) sú bezpečne uložené a pripravené."
-      what_happened_text: "Platnosť potvrdzovacieho kódu od vášho starého poskytovateľa PDS vypršala skôr, ako mohol byť použitý. Tieto kódy platia iba obmedzený čas (zvyčajne 1 hodinu)."
+      what_happened_text: "Platnosť potvrdzovacieho kódu od vášho starého poskytovateľa PDS vypršala skôr, ako mohol byť použitý. Tieto kódy platia iba obmedzený čas (zvyčajne 15 minút)."
 
     critical_plc_failure:
       subject: "Naliehavé: kritické zlyhanie migrácie – nespúšťajte novú migráciu (%{token})"

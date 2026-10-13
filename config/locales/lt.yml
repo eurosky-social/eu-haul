@@ -96,7 +96,7 @@ lt:
         text: "Sukuriame jūsų paskyrą naujame serveryje ir nukopijuojame į ją viską; būsenos puslapyje matyti eiga. Tuo metu nieko neskelbkite, nieko nepažymėkite kaip patinkančio ir nieko nesekite: šie pakeitimai nebūtų perkelti."
       confirm:
         title: "Patvirtinkite perkėlimą"
-        text: "Jūsų dabartinis serveris atsiunčia jums patvirtinimo kodą el. paštu. Įveskite jį būsenos puslapyje per valandą arba paprašykite naujo. Šis žingsnis nukreipia jūsų tapatybę į naująjį serverį."
+        text: "Jūsų dabartinis serveris atsiunčia jums patvirtinimo kodą el. paštu. Įveskite jį būsenos puslapyje per 15 minučių arba paprašykite naujo. Šis žingsnis nukreipia jūsų tapatybę į naująjį serverį."
       done:
         title: "Atlikta"
         text: "Jūsų paskyra naujame serveryje įjungiama, o senoji išjungiama. El. paštu atsiunčiame, kaip prisijungti, kartu su naujosios paskyros slaptažodžiu."
@@ -427,14 +427,14 @@ lt:
       didnt_receive_plc: "Negavote el. laiško?"
       plc_check_spam: "Patikrinkite brukalų ar nepageidaujamo pašto aplanką"
       plc_from_old_pds: "El. laišką siunčia jūsų dabartinis serveris (%{pds}), ne mes"
-      plc_expires: "Kodas nebegalioja po 1 valandos"
+      plc_expires: "Kodas nebegalioja po 15 minučių"
       plc_new_code_help: "Jei reikia naujo kodo, įveskite slaptažodį žemiau ir mes paprašysime:"
       plc_password_placeholder: "Slaptažodis %{handle}"
       request_new_code: "Prašyti naujo kodo"
       technical_details: "Techniniai duomenys"
       plc_explanation: "Patvirtinimo kodas yra <strong>PLC operacijos žetonas</strong> — jis suteikia teisę atnaujinti jūsų DID dokumentą PLC kataloge, kad rodytų į naują Personal Data Server."
       plc_irreversible: "<strong>Tai negrįžtama.</strong> Pateikus, jūsų paskyros tapatybė (DID) visam laikui rodys į <strong>%{new_pds}</strong> vietoj <strong>%{old_pds}</strong>."
-      plc_expiry_note: "PLC žetonai nebegalioja po 1 valandos. Jei jūsų nebegalioja, galite prašyti naujo."
+      plc_expiry_note: "PLC žetonai nebegalioja po 15 minučių. Jei jūsų nebegalioja, galite prašyti naujo."
 
       # Sidebar
       download_backup: "Atsisiųskite atsarginę kopiją"
@@ -563,13 +563,20 @@ lt:
           provider_only: "Tam reikia PDS teikėjo veiksmų — patys to sutvarkyti negalite."
       plc_token_expired:
         title: "PLC žetonas nebegalioja"
-        what_happened: "Jūsų įvestas PLC operacijos žetonas nebegalioja. PLC žetonai galioja tik 1 valandą po to, kai juos išduoda senasis PDS teikėjas."
+        what_happened: "Jūsų įvestas PLC operacijos žetonas nebegalioja. PLC žetonai galioja tik 15 minučių po to, kai juos išduoda senasis PDS teikėjas."
         current_status: "Perkėlimas pristabdytas — reikia naujo PLC žetono"
         what_to_do:
           request_token: "Naudokite toliau esantį mygtuką \"%{button}\", kad paprašytumėte naujo žetono"
           check_email: "Ieškokite el. laiško iš %{old_pds} su nauju žetonu"
-          submit_in_time: "Įveskite naują žetoną per 1 valandą nuo jo gavimo"
+          submit_in_time: "Įveskite naują žetoną per 15 minučių nuo jo gavimo"
           data_safe: "Kiti jūsų perkėlimo duomenys saugūs ir paruošti — tereikia naujo žetono"
+      plc_token_invalid:
+        title: "Patvirtinimo kodas neatpažintas"
+        what_happened: "Jūsų senasis serveris neatpažino įvesto patvirtinimo kodo. PLC katalogas nepakeistas — jūsų paskyra vis dar yra %{old_pds}."
+        current_status: "Perkėlimas pristabdytas — paprašykite naujo patvirtinimo kodo ir įveskite jį tiksliai taip, kaip jis buvo atsiųstas"
+        what_to_do:
+          use_latest: "Naudokite tik naujausio el. laiško kodą: kiekviena nauja užklausa pakeičia ankstesnį kodą, o kodas nustoja galioti praėjus 15 minučių nuo išsiuntimo"
+          copy_exactly: "Nukopijuokite visą kodą XXXXX-XXXXX forma, be tarpų ir kitų simbolių"
       plc_pre_submission_failure:
         title: "PLC atnaujinimo užbaigti nepavyko"
         what_happened: "PLC katalogo atnaujinimo užbaigti nepavyko, tačiau jūsų paskyra saugi. PLC katalogas nepakeistas — jūsų paskyra vis dar yra %{old_pds}."
@@ -577,7 +584,7 @@ lt:
         what_to_do:
           request_code: "Naudokite toliau esantį mygtuką \"%{button}\", kad gautumėte naują patvirtinimo kodą"
           check_email: "Ieškokite el. laiško iš %{old_pds} su nauju kodu"
-          submit_in_time: "Įveskite naują kodą per 1 valandą nuo jo gavimo"
+          submit_in_time: "Įveskite naują kodą per 15 minučių nuo jo gavimo"
           data_safe: "Jūsų perkėlimo duomenys (saugykla, blob, nuostatos) saugūs ir paruošti"
       credentials_need_reauth:
         title: "Sesija baigėsi — prisijunkite iš naujo"
@@ -718,6 +725,7 @@ lt:
       # PLC token
       plc_submitted: "PLC žetonas pateiktas! Jūsų DID bus netrukus atnaujintas."
       plc_blank: "PLC žetonas negali būti tuščias"
+      plc_format_invalid: "Tai nepanašu į patvirtinimo kodą. Kodas el. laiške nuo %{sender} yra XXXXX-XXXXX formos. Nukopijuokite jį iš naujausio el. laiško, be tarpų."
       session_expired: "Jūsų sesija baigėsi. Iš naujo įveskite slaptažodį, kad tęstumėte."
       old_session_expired: "Jūsų sesija su %{pds} baigėsi. Iš naujo įveskite slaptažodį, kad tęstumėte."
       credentials_expired: "Jūsų prisijungimo duomenys nebegalioja. Iš naujo įveskite slaptažodį, kad tęstumėte."
@@ -944,12 +952,12 @@ lt:
       note3: "Jei reikia pagalbos, nurodykite perkėlimo žetoną: %{token}"
       retry_button: "Peržiūrėti perkėlimą ir bandyti dar kartą"
       plc_expired_heading: "PLC žetonas nebegalioja"
-      plc_expired_text: "Jūsų PLC operacijos žetonas nebegalioja. PLC žetonai galioja tik 1 valandą po išdavimo."
+      plc_expired_text: "Jūsų PLC operacijos žetonas nebegalioja. PLC žetonai galioja tik 15 minučių po išdavimo."
       plc_expired_steps: "Ką turite padaryti"
       plc_expired_step1: "Atidarykite perkėlimo būsenos puslapį toliau esančiu mygtuku"
       plc_expired_step2: "Spustelėkite mygtuką \"Prašyti naujo PLC žetono\""
       plc_expired_step3: "Patikrinkite el. laišką iš %{pds} su nauju žetonu"
-      plc_expired_step4: "Pateikite naują žetoną per 1 valandą"
+      plc_expired_step4: "Pateikite naują žetoną per 15 minučių"
       plc_expired_button: "Peržiūrėti perkėlimą ir prašyti naujo žetono"
       plc_expired_good_news: "Gera žinia:"
       plc_expired_safe: "Jūsų perkėlimo duomenys saugūs ir paruošti. Paskutiniam žingsniui užbaigti reikia tik naujo PLC žetono."
@@ -994,7 +1002,7 @@ lt:
       plc_email_intro: "Netrukus gausite el. laišką iš senojo PDS teikėjo (%{pds}) su tema:"
       plc_code_info: "Tame el. laiške yra patvirtinimo kodas (jis atrodo taip: %{example})."
       plc_enter_code: "Šį kodą turite įvesti perkėlimo būsenos puslapyje, kad užbaigtumėte perkėlimą:"
-      plc_expiry: "Svarbu: patvirtinimo kodas nebegalioja po 1 valandos. Jei nematote el. laiško, patikrinkite brukalų aplanką. Jį siunčia senasis PDS teikėjas, ne mes."
+      plc_expiry: "Svarbu: patvirtinimo kodas nebegalioja po 15 minučių. Jei nematote el. laiško, patikrinkite brukalų aplanką. Jį siunčia senasis PDS teikėjas, ne mes."
       save_key_heading: "Išsaugokite šį raktą dabar"
       recovery_key_label: "Jūsų atkūrimo raktas:"
       key_use_heading: "Ką galiu daryti su šiuo raktu?"
@@ -1002,6 +1010,9 @@ lt:
       next_step_button: "Eiti į perkėlimo puslapį ir įvesti PLC patvirtinimo kodą"
 
     plc_token_failed:
+      invalid_heading: "Patvirtinimo kodas neatpažintas"
+      invalid_intro: "Jūsų senasis serveris neatpažino PLC patvirtinimo kodo, kurį įvedėte perkėlimui %{token}."
+      invalid_what_happened_text: "Kodas nebuvo tas, kurio tikėjosi jūsų senasis serveris. Paprastai tai rašybos klaida, kodas iš senesnio el. laiško (kiekviena nauja užklausa pakeičia ankstesnį kodą) arba kodas iš kito el. laiško. Paprašykite vieno naujo kodo ir nukopijuokite jį tiksliai iš to el. laiško."
       subject: "Reikalingas veiksmas: prašykite naujo PLC patvirtinimo kodo (%{token})"
       heading: "PLC žetonas nebegalioja arba netinkamas"
       intro: "PLC patvirtinimo kodas jūsų perkėlimui %{token} nebegalioja arba buvo netinkamas."
@@ -1011,7 +1022,7 @@ lt:
       step3: "Įveskite naują žetoną, kai jį gausite el. paštu"
       error_detail: "Klaida: %{error}"
       safe_text: "PLC katalogas nepakeistas. Jūsų paskyra lieka %{pds}, o visi jūsų perkėlimo duomenys (saugykla, failai ir nuostatos) saugiai laikomi ir paruošti."
-      what_happened_text: "Patvirtinimo kodas iš senojo PDS teikėjo nustojo galioti dar nepanaudotas. Šie kodai galioja tik ribotą laiką (paprastai 1 valandą)."
+      what_happened_text: "Patvirtinimo kodas iš senojo PDS teikėjo nustojo galioti dar nepanaudotas. Šie kodai galioja tik ribotą laiką (paprastai 15 minučių)."
 
     critical_plc_failure:
       subject: "Skubu: kritinė perkėlimo klaida – nepradėkite naujo perkėlimo (%{token})"

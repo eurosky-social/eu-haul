@@ -29,7 +29,7 @@
   <%= email_list [
     t('mailers.migration_failed.plc_expired_step1'),
     t('mailers.migration_failed.plc_expired_step2'),
-    email_t('mailers.migration_failed.plc_expired_step3', pds: tag.strong(@migration.old_pds_host)),
+    email_t('mailers.migration_failed.plc_expired_step3', pds: tag.strong(PlcMailSender.display(@migration.old_pds_host))),
     t('mailers.migration_failed.plc_expired_step4')
   ], ordered: true %>
 

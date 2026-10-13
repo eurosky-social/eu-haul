@@ -32,7 +32,7 @@
     <ul class="text-dark small mb-0 lh-lg">
       <li><%= t('migrations.plc_warning.need_rotation_key') %></li>
       <li><%= t('migrations.plc_warning.need_data_verified') %></li>
-      <li><%= t('migrations.plc_warning.need_plc_token', pds: @migration.old_pds_host) %></li>
+      <li><%= t('migrations.plc_warning.need_plc_token', pds: PlcMailSender.display(@migration.old_pds_host)) %></li>
       <li><%= t('migrations.plc_warning.need_understanding') %></li>
     </ul>
   </div>
@@ -60,7 +60,7 @@
           <div class="flex-grow-1">
             <strong class="text-dark"><%= t('migrations.plc_warning.step2_title') %></strong>
             <p class="text-secondary small mt-1 mb-0">
-              <%= t('migrations.plc_warning.step2_help', pds: @migration.old_pds_host).html_safe %>
+              <%= t('migrations.plc_warning.step2_help', pds: PlcMailSender.display(@migration.old_pds_host)).html_safe %>
             </p>
           </div>
         </div>

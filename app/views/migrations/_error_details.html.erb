@@ -73,7 +73,7 @@
 
           <% if @migration.has_old_pds_tokens? %>
             <%# Old PDS session is still valid — can request token automatically %>
-            <p class="eh-sm eh-muted"><%= t('migrations.error_details.plc_request_help', pds: @migration.old_pds_host).html_safe %></p>
+            <p class="eh-sm eh-muted"><%= t('migrations.error_details.plc_request_help', pds: PlcMailSender.display(@migration.old_pds_host)).html_safe %></p>
             <form action="<%= request_new_plc_token_by_token_path(@migration.token) %>" method="post">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
               <button type="submit"

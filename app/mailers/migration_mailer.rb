@@ -91,6 +91,12 @@ class MigrationMailer < ApplicationMailer
     @migration = migration
     @migration_url = migration_by_token_url(token: migration.token, host: ENV.fetch('DOMAIN', 'localhost:3001'))
     @error_message = migration.last_error
+    # A code the old PDS did not recognise needs different advice from one that
+    # ran out; every other pre-submission failure keeps the expired wording.
+    prefix = migration.error_code.to_s == 'plc_token_invalid' ? 'invalid_' : ''
+    @heading_key = "mailers.plc_token_failed.#{prefix}heading"
+    @intro_key = "mailers.plc_token_failed.#{prefix}intro"
+    @what_happened_key = "mailers.plc_token_failed.#{prefix}what_happened_text"
 
     I18n.with_locale(migration.locale || :en) do
       mail(

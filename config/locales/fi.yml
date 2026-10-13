@@ -96,7 +96,7 @@ fi:
         text: "Luomme tilisi uudelle palvelimelle ja kopioimme sinne kaiken; tilasivulla näet edistymisen. Älä julkaise, tykkää tai seuraa sillä välin: nämä muutokset eivät siirtyisi mukana."
       confirm:
         title: "Vahvista siirto"
-        text: "Nykyinen palvelimesi lähettää sinulle vahvistuskoodin sähköpostitse. Syötä se tilasivulla tunnin kuluessa tai pyydä uusi. Tämä vaihe ohjaa identiteettisi uudelle palvelimelle."
+        text: "Nykyinen palvelimesi lähettää sinulle vahvistuskoodin sähköpostitse. Syötä se tilasivulla 15 minuutin kuluessa tai pyydä uusi. Tämä vaihe ohjaa identiteettisi uudelle palvelimelle."
       done:
         title: "Valmis"
         text: "Tilisi otetaan käyttöön uudella palvelimella ja vanha tili deaktivoidaan. Lähetämme sinulle sähköpostitse kirjautumisohjeet ja uuden tilisi salasanan."
@@ -427,14 +427,14 @@ fi:
       didnt_receive_plc: "Etkö saanut sähköpostia?"
       plc_check_spam: "Tarkista roskapostikansio"
       plc_from_old_pds: "Sähköposti tulee nykyiseltä palvelimeltasi (%{pds}), ei meiltä"
-      plc_expires: "Koodi vanhenee 1 tunnin kuluttua"
+      plc_expires: "Koodi vanhenee 15 minuutin kuluttua"
       plc_new_code_help: "Jos tarvitset uuden koodin, syötä salasanasi alle ja pyydämme uuden:"
       plc_password_placeholder: "Salasana käyttäjälle %{handle}"
       request_new_code: "Pyydä uusi koodi"
       technical_details: "Tekniset tiedot"
       plc_explanation: "Vahvistuskoodi on <strong>PLC-operaatiotoken</strong> — se valtuuttaa DID-dokumenttisi päivittämisen PLC-hakemistossa osoittamaan uuteen henkilökohtaiseen datapalvelimeesi."
       plc_irreversible: "<strong>Tämä on peruuttamaton.</strong> Lähettämisen jälkeen tilisi identiteetti (DID) osoittaa pysyvästi palvelimeen <strong>%{new_pds}</strong> palvelimen <strong>%{old_pds}</strong> sijaan."
-      plc_expiry_note: "PLC-tokenit vanhenevat 1 tunnin kuluttua. Jos tokenisi on vanhentunut, voit pyytää uuden."
+      plc_expiry_note: "PLC-tokenit vanhenevat 15 minuutin kuluttua. Jos tokenisi on vanhentunut, voit pyytää uuden."
 
       # Sidebar
       download_backup: "Lataa varmuuskopiosi"
@@ -563,13 +563,20 @@ fi:
           provider_only: "Tämä vaatii toimia PDS-palveluntarjoajalta — et voi korjata sitä itse."
       plc_token_expired:
         title: "PLC-token vanhentunut"
-        what_happened: "Syöttämäsi PLC-operaatiotoken on vanhentunut. PLC-tokenit ovat voimassa vain 1 tunnin siitä, kun vanha PDS-palveluntarjoajasi on myöntänyt ne."
+        what_happened: "Syöttämäsi PLC-operaatiotoken on vanhentunut. PLC-tokenit ovat voimassa vain 15 minuuttia siitä, kun vanha PDS-palveluntarjoajasi on myöntänyt ne."
         current_status: "Siirto keskeytetty — tarvitset uuden PLC-tokenin"
         what_to_do:
           request_token: "Pyydä uusi token alla olevalla ”%{button}” -painikkeella"
           check_email: "Etsi palvelimelta %{old_pds} tullut sähköposti, jossa on uusi token"
-          submit_in_time: "Syötä uusi token 1 tunnin kuluessa sen saamisesta"
+          submit_in_time: "Syötä uusi token 15 minuutin kuluessa sen saamisesta"
           data_safe: "Muut siirtotietosi ovat turvassa ja valmiina — tarvitset vain uuden tokenin"
+      plc_token_invalid:
+        title: "Vahvistuskoodia ei tunnistettu"
+        what_happened: "Vanha palvelimesi ei tunnistanut syöttämääsi vahvistuskoodia. PLC-hakemistoa ei muutettu — tilisi on edelleen palvelimella %{old_pds}."
+        current_status: "Siirto keskeytetty — pyydä uusi vahvistuskoodi ja syötä se täsmälleen sellaisena kuin se lähetettiin"
+        what_to_do:
+          use_latest: "Käytä vain uusimman sähköpostin koodia: jokainen uusi pyyntö korvaa edellisen koodin, ja koodi vanhenee 15 minuuttia lähettämisen jälkeen"
+          copy_exactly: "Kopioi koko koodi muodossa XXXXX-XXXXX ilman välilyöntejä tai muita merkkejä"
       plc_pre_submission_failure:
         title: "PLC-päivitystä ei voitu viimeistellä"
         what_happened: "PLC-hakemiston päivitystä ei voitu viimeistellä, mutta tilisi on turvassa. PLC-hakemistoa ei muutettu — tilisi on edelleen palvelimella %{old_pds}."
@@ -577,7 +584,7 @@ fi:
         what_to_do:
           request_code: "Pyydä uusi vahvistuskoodi alla olevalla ”%{button}” -painikkeella"
           check_email: "Etsi palvelimelta %{old_pds} tullut sähköposti, jossa on uusi koodi"
-          submit_in_time: "Syötä uusi koodi 1 tunnin kuluessa sen saamisesta"
+          submit_in_time: "Syötä uusi koodi 15 minuutin kuluessa sen saamisesta"
           data_safe: "Siirtotietosi (tietovarasto, blobit, asetukset) ovat turvassa ja valmiina"
       credentials_need_reauth:
         title: "Istunto vanhentunut — kirjaudu uudelleen"
@@ -718,6 +725,7 @@ fi:
       # PLC token
       plc_submitted: "PLC-token lähetetty! DID-tunnuksesi päivitetään pian."
       plc_blank: "PLC-token ei voi olla tyhjä"
+      plc_format_invalid: "Tämä ei näytä vahvistuskoodilta. Lähettäjän %{sender} sähköpostissa oleva koodi on muotoa XXXXX-XXXXX. Kopioi se uusimmasta sähköpostista ilman välilyöntejä."
       session_expired: "Istuntosi on vanhentunut. Syötä salasanasi uudelleen jatkaaksesi."
       old_session_expired: "Istuntosi palvelimen %{pds} kanssa on vanhentunut. Syötä salasanasi uudelleen jatkaaksesi."
       credentials_expired: "Tunnistetietosi ovat vanhentuneet. Syötä salasanasi uudelleen jatkaaksesi."
@@ -944,12 +952,12 @@ fi:
       note3: "Jos tarvitset apua, viittaa siirtotokeniisi: %{token}"
       retry_button: "Näytä siirto ja yritä uudelleen"
       plc_expired_heading: "PLC-token vanhentunut"
-      plc_expired_text: "PLC-operaatiotokenisi on vanhentunut. PLC-tokenit ovat voimassa vain 1 tunnin myöntämisestään."
+      plc_expired_text: "PLC-operaatiotokenisi on vanhentunut. PLC-tokenit ovat voimassa vain 15 minuuttia myöntämisestään."
       plc_expired_steps: "Mitä sinun tulee tehdä"
       plc_expired_step1: "Avaa siirtosi tilasivu alla olevalla painikkeella"
       plc_expired_step2: "Napsauta ”Pyydä uusi PLC-token” -painiketta"
       plc_expired_step3: "Etsi sähköpostistasi palvelimelta %{pds} tullut viesti, jossa on uusi token"
-      plc_expired_step4: "Syötä uusi token 1 tunnin kuluessa"
+      plc_expired_step4: "Syötä uusi token 15 minuutin kuluessa"
       plc_expired_button: "Näytä siirto ja pyydä uusi token"
       plc_expired_good_news: "Hyviä uutisia:"
       plc_expired_safe: "Siirtotietosi ovat turvassa ja valmiina. Tarvitset vain uuden PLC-tokenin viimeisen vaiheen suorittamiseen."
@@ -994,7 +1002,7 @@ fi:
       plc_email_intro: "Saat pian vanhalta PDS-palveluntarjoajaltasi (%{pds}) sähköpostin, jonka aiherivi on:"
       plc_code_info: "Siinä sähköpostissa on vahvistuskoodi (se näyttää tältä: %{example})."
       plc_enter_code: "Sinun on syötettävä tämä koodi siirtosi tilasivulla siirron viimeistelemiseksi:"
-      plc_expiry: "Tärkeää: vahvistuskoodi vanhenee 1 tunnin kuluttua. Jos et näe sähköpostia, tarkista roskapostikansiosi. Se tulee vanhalta PDS-palveluntarjoajaltasi, ei meiltä."
+      plc_expiry: "Tärkeää: vahvistuskoodi vanhenee 15 minuutin kuluttua. Jos et näe sähköpostia, tarkista roskapostikansiosi. Se tulee vanhalta PDS-palveluntarjoajaltasi, ei meiltä."
       save_key_heading: "Tallenna tämä avain nyt"
       recovery_key_label: "Palautusavaimesi:"
       key_use_heading: "Mitä voin tehdä tällä avaimella?"
@@ -1002,6 +1010,9 @@ fi:
       next_step_button: "Siirry siirtosivulle syöttämään PLC-vahvistuskoodisi"
 
     plc_token_failed:
+      invalid_heading: "Vahvistuskoodia ei tunnistettu"
+      invalid_intro: "Vanha palvelimesi ei tunnistanut PLC-vahvistuskoodia, jonka syötit siirrolle %{token}."
+      invalid_what_happened_text: "Koodi ei ollut se, jota vanha palvelimesi odotti. Syynä on yleensä kirjoitusvirhe, vanhemmasta sähköpostista otettu koodi (jokainen uusi pyyntö korvaa edellisen koodin) tai toisesta sähköpostista otettu koodi. Pyydä yksi uusi koodi ja kopioi se täsmälleen siitä sähköpostista."
       subject: "Toimenpiteitä vaaditaan: pyydä uusi PLC-vahvistuskoodi (%{token})"
       heading: "PLC-token vanhentunut tai virheellinen"
       intro: "Siirtosi %{token} PLC-vahvistuskoodi on vanhentunut tai oli virheellinen."
@@ -1011,7 +1022,7 @@ fi:
       step3: "Syötä uusi token, kun saat sen sähköpostitse"
       error_detail: "Virhe: %{error}"
       safe_text: "PLC-hakemistoa ei muutettu. Tilisi on edelleen palvelimella %{pds}, ja kaikki siirtotietosi (tietovarasto, tiedostot ja asetukset) on tallessa turvallisesti ja valmiina."
-      what_happened_text: "Vanhan PDS-palveluntarjoajasi lähettämä vahvistuskoodi vanheni ennen kuin sitä ehdittiin käyttää. Nämä koodit ovat voimassa vain rajoitetun ajan (yleensä 1 tunnin)."
+      what_happened_text: "Vanhan PDS-palveluntarjoajasi lähettämä vahvistuskoodi vanheni ennen kuin sitä ehdittiin käyttää. Nämä koodit ovat voimassa vain rajoitetun ajan (yleensä 15 minuuttia)."
 
     critical_plc_failure:
       subject: "Kiireellinen: kriittinen siirtovirhe – älä aloita uutta siirtoa (%{token})"

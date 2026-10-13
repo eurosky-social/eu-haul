@@ -273,7 +273,7 @@ RSpec.describe MigrationsController, type: :controller do
       )
     end
 
-    let(:plc_token) { "plc_token_123abc" }
+    let(:plc_token) { "ABCDE-FGHIJ" }
 
     context "with valid PLC token" do
       it "stores the encrypted PLC token" do

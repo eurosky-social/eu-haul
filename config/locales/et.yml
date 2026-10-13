@@ -96,7 +96,7 @@ et:
         text: "Loome teie konto uues serveris ja kopeerime sinna kõik; olekulehel näete edenemist. Ärge vahepeal postitage, märkige midagi meeldivaks ega hakake kedagi jälgima: need muudatused ei tuleks kaasa."
       confirm:
         title: "Kinnitage üleviimine"
-        text: "Teie praegune server saadab teile e-postiga kinnituskoodi. Sisestage see tunni jooksul olekulehel või taotlege uus. See samm suunab teie identiteedi uude serverisse."
+        text: "Teie praegune server saadab teile e-postiga kinnituskoodi. Sisestage see 15 minuti jooksul olekulehel või taotlege uus. See samm suunab teie identiteedi uude serverisse."
       done:
         title: "Valmis"
         text: "Teie konto uues serveris aktiveeritakse ja vana konto deaktiveeritakse. Saadame teile e-postiga sisselogimise juhised koos teie uue konto parooliga."
@@ -427,14 +427,14 @@ et:
       didnt_receive_plc: "Kas te ei saanud e-kirja?"
       plc_check_spam: "Kontrollige oma rämpsposti kausta"
       plc_from_old_pds: "E-kiri tuleb teie praeguselt serverilt (%{pds}), mitte meilt"
-      plc_expires: "Kood aegub 1 tunni pärast"
+      plc_expires: "Kood aegub 15 minuti pärast"
       plc_new_code_help: "Kui vajate uut koodi, sisestage allpool oma parool ja me taotleme ühe:"
       plc_password_placeholder: "Parool kasutajale %{handle}"
       request_new_code: "Taotle uut koodi"
       technical_details: "Tehnilised üksikasjad"
       plc_explanation: "Kinnituskood on <strong>PLC operatsiooni token</strong> — see volitab teie DID dokumendi uuendamist PLC kataloogis, et see osutaks teie uuele isiklikule andmeserverile."
       plc_irreversible: "<strong>See on pöördumatu.</strong> Pärast esitamist osutab teie konto identiteet (DID) püsivalt serverile <strong>%{new_pds}</strong> serveri <strong>%{old_pds}</strong> asemel."
-      plc_expiry_note: "PLC tokenid aeguvad 1 tunni pärast. Kui teie token on aegunud, saate taotleda uue."
+      plc_expiry_note: "PLC tokenid aeguvad 15 minuti pärast. Kui teie token on aegunud, saate taotleda uue."
 
       # Sidebar
       download_backup: "Laadige alla oma varukoopia"
@@ -563,13 +563,20 @@ et:
           provider_only: "See nõuab PDS-i pakkuja sekkumist — te ei saa seda ise parandada."
       plc_token_expired:
         title: "PLC token on aegunud"
-        what_happened: "Teie sisestatud PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 1 tund pärast seda, kui teie vana PDS-i pakkuja need väljastab."
+        what_happened: "Teie sisestatud PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 15 minutit pärast seda, kui teie vana PDS-i pakkuja need väljastab."
         current_status: "Migreerimine on ootel — vajate uut PLC tokenit"
         what_to_do:
           request_token: "Kasutage allolevat nuppu „%{button}“, et taotleda uut tokenit"
           check_email: "Otsige serverilt %{old_pds} e-kirja, milles on uus token"
-          submit_in_time: "Sisestage uus token 1 tunni jooksul pärast selle saamist"
+          submit_in_time: "Sisestage uus token 15 minuti jooksul pärast selle saamist"
           data_safe: "Ülejäänud migreerimisandmed on kaitstud ja valmis — vajate vaid uut tokenit"
+      plc_token_invalid:
+        title: "Kinnituskoodi ei tuntud ära"
+        what_happened: "Teie vana server ei tundnud sisestatud kinnituskoodi ära. PLC kataloogi ei muudetud — teie konto on endiselt serveris %{old_pds}."
+        current_status: "Migreerimine on peatatud — taotlege uus kinnituskood ja sisestage see täpselt nii, nagu see saadeti"
+        what_to_do:
+          use_latest: "Kasutage ainult kõige uuema e-kirja koodi: iga uus taotlus asendab eelmise koodi ja kood aegub 15 minutit pärast saatmist"
+          copy_exactly: "Kopeerige kogu kood kujul XXXXX-XXXXX, ilma tühikute ja muude märkideta"
       plc_pre_submission_failure:
         title: "PLC uuendamist ei õnnestunud lõpule viia"
         what_happened: "PLC kataloogi uuendamist ei õnnestunud lõpule viia, kuid teie konto on kaitstud. PLC kataloogi ei muudetud — teie konto on endiselt serveris %{old_pds}."
@@ -577,7 +584,7 @@ et:
         what_to_do:
           request_code: "Kasutage allolevat nuppu „%{button}“, et saada uus kinnituskood"
           check_email: "Otsige serverilt %{old_pds} e-kirja, milles on uus kood"
-          submit_in_time: "Sisestage uus kood 1 tunni jooksul pärast selle saamist"
+          submit_in_time: "Sisestage uus kood 15 minuti jooksul pärast selle saamist"
           data_safe: "Teie migreerimisandmed (hoidla, blobid, eelistused) on kaitstud ja valmis"
       credentials_need_reauth:
         title: "Seanss on aegunud — logige uuesti sisse"
@@ -718,6 +725,7 @@ et:
       # PLC token
       plc_submitted: "PLC token esitatud! Teie DID uuendatakse varsti."
       plc_blank: "PLC token ei tohi olla tühi"
+      plc_format_invalid: "See ei näe välja nagu kinnituskood. Saatjalt %{sender} saabunud e-kirjas olev kood on kujul XXXXX-XXXXX. Kopeerige see kõige uuemast e-kirjast, ilma tühikuteta."
       session_expired: "Teie seanss on aegunud. Palun sisestage jätkamiseks uuesti oma parool."
       old_session_expired: "Teie seanss serveriga %{pds} on aegunud. Palun sisestage jätkamiseks uuesti oma parool."
       credentials_expired: "Teie volitused on aegunud. Palun sisestage jätkamiseks uuesti oma parool."
@@ -944,12 +952,12 @@ et:
       note3: "Kui vajate abi, viidake oma migreerimise tokenile: %{token}"
       retry_button: "Vaata migreerimist ja proovi uuesti"
       plc_expired_heading: "PLC token on aegunud"
-      plc_expired_text: "Teie PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 1 tund pärast väljastamist."
+      plc_expired_text: "Teie PLC operatsiooni token on aegunud. PLC tokenid kehtivad ainult 15 minutit pärast väljastamist."
       plc_expired_steps: "Mida peate tegema"
       plc_expired_step1: "Avage alloleva nupuga oma migreerimise olekuleht"
       plc_expired_step2: "Klõpsake nuppu „Taotle uut PLC tokenit“"
       plc_expired_step3: "Otsige oma postkastist serverilt %{pds} saabunud e-kirja uue tokeniga"
-      plc_expired_step4: "Esitage uus token 1 tunni jooksul"
+      plc_expired_step4: "Esitage uus token 15 minuti jooksul"
       plc_expired_button: "Vaata migreerimist ja taotle uut tokenit"
       plc_expired_good_news: "Hea uudis:"
       plc_expired_safe: "Teie migreerimisandmed on kaitstud ja valmis. Viimase sammu lõpetamiseks vajate vaid uut PLC tokenit."
@@ -994,7 +1002,7 @@ et:
       plc_email_intro: "Peagi saate oma vanalt PDS-i pakkujalt (%{pds}) e-kirja, mille teemarida on:"
       plc_code_info: "Selles e-kirjas on kinnituskood (see näeb välja nagu %{example})."
       plc_enter_code: "Migreerimise lõpuleviimiseks peate selle koodi sisestama oma migreerimise olekulehel:"
-      plc_expiry: "Oluline: kinnituskood aegub 1 tunni pärast. Kui te e-kirja ei näe, kontrollige oma rämpsposti kausta. See tuleb teie vanalt PDS-i pakkujalt, mitte meilt."
+      plc_expiry: "Oluline: kinnituskood aegub 15 minuti pärast. Kui te e-kirja ei näe, kontrollige oma rämpsposti kausta. See tuleb teie vanalt PDS-i pakkujalt, mitte meilt."
       save_key_heading: "Salvestage see võti kohe"
       recovery_key_label: "Teie taastamisvõti:"
       key_use_heading: "Mida ma selle võtmega teha saan?"
@@ -1002,6 +1010,9 @@ et:
       next_step_button: "Mine migreerimise lehele PLC kinnituskoodi sisestama"
 
     plc_token_failed:
+      invalid_heading: "Kinnituskoodi ei tuntud ära"
+      invalid_intro: "Teie vana server ei tundnud ära PLC kinnituskoodi, mille sisestasite migreerimise %{token} jaoks."
+      invalid_what_happened_text: "Kood ei olnud see, mida teie vana server ootas. Tavaliselt on põhjuseks trükiviga, vanemast e-kirjast võetud kood (iga uus taotlus asendab eelmise koodi) või teisest e-kirjast võetud kood. Taotlege üks uus kood ja kopeerige see täpselt sellest e-kirjast."
       subject: "Vajalik tegevus: taotlege uus PLC kinnituskood (%{token})"
       heading: "PLC token aegunud või kehtetu"
       intro: "Teie migreerimise %{token} PLC kinnituskood on aegunud või oli kehtetu."
@@ -1011,7 +1022,7 @@ et:
       step3: "Sisestage uus token, kui saate selle e-posti teel"
       error_detail: "Viga: %{error}"
       safe_text: "PLC kataloogi ei muudetud. Teie konto on endiselt serveris %{pds} ning kõik teie migreerimisandmed (hoidla, failid ja eelistused) on turvaliselt salvestatud ja valmis."
-      what_happened_text: "Teie vana PDS-i pakkuja saadetud kinnituskood aegus enne, kui seda sai kasutada. Need koodid kehtivad ainult piiratud aja (tavaliselt 1 tund)."
+      what_happened_text: "Teie vana PDS-i pakkuja saadetud kinnituskood aegus enne, kui seda sai kasutada. Need koodid kehtivad ainult piiratud aja (tavaliselt 15 minutit)."
 
     critical_plc_failure:
       subject: "Kiire: kriitiline migreerimise tõrge – ärge alustage uut migreerimist (%{token})"

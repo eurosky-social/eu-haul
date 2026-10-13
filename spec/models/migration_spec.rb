@@ -428,10 +428,12 @@ RSpec.describe Migration, type: :model do
         expect(migration.encrypted_plc_token).not_to eq(plc_token)
       end
 
-      it 'sets credentials expiry to 1 hour' do
+      # The PDS accepts a code for 15 minutes after issuing it; the stored copy
+      # gets the same lifetime, tracked apart from the 48-hour credentials.
+      it 'gives the stored code the 15 minutes the PDS allows' do
         freeze_time do
           migration.set_plc_token(plc_token)
-          expect(migration.credentials_expires_at).to be_within(1.second).of(1.hour.from_now)
+          expect(migration.progress_data['plc_token_expires_at']).to eq(15.minutes.from_now.iso8601)
         end
       end
     end

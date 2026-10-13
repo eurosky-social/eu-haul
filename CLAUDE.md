@@ -97,7 +97,7 @@ config/
 
 - Credentials in env vars or Lockbox encryption, never in code
 - Token-based access (EURO-xxxxxxxx), no authentication system
-- Auto-expire sensitive data (48h credentials, 1h PLC tokens)
+- Auto-expire sensitive data (48h credentials, 15-minute PLC tokens)
 
 ### Architecture
 

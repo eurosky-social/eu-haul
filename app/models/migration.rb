@@ -1,4 +1,8 @@
 class Migration < ApplicationRecord
+  # How long the reference PDS (and Bluesky's entryway) accepts a PLC
+  # confirmation code after issuing it. The copy stored here must not outlive it.
+  PLC_TOKEN_LIFETIME = 15.minutes
+
   # Raised by advance_with_job! / abort_if_terminal! when a job discovers that
   # the migration was cancelled, failed, completed or deleted underneath it.
   # Jobs rescue this first and stop: no retry, no further writes to the row.
@@ -341,7 +345,7 @@ class Migration < ApplicationRecord
     save!
   end
 
-  def set_plc_token(token, expires_in: 1.hour)
+  def set_plc_token(token, expires_in: PLC_TOKEN_LIFETIME)
     self.plc_token = token  # Lockbox handles encryption automatically
     # Store PLC token expiry separately in progress_data so it doesn't
     # overwrite credentials_expires_at (which governs old PDS token access)
@@ -354,7 +358,7 @@ class Migration < ApplicationRecord
     credentials_expires_at.nil? || credentials_expires_at < Time.current
   end
 
-  # PLC token has its own expiry (1 hour) separate from old PDS credentials (48 hours)
+  # PLC token has its own expiry (the PDS's 15 minutes) separate from old PDS credentials (48 hours)
   def plc_token_expired?
     plc_expires = progress_data&.dig('plc_token_expires_at')
     return true if plc_expires.nil?

@@ -96,7 +96,7 @@ mt:
         text: "Noħolqu l-kont tiegħek fuq is-server il-ġdid u nikkupjaw kollox fih; il-paġna tal-istat turi l-progress. Sadanittant tippostjax, tagħmilx likes u ssegwix lil ħadd: dawk il-bidliet ma jiġux miegħek."
       confirm:
         title: "Ikkonferma t-trasferiment"
-        text: "Is-server attwali tiegħek jibgħatlek kodiċi ta' konferma bl-email. Daħħlu fil-paġna tal-istat fi żmien siegħa, jew itlob wieħed ġdid. Dan il-pass jindirizza l-identità tiegħek lejn is-server il-ġdid."
+        text: "Is-server attwali tiegħek jibgħatlek kodiċi ta' konferma bl-email. Daħħlu fil-paġna tal-istat fi żmien 15-il minuta, jew itlob wieħed ġdid. Dan il-pass jindirizza l-identità tiegħek lejn is-server il-ġdid."
       done:
         title: "Lest"
         text: "Il-kont tiegħek fuq is-server il-ġdid jiġi attivat u dak l-antik jiġi diżattivat. Nibagħtulek email b'kif tidħol, flimkien mal-password tal-kont il-ġdid tiegħek."
@@ -427,14 +427,14 @@ mt:
       didnt_receive_plc: "Ma rċevejtx l-email?"
       plc_check_spam: "Iċċekkja l-folder tal-ispam jew junk tiegħek"
       plc_from_old_pds: "L-email ġejja mis-server attwali tiegħek (%{pds}), mhux minna"
-      plc_expires: "Il-kodiċi jiskadi wara siegħa"
+      plc_expires: "Il-kodiċi jiskadi wara 15-il minuta"
       plc_new_code_help: "Jekk teħtieġ kodiċi ġdid, daħħal il-password tiegħek hawn taħt u nitolbu wieħed:"
       plc_password_placeholder: "Password għal %{handle}"
       request_new_code: "Itlob kodiċi ġdid"
       technical_details: "Dettalji tekniċi"
       plc_explanation: "Il-kodiċi ta' konferma huwa <strong>token ta' operazzjoni PLC</strong> — jawtorizza l-aġġornament tad-dokument DID tiegħek fid-direttorju PLC biex jipponta lejn il-Personal Data Server ġdid tiegħek."
       plc_irreversible: "<strong>Dan huwa irreversibbli.</strong> Ladarba jiġi sottomess, l-identità tal-kont tiegħek (DID) tipponta b'mod permanenti lejn <strong>%{new_pds}</strong> minflok <strong>%{old_pds}</strong>."
-      plc_expiry_note: "It-tokens PLC jiskadu wara siegħa. Jekk tiegħek skada, tista' titlob wieħed ġdid."
+      plc_expiry_note: "It-tokens PLC jiskadu wara 15-il minuta. Jekk tiegħek skada, tista' titlob wieħed ġdid."
 
       # Sidebar
       download_backup: "Niżżel il-backup tiegħek"
@@ -563,13 +563,20 @@ mt:
           provider_only: "Dan jeħtieġ azzjoni mill-fornitur tal-PDS — ma tistax issolvih int."
       plc_token_expired:
         title: "It-token PLC skada"
-        what_happened: "It-token tal-operazzjoni PLC li daħħalt skada. It-tokens PLC huma validi biss għal siegħa wara li l-fornitur tal-PDS l-antik tiegħek joħroġhom."
+        what_happened: "It-token tal-operazzjoni PLC li daħħalt skada. It-tokens PLC huma validi biss għal 15-il minuta wara li l-fornitur tal-PDS l-antik tiegħek joħroġhom."
         current_status: "Il-migrazzjoni hija sospiża — għandek bżonn token PLC ġdid"
         what_to_do:
           request_token: "Uża l-buttuna \"%{button}\" hawn taħt biex titlob token ġdid"
           check_email: "Fittex email minn %{old_pds} bit-token il-ġdid"
-          submit_in_time: "Daħħal it-token il-ġdid fi żmien siegħa minn meta tirċevih"
+          submit_in_time: "Daħħal it-token il-ġdid fi żmien 15-il minuta minn meta tirċevih"
           data_safe: "Il-bqija tad-data tal-migrazzjoni tiegħek hija sigura u lesta — għandek bżonn biss token ġdid"
+      plc_token_invalid:
+        title: "Il-kodiċi ta' konferma ma ġiex rikonoxxut"
+        what_happened: "Is-server l-antik tiegħek ma rrikonoxxiex il-kodiċi ta' konferma li daħħalt. Id-direttorju PLC ma nbidilx — il-kont tiegħek għadu fuq %{old_pds}."
+        current_status: "Il-migrazzjoni hija pawżata — itlob kodiċi ta' konferma ġdid u daħħlu eżatt kif intbagħat"
+        what_to_do:
+          use_latest: "Uża biss il-kodiċi mill-email l-aktar riċenti: kull talba ġdida tissostitwixxi l-kodiċi preċedenti, u kodiċi jiskadi 15-il minuta wara li jintbagħat"
+          copy_exactly: "Ikkopja l-kodiċi sħiħ fil-forma XXXXX-XXXXX, mingħajr spazji jew karattri oħra"
       plc_pre_submission_failure:
         title: "L-aġġornament PLC ma setax jitlesta"
         what_happened: "L-aġġornament tad-direttorju PLC ma setax jitlesta, iżda l-kont tiegħek huwa sigur. Id-direttorju PLC ma nbidilx — il-kont tiegħek għadu fuq %{old_pds}."
@@ -577,7 +584,7 @@ mt:
         what_to_do:
           request_code: "Uża l-buttuna \"%{button}\" hawn taħt biex tikseb kodiċi ta' konferma ġdid"
           check_email: "Fittex email minn %{old_pds} bil-kodiċi l-ġdid"
-          submit_in_time: "Daħħal il-kodiċi l-ġdid fi żmien siegħa minn meta tirċevih"
+          submit_in_time: "Daħħal il-kodiċi l-ġdid fi żmien 15-il minuta minn meta tirċevih"
           data_safe: "Id-data tal-migrazzjoni tiegħek (repożitorju, blobs, preferenzi) hija sigura u lesta"
       credentials_need_reauth:
         title: "Is-sessjoni skadiet — erġa' idħol"
@@ -718,6 +725,7 @@ mt:
       # PLC token
       plc_submitted: "Token PLC sottomess! Id-DID tiegħek se jiġi aġġornat dalwaqt."
       plc_blank: "It-token PLC ma jistax ikun vojt"
+      plc_format_invalid: "Dan ma jidhirx li huwa kodiċi ta' konferma. Il-kodiċi fl-email mingħand %{sender} għandu l-forma XXXXX-XXXXX. Ikkopjah mill-email l-aktar riċenti, mingħajr spazji."
       session_expired: "Is-sessjoni tiegħek skadiet. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
       old_session_expired: "Is-sessjoni tiegħek ma' %{pds} skadiet. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
       credentials_expired: "Il-kredenzjali tiegħek skadew. Jekk jogħġbok erġa' daħħal il-password tiegħek biex tkompli."
@@ -944,12 +952,12 @@ mt:
       note3: "Jekk teħtieġ għajnuna, irreferi għat-token tal-migrazzjoni tiegħek: %{token}"
       retry_button: "Ara l-migrazzjoni u erġa' pprova"
       plc_expired_heading: "It-token PLC skada"
-      plc_expired_text: "It-token tal-operazzjoni PLC tiegħek skada. It-tokens PLC huma validi biss għal siegħa wara li jinħarġu."
+      plc_expired_text: "It-token tal-operazzjoni PLC tiegħek skada. It-tokens PLC huma validi biss għal 15-il minuta wara li jinħarġu."
       plc_expired_steps: "X'għandek bżonn tagħmel"
       plc_expired_step1: "Iftaħ il-paġna tal-istat tal-migrazzjoni tiegħek bil-buttuna hawn taħt"
       plc_expired_step2: "Agħfas il-buttuna \"Itlob token PLC ġdid\""
       plc_expired_step3: "Iċċekkja l-email minn %{pds} għat-token il-ġdid"
-      plc_expired_step4: "Issottometti t-token il-ġdid fi żmien siegħa"
+      plc_expired_step4: "Issottometti t-token il-ġdid fi żmien 15-il minuta"
       plc_expired_button: "Ara l-migrazzjoni u itlob token ġdid"
       plc_expired_good_news: "Aħbar tajba:"
       plc_expired_safe: "Id-data tal-migrazzjoni tiegħek hija sigura u lesta. Għandek bżonn biss token PLC ġdid biex tlesti l-aħħar pass."
@@ -994,7 +1002,7 @@ mt:
       plc_email_intro: "Dalwaqt se tirċievi email mill-fornitur tal-PDS l-antik tiegħek (%{pds}) bis-suġġett:"
       plc_code_info: "Dik l-email fiha kodiċi ta' konferma (jidher bħal %{example})."
       plc_enter_code: "Trid iddaħħal dan il-kodiċi fil-paġna tal-istat tal-migrazzjoni tiegħek biex tlesti l-migrazzjoni:"
-      plc_expiry: "Importanti: il-kodiċi ta' konferma jiskadi wara siegħa. Jekk ma tarax l-email, iċċekkja l-folder tal-ispam. Ġejja mill-fornitur tal-PDS l-antik tiegħek, mhux minna."
+      plc_expiry: "Importanti: il-kodiċi ta' konferma jiskadi wara 15-il minuta. Jekk ma tarax l-email, iċċekkja l-folder tal-ispam. Ġejja mill-fornitur tal-PDS l-antik tiegħek, mhux minna."
       save_key_heading: "Aħżen din iċ-ċavetta issa"
       recovery_key_label: "Iċ-ċavetta tal-irkupru tiegħek:"
       key_use_heading: "X'nista' nagħmel b'din iċ-ċavetta?"
@@ -1002,6 +1010,9 @@ mt:
       next_step_button: "Mur għall-paġna tal-migrazzjoni biex iddaħħal il-kodiċi ta' konferma PLC"
 
     plc_token_failed:
+      invalid_heading: "Il-kodiċi ta' konferma ma ġiex rikonoxxut"
+      invalid_intro: "Is-server l-antik tiegħek ma rrikonoxxiex il-kodiċi ta' konferma PLC li daħħalt għall-migrazzjoni %{token}."
+      invalid_what_happened_text: "Il-kodiċi ma kienx dak li s-server l-antik tiegħek kien qed jistenna. Normalment ikun żball fit-tajpjar, kodiċi minn email eqdem (kull talba ġdida tissostitwixxi l-kodiċi preċedenti), jew kodiċi minn email oħra. Itlob kodiċi ġdid wieħed biss u kkopjah eżatt minn dik l-email."
       subject: "Azzjoni meħtieġa: itlob kodiċi ta' konferma PLC ġdid (%{token})"
       heading: "Token PLC skadut jew invalidu"
       intro: "Il-kodiċi ta' konferma PLC għall-migrazzjoni tiegħek %{token} skada jew kien invalidu."
@@ -1011,7 +1022,7 @@ mt:
       step3: "Daħħal it-token ġdid meta tirċevieh permezz tal-email"
       error_detail: "Żball: %{error}"
       safe_text: "Id-direttorju PLC ma nbidilx. Il-kont tiegħek jibqa' fuq %{pds}, u d-data kollha tal-migrazzjoni tiegħek (repożitorju, fajls u preferenzi) hija maħżuna b'mod sigur u lesta."
-      what_happened_text: "Il-kodiċi ta' konferma mill-fornitur tal-PDS l-antik tiegħek skada qabel ma seta' jintuża. Dawn il-kodiċijiet huma validi biss għal żmien limitat (normalment siegħa)."
+      what_happened_text: "Il-kodiċi ta' konferma mill-fornitur tal-PDS l-antik tiegħek skada qabel ma seta' jintuża. Dawn il-kodiċijiet huma validi biss għal żmien limitat (normalment 15-il minuta)."
 
     critical_plc_failure:
       subject: "Urġenti: falliment kritiku tal-migrazzjoni – tibdiex migrazzjoni ġdida (%{token})"

@@ -15,7 +15,7 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
       access_token: "test_old_access",
       refresh_token: "test_old_refresh"
     )
-    @pending_plc_migration.set_plc_token("valid-token")
+    @pending_plc_migration.set_plc_token("ABCDE-FGHIJ")
   end
 
   # ============================================================================
@@ -31,7 +31,9 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to migration_by_token_path(@pending_plc_migration.token)
     assert_match(/new PLC token has been requested/i, flash[:notice])
-    assert_match(/#{@pending_plc_migration.old_pds_host}/, flash[:notice])
+    # The sender is named the way the inbox shows it: bare host, no scheme
+    assert_includes flash[:notice], "oldpds.example.com"
+    refute_includes flash[:notice], "https://"
 
     @pending_plc_migration.reload
     assert @pending_plc_migration.progress_data['plc_token_requested_at'].present?
@@ -116,13 +118,81 @@ class MigrationsControllerPlcTokenTest < ActionDispatch::IntegrationTest
 
     assert_enqueued_with(job: UpdatePlcJob, args: [@pending_plc_migration.id]) do
       post submit_plc_token_by_token_path(@pending_plc_migration.token),
-           params: { plc_token: "new-fresh-token" }
+           params: { plc_token: "KLMNO-PQRST" }
     end
 
     assert_redirected_to migration_by_token_path(@pending_plc_migration.token)
     assert_match(/PLC token submitted/i, flash[:notice])
 
     @pending_plc_migration.reload
-    assert_equal "new-fresh-token", @pending_plc_migration.plc_token
+    assert_equal "KLMNO-PQRST", @pending_plc_migration.plc_token
   end
+
+# ============================================================================
+# Token normalisation and format check
+#
+# The PDS upper-cases the code and otherwise compares it verbatim, so what
+# the user pastes has to be cleaned up here — and anything that cannot be a
+# code (eu-haul's own XXX-XXX verification code, the EURO- migration token,
+# a truncated paste) is bounced before a failed signing round trip.
+# ============================================================================
+
+test "submit_plc_token upper-cases the code and drops pasted whitespace" do
+  @pending_plc_migration.set_password("test_password")
+
+  assert_enqueued_with(job: UpdatePlcJob, args: [@pending_plc_migration.id]) do
+    post submit_plc_token_by_token_path(@pending_plc_migration.token),
+         params: { plc_token: "  abcde-fghij \n" }
+  end
+
+  assert_equal "ABCDE-FGHIJ", @pending_plc_migration.reload.plc_token
+end
+
+test "submit_plc_token restores the dash when the code was pasted without it" do
+  @pending_plc_migration.set_password("test_password")
+
+  post submit_plc_token_by_token_path(@pending_plc_migration.token),
+       params: { plc_token: "abcdefghij" }
+
+  assert_equal "ABCDE-FGHIJ", @pending_plc_migration.reload.plc_token
+end
+
+test "submit_plc_token bounces anything that is not a XXXXX-XXXXX code before calling the PDS" do
+  @pending_plc_migration.set_password("test_password")
+  @pending_plc_migration.update!(encrypted_plc_token: nil)
+
+  ["ABC-123", "EURO-TESTTOK123456789", "ABCDE-FGHI", "code: ABCDE-FGHIJ"].each do |wrong|
+    assert_no_enqueued_jobs(only: UpdatePlcJob) do
+      post submit_plc_token_by_token_path(@pending_plc_migration.token), params: { plc_token: wrong }
+    end
+
+    assert_redirected_to migration_by_token_path(@pending_plc_migration.token)
+    assert_includes flash[:alert], "XXXXX-XXXXX", "#{wrong.inspect} should have been bounced"
+    assert_nil @pending_plc_migration.reload.encrypted_plc_token
+  end
+end
+
+test "the format alert names Bluesky as the sender for a Bluesky-hosted account" do
+  @pending_plc_migration.update!(old_pds_host: "https://shimeji.us-east.host.bsky.network")
+
+  post submit_plc_token_by_token_path(@pending_plc_migration.token), params: { plc_token: "ABC-123" }
+
+  assert_includes flash[:alert], "Bluesky (noreply@bsky.app)"
+  refute_includes flash[:alert], "shimeji"
+end
+
+# ============================================================================
+# Status page copy
+# ============================================================================
+
+test "the status page tells a Bluesky user to look for mail from Bluesky, not the shard" do
+  @pending_plc_migration.update!(old_pds_host: "https://shimeji.us-east.host.bsky.network", encrypted_plc_token: nil)
+
+  get migration_by_token_path(@pending_plc_migration.token)
+
+  assert_response :success
+  assert_includes response.body, "Bluesky (noreply@bsky.app)"
+  assert_includes response.body, "15 minutes"
+  refute_match(/1 hour/, response.body)
+end
 end

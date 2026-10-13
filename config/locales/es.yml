@@ -96,7 +96,7 @@ es:
         text: "Creamos su cuenta en el nuevo servidor y copiamos todo en ella; la página de estado muestra el progreso. Mientras tanto, no publique, no dé me gusta ni siga a nadie: esos cambios no se trasladarían."
       confirm:
         title: "Confirmar el traslado"
-        text: "Su servidor actual le envía un código de confirmación por correo electrónico. Introdúzcalo en la página de estado en el plazo de una hora, o solicite uno nuevo. Este paso hace que su identidad apunte al nuevo servidor."
+        text: "Su servidor actual le envía un código de confirmación por correo electrónico. Introdúzcalo en la página de estado en el plazo de 15 minutos, o solicite uno nuevo. Este paso hace que su identidad apunte al nuevo servidor."
       done:
         title: "Listo"
         text: "Su cuenta en el nuevo servidor se activa y la antigua se desactiva. Le enviamos por correo electrónico cómo iniciar sesión, junto con la contraseña de su nueva cuenta."
@@ -427,14 +427,14 @@ es:
       didnt_receive_plc: "¿No recibió el correo electrónico?"
       plc_check_spam: "Revise su carpeta de correo no deseado o spam"
       plc_from_old_pds: "El correo electrónico proviene de su servidor actual (%{pds}), no de nosotros"
-      plc_expires: "El código expira después de 1 hora"
+      plc_expires: "El código expira después de 15 minutos"
       plc_new_code_help: "Si necesita un nuevo código, introduzca su contraseña a continuación y solicitaremos uno:"
       plc_password_placeholder: "Contraseña de %{handle}"
       request_new_code: "Solicitar nuevo código"
       technical_details: "Detalles técnicos"
       plc_explanation: "El código de confirmación es un <strong>token de operación PLC</strong> — autoriza la actualización de su documento DID en el directorio PLC para apuntar a su nuevo servidor de datos personales."
       plc_irreversible: "<strong>Esto es irreversible.</strong> Una vez enviado, la identidad de su cuenta (DID) apuntará permanentemente a <strong>%{new_pds}</strong> en lugar de <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Los tokens PLC expiran después de 1 hora. Si el suyo ha expirado, puede solicitar uno nuevo."
+      plc_expiry_note: "Los tokens PLC expiran después de 15 minutos. Si el suyo ha expirado, puede solicitar uno nuevo."
 
       # Sidebar
       download_backup: "Descargar su copia de seguridad"
@@ -563,13 +563,20 @@ es:
           provider_only: "Esto requiere una acción del proveedor del PDS — no puede solucionarlo usted mismo."
       plc_token_expired:
         title: "Token PLC expirado"
-        what_happened: "El token de operación PLC que introdujo ha expirado. Los tokens PLC solo son válidos durante 1 hora desde que su antiguo proveedor de PDS los emite."
+        what_happened: "El token de operación PLC que introdujo ha expirado. Los tokens PLC solo son válidos durante 15 minutos desde que su antiguo proveedor de PDS los emite."
         current_status: "Migración pausada — necesita un nuevo token PLC"
         what_to_do:
           request_token: "Use el botón \"%{button}\" de abajo para solicitar un token nuevo"
           check_email: "Busque un correo electrónico de %{old_pds} con el nuevo token"
-          submit_in_time: "Introduzca el nuevo token en el plazo de 1 hora desde que lo reciba"
+          submit_in_time: "Introduzca el nuevo token en el plazo de 15 minutos desde que lo reciba"
           data_safe: "El resto de los datos de su migración están seguros y listos — solo necesita un token nuevo"
+      plc_token_invalid:
+        title: "Código de confirmación no reconocido"
+        what_happened: "Su servidor antiguo no reconoció el código de confirmación que introdujo. El directorio PLC no se modificó — su cuenta sigue en %{old_pds}."
+        current_status: "Migración pausada — solicite un nuevo código de confirmación e introdúzcalo exactamente como se envió"
+        what_to_do:
+          use_latest: "Use solo el código del correo más reciente: cada nueva solicitud sustituye al código anterior, y un código expira 15 minutos después de enviarse"
+          copy_exactly: "Copie el código completo, con la forma XXXXX-XXXXX, sin espacios ni otros caracteres"
       plc_pre_submission_failure:
         title: "No se pudo completar la actualización del PLC"
         what_happened: "No se pudo completar la actualización del directorio PLC, pero su cuenta está segura. El directorio PLC no se modificó — su cuenta sigue en %{old_pds}."
@@ -577,7 +584,7 @@ es:
         what_to_do:
           request_code: "Use el botón \"%{button}\" de abajo para obtener un nuevo código de confirmación"
           check_email: "Busque un correo electrónico de %{old_pds} con el nuevo código"
-          submit_in_time: "Introduzca el nuevo código en el plazo de 1 hora desde que lo reciba"
+          submit_in_time: "Introduzca el nuevo código en el plazo de 15 minutos desde que lo reciba"
           data_safe: "Los datos de su migración (repositorio, blobs, preferencias) están seguros y listos"
       credentials_need_reauth:
         title: "Sesión expirada — vuelva a iniciar sesión"
@@ -718,6 +725,7 @@ es:
       # PLC token
       plc_submitted: "Token PLC enviado. Su DID se actualizará en breve."
       plc_blank: "El token PLC no puede estar vacío"
+      plc_format_invalid: "Eso no parece un código de confirmación. El código del correo de %{sender} tiene la forma XXXXX-XXXXX. Cópielo del correo más reciente, sin espacios."
       session_expired: "Su sesión ha expirado. Por favor, vuelva a introducir su contraseña para continuar."
       old_session_expired: "Su sesión con %{pds} ha expirado. Por favor, vuelva a introducir su contraseña para continuar."
       credentials_expired: "Sus credenciales han expirado. Por favor, vuelva a introducir su contraseña para continuar."
@@ -944,12 +952,12 @@ es:
       note3: "Si necesita ayuda, haga referencia a su token de migración: %{token}"
       retry_button: "Ver la migración y reintentar"
       plc_expired_heading: "Token PLC expirado"
-      plc_expired_text: "Su token de operación PLC ha expirado. Los tokens PLC solo son válidos durante 1 hora desde su emisión."
+      plc_expired_text: "Su token de operación PLC ha expirado. Los tokens PLC solo son válidos durante 15 minutos desde su emisión."
       plc_expired_steps: "Lo que necesita hacer"
       plc_expired_step1: "Abra la página de estado de su migración con el botón de abajo"
       plc_expired_step2: "Haga clic en el botón \"Solicitar nuevo token PLC\""
       plc_expired_step3: "Busque en su correo electrónico el mensaje de %{pds} con el nuevo token"
-      plc_expired_step4: "Envíe el nuevo token en el plazo de 1 hora"
+      plc_expired_step4: "Envíe el nuevo token en el plazo de 15 minutos"
       plc_expired_button: "Ver la migración y solicitar un nuevo token"
       plc_expired_good_news: "Buenas noticias:"
       plc_expired_safe: "Los datos de su migración están seguros y listos. Solo necesita un nuevo token PLC para completar el último paso."
@@ -994,7 +1002,7 @@ es:
       plc_email_intro: "En breve recibirá un correo electrónico de su antiguo proveedor de PDS (%{pds}) con el asunto:"
       plc_code_info: "Ese correo electrónico contiene un código de confirmación (tiene este aspecto: %{example})."
       plc_enter_code: "Debe introducir este código en la página de estado de su migración para finalizarla:"
-      plc_expiry: "Importante: el código de confirmación expira al cabo de 1 hora. Si no ve el correo electrónico, revise su carpeta de spam. Lo envía su antiguo proveedor de PDS, no nosotros."
+      plc_expiry: "Importante: el código de confirmación expira al cabo de 15 minutos. Si no ve el correo electrónico, revise su carpeta de spam. Lo envía su antiguo proveedor de PDS, no nosotros."
       save_key_heading: "Guarde esta clave ahora"
       recovery_key_label: "Su clave de recuperación:"
       key_use_heading: "¿Para qué sirve esta clave?"
@@ -1002,6 +1010,9 @@ es:
       next_step_button: "Ir a la página de migración para introducir su código de confirmación PLC"
 
     plc_token_failed:
+      invalid_heading: "Código de confirmación no reconocido"
+      invalid_intro: "Su servidor antiguo no reconoció el código de confirmación PLC que introdujo para la migración %{token}."
+      invalid_what_happened_text: "El código no era el que esperaba su servidor antiguo. Normalmente se debe a una errata, a un código de un correo anterior (cada nueva solicitud sustituye al código anterior) o a un código de otro correo. Solicite un único código nuevo y cópielo exactamente de ese correo."
       subject: "Acción requerida: solicite un nuevo código de confirmación PLC (%{token})"
       heading: "Token PLC expirado o no válido"
       intro: "El código de confirmación PLC para su migración %{token} ha expirado o no era válido."
@@ -1011,7 +1022,7 @@ es:
       step3: "Introduzca el nuevo token cuando lo reciba por correo electrónico"
       error_detail: "Error: %{error}"
       safe_text: "El directorio PLC no se modificó. Su cuenta permanece en %{pds} y todos los datos de su migración (repositorio, archivos y preferencias) están guardados de forma segura y listos."
-      what_happened_text: "El código de confirmación de su antiguo proveedor de PDS expiró antes de poder usarse. Estos códigos solo son válidos durante un tiempo limitado (normalmente 1 hora)."
+      what_happened_text: "El código de confirmación de su antiguo proveedor de PDS expiró antes de poder usarse. Estos códigos solo son válidos durante un tiempo limitado (normalmente 15 minutos)."
 
     critical_plc_failure:
       subject: "Urgente: fallo crítico de migración – no inicie una nueva migración (%{token})"

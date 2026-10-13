@@ -96,7 +96,7 @@ ro:
         text: "Creăm contul pe noul server și copiem totul acolo; pagina de stare arată progresul. Între timp, nu publicați, nu apreciați și nu urmăriți pe nimeni: aceste modificări nu ar fi transferate."
       confirm:
         title: "Confirmarea mutării"
-        text: "Serverul actual vă trimite un cod de confirmare prin email. Introduceți-l pe pagina de stare în decurs de o oră sau solicitați unul nou. Acest pas face ca identitatea dumneavoastră să indice către noul server."
+        text: "Serverul actual vă trimite un cod de confirmare prin email. Introduceți-l pe pagina de stare în decurs de 15 minute sau solicitați unul nou. Acest pas face ca identitatea dumneavoastră să indice către noul server."
       done:
         title: "Gata"
         text: "Contul de pe noul server este activat, iar cel vechi este dezactivat. Vă trimitem prin email instrucțiunile de autentificare, împreună cu parola noului cont."
@@ -427,14 +427,14 @@ ro:
       didnt_receive_plc: "Nu ați primit emailul?"
       plc_check_spam: "Verificați folderul de spam sau junk"
       plc_from_old_pds: "Emailul vine de la serverul dvs. actual (%{pds}), nu de la noi"
-      plc_expires: "Codul expiră după 1 oră"
+      plc_expires: "Codul expiră după 15 minute"
       plc_new_code_help: "Dacă aveți nevoie de un cod nou, introduceți parola mai jos și vom solicita unul:"
       plc_password_placeholder: "Parola pentru %{handle}"
       request_new_code: "Solicită cod nou"
       technical_details: "Detalii tehnice"
       plc_explanation: "Codul de confirmare este un <strong>token de operație PLC</strong> — autorizează actualizarea documentului DID din directorul PLC pentru a indica către noul dumneavoastră Personal Data Server."
       plc_irreversible: "<strong>Aceasta este ireversibilă.</strong> Odată trimisă, identitatea contului (DID) va indica permanent către <strong>%{new_pds}</strong> în loc de <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Token-urile PLC expiră după 1 oră. Dacă al dumneavoastră a expirat, puteți solicita unul nou."
+      plc_expiry_note: "Token-urile PLC expiră după 15 minute. Dacă al dumneavoastră a expirat, puteți solicita unul nou."
 
       # Sidebar
       download_backup: "Descărcați copia de siguranță"
@@ -563,13 +563,20 @@ ro:
           provider_only: "Este nevoie de o acțiune din partea furnizorului PDS — nu puteți rezolva singur problema."
       plc_token_expired:
         title: "Token PLC expirat"
-        what_happened: "Token-ul de operațiune PLC introdus a expirat. Token-urile PLC sunt valabile doar 1 oră după ce sunt emise de vechiul furnizor PDS."
+        what_happened: "Token-ul de operațiune PLC introdus a expirat. Token-urile PLC sunt valabile doar 15 minute după ce sunt emise de vechiul furnizor PDS."
         current_status: "Migrare întreruptă — aveți nevoie de un token PLC nou"
         what_to_do:
           request_token: "Folosiți butonul \"%{button}\" de mai jos pentru a solicita un token nou"
           check_email: "Căutați un email de la %{old_pds} cu noul token"
-          submit_in_time: "Introduceți noul token în decurs de 1 oră de la primire"
+          submit_in_time: "Introduceți noul token în decurs de 15 minute de la primire"
           data_safe: "Restul datelor de migrare sunt în siguranță și pregătite — aveți nevoie doar de un token nou"
+      plc_token_invalid:
+        title: "Codul de confirmare nu a fost recunoscut"
+        what_happened: "Vechiul server nu a recunoscut codul de confirmare introdus. Directorul PLC nu a fost modificat — contul este încă pe %{old_pds}."
+        current_status: "Migrare întreruptă — solicitați un nou cod de confirmare și introduceți-l exact așa cum a fost trimis"
+        what_to_do:
+          use_latest: "Folosiți doar codul din cel mai recent email: fiecare cerere nouă înlocuiește codul anterior, iar un cod expiră la 15 minute după trimitere"
+          copy_exactly: "Copiați codul complet, în forma XXXXX-XXXXX, fără spații sau alte caractere"
       plc_pre_submission_failure:
         title: "Actualizarea PLC nu a putut fi finalizată"
         what_happened: "Actualizarea directorului PLC nu a putut fi finalizată, dar contul dumneavoastră este în siguranță. Directorul PLC nu a fost modificat — contul este încă pe %{old_pds}."
@@ -577,7 +584,7 @@ ro:
         what_to_do:
           request_code: "Folosiți butonul \"%{button}\" de mai jos pentru a primi un nou cod de confirmare"
           check_email: "Căutați un email de la %{old_pds} cu noul cod"
-          submit_in_time: "Introduceți noul cod în decurs de 1 oră de la primire"
+          submit_in_time: "Introduceți noul cod în decurs de 15 minute de la primire"
           data_safe: "Datele de migrare (repository, blob-uri, preferințe) sunt în siguranță și pregătite"
       credentials_need_reauth:
         title: "Sesiune expirată — autentificați-vă din nou"
@@ -718,6 +725,7 @@ ro:
       # PLC token
       plc_submitted: "Token PLC trimis! DID-ul dumneavoastră va fi actualizat în curând."
       plc_blank: "Token-ul PLC nu poate fi gol"
+      plc_format_invalid: "Acesta nu pare un cod de confirmare. Codul din emailul de la %{sender} are forma XXXXX-XXXXX. Copiați-l din cel mai recent email, fără spații."
       session_expired: "Sesiunea a expirat. Vă rugăm să reintroduceți parola pentru a continua."
       old_session_expired: "Sesiunea cu %{pds} a expirat. Vă rugăm să reintroduceți parola pentru a continua."
       credentials_expired: "Credențialele au expirat. Vă rugăm să reintroduceți parola pentru a continua."
@@ -944,12 +952,12 @@ ro:
       note3: "Dacă aveți nevoie de ajutor, menționați token-ul de migrare: %{token}"
       retry_button: "Vedeți migrarea și reîncercați"
       plc_expired_heading: "Token PLC expirat"
-      plc_expired_text: "Token-ul de operațiune PLC a expirat. Token-urile PLC sunt valabile doar 1 oră după emitere."
+      plc_expired_text: "Token-ul de operațiune PLC a expirat. Token-urile PLC sunt valabile doar 15 minute după emitere."
       plc_expired_steps: "Ce trebuie să faceți"
       plc_expired_step1: "Deschideți pagina de stare a migrării cu butonul de mai jos"
       plc_expired_step2: "Faceți clic pe butonul \"Solicită token PLC nou\""
       plc_expired_step3: "Căutați în email mesajul de la %{pds} cu noul token"
-      plc_expired_step4: "Trimiteți noul token în decurs de 1 oră"
+      plc_expired_step4: "Trimiteți noul token în decurs de 15 minute"
       plc_expired_button: "Vedeți migrarea și solicitați un token nou"
       plc_expired_good_news: "Vești bune:"
       plc_expired_safe: "Datele de migrare sunt în siguranță și pregătite. Aveți nevoie doar de un token PLC nou pentru a finaliza ultimul pas."
@@ -994,7 +1002,7 @@ ro:
       plc_email_intro: "În curând veți primi un email de la vechiul furnizor PDS (%{pds}) cu subiectul:"
       plc_code_info: "Acel email conține un cod de confirmare (arată ca %{example})."
       plc_enter_code: "Trebuie să introduceți acest cod pe pagina de stare a migrării pentru a finaliza migrarea:"
-      plc_expiry: "Important: codul de confirmare expiră după 1 oră. Dacă nu vedeți emailul, verificați folderul de spam. Vine de la vechiul furnizor PDS, nu de la noi."
+      plc_expiry: "Important: codul de confirmare expiră după 15 minute. Dacă nu vedeți emailul, verificați folderul de spam. Vine de la vechiul furnizor PDS, nu de la noi."
       save_key_heading: "Salvați această cheie acum"
       recovery_key_label: "Cheia dumneavoastră de recuperare:"
       key_use_heading: "Ce pot face cu această cheie?"
@@ -1002,6 +1010,9 @@ ro:
       next_step_button: "Mergeți la pagina de migrare pentru a introduce codul de confirmare PLC"
 
     plc_token_failed:
+      invalid_heading: "Codul de confirmare nu a fost recunoscut"
+      invalid_intro: "Vechiul server nu a recunoscut codul de confirmare PLC introdus pentru migrarea %{token}."
+      invalid_what_happened_text: "Codul nu a fost cel așteptat de vechiul server. De obicei este vorba despre o greșeală de tastare, un cod dintr-un email mai vechi (fiecare cerere nouă înlocuiește codul anterior) sau un cod din alt email. Solicitați un singur cod nou și copiați-l exact din acel email."
       subject: "Acțiune necesară: solicitați un nou cod de confirmare PLC (%{token})"
       heading: "Token PLC expirat sau invalid"
       intro: "Codul de confirmare PLC pentru migrarea %{token} a expirat sau a fost invalid."
@@ -1011,7 +1022,7 @@ ro:
       step3: "Introduceți noul token când îl primiți prin email"
       error_detail: "Eroare: %{error}"
       safe_text: "Directorul PLC nu a fost modificat. Contul rămâne pe %{pds}, iar toate datele de migrare (repository, fișiere și preferințe) sunt stocate în siguranță și pregătite."
-      what_happened_text: "Codul de confirmare de la vechiul furnizor PDS a expirat înainte de a putea fi folosit. Aceste coduri sunt valabile doar o perioadă limitată (de obicei 1 oră)."
+      what_happened_text: "Codul de confirmare de la vechiul furnizor PDS a expirat înainte de a putea fi folosit. Aceste coduri sunt valabile doar o perioadă limitată (de obicei 15 minute)."
 
     critical_plc_failure:
       subject: "Urgent: eșec critic de migrare – nu porniți o migrare nouă (%{token})"

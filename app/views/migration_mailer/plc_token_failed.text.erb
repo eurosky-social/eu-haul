@@ -1,7 +1,7 @@
-<%= t('mailers.plc_token_failed.heading') %>
+<%= t(@heading_key) %>
 ==============================
 
-<%= t('mailers.plc_token_failed.intro', token: @migration.token) %>
+<%= t(@intro_key, token: @migration.token) %>
 
 
 <%= t('mailers.common.account_safe') %>
@@ -13,7 +13,7 @@
 <%= t('mailers.common.what_happened') %>
 ==============
 
-<%= t('mailers.plc_token_failed.what_happened_text') %>
+<%= t(@what_happened_key) %>
 
 <% if @error_message.present? %>
 <%= t('mailers.plc_token_failed.error_detail', error: @error_message) %>

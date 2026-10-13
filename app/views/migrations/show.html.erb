@@ -11,6 +11,7 @@
   # identity update running
   plc_waiting = @migration.pending_plc? && !(@migration.encrypted_plc_token.present? && !@migration.plc_token_expired?)
   plc_token_submitted = @migration.pending_plc? && !plc_waiting
+  plc_mail_sender = PlcMailSender.display(@migration.old_pds_host)
   show_sidebar = @migration.backup_available? || (@migration.rotation_key.present? && @migration.email_verified?) || (@migration.cancellable? && @migration.email_verified?)
   status_name = plc_waiting ? t('migrations.show.status_waiting_for_you') : t("migrations.show.status_names.#{@migration.status}", default: @migration.status.humanize)
 %>
@@ -208,7 +209,7 @@
               <p class="eh-sm eh-muted"><%= t('migrations.show.action_required_detail').html_safe %></p>
               <ul class="eh-sm eh-list">
                 <li><%= t('migrations.show.action_required_check_email') %></li>
-                <li><%= t('migrations.show.action_required_look_for', pds: @migration.old_pds_host).html_safe %></li>
+                <li><%= t('migrations.show.action_required_look_for', pds: plc_mail_sender).html_safe %></li>
                 <li><%= t('migrations.show.action_required_not_same_email') %></li>
               </ul>
             </div>
@@ -217,7 +218,7 @@
               <div class="es-field">
                 <%= label_tag :plc_token, t('migrations.show.confirmation_label'), class: 'es-label' %>
                 <%= text_field_tag :plc_token, nil, required: true, placeholder: t('migrations.show.confirmation_placeholder'), autocomplete: "one-time-code", autocapitalize: "characters", spellcheck: false, class: "es-input eh-code-input eh-code-md", aria: { describedby: 'plc-token-hint' } %>
-                <div class="es-hint" id="plc-token-hint"><%= t('migrations.show.confirmation_hint', pds: @migration.old_pds_host).html_safe %></div>
+                <div class="es-hint" id="plc-token-hint"><%= t('migrations.show.confirmation_hint', pds: plc_mail_sender).html_safe %></div>
               </div>
               <%= submit_tag t('migrations.show.complete_migration'), class: "es-btn es-btn-primary es-btn-lg es-btn-block eh-square", onclick: "return confirm('#{j t('migrations.show.complete_confirm')}');" %>
             <% end %>
@@ -228,7 +229,7 @@
                 <div class="eh-details-body">
                   <ul class="eh-list eh-muted">
                     <li><%= t('migrations.show.plc_check_spam') %></li>
-                    <li><%= t('migrations.show.plc_from_old_pds', pds: @migration.old_pds_host) %></li>
+                    <li><%= t('migrations.show.plc_from_old_pds', pds: plc_mail_sender) %></li>
                     <li><%= t('migrations.show.plc_expires') %></li>
                   </ul>
                   <% if @migration.has_old_pds_tokens? %>

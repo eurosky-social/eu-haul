@@ -96,7 +96,7 @@ hr:
         text: "Stvaramo vaš račun na novom poslužitelju i kopiramo sve na njega; stranica statusa prikazuje napredak. U međuvremenu ne objavljujte, ne označavajte sviđanja i ne pratite nikoga: te promjene ne bi bile prenesene."
       confirm:
         title: "Potvrdite preseljenje"
-        text: "Vaš trenutni poslužitelj šalje vam potvrdni kod e-poštom. Unesite ga na stranici statusa u roku od sat vremena ili zatražite novi. Ovaj korak usmjerava vaš identitet na novi poslužitelj."
+        text: "Vaš trenutni poslužitelj šalje vam potvrdni kod e-poštom. Unesite ga na stranici statusa u roku od 15 minuta ili zatražite novi. Ovaj korak usmjerava vaš identitet na novi poslužitelj."
       done:
         title: "Gotovo"
         text: "Vaš račun na novom poslužitelju je uključen, a stari je deaktiviran. E-poštom vam šaljemo upute za prijavu zajedno s lozinkom vašeg novog računa."
@@ -427,14 +427,14 @@ hr:
       didnt_receive_plc: "Niste primili e-poruku?"
       plc_check_spam: "Provjerite mapu za neželjenu poštu"
       plc_from_old_pds: "E-poruka dolazi s vašeg trenutnog poslužitelja (%{pds}), ne od nas"
-      plc_expires: "Kod istječe nakon 1 sata"
+      plc_expires: "Kod istječe nakon 15 minuta"
       plc_new_code_help: "Ako trebate novi kod, unesite lozinku ispod i zatražit ćemo ga:"
       plc_password_placeholder: "Lozinka za %{handle}"
       request_new_code: "Zatraži novi kod"
       technical_details: "Tehnički detalji"
       plc_explanation: "Potvrdni kod je <strong>PLC operacijski token</strong> — ovlašćuje ažuriranje vašeg DID dokumenta u PLC direktoriju da pokazuje na vaš novi Personal Data Server."
       plc_irreversible: "<strong>Ovo je nepovratno.</strong> Nakon slanja, identitet vašeg računa (DID) će trajno pokazivati na <strong>%{new_pds}</strong> umjesto na <strong>%{old_pds}</strong>."
-      plc_expiry_note: "PLC tokeni istječu nakon 1 sata. Ako je vaš istekao, možete zatražiti novi."
+      plc_expiry_note: "PLC tokeni istječu nakon 15 minuta. Ako je vaš istekao, možete zatražiti novi."
 
       # Sidebar
       download_backup: "Preuzmite sigurnosnu kopiju"
@@ -563,13 +563,20 @@ hr:
           provider_only: "Za ovo je potrebna intervencija pružatelja PDS-a — ne možete to sami popraviti."
       plc_token_expired:
         title: "PLC token je istekao"
-        what_happened: "PLC operacijski token koji ste unijeli je istekao. PLC tokeni vrijede samo 1 sat nakon što ih izda vaš stari pružatelj PDS-a."
+        what_happened: "PLC operacijski token koji ste unijeli je istekao. PLC tokeni vrijede samo 15 minuta nakon što ih izda vaš stari pružatelj PDS-a."
         current_status: "Migracija pauzirana — trebate novi PLC token"
         what_to_do:
           request_token: "Upotrijebite gumb \"%{button}\" ispod da biste zatražili novi token"
           check_email: "Potražite e-poruku od %{old_pds} s novim tokenom"
-          submit_in_time: "Unesite novi token u roku od 1 sata od primitka"
+          submit_in_time: "Unesite novi token u roku od 15 minuta od primitka"
           data_safe: "Ostali podaci vaše migracije sigurni su i spremni — trebate samo novi token"
+      plc_token_invalid:
+        title: "Potvrdni kod nije prepoznat"
+        what_happened: "Vaš stari poslužitelj nije prepoznao uneseni potvrdni kod. PLC direktorij nije promijenjen — vaš je račun i dalje na %{old_pds}."
+        current_status: "Migracija pauzirana — zatražite novi potvrdni kod i unesite ga točno onako kako je poslan"
+        what_to_do:
+          use_latest: "Koristite samo kod iz najnovije e-poruke: svaki novi zahtjev zamjenjuje prethodni kod, a kod istječe 15 minuta nakon slanja"
+          copy_exactly: "Kopirajte cijeli kod u obliku XXXXX-XXXXX, bez razmaka ili drugih znakova"
       plc_pre_submission_failure:
         title: "PLC ažuriranje nije moglo završiti"
         what_happened: "Ažuriranje PLC direktorija nije se moglo dovršiti, ali vaš je račun siguran. PLC direktorij nije promijenjen — vaš je račun i dalje na %{old_pds}."
@@ -577,7 +584,7 @@ hr:
         what_to_do:
           request_code: "Upotrijebite gumb \"%{button}\" ispod da biste dobili novi potvrdni kod"
           check_email: "Potražite e-poruku od %{old_pds} s novim kodom"
-          submit_in_time: "Unesite novi kod u roku od 1 sata od primitka"
+          submit_in_time: "Unesite novi kod u roku od 15 minuta od primitka"
           data_safe: "Podaci vaše migracije (repozitorij, blobovi, postavke) sigurni su i spremni"
       credentials_need_reauth:
         title: "Sesija je istekla — prijavite se ponovno"
@@ -718,6 +725,7 @@ hr:
       # PLC token
       plc_submitted: "PLC token poslan! Vaš DID će uskoro biti ažuriran."
       plc_blank: "PLC token ne smije biti prazan"
+      plc_format_invalid: "To ne izgleda kao potvrdni kod. Kod u e-poruci od %{sender} ima oblik XXXXX-XXXXX. Kopirajte ga iz najnovije e-poruke, bez razmaka."
       session_expired: "Vaša sesija je istekla. Ponovno unesite lozinku za nastavak."
       old_session_expired: "Vaša sesija s %{pds} je istekla. Ponovno unesite lozinku za nastavak."
       credentials_expired: "Vaše vjerodajnice su istekle. Ponovno unesite lozinku za nastavak."
@@ -944,12 +952,12 @@ hr:
       note3: "Ako trebate pomoć, navedite token migracije: %{token}"
       retry_button: "Pogledaj migraciju i pokušaj ponovno"
       plc_expired_heading: "PLC token je istekao"
-      plc_expired_text: "Vaš PLC operacijski token je istekao. PLC tokeni vrijede samo 1 sat nakon izdavanja."
+      plc_expired_text: "Vaš PLC operacijski token je istekao. PLC tokeni vrijede samo 15 minuta nakon izdavanja."
       plc_expired_steps: "Što trebate učiniti"
       plc_expired_step1: "Otvorite stranicu statusa migracije pomoću gumba ispod"
       plc_expired_step2: "Kliknite gumb \"Zatraži novi PLC token\""
       plc_expired_step3: "Provjerite e-poštu od %{pds} s novim tokenom"
-      plc_expired_step4: "Pošaljite novi token u roku od 1 sata"
+      plc_expired_step4: "Pošaljite novi token u roku od 15 minuta"
       plc_expired_button: "Pogledaj migraciju i zatraži novi token"
       plc_expired_good_news: "Dobra vijest:"
       plc_expired_safe: "Podaci vaše migracije sigurni su i spremni. Trebate samo novi PLC token da biste dovršili posljednji korak."
@@ -994,7 +1002,7 @@ hr:
       plc_email_intro: "Uskoro ćete primiti e-poruku od svog starog pružatelja PDS-a (%{pds}) s naslovom:"
       plc_code_info: "Ta e-poruka sadrži potvrdni kod (izgleda poput %{example})."
       plc_enter_code: "Taj kod morate unijeti na stranici statusa migracije kako biste dovršili migraciju:"
-      plc_expiry: "Važno: potvrdni kod istječe nakon 1 sata. Ako ne vidite e-poruku, provjerite mapu za neželjenu poštu. Dolazi od vašeg starog pružatelja PDS-a, a ne od nas."
+      plc_expiry: "Važno: potvrdni kod istječe nakon 15 minuta. Ako ne vidite e-poruku, provjerite mapu za neželjenu poštu. Dolazi od vašeg starog pružatelja PDS-a, a ne od nas."
       save_key_heading: "Sačuvajte ovaj ključ odmah"
       recovery_key_label: "Vaš ključ za oporavak:"
       key_use_heading: "Što mogu učiniti s ovim ključem?"
@@ -1002,6 +1010,9 @@ hr:
       next_step_button: "Idi na stranicu migracije i unesi PLC potvrdni kod"
 
     plc_token_failed:
+      invalid_heading: "Potvrdni kod nije prepoznat"
+      invalid_intro: "Vaš stari poslužitelj nije prepoznao PLC potvrdni kod koji ste unijeli za migraciju %{token}."
+      invalid_what_happened_text: "Kod nije bio onaj koji je vaš stari poslužitelj očekivao. Obično je riječ o tipfeleru, kodu iz starije e-poruke (svaki novi zahtjev zamjenjuje prethodni kod) ili kodu iz druge e-poruke. Zatražite jedan novi kod i kopirajte ga točno iz te e-poruke."
       subject: "Potrebna radnja: zatražite novi PLC potvrdni kod (%{token})"
       heading: "PLC token istekao ili nevaljan"
       intro: "PLC potvrdni kod za vašu migraciju %{token} je istekao ili je bio nevaljan."
@@ -1011,7 +1022,7 @@ hr:
       step3: "Unesite novi token kada ga primite e-poštom"
       error_detail: "Pogreška: %{error}"
       safe_text: "PLC direktorij nije promijenjen. Vaš račun ostaje na %{pds}, a svi podaci vaše migracije (repozitorij, datoteke i postavke) sigurno su pohranjeni i spremni."
-      what_happened_text: "Potvrdni kod vašeg starog pružatelja PDS-a istekao je prije nego što je mogao biti iskorišten. Ti kodovi vrijede samo ograničeno vrijeme (obično 1 sat)."
+      what_happened_text: "Potvrdni kod vašeg starog pružatelja PDS-a istekao je prije nego što je mogao biti iskorišten. Ti kodovi vrijede samo ograničeno vrijeme (obično 15 minuta)."
 
     critical_plc_failure:
       subject: "Hitno: kritični neuspjeh migracije – ne pokrećite novu migraciju (%{token})"

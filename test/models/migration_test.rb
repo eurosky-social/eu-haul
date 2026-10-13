@@ -531,6 +531,15 @@ class MigrationTest < ActiveSupport::TestCase
     assert plc_expires <= 1.hour.from_now
   end
 
+  test "set_plc_token defaults to the 15 minutes the PDS gives a code" do
+    migration = Migration.create!(@valid_attributes.merge(password: "test"))
+
+    freeze_time do
+      migration.set_plc_token("ABCDE-FGHIJ")
+      assert_equal 15.minutes.from_now.iso8601, migration.progress_data['plc_token_expires_at']
+    end
+  end
+
   test "plc_token getter returns nil when plc token expired" do
     migration = Migration.create!(@valid_attributes.merge(password: "test"))
     migration.set_plc_token("plc-token-abc123")

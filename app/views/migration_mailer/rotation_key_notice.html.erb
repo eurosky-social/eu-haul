@@ -8,7 +8,7 @@
 <%# PLC confirmation: the action this mail asks for %>
 <%= email_warning do %>
   <%= email_heading t('mailers.rotation_key_notice.check_email') %>
-  <%= email_text t('mailers.rotation_key_notice.plc_email_intro', pds: @migration.old_pds_host) %>
+  <%= email_text t('mailers.rotation_key_notice.plc_email_intro', pds: PlcMailSender.display(@migration.old_pds_host)) %>
   <%= email_well do %>
     <%= email_text tag.strong('"PLC Update Operation Requested"') %>
   <% end %>

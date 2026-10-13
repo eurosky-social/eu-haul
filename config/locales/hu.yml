@@ -96,7 +96,7 @@ hu:
         text: "Létrehozzuk a fiókját az új szerveren, és mindent átmásolunk oda; az állapotoldal mutatja az előrehaladást. Közben ne posztoljon, ne kedveljen és ne kövessen senkit: ezek a változások nem kerülnének át."
       confirm:
         title: "Erősítse meg a költözést"
-        text: "A jelenlegi szervere e-mailben küld egy megerősítő kódot. Adja meg az állapotoldalon egy órán belül, vagy kérjen újat. Ez a lépés irányítja az identitását az új szerverre."
+        text: "A jelenlegi szervere e-mailben küld egy megerősítő kódot. Adja meg az állapotoldalon 15 percen belül, vagy kérjen újat. Ez a lépés irányítja az identitását az új szerverre."
       done:
         title: "Kész"
         text: "Az új szerveren lévő fiókja bekapcsol, a régi pedig deaktiválódik. E-mailben elküldjük, hogyan jelentkezhet be, az új fiókja jelszavával együtt."
@@ -427,14 +427,14 @@ hu:
       didnt_receive_plc: "Nem kapta meg az e-mailt?"
       plc_check_spam: "Ellenőrizze a spam vagy levélszemétmappát"
       plc_from_old_pds: "Az e-mailt a jelenlegi szervere (%{pds}) küldi, nem mi"
-      plc_expires: "A kód 1 óra után lejár"
+      plc_expires: "A kód 15 perc után lejár"
       plc_new_code_help: "Ha új kódra van szüksége, adja meg jelszavát alább, és kérünk egyet:"
       plc_password_placeholder: "Jelszó a(z) %{handle} fiókhoz"
       request_new_code: "Új kód kérése"
       technical_details: "Technikai részletek"
       plc_explanation: "A megerősítő kód egy <strong>PLC műveleti token</strong> — felhatalmazza a DID-dokumentum frissítését a PLC könyvtárban, hogy az új Personal Data Serverre mutasson."
       plc_irreversible: "<strong>Ez visszafordíthatatlan.</strong> A benyújtás után a fiókja azonosítója (DID) véglegesen a(z) <strong>%{new_pds}</strong> szerverre fog mutatni a(z) <strong>%{old_pds}</strong> helyett."
-      plc_expiry_note: "A PLC tokenek 1 óra után lejárnak. Ha az Öné lejárt, kérhet újat."
+      plc_expiry_note: "A PLC tokenek 15 perc után lejárnak. Ha az Öné lejárt, kérhet újat."
 
       # Sidebar
       download_backup: "Biztonsági mentés letöltése"
@@ -563,13 +563,20 @@ hu:
           provider_only: "Ehhez a PDS szolgáltatójának beavatkozása szükséges — Ön ezt nem tudja megoldani."
       plc_token_expired:
         title: "A PLC token lejárt"
-        what_happened: "A megadott PLC műveleti token lejárt. A PLC tokenek csak 1 óráig érvényesek attól számítva, hogy a régi PDS-szolgáltatója kiállította őket."
+        what_happened: "A megadott PLC műveleti token lejárt. A PLC tokenek csak 15 percig érvényesek attól számítva, hogy a régi PDS-szolgáltatója kiállította őket."
         current_status: "A migráció szünetel — új PLC tokenre van szüksége"
         what_to_do:
           request_token: "Új token kéréséhez használja az alábbi \"%{button}\" gombot"
           check_email: "Keressen egy e-mailt a(z) %{old_pds} szervertől az új tokennel"
-          submit_in_time: "Az új tokent a kézhezvételtől számított 1 órán belül adja meg"
+          submit_in_time: "Az új tokent a kézhezvételtől számított 15 percen belül adja meg"
           data_safe: "A migráció többi adata biztonságban van és készen áll — csak egy új tokenre van szüksége"
+      plc_token_invalid:
+        title: "A megerősítő kódot nem sikerült felismerni"
+        what_happened: "A régi szervere nem ismerte fel a megadott megerősítő kódot. A PLC könyvtár nem változott — a fiókja továbbra is a(z) %{old_pds} szerveren van."
+        current_status: "A migráció szünetel — kérjen új megerősítő kódot, és pontosan úgy adja meg, ahogy érkezett"
+        what_to_do:
+          use_latest: "Csak a legújabb e-mailben kapott kódot használja: minden új kérés lecseréli az előző kódot, és egy kód az elküldése után 15 perccel lejár"
+          copy_exactly: "A teljes kódot másolja ki XXXXX-XXXXX alakban, szóközök és egyéb karakterek nélkül"
       plc_pre_submission_failure:
         title: "A PLC frissítés nem fejeződhetett be"
         what_happened: "A PLC könyvtár frissítése nem fejeződhetett be, de a fiókja biztonságban van. A PLC könyvtár nem változott — a fiókja továbbra is a(z) %{old_pds} szerveren van."
@@ -577,7 +584,7 @@ hu:
         what_to_do:
           request_code: "Új megerősítő kód kéréséhez használja az alábbi \"%{button}\" gombot"
           check_email: "Keressen egy e-mailt a(z) %{old_pds} szervertől az új kóddal"
-          submit_in_time: "Az új kódot a kézhezvételtől számított 1 órán belül adja meg"
+          submit_in_time: "Az új kódot a kézhezvételtől számított 15 percen belül adja meg"
           data_safe: "A migrációs adatai (tároló, blobok, beállítások) biztonságban vannak és készen állnak"
       credentials_need_reauth:
         title: "A munkamenet lejárt — jelentkezzen be újra"
@@ -718,6 +725,7 @@ hu:
       # PLC token
       plc_submitted: "PLC token benyújtva! A DID-je hamarosan frissül."
       plc_blank: "A PLC token nem lehet üres"
+      plc_format_invalid: "Ez nem tűnik megerősítő kódnak. A(z) %{sender} feladótól érkezett e-mailben lévő kód XXXXX-XXXXX alakú. Másolja ki a legújabb e-mailből, szóközök nélkül."
       session_expired: "A munkamenete lejárt. Kérem, adja meg újra a jelszavát a folytatáshoz."
       old_session_expired: "A munkamenete a(z) %{pds} szerverrel lejárt. Kérem, adja meg újra a jelszavát a folytatáshoz."
       credentials_expired: "A hitelesítő adatai lejártak. Kérem, adja meg újra a jelszavát a folytatáshoz."
@@ -944,12 +952,12 @@ hu:
       note3: "Ha segítségre van szüksége, hivatkozzon a migrációs tokenjére: %{token}"
       retry_button: "Migráció megtekintése és újrapróbálása"
       plc_expired_heading: "A PLC token lejárt"
-      plc_expired_text: "A PLC műveleti tokenje lejárt. A PLC tokenek a kiállításuk után csak 1 óráig érvényesek."
+      plc_expired_text: "A PLC műveleti tokenje lejárt. A PLC tokenek a kiállításuk után csak 15 percig érvényesek."
       plc_expired_steps: "Amit tennie kell"
       plc_expired_step1: "Nyissa meg a migráció állapotoldalát az alábbi gombbal"
       plc_expired_step2: "Kattintson az \"Új PLC token kérése\" gombra"
       plc_expired_step3: "Keresse meg a(z) %{pds} által küldött e-mailt az új tokennel"
-      plc_expired_step4: "Az új tokent 1 órán belül küldje be"
+      plc_expired_step4: "Az új tokent 15 percen belül küldje be"
       plc_expired_button: "Migráció megtekintése és új token kérése"
       plc_expired_good_news: "Jó hír:"
       plc_expired_safe: "A migrációs adatai biztonságban vannak és készen állnak. Csak egy új PLC tokenre van szüksége az utolsó lépés befejezéséhez."
@@ -994,7 +1002,7 @@ hu:
       plc_email_intro: "Hamarosan e-mailt kap a régi PDS-szolgáltatójától (%{pds}) a következő tárggyal:"
       plc_code_info: "Ez az e-mail egy megerősítő kódot tartalmaz (így néz ki: %{example})."
       plc_enter_code: "A migráció véglegesítéséhez ezt a kódot a migráció állapotoldalán kell megadnia:"
-      plc_expiry: "Fontos: a megerősítő kód 1 óra után lejár. Ha nem látja az e-mailt, nézze meg a spam mappát. Az e-mailt a régi PDS-szolgáltatója küldi, nem mi."
+      plc_expiry: "Fontos: a megerősítő kód 15 perc után lejár. Ha nem látja az e-mailt, nézze meg a spam mappát. Az e-mailt a régi PDS-szolgáltatója küldi, nem mi."
       save_key_heading: "Mentse el most ezt a kulcsot"
       recovery_key_label: "Az Ön helyreállítási kulcsa:"
       key_use_heading: "Mire használhatom ezt a kulcsot?"
@@ -1002,6 +1010,9 @@ hu:
       next_step_button: "Ugrás a migrációs oldalra a PLC megerősítő kód megadásához"
 
     plc_token_failed:
+      invalid_heading: "A megerősítő kódot nem sikerült felismerni"
+      invalid_intro: "A régi szervere nem ismerte fel a(z) %{token} migrációhoz megadott PLC megerősítő kódot."
+      invalid_what_happened_text: "A kód nem az volt, amit a régi szervere várt. Ez általában elgépelés, egy régebbi e-mailből származó kód (minden új kérés lecseréli az előző kódot) vagy egy másik e-mailből származó kód miatt történik. Kérjen egyetlen új kódot, és pontosan abból az e-mailből másolja ki."
       subject: "Beavatkozás szükséges: kérjen új PLC megerősítő kódot (%{token})"
       heading: "PLC token lejárt vagy érvénytelen"
       intro: "A(z) %{token} migráció PLC megerősítő kódja lejárt vagy érvénytelen volt."
@@ -1011,7 +1022,7 @@ hu:
       step3: "Adja meg az új tokent, amikor e-mailben megkapja"
       error_detail: "Hiba: %{error}"
       safe_text: "A PLC könyvtár nem változott. A fiókja a(z) %{pds} szerveren marad, és minden migrációs adata (tároló, fájlok és beállítások) biztonságosan tárolva, készen áll."
-      what_happened_text: "A régi PDS-szolgáltatójától kapott megerősítő kód lejárt, mielőtt fel lehetett volna használni. Ezek a kódok csak korlátozott ideig (általában 1 óráig) érvényesek."
+      what_happened_text: "A régi PDS-szolgáltatójától kapott megerősítő kód lejárt, mielőtt fel lehetett volna használni. Ezek a kódok csak korlátozott ideig (általában 15 percig) érvényesek."
 
     critical_plc_failure:
       subject: "Sürgős: kritikus migrációs hiba – ne indítson új migrációt (%{token})"

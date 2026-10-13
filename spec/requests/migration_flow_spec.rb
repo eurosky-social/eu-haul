@@ -8,7 +8,7 @@ RSpec.describe "Migration Flow", type: :request do
   let(:new_handle) { "test.example.com" }
   let(:new_pds_host) { "https://pds.example.com" }
   let(:password) { "test_password_123" }
-  let(:plc_token) { "plc_token_abc123" }
+  let(:plc_token) { "ABCDE-FGHIJ" }
 
   let(:resolved_did) { "did:plc:test123abc" }
   let(:resolved_pds_host) { "https://bsky.social" }

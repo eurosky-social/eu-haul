@@ -7,7 +7,7 @@
 <%= t('mailers.plc_token_reminder.action_title') %>
 ================================================================================
 
-<%= t('mailers.plc_token_reminder.action_help', pds: @migration.old_pds_host) %>
+<%= t('mailers.plc_token_reminder.action_help', pds: PlcMailSender.display(@migration.old_pds_host)) %>
 
 <%= t('mailers.plc_token_reminder.go_to_page') %>
 
@@ -18,7 +18,7 @@
 ================================================================================
 
 - <%= t('mailers.plc_token_reminder.help_check_spam') %>
-- <%= t('mailers.plc_token_reminder.help_from_old_pds', pds: @migration.old_pds_host) %>
+- <%= t('mailers.plc_token_reminder.help_from_old_pds', pds: PlcMailSender.display(@migration.old_pds_host)) %>
 - <%= t('mailers.plc_token_reminder.help_code_format') %>
 - <%= t('mailers.plc_token_reminder.help_request_new') %>
 

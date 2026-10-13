@@ -96,7 +96,7 @@ fr:
         text: "Nous créons votre compte sur le nouveau serveur et y copions tout ; la page d'état affiche la progression. Entre-temps, ne publiez pas, n'aimez rien et ne suivez personne : ces changements ne seraient pas transférés."
       confirm:
         title: "Confirmez le transfert"
-        text: "Votre serveur actuel vous envoie un code de confirmation par e-mail. Saisissez-le sur la page d'état dans l'heure, ou demandez-en un nouveau. Cette étape fait pointer votre identité vers le nouveau serveur."
+        text: "Votre serveur actuel vous envoie un code de confirmation par e-mail. Saisissez-le sur la page d'état dans les 15 minutes, ou demandez-en un nouveau. Cette étape fait pointer votre identité vers le nouveau serveur."
       done:
         title: "Terminé"
         text: "Votre compte sur le nouveau serveur est activé et l'ancien est désactivé. Nous vous envoyons par e-mail les instructions de connexion, avec le mot de passe de votre nouveau compte."
@@ -427,14 +427,14 @@ fr:
       didnt_receive_plc: "Vous n'avez pas reçu l'e-mail ?"
       plc_check_spam: "Vérifiez votre dossier de courriers indésirables (spam)"
       plc_from_old_pds: "L'e-mail provient de votre serveur actuel (%{pds}), pas de nous"
-      plc_expires: "Le code expire après 1 heure"
+      plc_expires: "Le code expire après 15 minutes"
       plc_new_code_help: "Si vous avez besoin d'un nouveau code, saisissez votre mot de passe ci-dessous et nous en demanderons un :"
       plc_password_placeholder: "Mot de passe de %{handle}"
       request_new_code: "Demander un nouveau code"
       technical_details: "Détails techniques"
       plc_explanation: "Le code de confirmation est un <strong>jeton d'opération PLC</strong> — il autorise la mise à jour de votre document DID dans le répertoire PLC pour pointer vers votre nouveau serveur de données personnelles."
       plc_irreversible: "<strong>Ceci est irréversible.</strong> Une fois soumis, l'identité de votre compte (DID) pointera de manière permanente vers <strong>%{new_pds}</strong> au lieu de <strong>%{old_pds}</strong>."
-      plc_expiry_note: "Les jetons PLC expirent après 1 heure. Si le vôtre a expiré, vous pouvez en demander un nouveau."
+      plc_expiry_note: "Les jetons PLC expirent après 15 minutes. Si le vôtre a expiré, vous pouvez en demander un nouveau."
 
       # Sidebar
       download_backup: "Télécharger votre sauvegarde"
@@ -563,13 +563,20 @@ fr:
           provider_only: "Cela nécessite une intervention du fournisseur du PDS — vous ne pouvez pas le corriger vous-même."
       plc_token_expired:
         title: "Jeton PLC expiré"
-        what_happened: "Le jeton d'opération PLC que vous avez saisi a expiré. Les jetons PLC ne sont valables qu'une heure après leur émission par votre ancien fournisseur PDS."
+        what_happened: "Le jeton d'opération PLC que vous avez saisi a expiré. Les jetons PLC ne sont valables que 15 minutes après leur émission par votre ancien fournisseur PDS."
         current_status: "Migration en pause — vous avez besoin d'un nouveau jeton PLC"
         what_to_do:
           request_token: "Utilisez le bouton « %{button} » ci-dessous pour demander un nouveau jeton"
           check_email: "Cherchez un e-mail de %{old_pds} contenant le nouveau jeton"
-          submit_in_time: "Saisissez le nouveau jeton dans l'heure qui suit sa réception"
+          submit_in_time: "Saisissez le nouveau jeton dans les 15 minutes qui suivent sa réception"
           data_safe: "Le reste de vos données de migration est en sécurité et prêt — il vous faut seulement un nouveau jeton"
+      plc_token_invalid:
+        title: "Code de confirmation non reconnu"
+        what_happened: "Votre ancien serveur n'a pas reconnu le code de confirmation saisi. Le répertoire PLC n'a pas été modifié — votre compte est toujours sur %{old_pds}."
+        current_status: "Migration en pause — demandez un nouveau code de confirmation et saisissez-le exactement tel qu'il a été envoyé"
+        what_to_do:
+          use_latest: "N'utilisez que le code de l'e-mail le plus récent : chaque nouvelle demande remplace le code précédent, et un code expire 15 minutes après son envoi"
+          copy_exactly: "Copiez le code complet, de la forme XXXXX-XXXXX, sans espaces ni autres caractères"
       plc_pre_submission_failure:
         title: "La mise à jour PLC n'a pas pu aboutir"
         what_happened: "La mise à jour du répertoire PLC n'a pas pu être effectuée, mais votre compte est en sécurité. Le répertoire PLC n'a pas été modifié — votre compte est toujours sur %{old_pds}."
@@ -577,7 +584,7 @@ fr:
         what_to_do:
           request_code: "Utilisez le bouton « %{button} » ci-dessous pour obtenir un nouveau code de confirmation"
           check_email: "Cherchez un e-mail de %{old_pds} contenant le nouveau code"
-          submit_in_time: "Saisissez le nouveau code dans l'heure qui suit sa réception"
+          submit_in_time: "Saisissez le nouveau code dans les 15 minutes qui suivent sa réception"
           data_safe: "Vos données de migration (dépôt, objets binaires, préférences) sont en sécurité et prêtes"
       credentials_need_reauth:
         title: "Session expirée — reconnectez-vous"
@@ -718,6 +725,7 @@ fr:
       # PLC token
       plc_submitted: "Jeton PLC soumis ! Votre DID sera mis à jour sous peu."
       plc_blank: "Le jeton PLC ne peut pas être vide"
+      plc_format_invalid: "Cela ne ressemble pas à un code de confirmation. Le code figurant dans l'e-mail de %{sender} a la forme XXXXX-XXXXX. Copiez-le depuis l'e-mail le plus récent, sans espaces."
       session_expired: "Votre session a expiré. Veuillez saisir à nouveau votre mot de passe pour continuer."
       old_session_expired: "Votre session avec %{pds} a expiré. Veuillez saisir à nouveau votre mot de passe pour continuer."
       credentials_expired: "Vos identifiants ont expiré. Veuillez saisir à nouveau votre mot de passe pour continuer."
@@ -944,12 +952,12 @@ fr:
       note3: "Si vous avez besoin d'aide, référencez votre jeton de migration : %{token}"
       retry_button: "Voir la migration et réessayer"
       plc_expired_heading: "Jeton PLC expiré"
-      plc_expired_text: "Votre jeton d'opération PLC a expiré. Les jetons PLC ne sont valables qu'une heure après leur émission."
+      plc_expired_text: "Votre jeton d'opération PLC a expiré. Les jetons PLC ne sont valables que 15 minutes après leur émission."
       plc_expired_steps: "Ce que vous devez faire"
       plc_expired_step1: "Ouvrez la page d'état de votre migration avec le bouton ci-dessous"
       plc_expired_step2: "Cliquez sur le bouton « Demander un nouveau jeton PLC »"
       plc_expired_step3: "Consultez l'e-mail de %{pds} contenant le nouveau jeton"
-      plc_expired_step4: "Soumettez le nouveau jeton dans l'heure"
+      plc_expired_step4: "Soumettez le nouveau jeton dans les 15 minutes"
       plc_expired_button: "Voir la migration et demander un nouveau jeton"
       plc_expired_good_news: "Bonne nouvelle :"
       plc_expired_safe: "Vos données de migration sont en sécurité et prêtes. Il vous faut seulement un nouveau jeton PLC pour terminer la dernière étape."
@@ -994,7 +1002,7 @@ fr:
       plc_email_intro: "Vous allez bientôt recevoir un e-mail de votre ancien fournisseur PDS (%{pds}) avec l'objet :"
       plc_code_info: "Cet e-mail contient un code de confirmation (il ressemble à %{example})."
       plc_enter_code: "Vous devez saisir ce code sur la page d'état de votre migration pour la finaliser :"
-      plc_expiry: "Important : le code de confirmation expire après 1 heure. Si vous ne voyez pas l'e-mail, vérifiez votre dossier spam. Il provient de votre ancien fournisseur PDS, pas de nous."
+      plc_expiry: "Important : le code de confirmation expire après 15 minutes. Si vous ne voyez pas l'e-mail, vérifiez votre dossier spam. Il provient de votre ancien fournisseur PDS, pas de nous."
       save_key_heading: "Sauvegardez cette clé maintenant"
       recovery_key_label: "Votre clé de récupération :"
       key_use_heading: "À quoi sert cette clé ?"
@@ -1002,6 +1010,9 @@ fr:
       next_step_button: "Accéder à la page de migration pour saisir votre code de confirmation PLC"
 
     plc_token_failed:
+      invalid_heading: "Code de confirmation non reconnu"
+      invalid_intro: "Votre ancien serveur n'a pas reconnu le code de confirmation PLC que vous avez saisi pour la migration %{token}."
+      invalid_what_happened_text: "Le code n'était pas celui attendu par votre ancien serveur. Il s'agit généralement d'une faute de frappe, d'un code provenant d'un e-mail plus ancien (chaque nouvelle demande remplace le code précédent) ou d'un code issu d'un autre e-mail. Demandez un seul nouveau code et copiez-le exactement depuis cet e-mail."
       subject: "Action requise : demandez un nouveau code de confirmation PLC (%{token})"
       heading: "Jeton PLC expiré ou invalide"
       intro: "Le code de confirmation PLC pour votre migration %{token} a expiré ou était invalide."
@@ -1011,7 +1022,7 @@ fr:
       step3: "Saisissez le nouveau jeton lorsque vous le recevrez par e-mail"
       error_detail: "Erreur : %{error}"
       safe_text: "Le répertoire PLC n'a pas été modifié. Votre compte reste sur %{pds}, et toutes vos données de migration (dépôt, fichiers et préférences) sont stockées en sécurité et prêtes."
-      what_happened_text: "Le code de confirmation de votre ancien fournisseur PDS a expiré avant d'avoir pu être utilisé. Ces codes ne sont valables que pour une durée limitée (généralement 1 heure)."
+      what_happened_text: "Le code de confirmation de votre ancien fournisseur PDS a expiré avant d'avoir pu être utilisé. Ces codes ne sont valables que pour une durée limitée (généralement 15 minutes)."
 
     critical_plc_failure:
       subject: "Urgent : échec critique de migration – ne démarrez pas de nouvelle migration (%{token})"

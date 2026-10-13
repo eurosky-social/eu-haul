@@ -194,11 +194,18 @@ class UpdatePlcJob < ApplicationJob
       Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
 
       if migration
-        # Detect PLC OTP token expiry (old PDS returned "Token is expired" during signing)
+        # signPlcOperation on the old PDS answers "Token is expired" once the
+        # code's 15 minutes are up, and "Token is invalid" when the code matches
+        # nothing it issued: a typo, a stray character, or a code superseded by
+        # a later request. The two need different advice.
         if e.message.match?(/sign PLC operation.*Token is expired|Token is expired.*sign/i) ||
            e.message.match?(/400 Bad Request.*Token is expired/i)
           error_msg = "PLC confirmation code expired. The code from your old PDS is only valid for a limited time. Please request a new one."
           migration.mark_failed!(error_msg, error_code: :plc_token_expired)
+        elsif e.message.match?(/sign PLC operation.*Token is invalid|Token is invalid.*sign/i) ||
+              e.message.match?(/400 Bad Request.*Token is invalid/i)
+          error_msg = "PLC confirmation code not recognised by your old PDS. Request a new code and enter it exactly as it appears in the newest email."
+          migration.mark_failed!(error_msg, error_code: :plc_token_invalid)
         else
           error_msg = "PLC update failed (before submission) - #{e.message}"
           migration.mark_failed!(error_msg, error_code: :plc_pre_submission_failure)

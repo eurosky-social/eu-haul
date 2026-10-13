@@ -85,6 +85,11 @@ module MigrationErrorHelper
 
     # --- PLC-related errors (most specific first) ---
 
+    # PLC confirmation code the old PDS did not recognise (UpdatePlcJob rescue)
+    #   "PLC confirmation code not recognised by your old PDS. ..."
+    when /\APLC confirmation code not recognised/
+      :plc_token_invalid
+
     # PLC OTP token expired or missing (UpdatePlcJob early-return checks)
     #   "PLC token has expired (expired at: ...). Please request a new token."
     #   "PLC token is missing. Please request a new token."
@@ -148,6 +153,8 @@ module MigrationErrorHelper
       network_context(migration, retry_attempt, max_attempts)
     when :plc_token_expired
       plc_token_expired_context(migration)
+    when :plc_token_invalid
+      plc_token_invalid_context(migration)
     when :plc_pre_submission_failure
       plc_pre_submission_failure_context(migration)
     when :credentials_need_reauth
@@ -331,7 +338,7 @@ module MigrationErrorHelper
       current_status: t("plc_token_expired.current_status"),
       what_to_do: [
         t("plc_token_expired.what_to_do.request_token", button: request_plc_token_label),
-        t("plc_token_expired.what_to_do.check_email", old_pds: migration.old_pds_host),
+        t("plc_token_expired.what_to_do.check_email", old_pds: PlcMailSender.display(migration.old_pds_host)),
         t("plc_token_expired.what_to_do.submit_in_time"),
         t("plc_token_expired.what_to_do.data_safe")
       ],
@@ -340,6 +347,30 @@ module MigrationErrorHelper
       show_request_new_plc_token: true,
       help_link: "/docs/troubleshooting#plc-token-expiration",
       expired_at: migration.credentials_expires_at,
+      old_pds_host: migration.old_pds_host
+    }
+  end
+
+  # The old PDS rejected the code as one it never issued. Nothing was changed;
+  # the user needs one fresh code and to copy it exactly.
+  def self.plc_token_invalid_context(migration)
+    {
+      severity: :warning,
+      icon: "⚠️",
+      title: t("plc_token_invalid.title"),
+      what_happened: t("plc_token_invalid.what_happened", old_pds: migration.old_pds_host),
+      current_status: t("plc_token_invalid.current_status"),
+      what_to_do: [
+        t("plc_token_expired.what_to_do.request_token", button: request_plc_token_label),
+        t("plc_token_expired.what_to_do.check_email", old_pds: PlcMailSender.display(migration.old_pds_host)),
+        t("plc_token_invalid.what_to_do.use_latest"),
+        t("plc_token_invalid.what_to_do.copy_exactly"),
+        t("plc_token_expired.what_to_do.data_safe")
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_request_new_plc_token: true,
+      help_link: "/docs/troubleshooting#plc-token-expiration",
       old_pds_host: migration.old_pds_host
     }
   end
@@ -353,7 +384,7 @@ module MigrationErrorHelper
       current_status: t("plc_pre_submission_failure.current_status"),
       what_to_do: [
         t("plc_pre_submission_failure.what_to_do.request_code", button: request_plc_token_label),
-        t("plc_pre_submission_failure.what_to_do.check_email", old_pds: migration.old_pds_host),
+        t("plc_pre_submission_failure.what_to_do.check_email", old_pds: PlcMailSender.display(migration.old_pds_host)),
         t("plc_pre_submission_failure.what_to_do.submit_in_time"),
         t("plc_pre_submission_failure.what_to_do.data_safe")
       ],

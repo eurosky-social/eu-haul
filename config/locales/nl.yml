@@ -96,7 +96,7 @@ nl:
         text: "We maken uw account aan op de nieuwe server en kopiëren alles daarheen; de statuspagina toont de voortgang. Plaats intussen geen berichten, likes of follows: die wijzigingen gaan niet mee."
       confirm:
         title: "Bevestig de verhuizing"
-        text: "Uw huidige server mailt u een bevestigingscode. Voer die binnen een uur in op de statuspagina, of vraag een nieuwe aan. Met deze stap gaat uw identiteit naar de nieuwe server verwijzen."
+        text: "Uw huidige server mailt u een bevestigingscode. Voer die binnen 15 minuten in op de statuspagina, of vraag een nieuwe aan. Met deze stap gaat uw identiteit naar de nieuwe server verwijzen."
       done:
         title: "Klaar"
         text: "Uw account op de nieuwe server wordt ingeschakeld en het oude wordt gedeactiveerd. We mailen u hoe u inlogt, samen met het wachtwoord van uw nieuwe account."
@@ -427,14 +427,14 @@ nl:
       didnt_receive_plc: "E-mail niet ontvangen?"
       plc_check_spam: "Controleer uw spam- of ongewenste-e-mailmap"
       plc_from_old_pds: "De e-mail komt van uw huidige server (%{pds}), niet van ons"
-      plc_expires: "De code verloopt na 1 uur"
+      plc_expires: "De code verloopt na 15 minuten"
       plc_new_code_help: "Als u een nieuwe code nodig hebt, voer dan hieronder uw wachtwoord in en we vragen er een aan:"
       plc_password_placeholder: "Wachtwoord voor %{handle}"
       request_new_code: "Nieuwe code aanvragen"
       technical_details: "Technische details"
       plc_explanation: "De bevestigingscode is een <strong>PLC-bewerkingstoken</strong> — deze autoriseert het bijwerken van uw DID-document in de PLC-catalogus om te verwijzen naar uw nieuwe Personal Data Server."
       plc_irreversible: "<strong>Dit is onomkeerbaar.</strong> Eenmaal ingediend, zal uw accountidentiteit (DID) permanent verwijzen naar <strong>%{new_pds}</strong> in plaats van <strong>%{old_pds}</strong>."
-      plc_expiry_note: "PLC-tokens verlopen na 1 uur. Als die van u is verlopen, kunt u een nieuwe aanvragen."
+      plc_expiry_note: "PLC-tokens verlopen na 15 minuten. Als die van u is verlopen, kunt u een nieuwe aanvragen."
 
       # Sidebar
       download_backup: "Download uw back-up"
@@ -563,13 +563,20 @@ nl:
           provider_only: "Hiervoor is actie van de PDS-provider nodig — u kunt dit niet zelf oplossen."
       plc_token_expired:
         title: "PLC-token verlopen"
-        what_happened: "Het PLC-bewerkingstoken dat u hebt ingevoerd, is verlopen. PLC-tokens zijn slechts 1 uur geldig nadat uw oude PDS-provider ze heeft uitgegeven."
+        what_happened: "Het PLC-bewerkingstoken dat u hebt ingevoerd, is verlopen. PLC-tokens zijn slechts 15 minuten geldig nadat uw oude PDS-provider ze heeft uitgegeven."
         current_status: "Migratie gepauzeerd — u hebt een nieuw PLC-token nodig"
         what_to_do:
           request_token: "Gebruik de knop \"%{button}\" hieronder om een nieuw token aan te vragen"
           check_email: "Zoek naar een e-mail van %{old_pds} met het nieuwe token"
-          submit_in_time: "Voer het nieuwe token binnen 1 uur na ontvangst in"
+          submit_in_time: "Voer het nieuwe token binnen 15 minuten na ontvangst in"
           data_safe: "De rest van uw migratiegegevens is veilig en gereed — u hebt alleen een nieuw token nodig"
+      plc_token_invalid:
+        title: "Bevestigingscode niet herkend"
+        what_happened: "Uw oude server heeft de ingevoerde bevestigingscode niet herkend. De PLC-catalogus is niet gewijzigd — uw account staat nog op %{old_pds}."
+        current_status: "Migratie gepauzeerd — vraag een nieuwe bevestigingscode aan en voer die precies zo in als verzonden"
+        what_to_do:
+          use_latest: "Gebruik alleen de code uit de meest recente e-mail: elke nieuwe aanvraag vervangt de vorige code, en een code verloopt 15 minuten na verzending"
+          copy_exactly: "Kopieer de volledige code in de vorm XXXXX-XXXXX, zonder spaties of andere tekens"
       plc_pre_submission_failure:
         title: "PLC-update kon niet worden voltooid"
         what_happened: "De update van de PLC-catalogus kon niet worden voltooid, maar uw account is veilig. De PLC-catalogus is niet gewijzigd — uw account staat nog op %{old_pds}."
@@ -577,7 +584,7 @@ nl:
         what_to_do:
           request_code: "Gebruik de knop \"%{button}\" hieronder om een nieuwe bevestigingscode te krijgen"
           check_email: "Zoek naar een e-mail van %{old_pds} met de nieuwe code"
-          submit_in_time: "Voer de nieuwe code binnen 1 uur na ontvangst in"
+          submit_in_time: "Voer de nieuwe code binnen 15 minuten na ontvangst in"
           data_safe: "Uw migratiegegevens (repository, blobs, voorkeuren) zijn veilig en gereed"
       credentials_need_reauth:
         title: "Sessie verlopen — log opnieuw in"
@@ -718,6 +725,7 @@ nl:
       # PLC token
       plc_submitted: "PLC-token ingediend! Uw DID wordt binnenkort bijgewerkt."
       plc_blank: "PLC-token mag niet leeg zijn"
+      plc_format_invalid: "Dat ziet er niet uit als een bevestigingscode. De code in de e-mail van %{sender} heeft de vorm XXXXX-XXXXX. Kopieer hem uit de meest recente e-mail, zonder spaties."
       session_expired: "Uw sessie is verlopen. Voer uw wachtwoord opnieuw in om door te gaan."
       old_session_expired: "Uw sessie met %{pds} is verlopen. Voer uw wachtwoord opnieuw in om door te gaan."
       credentials_expired: "Uw inloggegevens zijn verlopen. Voer uw wachtwoord opnieuw in om door te gaan."
@@ -944,12 +952,12 @@ nl:
       note3: "Als u hulp nodig hebt, vermeld dan uw migratietoken: %{token}"
       retry_button: "Migratie bekijken en opnieuw proberen"
       plc_expired_heading: "PLC-token verlopen"
-      plc_expired_text: "Uw PLC-bewerkingstoken is verlopen. PLC-tokens zijn slechts 1 uur geldig nadat ze zijn uitgegeven."
+      plc_expired_text: "Uw PLC-bewerkingstoken is verlopen. PLC-tokens zijn slechts 15 minuten geldig nadat ze zijn uitgegeven."
       plc_expired_steps: "Wat u moet doen"
       plc_expired_step1: "Open uw migratiestatuspagina met de knop hieronder"
       plc_expired_step2: "Klik op de knop \"Nieuw PLC-token aanvragen\""
       plc_expired_step3: "Controleer uw e-mail van %{pds} op het nieuwe token"
-      plc_expired_step4: "Dien het nieuwe token binnen 1 uur in"
+      plc_expired_step4: "Dien het nieuwe token binnen 15 minuten in"
       plc_expired_button: "Migratie bekijken en een nieuw token aanvragen"
       plc_expired_good_news: "Goed nieuws:"
       plc_expired_safe: "Uw migratiegegevens zijn veilig en gereed. U hebt alleen een nieuw PLC-token nodig om de laatste stap te voltooien."
@@ -994,7 +1002,7 @@ nl:
       plc_email_intro: "U ontvangt binnenkort een e-mail van uw oude PDS-provider (%{pds}) met de onderwerpregel:"
       plc_code_info: "Die e-mail bevat een bevestigingscode (die eruitziet als %{example})."
       plc_enter_code: "U moet deze code invoeren op uw migratiestatuspagina om de migratie af te ronden:"
-      plc_expiry: "Belangrijk: de bevestigingscode verloopt na 1 uur. Als u de e-mail niet ziet, controleer dan uw spammap. Hij komt van uw oude PDS-provider, niet van ons."
+      plc_expiry: "Belangrijk: de bevestigingscode verloopt na 15 minuten. Als u de e-mail niet ziet, controleer dan uw spammap. Hij komt van uw oude PDS-provider, niet van ons."
       save_key_heading: "Bewaar deze sleutel nu"
       recovery_key_label: "Uw herstelsleutel:"
       key_use_heading: "Wat kan ik met deze sleutel doen?"
@@ -1002,6 +1010,9 @@ nl:
       next_step_button: "Ga naar de migratiepagina om uw PLC-bevestigingscode in te voeren"
 
     plc_token_failed:
+      invalid_heading: "Bevestigingscode niet herkend"
+      invalid_intro: "Uw oude server heeft de PLC-bevestigingscode die u voor migratie %{token} hebt ingevoerd niet herkend."
+      invalid_what_happened_text: "De code was niet de code die uw oude server verwachtte. Meestal gaat het om een typefout, een code uit een oudere e-mail (elke nieuwe aanvraag vervangt de vorige code) of een code uit een andere e-mail. Vraag één nieuwe code aan en kopieer die precies uit die e-mail."
       subject: "Actie vereist: vraag een nieuwe PLC-bevestigingscode aan (%{token})"
       heading: "PLC-token verlopen of ongeldig"
       intro: "De PLC-bevestigingscode voor uw migratie %{token} is verlopen of was ongeldig."
@@ -1011,7 +1022,7 @@ nl:
       step3: "Voer het nieuwe token in wanneer u het per e-mail ontvangt"
       error_detail: "Fout: %{error}"
       safe_text: "De PLC-catalogus is niet gewijzigd. Uw account blijft op %{pds}, en al uw migratiegegevens (repository, bestanden en voorkeuren) zijn veilig opgeslagen en gereed."
-      what_happened_text: "De bevestigingscode van uw oude PDS-provider is verlopen voordat die kon worden gebruikt. Deze codes zijn maar beperkte tijd geldig (meestal 1 uur)."
+      what_happened_text: "De bevestigingscode van uw oude PDS-provider is verlopen voordat die kon worden gebruikt. Deze codes zijn maar beperkte tijd geldig (meestal 15 minuten)."
 
     critical_plc_failure:
       subject: "Dringend: kritieke migratiefout – start geen nieuwe migratie (%{token})"
