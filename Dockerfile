@@ -4,6 +4,11 @@
 ARG RUBY_VERSION=3.2.2
 FROM ruby:${RUBY_VERSION}-alpine as base
 
+# The ruby:3.2.2 tag is frozen at its January 2024 build. Upgrade its packages
+# at every build so security fixes land, above all ca-certificates: the old
+# bundle still trusts the roots behind the eMudhra intermediate key compromise.
+RUN apk upgrade --no-cache
+
 # Rails app lives here
 WORKDIR /rails
 
