@@ -1693,6 +1693,7 @@ class MigrationsController < ApplicationController
     when /CreateAccountJob/i then 'pending_account'
     when /UploadRepoJob|ImportRepoJob/i then 'pending_repo'
     when /UploadBlobsJob|ImportBlobsJob/i then 'pending_blobs'
+    when /ImportSpacesJob/i then 'pending_spaces'
     when /ImportPrefsJob/i then 'pending_prefs'
     when /WaitForPlcTokenJob|UpdatePlcJob/i then 'pending_plc'
     when /ActivateAccountJob/i then 'pending_activation'
@@ -1721,6 +1722,8 @@ class MigrationsController < ApplicationController
       else
         ImportBlobsJob.perform_later(migration.id)
       end
+    when 'pending_spaces'
+      ImportSpacesJob.perform_later(migration.id)
     when 'pending_prefs'
       ImportPrefsJob.perform_later(migration.id)
     when 'pending_plc'

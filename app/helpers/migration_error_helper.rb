@@ -135,6 +135,13 @@ module MigrationErrorHelper
     when /cancelled by user/i
       :cancelled
 
+    # ImportSpacesJob: the new PDS has no spaces support, or refused space data
+    #   "Spaces not supported: ..." / "Spaces rejected by the new PDS: ..."
+    when /\ASpaces not supported:/
+      :spaces_unsupported
+    when /\ASpaces rejected by the new PDS:/
+      :spaces_rejected
+
     # Legacy catch-all for older "CRITICAL:" PLC messages (before pre/post split)
     when /\ACRITICAL:.*PLC/
       :critical_plc
@@ -177,6 +184,10 @@ module MigrationErrorHelper
       cancelled_context(migration)
     when :critical_plc
       critical_plc_context(migration)
+    when :spaces_unsupported
+      spaces_unsupported_context(migration)
+    when :spaces_rejected
+      spaces_rejected_context(migration)
     else
       generic_context(migration, retry_attempt, max_attempts)
     end
@@ -299,6 +310,58 @@ module MigrationErrorHelper
   def self.new_pds_login_failed?(migration)
     migration.migration_out? &&
       migration.last_error.to_s.match?(/login to new PDS|new PDS password|Invalid identifier or password/i)
+  end
+
+  # The account has spaces (permissioned data) and the new PDS can't take
+  # them. Stopped before the PLC step, so nothing changed for the account.
+  def self.spaces_unsupported_context(migration)
+    support_email = ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
+
+    {
+      severity: :error,
+      icon: "🔒",
+      title: t("spaces_unsupported.title"),
+      what_happened: t("spaces_unsupported.what_happened",
+                       count: migration.progress_data&.dig('spaces_total').to_i,
+                       new_pds: migration.new_pds_host, old_pds: migration.old_pds_host),
+      current_status: t("spaces_unsupported.current_status", old_pds: migration.old_pds_host),
+      what_to_do: [
+        t("spaces_unsupported.what_to_do.ask_provider", new_pds: migration.new_pds_host),
+        t("spaces_unsupported.what_to_do.other_provider"),
+        t("spaces_unsupported.what_to_do.contact_support", support_email: support_email)
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_new_migration_button: true,
+      show_contact_support: true,
+      support_email: support_email,
+      migration_token: migration.token,
+      did: migration.did
+    }
+  end
+
+  # The new PDS refused the data of one of the account's spaces. Stopped
+  # before the PLC step; retrying would hit the same refusal.
+  def self.spaces_rejected_context(migration)
+    support_email = ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
+
+    {
+      severity: :error,
+      icon: "🔒",
+      title: t("spaces_rejected.title"),
+      what_happened: t("spaces_rejected.what_happened",
+                       new_pds: migration.new_pds_host, old_pds: migration.old_pds_host),
+      current_status: t("spaces_rejected.current_status"),
+      what_to_do: [
+        t("spaces_rejected.what_to_do.contact_support", support_email: support_email, token: migration.token)
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_contact_support: true,
+      support_email: support_email,
+      migration_token: migration.token,
+      did: migration.did
+    }
   end
 
   def self.account_exists_context(migration)

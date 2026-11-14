@@ -56,6 +56,11 @@ class ActivateAccountJob < ApplicationJob
     # Initialize GoatService
     service = GoatService.new(migration)
 
+    # Step 0: Move the account's spaces once more. Other members kept writing
+    # to them on the old PDS while the migration ran, and the old session
+    # still works until step 2.1.
+    resync_spaces(migration, service)
+
     # Step 1: Activate account on new PDS
     Rails.logger.info("Activating account on new PDS: #{migration.new_pds_host}")
     service.activate_account
@@ -199,5 +204,27 @@ class ActivateAccountJob < ApplicationJob
     Rails.logger.error(e.backtrace.join("\n"))
     migration&.mark_failed!("Account activation failed: #{e.message}", error_code: :generic)
     raise
+  end
+
+  private
+
+  # Best effort: the DID already points to the new PDS, so a failure here
+  # must not hold up the activation. ImportSpacesJob moved the spaces once;
+  # importing again replaces what the new PDS holds with the latest state.
+  def resync_spaces(migration, service)
+    return unless migration.progress_data['spaces_total'].to_i.positive?
+
+    Rails.logger.info("Re-syncing spaces before activation for migration #{migration.token}")
+    result = SpaceTransferService.new(migration, goat: service).transfer(service.list_spaces(:old))
+    migration.merge_progress!(
+      'spaces_moved' => result.spaces,
+      'space_repos_moved' => result.repos,
+      'space_blobs_moved' => result.blobs,
+      'failed_space_blobs' => result.failed_blobs,
+      'spaces_resynced_at' => Time.current.iso8601
+    )
+  rescue StandardError => e
+    Rails.logger.warn("Spaces re-sync failed for migration #{migration.token}: #{e.message}")
+    migration.merge_progress!('spaces_resync_error' => e.message)
   end
 end

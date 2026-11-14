@@ -312,6 +312,7 @@ hr:
         account_created: "Novi račun stvoren"
         pending_repo: "Prijenos objava i praćenja"
         pending_blobs: "Prijenos medija"
+        pending_spaces: "Prijenos Spacesa"
         pending_prefs: "Prijenos postavki"
         pending_plc: "Ažuriranje vašeg identiteta"
         pending_activation: "Aktivacija novog računa"
@@ -543,6 +544,20 @@ hr:
           check_expiry: "Provjerite jesu li vaše vjerodajnice istekle (čuvaju se 48 sati od početka migracije)"
           start_new: "Pokrenite novu migraciju s ispravnim vjerodajnicama"
           contact_admin: "Ako ste sigurni da je lozinka ispravna, kontaktirajte administratora svog PDS-a"
+      spaces_unsupported:
+        title: "Novi PDS još ne može preuzeti tvoje Spacese"
+        what_happened: "Tvoj račun koristi Spaces: privatne objave, grupe ili drugi sadržaj koji vide samo neki ljudi (ukupno %{count}). %{new_pds} još ne podržava Spaces, pa bi ih preseljenje sada ostavilo na %{old_pds}."
+        current_status: "Migracija je zaustavljena prije nego što je tvoj identitet promijenjen. Tvoj račun na %{old_pds} radi kao i prije."
+        what_to_do:
+          ask_provider: "Pitaj %{new_pds} kada će podržavati Spaces, a zatim pokreni novu migraciju"
+          other_provider: "Ili pokreni novu migraciju k pružatelju koji već podržava Spaces"
+          contact_support: "Pitanja? Piši na %{support_email}"
+      spaces_rejected:
+        title: "Novi PDS odbio je tvoje Spacese"
+        what_happened: "%{new_pds} odbio je podatke jednog od tvojih Spacesa, pa je migracija zaustavljena. Tvoj račun na %{old_pds} radi kao i prije."
+        current_status: "Migracija je zaustavljena prije nego što je tvoj identitet promijenjen"
+        what_to_do:
+          contact_support: "Piši na %{support_email} sa svojim tokenom migracije %{token} i riješit ćemo to s pružateljem"
       email_taken:
         title: "Adresa e-pošte već se koristi na novom PDS-u"
         what_happened: "%{new_pds} već ima drugi račun s adresom %{email}. Poslužitelj dopušta samo jedan račun po adresi e-pošte, pa vaš račun ondje nije mogao biti stvoren. Vaš račun na %{old_pds} nije diran."

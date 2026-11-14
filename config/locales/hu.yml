@@ -312,6 +312,7 @@ hu:
         account_created: "Új fiók létrehozva"
         pending_repo: "Bejegyzések és követések átvitele"
         pending_blobs: "Médiafájlok átvitele"
+        pending_spaces: "Spaces átvitele"
         pending_prefs: "Beállítások átvitele"
         pending_plc: "Személyazonosság frissítése"
         pending_activation: "Új fiók aktiválása"
@@ -543,6 +544,20 @@ hu:
           check_expiry: "Ellenőrizze, hogy nem jártak-e le a hitelesítő adatai (a migráció kezdetétől számítva 48 óráig őrizzük meg őket)"
           start_new: "Indítson új migrációt a helyes hitelesítő adatokkal"
           contact_admin: "Ha biztos benne, hogy a jelszó helyes, forduljon a PDS rendszergazdájához"
+      spaces_unsupported:
+        title: "Az új PDS még nem tudja fogadni a Spaces-eidet"
+        what_happened: "A fiókod Spaces-t használ: privát bejegyzéseket, csoportokat vagy más tartalmat, amelyet csak néhány ember lát (összesen %{count}). A(z) %{new_pds} még nem támogatja a Spaces-t, így a mostani költözés a(z) %{old_pds} szolgáltatónál hagyná őket."
+        current_status: "Az átköltözés leállt, mielőtt az identitásod megváltozott volna. A fiókod a(z) %{old_pds} szolgáltatónál ugyanúgy működik."
+        what_to_do:
+          ask_provider: "Kérdezd meg a(z) %{new_pds} szolgáltatót, mikor támogatja a Spaces-t, majd indíts új átköltözést"
+          other_provider: "Vagy indíts új átköltözést egy olyan szolgáltatóhoz, amely már támogatja a Spaces-t"
+          contact_support: "Kérdésed van? Írj ide: %{support_email}"
+      spaces_rejected:
+        title: "Az új PDS elutasította a Spaces-eidet"
+        what_happened: "A(z) %{new_pds} elutasította az egyik Space-ed adatait, ezért az átköltözés leállt. A fiókod a(z) %{old_pds} szolgáltatónál ugyanúgy működik."
+        current_status: "Az átköltözés leállt, mielőtt az identitásod megváltozott volna"
+        what_to_do:
+          contact_support: "Írj ide: %{support_email}, és add meg az átköltözési tokened (%{token}), mi pedig rendezzük a szolgáltatóval"
       email_taken:
         title: "Az e-mail-cím már foglalt az új PDS-en"
         what_happened: "A(z) %{new_pds} szerveren már van egy másik fiók a(z) %{email} címmel. Egy szerveren e-mail-címenként csak egy fiók lehet, ezért az Ön fiókját nem lehetett ott létrehozni. A(z) %{old_pds} szerveren lévő fiókja érintetlen."

@@ -312,6 +312,7 @@ en:
         account_created: "New account created"
         pending_repo: "Transferring posts and follows"
         pending_blobs: "Transferring media"
+        pending_spaces: "Transferring Spaces"
         pending_prefs: "Transferring settings"
         pending_plc: "Updating your identity"
         pending_activation: "Activating your new account"
@@ -543,6 +544,20 @@ en:
           check_expiry: "Check whether your credentials have expired (they are kept for 48 hours from the start of the migration)"
           start_new: "Start a new migration with the correct credentials"
           contact_admin: "If you're sure the password is correct, contact your PDS administrator"
+      spaces_unsupported:
+        title: "The new PDS can't take your Spaces yet"
+        what_happened: "Your account uses Spaces: private posts, groups or other content that only some people can see (%{count} in total). %{new_pds} doesn't support Spaces yet, so moving now would leave them behind on %{old_pds}."
+        current_status: "Migration stopped before your identity was changed. Your account on %{old_pds} works as before."
+        what_to_do:
+          ask_provider: "Ask %{new_pds} when they will support Spaces, then start a new migration"
+          other_provider: "Or start a new migration to a provider that already supports Spaces"
+          contact_support: "Questions? Write to %{support_email}"
+      spaces_rejected:
+        title: "The new PDS refused your Spaces"
+        what_happened: "%{new_pds} refused the data of one of your Spaces, so the migration stopped. Your account on %{old_pds} works as before."
+        current_status: "Migration stopped before your identity was changed"
+        what_to_do:
+          contact_support: "Write to %{support_email} with your migration token %{token}, and we'll sort it out with the provider"
       email_taken:
         title: "Email address already in use on the new PDS"
         what_happened: "%{new_pds} already has another account with %{email}. A server allows only one account per email address, so your account couldn't be created there. Your account on %{old_pds} is untouched."

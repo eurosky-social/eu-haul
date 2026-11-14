@@ -312,6 +312,7 @@ it:
         account_created: "Nuovo account creato"
         pending_repo: "Trasferimento di post e account seguiti"
         pending_blobs: "Trasferimento dei contenuti multimediali"
+        pending_spaces: "Trasferimento degli Spaces"
         pending_prefs: "Trasferimento delle impostazioni"
         pending_plc: "Aggiornamento della tua identità"
         pending_activation: "Attivazione del nuovo account"
@@ -543,6 +544,20 @@ it:
           check_expiry: "Verifica se le tue credenziali sono scadute (vengono conservate per 48 ore dall'inizio della migrazione)"
           start_new: "Avvia una nuova migrazione con le credenziali corrette"
           contact_admin: "Se sei sicuro che la password sia corretta, contatta l'amministratore del tuo PDS"
+      spaces_unsupported:
+        title: "Il nuovo PDS non può ancora accogliere i tuoi Spaces"
+        what_happened: "Il tuo account usa gli Spaces: post privati, gruppi o altri contenuti visibili solo ad alcune persone (%{count} in totale). %{new_pds} non supporta ancora gli Spaces, quindi migrare ora li lascerebbe su %{old_pds}."
+        current_status: "La migrazione si è fermata prima di modificare la tua identità. Il tuo account su %{old_pds} funziona come prima."
+        what_to_do:
+          ask_provider: "Chiedi a %{new_pds} quando supporterà gli Spaces, poi avvia una nuova migrazione"
+          other_provider: "Oppure avvia una nuova migrazione verso un fornitore che supporta già gli Spaces"
+          contact_support: "Domande? Scrivi a %{support_email}"
+      spaces_rejected:
+        title: "Il nuovo PDS ha rifiutato i tuoi Spaces"
+        what_happened: "%{new_pds} ha rifiutato i dati di uno dei tuoi Spaces, quindi la migrazione si è fermata. Il tuo account su %{old_pds} funziona come prima."
+        current_status: "La migrazione si è fermata prima di modificare la tua identità"
+        what_to_do:
+          contact_support: "Scrivi a %{support_email} con il tuo token di migrazione %{token} e risolveremo con il fornitore"
       email_taken:
         title: "Indirizzo e-mail già in uso sul nuovo PDS"
         what_happened: "%{new_pds} ha già un altro account con %{email}. Un server consente un solo account per indirizzo e-mail, quindi non è stato possibile creare lì il tuo account. Il tuo account su %{old_pds} non è stato toccato."

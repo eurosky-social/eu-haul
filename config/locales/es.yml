@@ -312,6 +312,7 @@ es:
         account_created: "Nueva cuenta creada"
         pending_repo: "Transfiriendo publicaciones y seguimientos"
         pending_blobs: "Transfiriendo archivos multimedia"
+        pending_spaces: "Transfiriendo Spaces"
         pending_prefs: "Transfiriendo preferencias"
         pending_plc: "Actualizando su identidad"
         pending_activation: "Activando su nueva cuenta"
@@ -543,6 +544,20 @@ es:
           check_expiry: "Compruebe si sus credenciales han expirado (se conservan durante 48 horas desde el inicio de la migración)"
           start_new: "Inicie una nueva migración con las credenciales correctas"
           contact_admin: "Si está seguro de que la contraseña es correcta, contacte con el administrador de su PDS"
+      spaces_unsupported:
+        title: "El nuevo PDS todavía no puede recibir tus Spaces"
+        what_happened: "Tu cuenta usa Spaces: publicaciones privadas, grupos u otro contenido que solo ven algunas personas (%{count} en total). %{new_pds} todavía no admite Spaces, así que migrar ahora los dejaría en %{old_pds}."
+        current_status: "La migración se detuvo antes de cambiar tu identidad. Tu cuenta en %{old_pds} funciona como antes."
+        what_to_do:
+          ask_provider: "Pregunta a %{new_pds} cuándo admitirá Spaces y luego inicia una nueva migración"
+          other_provider: "O inicia una nueva migración a un proveedor que ya admita Spaces"
+          contact_support: "¿Preguntas? Escribe a %{support_email}"
+      spaces_rejected:
+        title: "El nuevo PDS rechazó tus Spaces"
+        what_happened: "%{new_pds} rechazó los datos de uno de tus Spaces, por eso se detuvo la migración. Tu cuenta en %{old_pds} funciona como antes."
+        current_status: "La migración se detuvo antes de cambiar tu identidad"
+        what_to_do:
+          contact_support: "Escribe a %{support_email} con tu token de migración %{token} y lo resolveremos con el proveedor"
       email_taken:
         title: "La dirección de correo electrónico ya está en uso en el nuevo PDS"
         what_happened: "%{new_pds} ya tiene otra cuenta con %{email}. Un servidor solo permite una cuenta por dirección de correo electrónico, así que no se pudo crear allí su cuenta. Su cuenta en %{old_pds} no se ha modificado."

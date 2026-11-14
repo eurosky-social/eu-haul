@@ -312,6 +312,7 @@ ga:
         account_created: "Cuntas nua cruthaithe"
         pending_repo: "Ag aistriú postálacha agus na ndaoine a leanann tú"
         pending_blobs: "Ag aistriú meán"
+        pending_spaces: "Spaces á n-aistriú"
         pending_prefs: "Ag aistriú socruithe"
         pending_plc: "Ag nuashonrú d'aitheantas"
         pending_activation: "Ag gníomhachtú do chuntais nua"
@@ -543,6 +544,20 @@ ga:
           check_expiry: "Seiceáil an bhfuil do dhintiúir imithe in éag (coinnítear iad ar feadh 48 uair an chloig ó thús na himirce)"
           start_new: "Tosaigh imirce nua leis na dintiúir chearta"
           contact_admin: "Má tá tú cinnte go bhfuil an pasfhocal ceart, déan teagmháil le riarthóir do PDS"
+      spaces_unsupported:
+        title: "Ní féidir leis an PDS nua do Spaces a ghlacadh fós"
+        what_happened: "Úsáideann do chuntas Spaces: postálacha príobháideacha, grúpaí nó ábhar eile nach bhfeiceann ach daoine áirithe (%{count} san iomlán). Ní thacaíonn %{new_pds} le Spaces fós, mar sin d'fhágfadh aistriú anois iad ar %{old_pds}."
+        current_status: "Stopadh an t-aistriú sular athraíodh d'aitheantas. Oibríonn do chuntas ar %{old_pds} mar a bhí."
+        what_to_do:
+          ask_provider: "Fiafraigh de %{new_pds} cathain a thacóidh siad le Spaces, ansin tosaigh aistriú nua"
+          other_provider: "Nó tosaigh aistriú nua chuig soláthraí a thacaíonn le Spaces cheana féin"
+          contact_support: "Ceisteanna? Scríobh chuig %{support_email}"
+      spaces_rejected:
+        title: "Dhiúltaigh an PDS nua do do Spaces"
+        what_happened: "Dhiúltaigh %{new_pds} do shonraí ceann de do Spaces, mar sin stopadh an t-aistriú. Oibríonn do chuntas ar %{old_pds} mar a bhí."
+        current_status: "Stopadh an t-aistriú sular athraíodh d'aitheantas"
+        what_to_do:
+          contact_support: "Scríobh chuig %{support_email} le do chomhartha aistrithe %{token}, agus réiteoimid é leis an soláthraí"
       email_taken:
         title: "Seoladh ríomhphoist in úsáid cheana ar an PDS nua"
         what_happened: "Tá cuntas eile ag %{new_pds} cheana le %{email}. Ní cheadaíonn freastalaí ach cuntas amháin in aghaidh an tseolta ríomhphoist, mar sin níorbh fhéidir do chuntas a chruthú ansin. Níor athraíodh do chuntas ar %{old_pds}."

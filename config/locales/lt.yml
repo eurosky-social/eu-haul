@@ -312,6 +312,7 @@ lt:
         account_created: "Nauja paskyra sukurta"
         pending_repo: "Perkeliami įrašai ir sekamos paskyros"
         pending_blobs: "Perkeliama medija"
+        pending_spaces: "Perkeliami Spaces"
         pending_prefs: "Perkeliami nustatymai"
         pending_plc: "Atnaujinama jūsų tapatybė"
         pending_activation: "Aktyvinama nauja paskyra"
@@ -543,6 +544,20 @@ lt:
           check_expiry: "Patikrinkite, ar jūsų prisijungimo duomenys dar galioja (jie saugomi 48 valandas nuo perkėlimo pradžios)"
           start_new: "Pradėkite naują perkėlimą su teisingais prisijungimo duomenimis"
           contact_admin: "Jei esate tikri, kad slaptažodis teisingas, susisiekite su savo PDS administratoriumi"
+      spaces_unsupported:
+        title: "Naujas PDS dar negali priimti jūsų Spaces"
+        what_happened: "Jūsų paskyra naudoja Spaces: privačius įrašus, grupes ar kitą turinį, kurį mato tik kai kurie žmonės (iš viso %{count}). %{new_pds} dar nepalaiko Spaces, todėl persikėlus dabar jie liktų %{old_pds}."
+        current_status: "Migracija sustabdyta prieš pakeičiant jūsų tapatybę. Jūsų paskyra %{old_pds} veikia kaip anksčiau."
+        what_to_do:
+          ask_provider: "Paklauskite %{new_pds}, kada bus palaikomi Spaces, ir tada pradėkite naują migraciją"
+          other_provider: "Arba pradėkite naują migraciją pas paslaugų teikėją, kuris jau palaiko Spaces"
+          contact_support: "Klausimų? Rašykite %{support_email}"
+      spaces_rejected:
+        title: "Naujas PDS atmetė jūsų Spaces"
+        what_happened: "%{new_pds} atmetė vieno iš jūsų Spaces duomenis, todėl migracija sustabdyta. Jūsų paskyra %{old_pds} veikia kaip anksčiau."
+        current_status: "Migracija sustabdyta prieš pakeičiant jūsų tapatybę"
+        what_to_do:
+          contact_support: "Rašykite %{support_email} nurodydami migracijos žetoną %{token}, ir mes tai išspręsime su paslaugų teikėju"
       email_taken:
         title: "El. pašto adresas jau naudojamas naujajame PDS"
         what_happened: "%{new_pds} jau turi kitą paskyrą su %{email}. Serveris leidžia tik vieną paskyrą vienam el. pašto adresui, todėl jūsų paskyros ten sukurti nepavyko. Jūsų paskyra %{old_pds} nepaliesta."

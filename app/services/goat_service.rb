@@ -182,6 +182,20 @@ class GoatService
   class TwoFactorRequiredError < GoatError; end  # Raised when PDS requires email-based 2FA token
   class HandleNotFoundError < GoatError; end  # Raised when the network answered and the handle does not exist
 
+  # atproto spaces (permissioned data)
+  class SpacesUnsupportedError < GoatError; end  # The PDS does not implement spaces
+  class SpaceImportRejectedError < GoatError; end  # The new PDS refused space data for good; retrying won't help
+
+  # A failed spaces call, with the XRPC error name the PDS gave (RepoNotFound, ...)
+  class SpaceRequestError < NetworkError
+    attr_reader :xrpc_error
+
+    def initialize(message = nil, xrpc_error: nil, **context)
+      @xrpc_error = xrpc_error
+      super(message, **context)
+    end
+  end
+
   # Wall-clock budget for resolving a handle all the way to a PDS host.
   #
   # Every strategy carries its own timeout and, before this budget existed, they
@@ -840,6 +854,99 @@ class GoatService
     end
   end
 
+  # Space Methods
+  #
+  # A spaces-capable PDS keeps an account's permissioned data apart from its
+  # public repo: one space repo per (account, space), and, for each space the
+  # account runs, the space's settings ("space meta": policy, member list,
+  # writer set). None of it is in the public repo export or the public blob
+  # listing, and every call needs the account's own session. See the atproto
+  # spaces spec, "Account migration".
+
+  SPACE_ARCHIVE_TYPE = 'application/vnd.dasl.star'
+  SPACE_LIST_LIMIT = 100 # listSpaces maximum
+  SPACE_BLOB_LIST_LIMIT = 1000 # space.listBlobs maximum
+
+  # Errors with which the new PDS refuses space data. They come from the data
+  # itself, so the same import would fail again.
+  SPACE_IMPORT_REJECTIONS = %w[
+    UnsupportedPolicy InvalidSpaceMeta InvalidRepoFile RepoMismatch NotAuthorized SpaceNotFound
+  ].freeze
+
+  # Every space the account has written to or runs, on the old (:old) or new
+  # (:new) PDS, as listSpaces returns them ({ 'space' => 'at://...', ... }).
+  # Raises SpacesUnsupportedError when that PDS has no spaces: a PDS without
+  # them forwards the call to its AppView, which answers 501, but other PDS
+  # implementations answer with other client errors, while a spaces-capable
+  # PDS always answers its own account with a 200.
+  def list_spaces(side)
+    spaces = []
+    cursor = nil
+    loop do
+      params = { limit: SPACE_LIST_LIMIT }
+      params[:cursor] = cursor if cursor
+      body = space_get_json(side, 'com.atproto.space.listSpaces', params)
+      page = Array(body['spaces'])
+      spaces.concat(page)
+      cursor = body['cursor']
+      break if cursor.blank? || page.empty?
+    end
+    spaces
+  end
+
+  # The settings archive of a space the account runs (old PDS)
+  def export_space_meta(space)
+    space_download(:old, 'com.atproto.space.exportSpaceMeta', { space: space },
+                   space_work_path(space, 'meta.star'))
+  end
+
+  def import_space_meta(archive_path)
+    space_upload(:new, 'com.atproto.space.importSpaceMeta', archive_path)
+  end
+
+  # The account's own repo in a space (old PDS), or nil when it has none -
+  # e.g. the authority of a space it never wrote to itself
+  def export_space_repo(space)
+    space_download(:old, 'com.atproto.space.getRepo', { space: space, repo: migration.did },
+                   space_work_path(space, 'repo.star'))
+  rescue SpaceRequestError => e
+    raise unless e.xrpc_error == 'RepoNotFound'
+
+    nil
+  end
+
+  def import_space_repo(archive_path)
+    space_upload(:new, 'com.atproto.space.importRepo', archive_path)
+  end
+
+  # CIDs of the files the account's repo in a space references (old PDS)
+  def list_space_blobs(space)
+    cids = []
+    cursor = nil
+    loop do
+      params = { space: space, repo: migration.did, limit: SPACE_BLOB_LIST_LIMIT }
+      params[:cursor] = cursor if cursor
+      body = space_get_json(:old, 'com.atproto.space.listBlobs', params)
+      page = Array(body['cids'])
+      cids.concat(page)
+      cursor = body['cursor']
+      break if cursor.blank? || page.empty?
+    end
+    cids
+  end
+
+  # Downloads a space file from the old PDS. Saved under its CID, so
+  # upload_blob can put it on the new PDS like any other file.
+  def download_space_blob(space, cid)
+    space_download(:old, 'com.atproto.space.getBlob', { space: space, repo: migration.did, cid: cid },
+                   work_dir.join('space_blobs', cid))
+  end
+
+  # Authority DID of a space reference (at://<authority>/space/<type>/<skey>)
+  def self.space_authority(space)
+    space.to_s[%r{\Aat://([^/]+)/space/}, 1]
+  end
+
   # Preferences Methods
 
   def export_preferences
@@ -1130,6 +1237,167 @@ class GoatService
   # The longest wait with_rate_limit_retry's retries add up to; a limit
   # resetting later than this is a QuotaExhaustedError (rate_limit_error).
   QUOTA_WAIT_THRESHOLD = MAX_RATE_LIMIT_RETRIES * MAX_RATE_LIMIT_WAIT
+
+  # --- Space request helpers -------------------------------------------------
+
+  def space_client(side)
+    side == :old ? old_pds_client : new_pds_client
+  end
+
+  def space_host(side)
+    side == :old ? migration.old_pds_host : migration.new_pds_host
+  end
+
+  # The account's access token for that side, refreshed when it is about to
+  # expire (or, with force, regardless)
+  def space_access_token(side, force: false)
+    client = space_client(side)
+    force ? client.perform_token_refresh : client.check_access
+    client.config['access_token']
+  end
+
+  # One attempt with the current access token, and one more with a fresh one
+  # when the PDS answers 401 (an access token lives about two hours, and a
+  # space with many files can take longer than that)
+  def with_space_auth(side)
+    yield space_access_token(side)
+  rescue SpaceRequestError => e
+    raise unless e.http_status == 401
+
+    yield space_access_token(side, force: true)
+  end
+
+  def space_url(side, nsid, params = nil)
+    uri = URI("#{space_host(side)}/xrpc/#{nsid}")
+    uri.query = URI.encode_www_form(params) if params.present?
+    uri
+  end
+
+  def space_get_json(side, nsid, params)
+    with_rate_limit_retry(nsid) do
+      with_space_auth(side) do |token|
+        response = HTTParty.get(
+          space_url(side, nsid, params).to_s,
+          headers: { 'Authorization' => "Bearer #{token}", 'Accept' => 'application/json' },
+          timeout: 60
+        )
+        raise_space_error(nsid, response.code, response.body) unless response.success?
+
+        JSON.parse(response.body)
+      end
+    end
+  rescue JSON::ParserError => e
+    raise SpaceRequestError, "#{nsid}: unreadable answer: #{e.message}"
+  rescue GoatError
+    raise
+  rescue *TIMEOUT_ERRORS => e
+    raise TimeoutError, "#{nsid}: #{e.class}: #{e.message}"
+  rescue StandardError => e
+    raise SpaceRequestError, "#{nsid}: #{e.message}"
+  end
+
+  # Streams a binary answer (a STAR archive or a file) to disk
+  def space_download(side, nsid, params, path)
+    path = Pathname.new(path)
+    FileUtils.mkdir_p(path.dirname)
+
+    with_rate_limit_retry(nsid) do
+      with_space_auth(side) do |token|
+        uri = space_url(side, nsid, params)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = (uri.scheme == 'https')
+        http.open_timeout = 30
+        http.read_timeout = 600
+
+        request = Net::HTTP::Get.new(uri)
+        request['Authorization'] = "Bearer #{token}"
+
+        http.request(request) do |response|
+          raise_space_error(nsid, response.code.to_i, response.read_body) unless response.is_a?(Net::HTTPSuccess)
+
+          File.open(path, 'wb') { |file| response.read_body { |chunk| file.write(chunk) } }
+        end
+      end
+    end
+
+    path.to_s
+  rescue GoatError
+    FileUtils.rm_f(path)
+    raise
+  rescue *TIMEOUT_ERRORS => e
+    FileUtils.rm_f(path)
+    raise TimeoutError, "#{nsid}: #{e.class}: #{e.message}"
+  rescue StandardError => e
+    FileUtils.rm_f(path)
+    raise SpaceRequestError, "#{nsid}: #{e.message}"
+  end
+
+  # Posts a STAR archive from disk
+  def space_upload(side, nsid, path)
+    raise GoatError, "#{nsid}: archive not found: #{path}" unless File.exist?(path)
+
+    with_rate_limit_retry(nsid) do
+      with_space_auth(side) do |token|
+        uri = space_url(side, nsid)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = (uri.scheme == 'https')
+        http.open_timeout = 30
+        http.read_timeout = 600
+
+        request = Net::HTTP::Post.new(uri)
+        request['Authorization'] = "Bearer #{token}"
+        request['Content-Type'] = SPACE_ARCHIVE_TYPE
+        request['Content-Length'] = File.size(path).to_s
+
+        response = File.open(path, 'rb') do |file|
+          request.body_stream = file
+          http.request(request)
+        end
+        raise_space_error(nsid, response.code.to_i, response.body) unless response.is_a?(Net::HTTPSuccess)
+      end
+    end
+    true
+  rescue GoatError
+    raise
+  rescue *TIMEOUT_ERRORS => e
+    raise TimeoutError, "#{nsid}: #{e.class}: #{e.message}"
+  rescue StandardError => e
+    raise SpaceRequestError, "#{nsid}: #{e.message}"
+  end
+
+  # Sorts a failed spaces call into: no spaces on that PDS, data the new PDS
+  # refuses for good, rate limited, or worth retrying
+  def raise_space_error(nsid, status, body)
+    parsed = JSON.parse(body.to_s) rescue {}
+    parsed = {} unless parsed.is_a?(Hash)
+    name = parsed['error'].presence
+    detail = parsed['message'].presence || name || "HTTP #{status}"
+    message = "#{nsid}: #{status} #{detail}"
+
+    if status == 501 || status == 404 || name == 'MethodNotImplemented'
+      raise SpacesUnsupportedError.new(message, http_status: status)
+    end
+    if status == 429
+      raise RateLimitError.new(message, http_status: status)
+    end
+    # See list_spaces: any other client error there means "no spaces here"
+    # (401 is retried with a fresh token before it gets this far)
+    if nsid == 'com.atproto.space.listSpaces' && (400..499).cover?(status) && status != 401 && name != 'InvalidCursor'
+      raise SpacesUnsupportedError.new(message, http_status: status)
+    end
+    if SPACE_IMPORT_REJECTIONS.include?(name) && nsid.start_with?('com.atproto.space.import')
+      raise SpaceImportRejectedError.new(message, http_status: status, body_snippet: name)
+    end
+
+    raise SpaceRequestError.new(message, xrpc_error: name, http_status: status,
+                                         body_snippet: body.to_s.gsub(/\s+/, ' ').strip[0, 200].presence)
+  end
+
+  # Where a space's archives are kept while they move. A space reference is
+  # an at:// URI, so it is hashed into a directory name.
+  def space_work_path(space, file)
+    work_dir.join('spaces', Digest::SHA256.hexdigest(space)[0, 16], file)
+  end
 
   # Retry a block with exponential backoff when rate-limited (HTTP 429).
   # Waits until the reset time the PDS names (Retry-After or RateLimit-Reset)

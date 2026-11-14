@@ -57,6 +57,7 @@ class Migration < ApplicationRecord
     account_created: 'account_created',
     pending_repo: 'pending_repo',
     pending_blobs: 'pending_blobs',
+    pending_spaces: 'pending_spaces',
     pending_prefs: 'pending_prefs',
     pending_plc: 'pending_plc',
     pending_activation: 'pending_activation',
@@ -135,7 +136,7 @@ class Migration < ApplicationRecord
 
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :pending_plc, -> { where(status: :pending_plc) }
-  scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_prefs, :pending_activation]) }
+  scope :in_progress, -> { where(status: [:pending_download, :pending_backup, :pending_repo, :pending_blobs, :pending_spaces, :pending_prefs, :pending_activation]) }
   scope :recent, -> { order(created_at: :desc) }
   scope :with_expired_backups, -> { where('backup_expires_at IS NOT NULL AND backup_expires_at < ?', Time.current) }
 
@@ -170,6 +171,11 @@ class Migration < ApplicationRecord
         ImportBlobsJob.perform_later(id)
       end
     end
+  end
+
+  # atproto spaces (permissioned data) move after the public files
+  def advance_to_pending_spaces!
+    advance_with_job!(:pending_spaces) { ImportSpacesJob.perform_later(id) }
   end
 
   def advance_to_pending_prefs!
@@ -305,6 +311,8 @@ class Migration < ApplicationRecord
       create_backup_bundle ? 35 : 20
     when 'pending_blobs'
       blob_upload_percentage
+    when 'pending_spaces'
+      create_backup_bundle ? 70 : 55
     when 'pending_prefs'
       70
     when 'pending_plc'

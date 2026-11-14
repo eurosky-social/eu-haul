@@ -312,6 +312,7 @@ da:
         account_created: "Ny konto oprettet"
         pending_repo: "Overfører opslag og følgninger"
         pending_blobs: "Overfører medier"
+        pending_spaces: "Overfører Spaces"
         pending_prefs: "Overfører indstillinger"
         pending_plc: "Opdaterer din identitet"
         pending_activation: "Aktiverer din nye konto"
@@ -543,6 +544,20 @@ da:
           check_expiry: "Tjek, om dine loginoplysninger er udløbet (de gemmes i 48 timer fra migreringens start)"
           start_new: "Start en ny migrering med de korrekte loginoplysninger"
           contact_admin: "Hvis du er sikker på, at adgangskoden er korrekt, så kontakt administratoren af din PDS"
+      spaces_unsupported:
+        title: "Den nye PDS kan endnu ikke tage imod dine Spaces"
+        what_happened: "Din konto bruger Spaces: private opslag, grupper eller andet indhold, som kun nogle personer kan se (%{count} i alt). %{new_pds} understøtter endnu ikke Spaces, så en flytning nu ville efterlade dem på %{old_pds}."
+        current_status: "Migreringen stoppede, før din identitet blev ændret. Din konto på %{old_pds} virker som før."
+        what_to_do:
+          ask_provider: "Spørg %{new_pds}, hvornår de understøtter Spaces, og start derefter en ny migrering"
+          other_provider: "Eller start en ny migrering til en udbyder, der allerede understøtter Spaces"
+          contact_support: "Spørgsmål? Skriv til %{support_email}"
+      spaces_rejected:
+        title: "Den nye PDS afviste dine Spaces"
+        what_happened: "%{new_pds} afviste dataene i et af dine Spaces, så migreringen stoppede. Din konto på %{old_pds} virker som før."
+        current_status: "Migreringen stoppede, før din identitet blev ændret"
+        what_to_do:
+          contact_support: "Skriv til %{support_email} med dit migreringstoken %{token}, så løser vi det med udbyderen"
       email_taken:
         title: "E-mailadressen er allerede i brug på den nye PDS"
         what_happened: "%{new_pds} har allerede en anden konto med %{email}. En server tillader kun én konto pr. e-mailadresse, så din konto kunne ikke oprettes dér. Din konto på %{old_pds} er uberørt."

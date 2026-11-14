@@ -312,6 +312,7 @@ lv:
         account_created: "Jaunais konts izveidots"
         pending_repo: "Ierakstu un sekojumu pārsūtīšana"
         pending_blobs: "Multivides pārsūtīšana"
+        pending_spaces: "Pārsūta Spaces"
         pending_prefs: "Iestatījumu pārsūtīšana"
         pending_plc: "Jūsu identitātes atjaunināšana"
         pending_activation: "Jaunā konta aktivizēšana"
@@ -543,6 +544,20 @@ lv:
           check_expiry: "Pārbaudiet, vai jūsu pieteikšanās datu derīguma termiņš nav beidzies (tie tiek glabāti 48 stundas no migrācijas sākuma)"
           start_new: "Sāciet jaunu migrāciju ar pareiziem pieteikšanās datiem"
           contact_admin: "Ja esat pārliecināts, ka parole ir pareiza, sazinieties ar sava PDS administratoru"
+      spaces_unsupported:
+        title: "Jaunais PDS vēl nevar pieņemt tavus Spaces"
+        what_happened: "Tavs konts izmanto Spaces: privātus ierakstus, grupas vai citu saturu, ko redz tikai daži cilvēki (kopā %{count}). %{new_pds} vēl neatbalsta Spaces, tāpēc pārcelšanās tagad tos atstātu %{old_pds}."
+        current_status: "Migrācija tika apturēta, pirms tika mainīta tava identitāte. Tavs konts %{old_pds} darbojas kā iepriekš."
+        what_to_do:
+          ask_provider: "Pajautā %{new_pds}, kad tiks atbalstīti Spaces, un tad sāc jaunu migrāciju"
+          other_provider: "Vai sāc jaunu migrāciju pie pakalpojumu sniedzēja, kas jau atbalsta Spaces"
+          contact_support: "Jautājumi? Raksti uz %{support_email}"
+      spaces_rejected:
+        title: "Jaunais PDS noraidīja tavus Spaces"
+        what_happened: "%{new_pds} noraidīja viena tava Space datus, tāpēc migrācija tika apturēta. Tavs konts %{old_pds} darbojas kā iepriekš."
+        current_status: "Migrācija tika apturēta, pirms tika mainīta tava identitāte"
+        what_to_do:
+          contact_support: "Raksti uz %{support_email}, norādot savu migrācijas žetonu %{token}, un mēs to atrisināsim ar pakalpojumu sniedzēju"
       email_taken:
         title: "E-pasta adrese jau tiek izmantota jaunajā PDS"
         what_happened: "%{new_pds} jau ir cits konts ar adresi %{email}. Serveris atļauj tikai vienu kontu katrai e-pasta adresei, tāpēc jūsu kontu tur nevarēja izveidot. Jūsu konts %{old_pds} nav skarts."

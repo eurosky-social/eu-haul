@@ -13,7 +13,7 @@
 # 4. Upload blobs in parallel (5 threads per migration, no global limit; at most
 #    GoatService::UPLOAD_CONCURRENCY uploads at the same time)
 # 5. Track progress and update after each batch
-# 6. Advance to pending_prefs status
+# 6. Advance to pending_spaces status
 #
 # The new PDS may cap uploads per account: bsky.social takes 1,000 files a day.
 # When it refuses until a reset hours away (GoatService::QuotaExhaustedError),
@@ -89,7 +89,7 @@ class UploadBlobsJob < ApplicationJob
     logger.info("Blob upload completed")
 
     # Step 5: Advance to next stage
-    migration.advance_to_pending_prefs!
+    migration.advance_to_pending_spaces!
 
   rescue Migration::Aborted => e
     # Cancelled, failed or completed underneath us - stop without retrying

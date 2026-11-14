@@ -36,6 +36,7 @@ class StuckMigrationSweeperJob < ApplicationJob
     pending_account
     pending_repo
     pending_blobs
+    pending_spaces
     pending_prefs
     pending_activation
   ].freeze
@@ -176,6 +177,8 @@ class StuckMigrationSweeperJob < ApplicationJob
       else
         ImportBlobsJob.perform_later(migration.id)
       end
+    when 'pending_spaces'
+      ImportSpacesJob.perform_later(migration.id)
     when 'pending_prefs'
       ImportPrefsJob.perform_later(migration.id)
     when 'pending_activation'

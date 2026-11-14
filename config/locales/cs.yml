@@ -312,6 +312,7 @@ cs:
         account_created: "Nový účet vytvořen"
         pending_repo: "Přenos příspěvků a sledovaných účtů"
         pending_blobs: "Přenos médií"
+        pending_spaces: "Přenos Spaces"
         pending_prefs: "Přenos nastavení"
         pending_plc: "Aktualizace vaší identity"
         pending_activation: "Aktivace vašeho nového účtu"
@@ -543,6 +544,20 @@ cs:
           check_expiry: "Zkontrolujte, zda vaše přihlašovací údaje nevypršely (uchováváme je 48 hodin od zahájení migrace)"
           start_new: "Zahajte novou migraci se správnými přihlašovacími údaji"
           contact_admin: "Pokud jste si jisti, že heslo je správné, kontaktujte správce svého PDS"
+      spaces_unsupported:
+        title: "Nový PDS zatím nemůže převzít vaše Spaces"
+        what_happened: "Váš účet používá Spaces: soukromé příspěvky, skupiny nebo jiný obsah, který vidí jen někteří lidé (celkem %{count}). %{new_pds} zatím Spaces nepodporuje, takže přesun teď by je nechal na %{old_pds}."
+        current_status: "Migrace se zastavila dříve, než se změnila vaše identita. Váš účet na %{old_pds} funguje jako dřív."
+        what_to_do:
+          ask_provider: "Zeptejte se %{new_pds}, kdy bude Spaces podporovat, a pak spusťte novou migraci"
+          other_provider: "Nebo spusťte novou migraci k poskytovateli, který Spaces už podporuje"
+          contact_support: "Dotazy? Napište na %{support_email}"
+      spaces_rejected:
+        title: "Nový PDS odmítl vaše Spaces"
+        what_happened: "%{new_pds} odmítl data jednoho z vašich Spaces, proto se migrace zastavila. Váš účet na %{old_pds} funguje jako dřív."
+        current_status: "Migrace se zastavila dříve, než se změnila vaše identita"
+        what_to_do:
+          contact_support: "Napište na %{support_email} se svým migračním tokenem %{token} a vyřešíme to s poskytovatelem"
       email_taken:
         title: "E-mailová adresa se na novém PDS již používá"
         what_happened: "Na %{new_pds} již existuje jiný účet s adresou %{email}. Server povoluje jen jeden účet na e-mailovou adresu, proto tam váš účet nemohl být vytvořen. Váš účet na %{old_pds} zůstal nedotčen."
