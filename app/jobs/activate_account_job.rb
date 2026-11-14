@@ -126,10 +126,14 @@ class ActivateAccountJob < ApplicationJob
       # Don't fail migration if email fails
     end
 
-    # Step 5: SECURITY - Clear encrypted credentials after successful migration
-    # Passwords and tokens are no longer needed after migration completes
+    # Step 5: SECURITY - Clear encrypted credentials after successful migration.
+    # Files the blob stage could not transfer are retried in the background
+    # after completion (see step 7, or a chain the blob stage already
+    # started). Those passes sign in to the new PDS with the stored session,
+    # so keep that session - and only that - until the retry chain ends.
+    missing_blobs = migration.progress_data['failed_blobs'] || []
     Rails.logger.info("Clearing encrypted credentials for security")
-    migration.clear_credentials!
+    migration.clear_credentials!(keep_new_pds_session: missing_blobs.any?)
     Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
 
     # Step 6: Clear non-essential data from the migration record
@@ -146,7 +150,6 @@ class ActivateAccountJob < ApplicationJob
     # background pass runs after completion so that mail (or the "incomplete"
     # one) is actually sent - unless a chain from the blob stage is still
     # pending, which will notice the completed status itself.
-    missing_blobs = migration.progress_data['failed_blobs'] || []
     if missing_blobs.any? && (migration.progress_data['blobs_auto_retry_exhausted_at'].present? || migration.progress_data['blobs_auto_retry_scheduled_at'].blank?)
       RetryFailedBlobsJob.set(wait: 15.minutes).perform_later(migration.id, missing_blobs, 1)
       migration.merge_progress!('blobs_auto_retry_scheduled_at' => Time.current.iso8601, 'blobs_auto_retry_exhausted_at' => nil)

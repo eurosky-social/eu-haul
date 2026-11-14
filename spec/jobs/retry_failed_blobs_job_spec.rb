@@ -124,4 +124,63 @@ RSpec.describe RetryFailedBlobsJob, type: :job do
     expect(goat_service).not_to receive(:login_new_pds)
     described_class.perform_now(migration.id, %w[bafya bafyb], 1)
   end
+
+  # ActivateAccountJob keeps the new-PDS session of a completed migration for
+  # these passes; the chain drops it when it ends.
+  describe 'the new-PDS session kept for the passes' do
+    let(:last_pass) { described_class::AUTO_RETRY_DELAYS.length + 1 }
+
+    before do
+      migration.set_new_pds_tokens!(access_token: 'new-access', refresh_token: 'new-refresh')
+      migration.update!(credentials_expires_at: Migration::RETRY_SESSION_LIFETIME.from_now)
+      allow(goat_service).to receive(:download_blob).and_return(storage_dir.join('dl').to_s)
+      File.write(storage_dir.join('dl'), 'X')
+    end
+
+    context 'when the passes move every file' do
+      before { allow(goat_service).to receive(:upload_blob) }
+
+      it 'clears the session of a completed migration' do
+        migration.update!(status: :completed)
+
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(migration.reload.has_new_pds_tokens?).to be(false)
+        expect(migration.credentials_expires_at).to be_nil
+      end
+
+      it 'keeps the credentials of a migration still in progress' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(migration.reload.new_refresh_token).to eq('new-refresh')
+      end
+    end
+
+    context 'when files still fail' do
+      before do
+        allow(goat_service).to receive(:upload_blob).and_raise(GoatService::NetworkError, '500 Internal Server Error')
+        migration.update!(status: :completed)
+      end
+
+      it 'keeps the session while another pass is scheduled' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(migration.reload.new_refresh_token).to eq('new-refresh')
+      end
+
+      it 'clears the session after the last pass gives up' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], last_pass)
+
+        expect(migration.reload.has_new_pds_tokens?).to be(false)
+      end
+    end
+
+    it 'does not sign in when a completed migration has no files missing' do
+      migration.update!(status: :completed)
+      migration.merge_progress!('failed_blobs' => [])
+
+      expect(goat_service).not_to receive(:login_new_pds)
+      described_class.perform_now(migration.id, %w[bafya bafyb], 2)
+    end
+  end
 end

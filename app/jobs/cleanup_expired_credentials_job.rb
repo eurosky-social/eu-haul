@@ -61,7 +61,9 @@ class CleanupExpiredCredentialsJob < ApplicationJob
       .where("credentials_expires_at < ?", Time.current)
       .where(
         "encrypted_password IS NOT NULL OR encrypted_plc_token IS NOT NULL OR " \
-        "encrypted_old_access_token IS NOT NULL OR encrypted_old_refresh_token IS NOT NULL"
+        "encrypted_old_access_token IS NOT NULL OR encrypted_old_refresh_token IS NOT NULL OR " \
+        "(status = 'completed' AND " \
+        "(encrypted_new_access_token IS NOT NULL OR encrypted_new_refresh_token IS NOT NULL))"
       )
 
     if expired_migrations.empty?
@@ -97,6 +99,14 @@ class CleanupExpiredCredentialsJob < ApplicationJob
           attrs_to_clear[:encrypted_password] = nil
           attrs_to_clear[:encrypted_old_access_token] = nil
           attrs_to_clear[:encrypted_old_refresh_token] = nil
+        end
+
+        if migration.completed?
+          # The new-PDS session a completed migration kept for its background
+          # file retries (Migration::RETRY_SESSION_LIFETIME), when the retry
+          # chain did not clear it itself
+          attrs_to_clear[:encrypted_new_access_token] = nil
+          attrs_to_clear[:encrypted_new_refresh_token] = nil
         end
 
         migration.update!(attrs_to_clear)
