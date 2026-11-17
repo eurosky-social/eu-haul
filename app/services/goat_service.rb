@@ -40,6 +40,7 @@
 #   - Network access to both source and target PDS
 #   - PLC directory access for DID updates
 
+require 'monitor'
 require 'open3'
 require 'net/http'
 require 'resolv'
@@ -214,6 +215,9 @@ class GoatService
     @migration = migration
     @work_dir = Rails.root.join('tmp', 'goat', migration.did)
     @logger = Rails.logger
+    # The threads of one transfer share the PDS clients and their single-use
+    # refresh tokens, so only one of them may refresh at a time.
+    @token_lock = Monitor.new
 
     # Ensure work directory exists
     FileUtils.mkdir_p(@work_dir)
@@ -490,7 +494,7 @@ class GoatService
 
     # Reuse the minisky client's access token (created/cached by login_old_pds)
     login_old_pds
-    access_token = old_pds_client.config['access_token']
+    access_token = fresh_access_token(old_pds_client)
 
     # Execute curl to download CAR file with progress and strict timeout
     # --max-time: hard timeout (300s = 5 min)
@@ -658,31 +662,46 @@ class GoatService
     http.read_timeout = 300
     http.open_timeout = 30
 
-    request = Net::HTTP::Get.new(uri)
+    # A token the old PDS turns down is refreshed once and the read repeated.
+    2.times do |attempt|
+      request = Net::HTTP::Get.new(uri)
 
-    # com.atproto.sync.getBlob is normally public, but a deactivated repo is only
-    # served to the authenticated owner (or admin). Attach the owner's Bearer
-    # token when available so retrying missing blobs works even after the old
-    # PDS has been deactivated (the normal migration runs while it's still
-    # active, where the header is simply ignored/optional).
-    old_pds_read_headers.each { |k, v| request[k] = v }
+      # com.atproto.sync.getBlob is normally public, but a deactivated repo is only
+      # served to the authenticated owner (or admin). Attach the owner's Bearer
+      # token when available so retrying missing blobs works even after the old
+      # PDS has been deactivated (the normal migration runs while it's still
+      # active, where the header is simply ignored/optional).
+      headers = old_pds_read_headers
+      headers.each { |k, v| request[k] = v }
+      token_rejected = false
 
-    http.request(request) do |response|
-      unless response.is_a?(Net::HTTPSuccess)
-        if response.code.to_i == 429
-          retry_after = response['Retry-After']&.to_i
-          logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
-          raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}",
-                                   retry_after: retry_after, http_status: 429, cid: cid, phase: :download)
+      http.request(request) do |response|
+        unless response.is_a?(Net::HTTPSuccess)
+          if attempt.zero? && headers.key?('Authorization') && token_rejected?(response)
+            token_rejected = true
+            next
+          end
+
+          if response.code.to_i == 429
+            retry_after = response['Retry-After']&.to_i
+            logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
+            raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}",
+                                     retry_after: retry_after, http_status: 429, cid: cid, phase: :download)
+          end
+
+          raise NetworkError.new("Failed to download blob: #{response.code} #{response.message}",
+                                 http_status: response.code.to_i, cid: cid, phase: :download)
         end
 
-        raise NetworkError.new("Failed to download blob: #{response.code} #{response.message}",
-                               http_status: response.code.to_i, cid: cid, phase: :download)
+        File.open(blob_path, 'wb') do |file|
+          response.read_body { |chunk| file.write(chunk) }
+        end
       end
 
-      File.open(blob_path, 'wb') do |file|
-        response.read_body { |chunk| file.write(chunk) }
-      end
+      break unless token_rejected
+
+      logger.info("Old PDS turned down the access token while downloading blob #{cid}; refreshing it and retrying once")
+      refresh_rejected_token(old_pds_client, headers['Authorization'].delete_prefix('Bearer '))
     end
 
     file_size_kb = File.size(blob_path).to_f / 1024
@@ -717,36 +736,18 @@ class GoatService
       raise GoatError.new("Blob file not found: #{blob_path}", cid: blob_cid, phase: :upload)
     end
 
-    url = "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob"
-    uri = URI(url)
+    uri = URI("#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob")
 
-    # Reuse the minisky client's access token (created/cached by new_pds_client)
-    access_token = new_pds_client.config['access_token']
+    access_token = fresh_access_token(new_pds_client)
+    response = post_blob_file(uri, blob_path, access_token)
 
-    # Stream from disk to avoid loading entire blob into memory.
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == 'https')
-    http.read_timeout = 300
-    http.open_timeout = 30
-
-    request = Net::HTTP::Post.new(uri)
-    request['Authorization'] = "Bearer #{access_token}"
-    request['Content-Type'] = 'application/octet-stream'
-    request['Content-Length'] = File.size(blob_path).to_s
-
-    response = File.open(blob_path, 'rb') do |file|
-      request.body_stream = file
-      http.request(request)
+    if token_rejected?(response)
+      logger.info("New PDS turned down the access token (#{response.code}); refreshing it and retrying once")
+      access_token = refresh_rejected_token(new_pds_client, access_token)
+      response = post_blob_file(uri, blob_path, access_token)
     end
 
     unless response.is_a?(Net::HTTPSuccess)
-      # Check for expired token - let minisky handle the refresh
-      if response.code.to_i == 401
-        logger.info("Token expired, refreshing via minisky and retrying")
-        new_pds_client.check_access
-        return upload_blob(blob_path)  # Retry with refreshed token
-      end
-
       # Check for rate-limiting
       if response.code.to_i == 429
         retry_after = response['Retry-After']&.to_i
@@ -781,6 +782,24 @@ class GoatService
                            cid: blob_cid, phase: :upload)
   rescue StandardError => e
     raise NetworkError.new("Failed to upload blob: #{e.message}", cid: blob_cid, phase: :upload)
+  end
+
+  # Stream one file from disk to uploadBlob, so the blob is never held in memory.
+  def post_blob_file(uri, blob_path, access_token)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.read_timeout = 300
+    http.open_timeout = 30
+
+    request = Net::HTTP::Post.new(uri)
+    request['Authorization'] = "Bearer #{access_token}"
+    request['Content-Type'] = 'application/octet-stream'
+    request['Content-Length'] = File.size(blob_path).to_s
+
+    File.open(blob_path, 'rb') do |file|
+      request.body_stream = file
+      http.request(request)
+    end
   end
 
   # Preferences Methods
@@ -1140,11 +1159,44 @@ class GoatService
   # working on a deactivated account, so this needs no password.
   def old_pds_read_headers(base = {})
     return base unless migration.has_old_pds_tokens?
-    token = old_pds_client.config['access_token']
+    token = fresh_access_token(old_pds_client)
     token.present? ? base.merge('Authorization' => "Bearer #{token}") : base
   rescue StandardError => e
     logger.warn("Could not obtain old PDS owner token for authenticated read: #{e.message}")
     base
+  end
+
+  # Access tokens live about two hours, and moving a large account's files
+  # takes longer. Every direct HTTP call takes its token from here, so minisky
+  # refreshes it when less than a minute is left instead of the call sending a
+  # dead one.
+  def fresh_access_token(client)
+    @token_lock.synchronize do
+      client.check_access
+      client.config['access_token']
+    end
+  end
+
+  # The PDS turned down a token that looked valid, for example because it was
+  # revoked or the clocks disagree. Refresh it, unless another thread already
+  # did while this one waited, and return the token to retry with.
+  def refresh_rejected_token(client, rejected_token)
+    @token_lock.synchronize do
+      client.perform_token_refresh if client.config['access_token'] == rejected_token
+      client.config['access_token']
+    end
+  end
+
+  # The reference PDS answers an expired access token with 400 ExpiredToken,
+  # not 401.
+  def token_rejected?(response)
+    status = response.code.to_i
+    return true if status == 401
+    return false unless status == 400
+
+    JSON.parse(response.body.to_s)['error'] == 'ExpiredToken'
+  rescue JSON::ParserError
+    false
   end
 
   # PDS client management using minisky
