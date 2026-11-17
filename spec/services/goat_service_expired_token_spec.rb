@@ -132,3 +132,59 @@ RSpec.describe GoatService, 'access tokens during long file transfers' do
     end
   end
 end
+
+# The reference PDS makes an uploaded file permanent while it holds the
+# account's database lock, and waits at most five seconds for that lock. With
+# five uploads to the same account at once and slow object storage, the later
+# ones waited past that and failed with 500 "database is locked". Downloads
+# come from the other PDS and can stay parallel.
+RSpec.describe GoatService, 'concurrent uploads to the same account' do
+  let(:migration) do
+    Migration.create!(
+      email: 'test@example.com',
+      did: 'did:plc:test456def',
+      old_handle: 'test.old.bsky.social',
+      old_pds_host: 'https://old.pds.example',
+      new_handle: 'test.new.bsky.social',
+      new_pds_host: 'https://new.pds.example',
+      status: 'pending_blobs'
+    )
+  end
+
+  let(:service) { described_class.new(migration) }
+  let(:upload_url) { "#{migration.new_pds_host}/xrpc/com.atproto.repo.uploadBlob" }
+
+  before do
+    migration.set_password('test_password_123', expires_in: 48.hours)
+    stub_pds_sessions(migration)
+    allow(Rails.logger).to receive(:info)
+    allow(Rails.logger).to receive(:debug)
+    allow(Rails.logger).to receive(:warn)
+    allow(Rails.logger).to receive(:error)
+    FileUtils.mkdir_p(service.work_dir)
+  end
+
+  it 'sends at most two files to the new PDS at a time, however many threads are transferring' do
+    service.login_new_pds
+    lock = Mutex.new
+    in_flight = 0
+    peak = 0
+    stub_request(:post, upload_url).to_return do
+      lock.synchronize { peak = [peak, in_flight += 1].max }
+      sleep 0.05
+      lock.synchronize { in_flight -= 1 }
+      { status: 200, headers: { 'Content-Type' => 'application/json' },
+        body: { blob: { ref: { '$link' => 'bafkreiconcurrent' } } }.to_json }
+    end
+
+    paths = Array.new(6) do |i|
+      service.work_dir.join("bafkreiconcurrent#{i}").tap { |path| File.write(path, "blob #{i}") }
+    end
+    paths.map { |path| Thread.new { service.upload_blob(path) } }.each(&:join)
+
+    expect(a_request(:post, upload_url)).to have_been_made.times(6)
+    expect(peak).to eq(2)
+  ensure
+    paths&.each { |path| FileUtils.rm_f(path) }
+  end
+end

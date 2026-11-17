@@ -6,7 +6,8 @@
 # blob is limited to the HTTP chunk size (~16KB) regardless of blob size.
 #
 # Critical Features:
-# - Parallel blob processing (5 threads per migration, no global limit)
+# - Parallel blob processing (5 threads per migration, no global limit); at most
+#   GoatService::UPLOAD_CONCURRENCY of them upload at the same time
 # - All migrations run independently — no queuing, no gating
 # - Batched progress updates (every 10 blobs to reduce DB writes)
 # - Individual blob retry with exponential backoff

@@ -9,7 +9,8 @@
 # 1. Verify local blobs directory exists
 # 2. Login to new PDS
 # 3. List all local blob files
-# 4. Upload blobs in parallel (5 threads per migration, no global limit)
+# 4. Upload blobs in parallel (5 threads per migration, no global limit; at most
+#    GoatService::UPLOAD_CONCURRENCY uploads at the same time)
 # 5. Track progress and update after each batch
 # 6. Advance to pending_prefs status
 #

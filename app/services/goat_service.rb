@@ -209,6 +209,16 @@ class GoatService
   NO_INPUT_BODY_ERROR = /request body was provided when none was expected/i
   NO_INPUT_ATTEMPTS = 4
 
+  # How many files this service uploads to the new PDS at once, across all the
+  # threads of a transfer. For a file that a record already points to (every
+  # file in a migration, because the repo is imported first) the reference PDS
+  # copies the file in object storage while it holds the account's database
+  # lock, and gives up waiting for that lock after five seconds. Five uploads
+  # at once against slow storage made the later ones wait past that and fail
+  # with 500 "database is locked". Downloads come from the other PDS and stay
+  # parallel.
+  UPLOAD_CONCURRENCY = 2
+
   attr_reader :migration, :work_dir, :logger
 
   def initialize(migration)
@@ -218,6 +228,7 @@ class GoatService
     # The threads of one transfer share the PDS clients and their single-use
     # refresh tokens, so only one of them may refresh at a time.
     @token_lock = Monitor.new
+    @upload_slots = Concurrent::Semaphore.new(UPLOAD_CONCURRENCY)
 
     # Ensure work directory exists
     FileUtils.mkdir_p(@work_dir)
@@ -720,8 +731,15 @@ class GoatService
   end
 
   def upload_blob(blob_path)
-    with_rate_limit_retry("upload_blob(#{blob_path})") do
-      upload_blob_request(blob_path)
+    # See UPLOAD_CONCURRENCY. upload_blob_request must not call back into
+    # here: a thread holding a slot would wait for one forever.
+    @upload_slots.acquire
+    begin
+      with_rate_limit_retry("upload_blob(#{blob_path})") do
+        upload_blob_request(blob_path)
+      end
+    ensure
+      @upload_slots.release
     end
   end
 
