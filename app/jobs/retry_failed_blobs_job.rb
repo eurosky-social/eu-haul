@@ -41,6 +41,14 @@ class RetryFailedBlobsJob < ApplicationJob
       return
     end
 
+    # A completed migration with no files missing is done: an earlier pass or
+    # a manual retry moved them and cleared the session this pass would sign
+    # in with.
+    if migration.completed? && Array(migration.progress_data['failed_blobs']).empty?
+      logger.info("Migration #{migration.token} is complete with no files missing; nothing to retry")
+      return
+    end
+
     # Initialize GoatService
     goat = GoatService.new(migration)
 
@@ -122,6 +130,15 @@ class RetryFailedBlobsJob < ApplicationJob
         MigrationMailer.blobs_transfer_incomplete(migration, still_failed_cids.length).deliver_later
         logger.info("Incomplete-transfer mail queued for #{migration.token}")
       end
+    end
+
+    # For a completed migration the chain ends here when every file is in or
+    # the automatic passes are used up. Drop the new-PDS session that
+    # ActivateAccountJob kept for these passes.
+    chain_over = still_failed_cids.empty? || (auto_attempt && auto_attempt > AUTO_RETRY_DELAYS.length)
+    if completed_now && chain_over
+      migration.clear_credentials!
+      logger.info("File retries over for #{migration.token}; cleared the new-PDS session")
     end
 
   rescue ActiveRecord::RecordNotFound => e

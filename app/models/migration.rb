@@ -366,18 +366,37 @@ class Migration < ApplicationRecord
     Time.parse(plc_expires) < Time.current
   end
 
-  # Clear all encrypted credentials (for security after migration completes)
-  def clear_credentials!
-    update!(
+  # How long a completed migration keeps its new-PDS session for the
+  # background file retries. The passes run 15 minutes, 1 hour and 4 hours
+  # apart (RetryFailedBlobsJob::AUTO_RETRY_DELAYS); this covers the chain
+  # with room for queue delays and the passes' own run time.
+  RETRY_SESSION_LIFETIME = 8.hours
+
+  # Clear all encrypted credentials (for security after migration completes).
+  #
+  # keep_new_pds_session: keep the new-PDS session (and nothing else) for
+  # RETRY_SESSION_LIFETIME, because a background retry still has to upload
+  # files with it. The retry chain clears it when it ends;
+  # CleanupExpiredCredentialsJob clears it if the chain never gets there.
+  def clear_credentials!(keep_new_pds_session: false)
+    attrs = {
       encrypted_password: nil,
       encrypted_plc_token: nil,
       encrypted_old_access_token: nil,
-      encrypted_old_refresh_token: nil,
-      encrypted_new_access_token: nil,
-      encrypted_new_refresh_token: nil,
-      credentials_expires_at: nil
-    )
-    Rails.logger.info("Cleared encrypted credentials for migration #{token}")
+      encrypted_old_refresh_token: nil
+    }
+    if keep_new_pds_session
+      attrs[:credentials_expires_at] = RETRY_SESSION_LIFETIME.from_now
+    else
+      attrs.merge!(
+        encrypted_new_access_token: nil,
+        encrypted_new_refresh_token: nil,
+        credentials_expires_at: nil
+      )
+    end
+    update!(attrs)
+    Rails.logger.info("Cleared encrypted credentials for migration #{token}" \
+                      "#{keep_new_pds_session ? ' (new-PDS session kept for the file retry)' : ''}")
   end
 
   # Clear non-essential data after migration completes.
