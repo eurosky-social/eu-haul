@@ -353,6 +353,7 @@ cs:
       missing_files_title: "Dosud nepřenesené soubory: %{count}"
       missing_files_detail: "Na pozadí se automaticky opakují, i po dokončení migrace, a můžete je zopakovat hned. V migraci můžete pokračovat; dotčené obrázky nebo videa se budou zobrazovat jako poškozené, dokud soubory nedorazí."
       missing_files_completed: "Vaše migrace je dokončena, ale tyto soubory se stále přenášejí na pozadí. Dotčené obrázky nebo videa se zobrazují jako poškozené, dokud nedorazí. Můžete je také zopakovat hned. NEMĚŇTE heslo svého nového účtu, dokud neobdržíte náš závěrečný e-mail potvrzující, že všechny soubory dorazily — dřívější změna přenos přeruší."
+      missing_files_daily_limit: "%{server} přijímá jen omezený počet souborů na účet za den, takže nový pokus by teď byl odmítnut. Zbývající soubory se automaticky odešlou od %{time}."
       preparing_blobs: "Příprava na přenos <strong>%{count}</strong> blobů..."
 
       # Download/backup progress

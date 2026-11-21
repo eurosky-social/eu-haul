@@ -30,6 +30,8 @@ RSpec.describe UploadBlobsJob, type: :job do
     # so the double has to answer for it.
     allow(goat_service).to receive(:target_pds_version).and_return('0.5.29')
     allow(goat_service).to receive(:login_new_pds)
+    # The new PDS cannot say which files it lacks: every file is sent
+    allow(goat_service).to receive(:missing_blob_cids).and_return(nil)
     # Skip retry backoffs and the second-pass breather
     allow_any_instance_of(described_class).to receive(:pause)
 
@@ -244,6 +246,112 @@ RSpec.describe UploadBlobsJob, type: :job do
         migration.reload
         expect(migration.progress_data).not_to have_key('queued')
       end
+    end
+  end
+
+  # Transfer 18790 (2026-11-21): bsky.social took 1,000 of the account's 3,022
+  # files and then refused every upload until the next day. The stage kept
+  # trying each file, gave up on all of them, retried them all once more in
+  # the second pass and advanced with nothing scheduled for when the quota
+  # came back.
+  describe "when the new PDS's daily upload quota runs out" do
+    let(:blob_cids) { Array.new(20) { |i| format('bafyquota%02d', i) } }
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+    let(:retry_at) { reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN }
+    let(:quota_error) do
+      GoatService::QuotaExhaustedError.new('PDS rate limit exceeded while uploading blob: 429 Too Many Requests',
+                                           reset_at: reset_at, limit: 1000, remaining: 0,
+                                           http_status: 429, phase: :upload)
+    end
+    let(:sent) { Queue.new }
+
+    before do
+      accepted = false
+      lock = Mutex.new
+      allow(goat_service).to receive(:upload_blob) do |path|
+        sent << path
+        first = lock.synchronize { !accepted && (accepted = true) }
+        raise quota_error unless first
+      end
+    end
+
+    it 'stops sending files once the PDS refuses them' do
+      described_class.perform_now(migration.id)
+
+      # Threads already uploading finish their file; nobody takes a new one.
+      expect(sent.size).to be <= described_class::PARALLEL_BLOBS + 1
+    end
+
+    it 'keeps every file not sent for later' do
+      described_class.perform_now(migration.id)
+
+      progress = migration.reload.progress_data
+      expect(progress['failed_blobs'].length).to eq(blob_cids.length - 1)
+      expect(progress['blobs_completed']).to eq(1)
+    end
+
+    it 'schedules the next pass for when the quota comes back' do
+      described_class.perform_now(migration.id)
+
+      failed = migration.reload.progress_data['failed_blobs']
+      expect(RetryFailedBlobsJob).to have_been_enqueued.with(migration.id, match_array(failed), 1).at(retry_at)
+      expect(migration.progress_data).to include('blobs_quota_retry_at' => retry_at.utc.iso8601,
+                                                 'blobs_quota_limit' => 1000)
+    end
+
+    it 'goes on with the migration' do
+      described_class.perform_now(migration.id)
+
+      expect(migration.reload.status).to eq('pending_prefs')
+    end
+  end
+
+  context 'when the quota runs out during the second pass' do
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+    let(:calls) { Hash.new(0) }
+
+    before do
+      lock = Mutex.new
+      allow(goat_service).to receive(:upload_blob) do |path|
+        count = lock.synchronize { calls[path] += 1 }
+        # every parallel attempt fails, then the first file of the second pass hits the quota
+        raise GoatService::NetworkError, '500 Internal Server Error' if count <= described_class::MAX_RETRIES
+
+        raise GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :upload)
+      end
+    end
+
+    it 'leaves the rest for the pass at the reset' do
+      described_class.perform_now(migration.id)
+
+      expect(calls.values.sum).to eq(blob_cids.length * described_class::MAX_RETRIES + 1)
+      expect(RetryFailedBlobsJob).to have_been_enqueued
+        .with(migration.id, match_array(blob_cids), 1).at(reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN)
+    end
+  end
+
+  # Every upload counts against the quota, also of a file the PDS has.
+  context 'when the new PDS already has some of the files' do
+    before do
+      allow(goat_service).to receive(:missing_blob_cids).and_return(Set['bafydef456'])
+      allow(goat_service).to receive(:upload_blob)
+    end
+
+    it 'uploads only the missing ones' do
+      described_class.perform_now(migration.id)
+
+      expect(goat_service).to have_received(:upload_blob).once
+      expect(goat_service).to have_received(:upload_blob).with(blobs_dir.join('bafydef456').to_s)
+    end
+
+    it 'counts the others as done' do
+      described_class.perform_now(migration.id)
+
+      progress = migration.reload.progress_data
+      expect(progress['blobs_completed']).to eq(3)
+      expect(progress['blobs_total']).to eq(3)
+      expect(progress['failed_blobs']).to be_nil
+      expect(migration.status).to eq('pending_prefs')
     end
   end
 

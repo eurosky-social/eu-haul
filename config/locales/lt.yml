@@ -353,6 +353,7 @@ lt:
       missing_files_title: "Dar neperkelti failai: %{count}"
       missing_files_detail: "Jie automatiškai bandomi dar kartą fone, taip pat ir po perkėlimo pabaigos, o pabandyti galite ir dabar. Galite tęsti perkėlimą; paveikti vaizdai ar vaizdo įrašai atrodys sugadinti, kol failai nebus gauti."
       missing_files_completed: "Jūsų perkėlimas baigtas, tačiau šie failai vis dar perkeliami fone. Paveikti vaizdai ar vaizdo įrašai atrodo sugadinti, kol jie nebus gauti. Taip pat galite pabandyti dar kartą dabar. NEKEISKITE naujos paskyros slaptažodžio, kol negausite mūsų galutinio el. laiško, patvirtinančio, kad gauti visi failai — ankstesnis pakeitimas nutraukia perkėlimą."
+      missing_files_daily_limit: "%{server} per dieną priima tik ribotą failų skaičių vienai paskyrai, todėl bandymas dabar būtų atmestas. Likę failai bus išsiųsti automatiškai nuo %{time}."
       preparing_blobs: "Ruošiamasi perkelti <strong>%{count}</strong> blob..."
 
       # Download/backup progress

@@ -353,6 +353,7 @@ fi:
       missing_files_title: "Vielä siirtämättömät tiedostot: %{count}"
       missing_files_detail: "Niitä yritetään automaattisesti uudelleen taustalla, myös siirron valmistumisen jälkeen, ja voit yrittää uudelleen nyt. Voit jatkaa siirtoa; kyseiset kuvat tai videot näkyvät rikkinäisinä, kunnes tiedostot ovat saapuneet."
       missing_files_completed: "Siirtosi on valmis, mutta näitä tiedostoja siirretään yhä taustalla. Kyseiset kuvat tai videot näkyvät rikkinäisinä, kunnes ne ovat saapuneet. Voit myös yrittää uudelleen nyt. ÄLÄ vaihda uuden tilisi salasanaa ennen kuin olet saanut viimeisen sähköpostimme, jossa vahvistetaan kaikkien tiedostojen saapuneen — aikaisempi vaihto katkaisee siirron."
+      missing_files_daily_limit: "%{server} ottaa vastaan vain rajallisen määrän tiedostoja tiliä kohden päivässä, joten uusi yritys hylättäisiin nyt. Loput tiedostot lähetetään automaattisesti %{time} alkaen."
       preparing_blobs: "Valmistellaan <strong>%{count}</strong> blobin siirtoa..."
 
       # Download/backup progress

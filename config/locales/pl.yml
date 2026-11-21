@@ -353,6 +353,7 @@ pl:
       missing_files_title: "Pliki jeszcze nieprzeniesione: %{count}"
       missing_files_detail: "Są automatycznie ponawiane w tle, także po zakończeniu migracji, i możesz ponowić je teraz. Możesz kontynuować migrację; dotknięte obrazy lub filmy będą wyglądać na uszkodzone, dopóki pliki nie dotrą."
       missing_files_completed: "Twoja migracja została zakończona, ale te pliki są nadal przenoszone w tle. Dotknięte obrazy lub filmy wyglądają na uszkodzone, dopóki nie dotrą. Możesz też ponowić je teraz. NIE zmieniaj hasła do nowego konta, dopóki nie otrzymasz naszego końcowego e-maila potwierdzającego, że wszystkie pliki dotarły — wcześniejsza zmiana przerywa przenoszenie."
+      missing_files_daily_limit: "%{server} przyjmuje tylko ograniczoną liczbę plików na konto dziennie, więc ponowna próba zostałaby teraz odrzucona. Pozostałe pliki zostaną wysłane automatycznie od %{time}."
       preparing_blobs: "Przygotowywanie do transferu <strong>%{count}</strong> blobów..."
 
       # Download/backup progress

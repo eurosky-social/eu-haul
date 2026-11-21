@@ -353,6 +353,7 @@ sl:
       missing_files_title: "Še neprenesene datoteke: %{count}"
       missing_files_detail: "V ozadju se samodejno znova poskušajo, tudi po zaključku selitve, in lahko jih poskusite zdaj. S selitvijo lahko nadaljujete; prizadete slike ali videoposnetki so videti pokvarjeni, dokler datoteke ne prispejo."
       missing_files_completed: "Vaša selitev je zaključena, vendar se te datoteke še prenašajo v ozadju. Prizadete slike ali videoposnetki so videti pokvarjeni, dokler ne prispejo. Lahko jih poskusite tudi zdaj. NE spreminjajte gesla novega računa, dokler ne prejmete našega zaključnega e-sporočila, ki potrjuje, da so prispele vse datoteke — zgodnejša sprememba prekine prenos."
+      missing_files_daily_limit: "%{server} sprejme le omejeno število datotek na račun na dan, zato bi bil nov poskus zdaj zavrnjen. Preostale datoteke bodo samodejno poslane od %{time} naprej."
       preparing_blobs: "Priprava <strong>%{count}</strong> blobov za prenos..."
 
       # Download/backup progress

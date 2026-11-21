@@ -353,6 +353,7 @@ nl:
       missing_files_title: "Nog niet overgezette bestanden: %{count}"
       missing_files_detail: "Ze worden automatisch op de achtergrond opnieuw geprobeerd, ook nadat de migratie is afgerond, en u kunt het nu opnieuw proberen. U kunt doorgaan met de migratie; de betreffende afbeeldingen of video's lijken kapot totdat de bestanden zijn aangekomen."
       missing_files_completed: "Uw migratie is afgerond, maar deze bestanden worden nog op de achtergrond overgezet. De betreffende afbeeldingen of video's lijken kapot totdat ze zijn aangekomen. U kunt het ook nu opnieuw proberen. Wijzig het wachtwoord van uw nieuwe account NIET voordat u onze laatste e-mail hebt ontvangen die bevestigt dat alle bestanden zijn aangekomen — eerder wijzigen breekt de overdracht af."
+      missing_files_daily_limit: "%{server} accepteert per account maar een beperkt aantal bestanden per dag, dus een nieuwe poging zou nu worden geweigerd. De overige bestanden worden vanaf %{time} automatisch verstuurd."
       preparing_blobs: "Voorbereiden op overdracht van <strong>%{count}</strong> blobs..."
 
       # Download/backup progress

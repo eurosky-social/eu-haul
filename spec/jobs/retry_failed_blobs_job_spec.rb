@@ -25,6 +25,8 @@ RSpec.describe RetryFailedBlobsJob, type: :job do
     # so the double has to answer for it.
     allow(goat_service).to receive(:target_pds_version).and_return('0.5.29')
     allow(goat_service).to receive(:login_new_pds)
+    # The new PDS cannot say which files it lacks: every file is tried
+    allow(goat_service).to receive(:missing_blob_cids).and_return(nil)
     allow_any_instance_of(described_class).to receive(:pause)
     FileUtils.mkdir_p(storage_dir.join('blobs'))
   end
@@ -116,6 +118,138 @@ RSpec.describe RetryFailedBlobsJob, type: :job do
 
       expect(described_class).not_to have_been_enqueued
     end
+  end
+
+  # bsky.social takes 1,000 files per account per day. A pass that runs into
+  # that waits for the reset instead of collecting refusals, and one that got
+  # files in does not use up an automatic pass: a big account needs a pass a
+  # day.
+  describe "the new PDS's daily upload quota" do
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+    let(:retry_at) { reset_at + described_class::QUOTA_RESET_MARGIN }
+    let(:last_pass) { described_class::AUTO_RETRY_DELAYS.length + 1 }
+    let(:quota_error) do
+      GoatService::QuotaExhaustedError.new('PDS rate limit exceeded while uploading blob: 429 Too Many Requests',
+                                           reset_at: reset_at, limit: 1000, remaining: 0,
+                                           http_status: 429, phase: :upload)
+    end
+    let(:file_a) { storage_dir.join('blobs', 'bafya').to_s }
+    let(:file_b) { storage_dir.join('blobs', 'bafyb').to_s }
+
+    before do
+      File.write(file_a, 'A')
+      File.write(file_b, 'B')
+    end
+
+    context 'when files got in before the refusal' do
+      before do
+        allow(goat_service).to receive(:upload_blob).with(file_a)
+        allow(goat_service).to receive(:upload_blob).with(file_b).and_raise(quota_error)
+      end
+
+      it 'runs the same pass again at the reset' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(described_class).to have_been_enqueued.with(migration.id, ['bafyb'], 1).at(retry_at)
+        progress = migration.reload.progress_data
+        expect(progress['failed_blobs']).to eq(['bafyb'])
+        expect(progress['blobs_quota_retry_at']).to eq(retry_at.utc.iso8601)
+      end
+
+      it 'does not give up after the last pass either' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], last_pass)
+
+        expect(described_class).to have_been_enqueued.with(migration.id, ['bafyb'], last_pass).at(retry_at)
+        expect(migration.reload.progress_data['blobs_auto_retry_exhausted_at']).to be_blank
+      end
+
+      it 'keeps the session of a completed migration until after that pass' do
+        migration.set_new_pds_tokens!(access_token: 'new-access', refresh_token: 'new-refresh')
+        migration.update!(status: :completed, credentials_expires_at: 1.hour.from_now)
+
+        described_class.perform_now(migration.id, %w[bafya bafyb], last_pass)
+
+        migration.reload
+        expect(migration.new_refresh_token).to eq('new-refresh')
+        expect(migration.credentials_expires_at).to be >= retry_at + Migration::RETRY_SESSION_LIFETIME - 1.second
+      end
+
+      it 'sends no mail' do
+        migration.update!(status: :completed)
+
+        expect {
+          described_class.perform_now(migration.id, %w[bafya bafyb], last_pass)
+        }.not_to have_enqueued_mail(MigrationMailer, :blobs_transfer_incomplete)
+      end
+    end
+
+    context 'when the first file is refused' do
+      before { allow(goat_service).to receive(:upload_blob).and_raise(quota_error) }
+
+      it 'tries no further files' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(goat_service).to have_received(:upload_blob).once
+        expect(migration.reload.progress_data['failed_blobs']).to match_array(%w[bafya bafyb])
+      end
+
+      it 'uses up a pass, scheduled for the reset' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+        expect(described_class).to have_been_enqueued.with(migration.id, %w[bafya bafyb], 2).at(retry_at)
+      end
+
+      it 'gives up after the last pass' do
+        described_class.perform_now(migration.id, %w[bafya bafyb], last_pass)
+
+        expect(described_class).not_to have_been_enqueued
+        expect(migration.reload.progress_data['blobs_auto_retry_exhausted_at']).to be_present
+      end
+
+      it 'starts a chain at the reset after a manual retry when no pass is coming' do
+        described_class.perform_now(migration.id, %w[bafya bafyb])
+
+        expect(described_class).to have_been_enqueued.with(migration.id, %w[bafya bafyb], 1).at(retry_at)
+      end
+
+      it 'leaves a coming pass alone after a manual retry' do
+        migration.merge_progress!('blobs_auto_retry_scheduled_at' => Time.current.iso8601)
+
+        described_class.perform_now(migration.id, %w[bafya bafyb])
+
+        expect(described_class).not_to have_been_enqueued
+        expect(migration.reload.progress_data['blobs_quota_retry_at']).to eq(retry_at.utc.iso8601)
+      end
+    end
+
+    # The old PDS refusing a download says nothing about the new PDS's quota.
+    it 'treats a refused download as an ordinary failure' do
+      FileUtils.rm_f(file_b)
+      download_refusal = GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :download)
+      allow(goat_service).to receive(:download_blob).with('bafyb').and_raise(download_refusal)
+      allow(goat_service).to receive(:upload_blob)
+
+      described_class.perform_now(migration.id, %w[bafyb bafya], 1)
+
+      expect(goat_service).to have_received(:upload_blob).with(file_a)
+      expect(described_class).to have_been_enqueued.with(migration.id, ['bafyb'], 2)
+      expect(migration.reload.progress_data['blobs_quota_retry_at']).to be_nil
+    end
+  end
+
+  # Every upload counts against the quota, also of a file the PDS has.
+  it 'skips the files the new PDS already has' do
+    File.write(storage_dir.join('blobs', 'bafyb'), 'B')
+    allow(goat_service).to receive(:missing_blob_cids).and_return(Set['bafyb'])
+    allow(goat_service).to receive(:upload_blob)
+
+    described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+    expect(goat_service).to have_received(:upload_blob).once
+    expect(goat_service).to have_received(:upload_blob).with(storage_dir.join('blobs', 'bafyb').to_s)
+    progress = migration.reload.progress_data
+    expect(progress['failed_blobs']).to eq([])
+    expect(progress['blobs_completed']).to eq(10)
   end
 
   it 'does nothing for a failed or cancelled migration' do

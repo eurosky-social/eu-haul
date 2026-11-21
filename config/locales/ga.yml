@@ -353,6 +353,7 @@ ga:
       missing_files_title: "Comhaid nár aistríodh fós: %{count}"
       missing_files_detail: "Baintear triail eile astu go huathoibríoch sa chúlra, fiú tar éis don aistriú a bheith críochnaithe, agus is féidir leat triail eile a bhaint astu anois. Is féidir leat leanúint ar aghaidh leis an aistriú; beidh cuma bhriste ar na híomhánna nó na físeáin lena mbaineann go dtí go sroicheann na comhaid."
       missing_files_completed: "Tá d'aistriú críochnaithe, ach tá na comhaid seo á n-aistriú fós sa chúlra. Tá cuma bhriste ar na híomhánna nó na físeáin lena mbaineann go dtí go sroicheann siad. Is féidir leat triail eile a bhaint astu anois freisin. NÁ hathraigh pasfhocal do chuntais nua go dtí go bhfaighidh tú ár ríomhphost deiridh a dheimhníonn gur shroich na comhaid go léir — má athraíonn tú níos luaithe é, gearrtar an t-aistriú."
+      missing_files_daily_limit: "Ní ghlacann %{server} ach le líon teoranta comhad in aghaidh an chuntais gach lá, mar sin dhiúltófaí d'iarracht eile anois. Seolfar na comhaid eile go huathoibríoch ó %{time}."
       preparing_blobs: "Ag ullmhú chun <strong>%{count}</strong> blob a aistriú..."
 
       # Download/backup progress

@@ -353,6 +353,7 @@ et:
       missing_files_title: "Veel üle kandmata failid: %{count}"
       missing_files_detail: "Neid proovitakse taustal automaatselt uuesti, ka pärast migratsiooni lõppu, ja võite kohe uuesti proovida. Võite migratsiooniga jätkata; mõjutatud pildid või videod paistavad katkisena, kuni failid on kohale jõudnud."
       missing_files_completed: "Teie migratsioon on lõpetatud, kuid neid faile kantakse taustal veel üle. Mõjutatud pildid või videod paistavad katkisena, kuni need on kohale jõudnud. Võite ka kohe uuesti proovida. ÄRGE muutke oma uue konto parooli enne, kui olete saanud meie lõpliku e-kirja, mis kinnitab, et kõik failid on kohale jõudnud — varasem muutmine katkestab ülekande."
+      missing_files_daily_limit: "%{server} võtab ühe konto kohta päevas vastu ainult piiratud arvu faile, seega lükataks uus katse praegu tagasi. Ülejäänud failid saadetakse automaatselt alates %{time}."
       preparing_blobs: "<strong>%{count}</strong> blobi ülekandmiseks valmistumine..."
 
       # Download/backup progress

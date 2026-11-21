@@ -353,6 +353,7 @@ lv:
       missing_files_title: "Vēl nepārsūtītie faili: %{count}"
       missing_files_detail: "Tie tiek automātiski mēģināti vēlreiz fonā, arī pēc migrācijas pabeigšanas, un jūs varat mēģināt vēlreiz tagad. Varat turpināt migrāciju; skartie attēli vai video izskatās bojāti, līdz faili ir saņemti."
       missing_files_completed: "Jūsu migrācija ir pabeigta, taču šie faili joprojām tiek pārsūtīti fonā. Skartie attēli vai video izskatās bojāti, līdz tie ir saņemti. Varat arī mēģināt vēlreiz tagad. NEMAINIET jaunā konta paroli, kamēr nesaņemat mūsu noslēguma e-pastu, kas apstiprina, ka visi faili ir saņemti — agrāka maiņa pārtrauc pārsūtīšanu."
+      missing_files_daily_limit: "%{server} dienā pieņem tikai ierobežotu failu skaitu vienam kontam, tāpēc atkārtots mēģinājums tagad tiktu noraidīts. Atlikušie faili tiks nosūtīti automātiski no %{time}."
       preparing_blobs: "Gatavošanās <strong>%{count}</strong> blob pārsūtīšanai..."
 
       # Download/backup progress

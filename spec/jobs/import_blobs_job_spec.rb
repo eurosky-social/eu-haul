@@ -293,6 +293,53 @@ RSpec.describe ImportBlobsJob, type: :job do
       end
     end
 
+    # Without a backup the files go straight from the old PDS to the new one.
+    # Once bsky.social's 1,000 files a day are used up, every further
+    # download would be wasted on an upload that is refused.
+    context "when the new PDS's daily upload quota runs out" do
+      let(:blob_cids) { Array.new(20) { |i| format('bafyimport%02d', i) } }
+      let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+      let(:downloads) { Queue.new }
+
+      before do
+        allow(goat_service).to receive(:list_blobs).with(nil).and_return({ 'cids' => blob_cids, 'cursor' => nil })
+        allow(goat_service).to receive(:download_blob) do |cid|
+          downloads << cid
+          path = Rails.root.join('tmp', 'goat', migration.did, 'blobs', cid)
+          FileUtils.mkdir_p(File.dirname(path))
+          File.write(path, "DATA_#{cid}")
+          path.to_s
+        end
+        allow(goat_service).to receive(:upload_blob).and_raise(
+          GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, limit: 1000, http_status: 429, phase: :upload)
+        )
+      end
+
+      after { FileUtils.rm_rf(Rails.root.join('tmp', 'goat', migration.did)) }
+
+      it 'stops downloading files it cannot upload' do
+        described_class.perform_now(migration.id)
+
+        expect(downloads.size).to be <= described_class::PARALLEL_BLOBS
+      end
+
+      it 'leaves every file for a pass at the reset and goes on' do
+        described_class.perform_now(migration.id)
+
+        migration.reload
+        expect(migration.progress_data['failed_blobs']).to match_array(blob_cids)
+        expect(RetryFailedBlobsJob).to have_been_enqueued
+          .with(migration.id, match_array(blob_cids), 1).at(reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN)
+        expect(migration.status).to eq('pending_prefs')
+      end
+
+      it 'skips the reconciliation, which would only be refused' do
+        described_class.perform_now(migration.id)
+
+        expect(goat_service).not_to have_received(:get_account_status)
+      end
+    end
+
     context 'when rate limited' do
       before do
         allow(goat_service).to receive(:list_blobs).and_raise(

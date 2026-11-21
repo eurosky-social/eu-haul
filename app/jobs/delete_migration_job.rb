@@ -31,6 +31,12 @@
 class DeleteMigrationJob < ApplicationJob
   queue_as :low
 
+  # How long deletion waits, at a time, for files still being sent. A
+  # transfer to bsky.social sends at most 1,000 files a day, so a big account
+  # can still be uploading when the 2-day grace period ends; deleting the
+  # record then would drop its retry passes and the files with it.
+  POSTPONE_WHILE_TRANSFERRING = 1.day
+
   def perform(migration_id)
     migration = Migration.find_by(id: migration_id)
 
@@ -43,6 +49,13 @@ class DeleteMigrationJob < ApplicationJob
     # Failed migrations should be handled by CleanupOldMigrationsJob instead
     unless migration.completed?
       Rails.logger.warn("Migration #{migration.token} is not completed (status: #{migration.status}), skipping deletion")
+      return
+    end
+
+    if migration.files_still_transferring?
+      self.class.set(wait: POSTPONE_WHILE_TRANSFERRING).perform_later(migration.id)
+      Rails.logger.info("Files of #{migration.token} are still being sent to the new PDS; " \
+                        "deletion postponed by #{POSTPONE_WHILE_TRANSFERRING.inspect}")
       return
     end
 

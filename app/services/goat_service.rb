@@ -25,6 +25,8 @@
 #   - NetworkError: HTTP/API communication failures (could not reach the network)
 #   - HandleNotFoundError: the network answered and the handle does not exist
 #   - RateLimitError: PDS rate-limiting (HTTP 429)
+#   - QuotaExhaustedError: a RateLimitError whose window ends hours away
+#     (the daily upload quota); not retried in place
 #   - TimeoutError: Operations exceeding timeout limits
 #   - GoatError: General operation failures
 #
@@ -147,13 +149,33 @@ class GoatService
   class NetworkError < GoatError; end
   class TimeoutError < GoatError; end
   class RateLimitError < NetworkError  # Raised when PDS rate-limits our requests
-    attr_reader :retry_after
+    # retry_after: whole seconds to wait (from Retry-After or RateLimit-Reset).
+    # reset_at: when the limit's window ends. limit / remaining: the
+    # RateLimit-Limit and RateLimit-Remaining headers. Each is nil when the
+    # PDS did not say.
+    attr_reader :retry_after, :reset_at, :limit, :remaining
 
-    def initialize(message = nil, retry_after: nil, **context)
+    def initialize(message = nil, retry_after: nil, reset_at: nil, limit: nil, remaining: nil, **context)
       @retry_after = retry_after
+      @reset_at = reset_at
+      @limit = limit
+      @remaining = remaining
       super(message, **context)
     end
+
+    # Seconds until the PDS accepts requests again; nil when it gave no time
+    # or the time has already passed.
+    def wait_seconds
+      return (retry_after.to_i.positive? ? retry_after.to_i : nil) unless reset_at
+
+      seconds = reset_at - Time.current
+      seconds.positive? ? seconds : nil
+    end
   end
+  # A rate limit whose window ends too far away to wait out in place, such as
+  # the reference PDS's 1,000 uploadBlob calls per account per day. Raised on
+  # the first refusal; every further request until reset_at is refused too.
+  class QuotaExhaustedError < RateLimitError; end
   class AccountExistsError < GoatError; end  # Raised when account already exists on target PDS
   class EmailTakenError < GoatError; end  # Raised when the email is already registered on the target PDS (not retryable)
   class InvalidInviteCodeError < GoatError; end  # Raised when invite code is invalid, expired, or already used
@@ -612,9 +634,9 @@ class GoatService
     unless response.success?
       # Check for rate-limiting
       if response.code == 429
-        retry_after = response.headers['Retry-After']&.to_i
         logger.warn("Rate limit hit while listing blobs: #{response.code} #{response.message}")
-        raise RateLimitError.new("PDS rate limit exceeded while listing blobs: #{response.code} #{response.message}", retry_after: retry_after)
+        raise rate_limit_error("PDS rate limit exceeded while listing blobs: #{response.code} #{response.message}",
+                               response.headers)
       end
 
       raise NetworkError, "Failed to list blobs: #{response.code} #{response.message}"
@@ -694,10 +716,9 @@ class GoatService
           end
 
           if response.code.to_i == 429
-            retry_after = response['Retry-After']&.to_i
             logger.warn("Rate limit hit while downloading blob #{cid}: #{response.code} #{response.message}")
-            raise RateLimitError.new("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}",
-                                     retry_after: retry_after, http_status: 429, cid: cid, phase: :download)
+            raise rate_limit_error("PDS rate limit exceeded while downloading blob: #{response.code} #{response.message}",
+                                   response, http_status: 429, cid: cid, phase: :download)
           end
 
           raise NetworkError.new("Failed to download blob: #{response.code} #{response.message}",
@@ -768,10 +789,9 @@ class GoatService
     unless response.is_a?(Net::HTTPSuccess)
       # Check for rate-limiting
       if response.code.to_i == 429
-        retry_after = response['Retry-After']&.to_i
         logger.warn("Rate limit hit while uploading blob: #{response.code} #{response.message}")
-        raise RateLimitError.new("PDS rate limit exceeded while uploading blob: #{response.code} #{response.message}",
-                                 retry_after: retry_after, http_status: 429, cid: blob_cid, phase: :upload)
+        raise rate_limit_error("PDS rate limit exceeded while uploading blob: #{response.code} #{response.message}",
+                               response, http_status: 429, cid: blob_cid, phase: :upload)
       end
 
       # Include the start of the body: the PDS' error name/message is the only
@@ -1029,6 +1049,43 @@ class GoatService
     raise GoatError, "Failed to check missing blobs: #{e.message}"
   end
 
+  # The CIDs the new PDS still has to receive, as a Set, or nil when it cannot
+  # say reliably (then the caller must send every file, as before).
+  #
+  # Sending only these spares the per-account upload quota: a restarted or
+  # retried transfer used to re-upload every file, each upload counting
+  # against bsky.social's 1,000 a day whether or not the PDS already had it.
+  #
+  # listMissingBlobs is checked against checkAccountStatus. On the reference
+  # PDS expectedBlobs counts the files records point to and importedBlobs the
+  # files stored, so expected - imported files at least must be listed. Files
+  # stored without a record pointing to them count as imported, so the list
+  # may be longer, never shorter. A PDS reporting no expected files at all is
+  # not trusted either: the caller has local files it would otherwise drop.
+  def missing_blob_cids
+    status = get_account_status
+    expected = Integer(status['expectedBlobs'], exception: false)
+    imported = Integer(status['importedBlobs'], exception: false)
+    unless expected && imported && expected.positive?
+      logger.warn("New PDS reports expectedBlobs=#{status['expectedBlobs'].inspect}, " \
+                  "importedBlobs=#{status['importedBlobs'].inspect}; sending every file")
+      return nil
+    end
+
+    missing = collect_all_missing_blobs.to_set
+    if missing.size < expected - imported
+      logger.warn("New PDS lists #{missing.size} missing files but expects #{expected} and has #{imported}; " \
+                  "sending every file")
+      return nil
+    end
+
+    logger.info("New PDS still needs #{missing.size} of #{expected} files")
+    missing
+  rescue StandardError => e
+    logger.warn("Could not ask the new PDS which files it is missing (#{e.message}); sending every file")
+    nil
+  end
+
   # Collect all missing blob CIDs from the new PDS using pagination.
   # Returns an array of CID strings.
   def collect_all_missing_blobs
@@ -1036,7 +1093,8 @@ class GoatService
     cursor = nil
 
     loop do
-      response = check_missing_blobs(cursor: cursor, limit: 100)
+      # 1000 is the lexicon's maximum page size.
+      response = check_missing_blobs(cursor: cursor, limit: 1000)
       blobs = response['blobs'] || []
       all_missing.concat(blobs.map { |b| b['cid'] || b.to_s })
 
@@ -1069,15 +1127,25 @@ class GoatService
 
   MAX_RATE_LIMIT_RETRIES = 4
   MAX_RATE_LIMIT_WAIT = 60 # seconds
+  # The longest wait with_rate_limit_retry's retries add up to; a limit
+  # resetting later than this is a QuotaExhaustedError (rate_limit_error).
+  QUOTA_WAIT_THRESHOLD = MAX_RATE_LIMIT_RETRIES * MAX_RATE_LIMIT_WAIT
 
   # Retry a block with exponential backoff when rate-limited (HTTP 429).
-  # Respects the Retry-After header when present; otherwise uses 2^attempt
-  # seconds with random jitter. Retries up to MAX_RATE_LIMIT_RETRIES times
-  # before re-raising. Short sleeps (up to 60s) are safe in Sidekiq workers.
+  # Waits until the reset time the PDS names (Retry-After or RateLimit-Reset)
+  # when there is one; otherwise 2^attempt seconds. Both get random jitter.
+  # Retries up to MAX_RATE_LIMIT_RETRIES times before re-raising. Short sleeps
+  # (up to 60s) are safe in Sidekiq workers; a QuotaExhaustedError, whose
+  # reset is further away than all of them together, is re-raised at once
+  # (see rate_limit_error).
   def with_rate_limit_retry(label = 'operation')
     attempt = 0
     begin
       yield
+    rescue QuotaExhaustedError => e
+      logger.warn("Rate limited on #{label} until #{e.reset_at&.utc&.iso8601} " \
+                  "(limit #{e.limit.inspect}); not retrying before then")
+      raise
     rescue RateLimitError => e
       attempt += 1
       if attempt > MAX_RATE_LIMIT_RETRIES
@@ -1085,12 +1153,7 @@ class GoatService
         raise
       end
 
-      # Use Retry-After header if available, otherwise exponential backoff
-      wait = if e.retry_after && e.retry_after > 0
-               [e.retry_after, MAX_RATE_LIMIT_WAIT].min
-             else
-               [2**attempt, MAX_RATE_LIMIT_WAIT].min
-             end
+      wait = [e.wait_seconds || 2**attempt, MAX_RATE_LIMIT_WAIT].min
 
       # Add jitter (0-25% of wait time) to avoid thundering herd
       jitter = rand * wait * 0.25
@@ -1100,6 +1163,58 @@ class GoatService
       sleep(total_wait)
       retry
     end
+  end
+
+  # The error for a 429, built from what the PDS says about the limit.
+  # `headers` answers [] case-insensitively (a Net::HTTPResponse, or
+  # HTTParty's headers).
+  #
+  # The reference PDS sends RateLimit-Limit, -Remaining, -Reset (a Unix time)
+  # and -Policy with every 429, and Retry-After only since 2026-07; bsky.social
+  # sends no Retry-After. A window ending later than with_rate_limit_retry's
+  # waits reach (QUOTA_WAIT_THRESHOLD) makes a QuotaExhaustedError: retrying
+  # sooner only collects more refusals. Shorter windows are waited out in
+  # MAX_RATE_LIMIT_WAIT steps, as before.
+  def rate_limit_error(message, headers, **context)
+    now = Time.current
+    reset_at = retry_after_time(headers['Retry-After'], now) ||
+               rate_limit_reset_time(headers['RateLimit-Reset'], now)
+    reset_at = nil if reset_at && reset_at <= now
+    retry_after = reset_at && (reset_at - now).ceil
+    details = {
+      retry_after: retry_after,
+      reset_at: reset_at,
+      limit: Integer(headers['RateLimit-Limit'].to_s, exception: false),
+      remaining: Integer(headers['RateLimit-Remaining'].to_s, exception: false),
+      **context
+    }
+
+    if retry_after && retry_after > QUOTA_WAIT_THRESHOLD
+      QuotaExhaustedError.new("#{message}; refused until #{reset_at.utc.iso8601}", **details)
+    else
+      RateLimitError.new(message, **details)
+    end
+  end
+
+  # Retry-After is either seconds or an HTTP date (RFC 9110).
+  def retry_after_time(value, now)
+    value = value.to_s.strip
+    return nil if value.empty?
+    return now + value.to_i if value.match?(/\A\d+\z/)
+
+    Time.httpdate(value).in_time_zone
+  rescue ArgumentError
+    nil
+  end
+
+  # RateLimit-Reset is a Unix time on the reference PDS; the IETF RateLimit
+  # header draft uses seconds left instead. A value below 10^9 can only be the
+  # latter.
+  def rate_limit_reset_time(value, now)
+    seconds = Integer(value.to_s.strip, exception: false)
+    return nil unless seconds
+
+    seconds >= 1_000_000_000 ? Time.zone.at(seconds) : now + seconds
   end
 
   # Execute shell command with timeout (used for curl in export_repo)
