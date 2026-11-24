@@ -395,7 +395,7 @@ docker compose exec web rails runner "CleanupBackupBundleJob.perform_now"
 ### Migration Flow
 
 ```
-User Form → CreateAccountJob → ImportRepoJob → ImportBlobsJob → ImportPrefsJob
+User Form → CreateAccountJob → ImportRepoJob → ImportBlobsJob → ImportSpacesJob → ImportPrefsJob
                                                                       ↓
                                                             WaitForPlcTokenJob
                                                                       ↓

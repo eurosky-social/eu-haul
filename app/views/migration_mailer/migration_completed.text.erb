@@ -16,7 +16,7 @@
 ----------------------------------------
 
 <%= t('mailers.migration_completed.save_password') %>
-<% missing_blobs = @migration.progress_data['failed_blobs'] || [] %><%= missing_blobs.any? ? t('mailers.migration_completed.change_password_wait') : t('mailers.migration_completed.change_password') %>
+<% missing_blobs = @migration.missing_public_blobs + @migration.missing_space_blobs %><%= missing_blobs.any? ? t('mailers.migration_completed.change_password_wait') : t('mailers.migration_completed.change_password') %>
 
 
 <% end %>
@@ -62,7 +62,7 @@
 
 <%= t('mailers.migration_completed.hosting_miss') %>
 
-<% missing_blobs = @migration.progress_data['failed_blobs'] || [] %>
+<% missing_blobs = @migration.missing_public_blobs + @migration.missing_space_blobs %>
 <% if missing_blobs.any? %>
 ================================================================================
 <%= t('mailers.migration_completed.missing_files_heading') %>

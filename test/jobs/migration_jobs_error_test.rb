@@ -17,6 +17,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(3)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).raises(GoatService::AuthenticationError, "Invalid password")
     GoatService.stubs(:new).returns(service)
 
@@ -31,6 +33,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
   test "CreateAccountJob handles AccountExistsError by discarding job" do
     job = CreateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).returns(nil)
     service.stubs(:get_new_pds_service_did).returns('did:web:newpds')
     service.stubs(:get_service_auth_token).returns('token')
@@ -56,6 +60,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).raises(
       GoatService::RateLimitError,
       "PDS rate limit exceeded"
@@ -76,6 +82,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = CreateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     # For migration_in, we login to old PDS first, then verify new PDS
     service.stubs(:login_old_pds).returns(true)
     service.expects(:verify_existing_account_access).returns(
@@ -99,6 +107,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(3)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     # For migration_in, we login to old PDS first, then verify new PDS
     service.stubs(:login_old_pds).returns(true)
     service.stubs(:verify_existing_account_access).raises(
@@ -127,6 +137,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:export_repo).raises(
       GoatService::TimeoutError,
       "Repository export timed out after 600 seconds"
@@ -150,6 +162,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:export_repo).raises(
       GoatService::GoatError,
       "Repository export failed: file not created or empty"
@@ -171,6 +185,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportRepoJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     car_path = '/tmp/account.car'
     converted_path = '/tmp/account_converted.car'
 
@@ -233,6 +249,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportBlobsJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     # Mock login
     service.stubs(:login_new_pds).returns(true)
@@ -276,6 +294,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportBlobsJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     # Mock login
     service.stubs(:login_new_pds).returns(true)
@@ -317,6 +337,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportBlobsJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     # Mock login
     service.stubs(:login_new_pds).returns(true)
@@ -353,6 +375,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportBlobsJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     # Mock login
     service.stubs(:login_new_pds).returns(true)
@@ -387,6 +411,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ImportBlobsJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     # Mock login
     service.stubs(:login_new_pds).returns(true)
@@ -430,6 +456,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
 
     service.stubs(:export_preferences).raises(
       GoatService::GoatError,
@@ -452,6 +480,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     prefs_path = '/tmp/prefs.json'
 
     service.stubs(:export_preferences).returns(prefs_path)
@@ -477,6 +507,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = WaitForPlcTokenJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.expects(:request_plc_token)
     GoatService.stubs(:new).returns(service)
@@ -498,6 +530,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:request_plc_token).raises(
       GoatService::GoatError,
@@ -564,6 +598,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).raises(
@@ -594,6 +630,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
@@ -622,6 +660,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
@@ -649,6 +689,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = UpdatePlcJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:generate_rotation_key).returns({ private_key: 'test_priv', public_key: 'test_pub' })
     service.stubs(:get_recommended_plc_operation).returns('/tmp/unsigned.json')
     service.stubs(:sign_plc_operation).returns('/tmp/signed.json')
@@ -675,6 +717,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job.stubs(:executions).returns(1)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:activate_account).raises(
       GoatService::GoatError,
       "Failed to activate new account"
@@ -696,6 +740,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.expects(:activate_account) # Succeeds
     service.stubs(:deactivate_account).raises(
       GoatService::GoatError,
@@ -727,6 +773,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     @migration.set_password("test_password")
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.expects(:activate_account)
     service.expects(:deactivate_account).never
     GoatService.stubs(:new).returns(service)
@@ -746,6 +794,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.expects(:activate_account)
     service.expects(:deactivate_account)
     # Mock rotation key generation
@@ -775,6 +825,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.expects(:activate_account)
     service.expects(:deactivate_account)
     # Mock rotation key generation
@@ -806,6 +858,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
 
     job = ActivateAccountJob.new
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.expects(:activate_account)
     service.expects(:deactivate_account)
     # Mock rotation key generation
@@ -831,6 +885,8 @@ class MigrationJobsErrorTest < ActiveSupport::TestCase
     job = ActivateAccountJob.new
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:activate_account).raises(GoatService::GoatError, "Failure")
     # Note: cleanup is not currently called on failure, tracked for future implementation
     GoatService.stubs(:new).returns(service)

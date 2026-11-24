@@ -6,6 +6,8 @@
 # Flow:
 # 1. Find migration by ID
 # 2. Create GoatService instance
+#    While the spaces move is off (EuroskyConfig.move_spaces?), an account
+#    with spaces is stopped here, before anything is created (EUR-636)
 # 3. Log in to old PDS (to authenticate)
 # 4. Get service auth token from old PDS for new PDS
 # 5. Create deactivated account on new PDS with existing DID
@@ -58,6 +60,11 @@ class CreateAccountJob < ApplicationJob
 
     # Create GoatService instance
     goat = GoatService.new(migration)
+
+    # Step 0: the spaces guard (EUR-636). Before anything is written to the
+    # new PDS: a half-made account there would block a later attempt, and the
+    # files would spend its upload quota.
+    return if stopped_for_spaces?(migration, goat)
 
     # Check migration type
     if migration.returning_to_existing_pds?
@@ -208,6 +215,37 @@ class CreateAccountJob < ApplicationJob
   end
 
   private
+
+  # From 1 December 2026 an account can have spaces. While eu-haul doesn't
+  # move them (EuroskyConfig.move_spaces? off), an account that has some
+  # must not move: the spaces it runs would stop working for every member,
+  # and its records in other spaces would look deleted. Stops it before the
+  # PLC step, the point of no return, so the account keeps working on the
+  # old PDS. A failed spaces call raises and is retried like any other.
+  def stopped_for_spaces?(migration, goat)
+    return false if EuroskyConfig.move_spaces?
+
+    goat.login_old_pds
+    spaces = begin
+      goat.list_spaces(:old)
+    rescue GoatService::SpacesUnsupportedError
+      []
+    end
+    migration.merge_progress!('spaces_total' => spaces.length, 'spaces_checked_at' => Time.current.iso8601)
+    return false if spaces.empty?
+
+    Rails.logger.warn("[CreateAccountJob] #{migration.token} has #{spaces.length} spaces and the spaces move is off; stopping")
+    migration.mark_failed!(
+      "Spaces not moved yet: the account has #{spaces.length} spaces, and this eu-haul does not move spaces yet",
+      error_code: :spaces_not_moved
+    )
+    begin
+      MigrationMailer.migration_failed(migration).deliver_later
+    rescue StandardError => e
+      Rails.logger.error("[CreateAccountJob] Failed to queue the spaces notice for #{migration.token}: #{e.message}")
+    end
+    true
+  end
 
   def handle_error(migration, error)
     return unless migration

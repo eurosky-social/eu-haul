@@ -36,7 +36,7 @@ class BlobReconciliationTest < ActiveSupport::TestCase
     job.perform(@migration.id)
 
     @migration.reload
-    assert @migration.pending_prefs?
+    assert @migration.pending_spaces?
     assert_equal 'complete', @migration.progress_data['reconciliation_status']
   end
 
@@ -78,7 +78,7 @@ class BlobReconciliationTest < ActiveSupport::TestCase
     job.perform(@migration.id)
 
     @migration.reload
-    assert @migration.pending_prefs?
+    assert @migration.pending_spaces?
     assert_equal 'complete', @migration.progress_data['reconciliation_status']
     assert_equal 2, @migration.progress_data['reconciliation_recovered']
     assert_equal 3, @migration.progress_data['reconciliation_expected_blobs']
@@ -109,7 +109,7 @@ class BlobReconciliationTest < ActiveSupport::TestCase
 
     # Migration should still complete successfully
     @migration.reload
-    assert @migration.pending_prefs?
+    assert @migration.pending_spaces?
     assert_equal 'skipped', @migration.progress_data['reconciliation_status']
     assert_match /Account status check failed/, @migration.progress_data['reconciliation_error']
   end
@@ -140,7 +140,7 @@ class BlobReconciliationTest < ActiveSupport::TestCase
     job.perform(@migration.id)
 
     @migration.reload
-    assert @migration.pending_prefs?
+    assert @migration.pending_spaces?
     assert_equal 'complete', @migration.progress_data['reconciliation_status']
     assert @migration.progress_data['reconciliation_completed_at'].present?
   end
@@ -192,7 +192,7 @@ class BlobReconciliationTest < ActiveSupport::TestCase
     job.perform(@migration.id)
 
     @migration.reload
-    assert @migration.pending_prefs?
+    assert @migration.pending_spaces?
     assert_equal 'partial', @migration.progress_data['reconciliation_status']
     assert_equal 1, @migration.progress_data['reconciliation_recovered']
 

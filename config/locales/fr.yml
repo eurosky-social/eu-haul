@@ -312,6 +312,7 @@ fr:
         account_created: "Nouveau compte créé"
         pending_repo: "Transfert des publications et abonnements"
         pending_blobs: "Transfert des médias"
+        pending_spaces: "Transfert des Spaces"
         pending_prefs: "Transfert des paramètres"
         pending_plc: "Mise à jour de votre identité"
         pending_activation: "Activation de votre nouveau compte"
@@ -543,6 +544,27 @@ fr:
           check_expiry: "Vérifiez si vos identifiants ont expiré (ils sont conservés 48 heures à partir du début de la migration)"
           start_new: "Démarrez une nouvelle migration avec les bons identifiants"
           contact_admin: "Si vous êtes sûr que le mot de passe est correct, contactez l'administrateur de votre PDS"
+      spaces_unsupported:
+        title: "Le nouveau PDS ne peut pas encore accueillir vos Spaces"
+        what_happened: "Votre compte utilise des Spaces : publications privées, groupes ou autres contenus visibles seulement par certaines personnes (%{count} au total). %{new_pds} ne prend pas encore en charge les Spaces : migrer maintenant les laisserait sur %{old_pds}."
+        current_status: "La migration s'est arrêtée avant toute modification de votre identité. Votre compte sur %{old_pds} fonctionne comme avant."
+        what_to_do:
+          ask_provider: "Demandez à %{new_pds} quand les Spaces seront pris en charge, puis lancez une nouvelle migration"
+          other_provider: "Ou lancez une nouvelle migration vers un fournisseur qui prend déjà en charge les Spaces"
+          contact_support: "Des questions ? Écrivez à %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul ne peut pas encore déplacer les Spaces"
+        what_happened: "Votre compte utilise des Spaces : publications privées, groupes ou autres contenus visibles seulement par certaines personnes (%{count} au total). eu-haul ne peut pas encore déplacer les Spaces : migrer maintenant les laisserait sur %{old_pds}."
+        current_status: "La migration s'est arrêtée avant toute modification de votre identité. Votre compte sur %{old_pds} fonctionne comme avant."
+        what_to_do:
+          wait: "Nous ajoutons les Spaces à eu-haul. Dès qu'il pourra les déplacer, lancez une nouvelle migration."
+          contact_support: "Des questions ? Écrivez à %{support_email}"
+      spaces_rejected:
+        title: "Le nouveau PDS a refusé vos Spaces"
+        what_happened: "%{new_pds} a refusé les données de l'un de vos Spaces, la migration s'est donc arrêtée. Votre compte sur %{old_pds} fonctionne comme avant."
+        current_status: "La migration s'est arrêtée avant toute modification de votre identité"
+        what_to_do:
+          contact_support: "Écrivez à %{support_email} en indiquant votre jeton de migration %{token}, et nous réglerons cela avec le fournisseur"
       email_taken:
         title: "Adresse e-mail déjà utilisée sur le nouveau PDS"
         what_happened: "%{new_pds} a déjà un autre compte avec %{email}. Un serveur n'autorise qu'un seul compte par adresse e-mail, votre compte n'a donc pas pu y être créé. Votre compte sur %{old_pds} n'a pas été modifié."

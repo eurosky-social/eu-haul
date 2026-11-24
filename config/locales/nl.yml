@@ -312,6 +312,7 @@ nl:
         account_created: "Nieuw account aangemaakt"
         pending_repo: "Berichten en gevolgde accounts overzetten"
         pending_blobs: "Media overzetten"
+        pending_spaces: "Spaces overzetten"
         pending_prefs: "Instellingen overzetten"
         pending_plc: "Uw identiteit bijwerken"
         pending_activation: "Uw nieuwe account activeren"
@@ -543,6 +544,27 @@ nl:
           check_expiry: "Controleer of uw inloggegevens zijn verlopen (ze worden 48 uur bewaard vanaf het begin van de migratie)"
           start_new: "Start een nieuwe migratie met de juiste inloggegevens"
           contact_admin: "Als u zeker weet dat het wachtwoord juist is, neem dan contact op met uw PDS-beheerder"
+      spaces_unsupported:
+        title: "De nieuwe PDS kan je Spaces nog niet overnemen"
+        what_happened: "Je account gebruikt Spaces: privéberichten, groepen of andere inhoud die alleen sommige mensen zien (%{count} in totaal). %{new_pds} ondersteunt Spaces nog niet, dus als je nu verhuist blijven ze achter op %{old_pds}."
+        current_status: "De migratie is gestopt voordat je identiteit werd gewijzigd. Je account op %{old_pds} werkt zoals voorheen."
+        what_to_do:
+          ask_provider: "Vraag %{new_pds} wanneer Spaces ondersteund worden en start dan een nieuwe migratie"
+          other_provider: "Of start een nieuwe migratie naar een aanbieder die Spaces al ondersteunt"
+          contact_support: "Vragen? Mail naar %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul kan Spaces nog niet verhuizen"
+        what_happened: "Je account gebruikt Spaces: privéberichten, groepen of andere inhoud die alleen sommige mensen zien (%{count} in totaal). eu-haul kan Spaces nog niet verhuizen, dus als je nu verhuist blijven ze achter op %{old_pds}."
+        current_status: "De migratie is gestopt voordat je identiteit werd gewijzigd. Je account op %{old_pds} werkt zoals voorheen."
+        what_to_do:
+          wait: "We voegen Spaces toe aan eu-haul. Zodra het ze kan verhuizen, start je een nieuwe migratie."
+          contact_support: "Vragen? Mail naar %{support_email}"
+      spaces_rejected:
+        title: "De nieuwe PDS heeft je Spaces geweigerd"
+        what_happened: "%{new_pds} heeft de gegevens van een van je Spaces geweigerd, daarom is de migratie gestopt. Je account op %{old_pds} werkt zoals voorheen."
+        current_status: "De migratie is gestopt voordat je identiteit werd gewijzigd"
+        what_to_do:
+          contact_support: "Mail naar %{support_email} met je migratietoken %{token}, dan lossen we het op met de aanbieder"
       email_taken:
         title: "E-mailadres al in gebruik op de nieuwe PDS"
         what_happened: "%{new_pds} heeft al een ander account met %{email}. Een server staat maar één account per e-mailadres toe, dus uw account kon daar niet worden aangemaakt. Uw account op %{old_pds} is onaangeroerd."

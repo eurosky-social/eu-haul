@@ -237,6 +237,75 @@ RSpec.describe RetryFailedBlobsJob, type: :job do
     end
   end
 
+  # Space files the quota left behind go with the same passes: they count
+  # against the same quota. They come from the copies kept by the spaces
+  # stage, as the old session that could download them may be gone.
+  describe 'space files left by the quota' do
+    let(:space) { "at://#{migration.did}/space/com.example.forum/general" }
+    let(:files_dir) { SpaceTransferService.files_dir(migration) }
+    let(:kept) { files_dir.join('bafyspace1').to_s }
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+    let(:quota_error) do
+      GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :upload)
+    end
+
+    before do
+      FileUtils.mkdir_p(files_dir)
+      File.write(kept, 'SPACE')
+      File.write(storage_dir.join('blobs', 'bafya'), 'A')
+      File.write(storage_dir.join('blobs', 'bafyb'), 'B')
+      migration.merge_progress!('failed_space_blobs' => [{ 'space' => space, 'cid' => 'bafyspace1' }])
+    end
+
+    after { FileUtils.rm_rf(files_dir) }
+
+    it 'uploads them with the public files and clears both lists' do
+      allow(goat_service).to receive(:upload_blob)
+
+      described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+      expect(goat_service).to have_received(:upload_blob).with(kept)
+      progress = migration.reload.progress_data
+      expect(progress['failed_blobs']).to eq([])
+      expect(progress['failed_space_blobs']).to eq([])
+      expect(File.exist?(kept)).to be(false)
+    end
+
+    it 'waits for the space files before the final mail' do
+      migration.update!(status: :completed)
+      allow(goat_service).to receive(:upload_blob)
+      allow(goat_service).to receive(:upload_blob).with(kept).and_raise(GoatService::NetworkError, '500')
+
+      expect {
+        described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+      }.not_to have_enqueued_mail(MigrationMailer, :blobs_transfer_complete)
+      expect(described_class).to have_been_enqueued.with(migration.id, [], 2)
+    end
+
+    it 'parks them with the public files when the quota runs out' do
+      allow(goat_service).to receive(:upload_blob).and_raise(quota_error)
+
+      described_class.perform_now(migration.id, %w[bafya bafyb], 1)
+
+      expect(goat_service).to have_received(:upload_blob).once
+      expect(described_class).to have_been_enqueued
+        .with(migration.id, match_array(%w[bafya bafyb]), 2).at(reset_at + described_class::QUOTA_RESET_MARGIN)
+      expect(migration.reload.progress_data['failed_space_blobs']).to eq([{ 'space' => space, 'cid' => 'bafyspace1' }])
+      expect(File.exist?(kept)).to be(true)
+    end
+
+    it 'signs in for a completed migration with only space files missing' do
+      migration.update!(status: :completed)
+      migration.merge_progress!('failed_blobs' => [])
+      allow(goat_service).to receive(:upload_blob)
+
+      expect {
+        described_class.perform_now(migration.id, [], 1)
+      }.to have_enqueued_mail(MigrationMailer, :blobs_transfer_complete).once
+      expect(goat_service).to have_received(:upload_blob).with(kept)
+    end
+  end
+
   # Every upload counts against the quota, also of a file the PDS has.
   it 'skips the files the new PDS already has' do
     File.write(storage_dir.join('blobs', 'bafyb'), 'B')

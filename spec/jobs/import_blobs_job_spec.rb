@@ -80,7 +80,7 @@ RSpec.describe ImportBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       # The durable record of the pass: the log line rotates away, this does not.
@@ -147,17 +147,17 @@ RSpec.describe ImportBlobsJob, type: :job do
         expect(migration.progress_data['blob_count']).to eq(blob_cids.length)
       end
 
-      it 'advances to pending_prefs status' do
+      it 'advances to pending_spaces status' do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
-      it 'enqueues ImportPrefsJob' do
+      it 'enqueues ImportSpacesJob' do
         expect {
           described_class.perform_now(migration.id)
-        }.to have_enqueued_job(ImportPrefsJob)
+        }.to have_enqueued_job(ImportSpacesJob)
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe ImportBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       it 'does not set queued state' do
@@ -263,7 +263,7 @@ RSpec.describe ImportBlobsJob, type: :job do
       # pick them up later.
       #
       # NOTE: that holds even when *every* blob fails, as here. The migration
-      # still advances to pending_prefs and the user is moved along with none of
+      # still advances to pending_spaces and the user is moved along with none of
       # their media. Reconciliation is stubbed out in these examples, so it is
       # the only thing that would notice - see the PR description.
       it 'records the failed blobs rather than failing the migration' do
@@ -289,7 +289,7 @@ RSpec.describe ImportBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
     end
 
@@ -330,7 +330,7 @@ RSpec.describe ImportBlobsJob, type: :job do
         expect(migration.progress_data['failed_blobs']).to match_array(blob_cids)
         expect(RetryFailedBlobsJob).to have_been_enqueued
           .with(migration.id, match_array(blob_cids), 1).at(reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN)
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       it 'skips the reconciliation, which would only be refused' do
@@ -368,7 +368,7 @@ RSpec.describe ImportBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       it 'sets blob count to zero' do

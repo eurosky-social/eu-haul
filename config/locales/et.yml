@@ -312,6 +312,7 @@ et:
         account_created: "Uus konto loodud"
         pending_repo: "Postituste ja jälgimiste ülekandmine"
         pending_blobs: "Meedia ülekandmine"
+        pending_spaces: "Spaces'i ülekandmine"
         pending_prefs: "Seadete ülekandmine"
         pending_plc: "Teie identiteedi uuendamine"
         pending_activation: "Teie uue konto aktiveerimine"
@@ -543,6 +544,27 @@ et:
           check_expiry: "Kontrollige, kas teie volitused on aegunud (neid säilitatakse 48 tundi alates migreerimise algusest)"
           start_new: "Alustage uut migreerimist õigete volitustega"
           contact_admin: "Kui olete kindel, et parool on õige, võtke ühendust oma PDS-i administraatoriga"
+      spaces_unsupported:
+        title: "Uus PDS ei saa sinu Spaces'e veel vastu võtta"
+        what_happened: "Sinu konto kasutab Spaces'e: privaatpostitusi, gruppe või muud sisu, mida näevad ainult mõned inimesed (kokku %{count}). %{new_pds} ei toeta veel Spaces'e, seega praegu kolimine jätaks need teenusesse %{old_pds}."
+        current_status: "Migratsioon peatati enne, kui sinu identiteeti muudeti. Sinu konto teenuses %{old_pds} töötab nagu varem."
+        what_to_do:
+          ask_provider: "Küsi teenuselt %{new_pds}, millal Spaces'e toetatakse, ja alusta siis uut migratsiooni"
+          other_provider: "Või alusta uut migratsiooni teenusepakkuja juurde, kes juba toetab Spaces'e"
+          contact_support: "Küsimusi? Kirjuta aadressile %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul ei saa Spaces'e veel kolida"
+        what_happened: "Sinu konto kasutab Spaces'e: privaatpostitusi, gruppe või muud sisu, mida näevad ainult mõned inimesed (kokku %{count}). eu-haul ei saa Spaces'e veel kolida, nii et migratsioon praegu jätaks need teenusesse %{old_pds}."
+        current_status: "Migratsioon peatati enne, kui sinu identiteeti muudeti. Sinu konto teenuses %{old_pds} töötab nagu varem."
+        what_to_do:
+          wait: "Lisame eu-haulile Spaces'e toe. Kui see saab neid kolida, alusta uut migratsiooni."
+          contact_support: "Küsimusi? Kirjuta aadressile %{support_email}"
+      spaces_rejected:
+        title: "Uus PDS lükkas sinu Spaces'id tagasi"
+        what_happened: "%{new_pds} lükkas ühe sinu Spaces'i andmed tagasi, seetõttu migratsioon peatati. Sinu konto teenuses %{old_pds} töötab nagu varem."
+        current_status: "Migratsioon peatati enne, kui sinu identiteeti muudeti"
+        what_to_do:
+          contact_support: "Kirjuta aadressile %{support_email} oma migratsioonitõendiga %{token} ja lahendame selle teenusepakkujaga"
       email_taken:
         title: "E-posti aadress on uues PDS-is juba kasutusel"
         what_happened: "Serveris %{new_pds} on juba teine konto aadressiga %{email}. Server lubab ühe e-posti aadressi kohta ainult ühte kontot, seega ei saanud teie kontot sinna luua. Teie konto serveris %{old_pds} on puutumata."

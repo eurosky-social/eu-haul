@@ -312,6 +312,7 @@ fi:
         account_created: "Uusi tili luotu"
         pending_repo: "Siirretään julkaisuja ja seurattavia"
         pending_blobs: "Siirretään mediaa"
+        pending_spaces: "Siirretään Spaces-tiloja"
         pending_prefs: "Siirretään asetuksia"
         pending_plc: "Päivitetään identiteettiäsi"
         pending_activation: "Aktivoidaan uutta tiliäsi"
@@ -543,6 +544,27 @@ fi:
           check_expiry: "Tarkista, ovatko tunnistetietosi vanhentuneet (niitä säilytetään 48 tuntia siirron alusta)"
           start_new: "Aloita uusi siirto oikeilla tunnistetiedoilla"
           contact_admin: "Jos olet varma, että salasana on oikein, ota yhteyttä PDS:si ylläpitäjään"
+      spaces_unsupported:
+        title: "Uusi PDS ei vielä pysty vastaanottamaan Spaces-tilojasi"
+        what_happened: "Tilisi käyttää Spaces-tiloja: yksityisiä julkaisuja, ryhmiä tai muuta sisältöä, jonka vain osa ihmisistä näkee (yhteensä %{count}). %{new_pds} ei vielä tue Spaces-tiloja, joten siirto nyt jättäisi ne palveluun %{old_pds}."
+        current_status: "Siirto pysähtyi ennen kuin identiteettiäsi muutettiin. Tilisi palvelussa %{old_pds} toimii kuten ennenkin."
+        what_to_do:
+          ask_provider: "Kysy palvelulta %{new_pds}, milloin se tukee Spaces-tiloja, ja aloita sitten uusi siirto"
+          other_provider: "Tai aloita uusi siirto palveluntarjoajalle, joka jo tukee Spaces-tiloja"
+          contact_support: "Kysyttävää? Kirjoita osoitteeseen %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul ei vielä pysty siirtämään Spaces-tiloja"
+        what_happened: "Tilisi käyttää Spaces-tiloja: yksityisiä julkaisuja, ryhmiä tai muuta sisältöä, jonka vain osa ihmisistä näkee (yhteensä %{count}). eu-haul ei vielä pysty siirtämään Spaces-tiloja, joten siirto nyt jättäisi ne palveluun %{old_pds}."
+        current_status: "Siirto pysähtyi ennen kuin identiteettiäsi muutettiin. Tilisi palvelussa %{old_pds} toimii kuten ennenkin."
+        what_to_do:
+          wait: "Lisäämme Spaces-tuen eu-hauliin. Kun se pystyy siirtämään ne, aloita uusi siirto."
+          contact_support: "Kysyttävää? Kirjoita osoitteeseen %{support_email}"
+      spaces_rejected:
+        title: "Uusi PDS hylkäsi Spaces-tilasi"
+        what_happened: "%{new_pds} hylkäsi yhden Spaces-tilasi tiedot, joten siirto pysähtyi. Tilisi palvelussa %{old_pds} toimii kuten ennenkin."
+        current_status: "Siirto pysähtyi ennen kuin identiteettiäsi muutettiin"
+        what_to_do:
+          contact_support: "Kirjoita osoitteeseen %{support_email} ja mainitse siirtotunnuksesi %{token}, niin selvitämme asian palveluntarjoajan kanssa"
       email_taken:
         title: "Sähköpostiosoite on jo käytössä uudella PDS:llä"
         what_happened: "Palvelimella %{new_pds} on jo toinen tili osoitteella %{email}. Palvelin sallii vain yhden tilin sähköpostiosoitetta kohden, joten tiliäsi ei voitu luoda sinne. Tiliisi palvelimella %{old_pds} ei ole koskettu."

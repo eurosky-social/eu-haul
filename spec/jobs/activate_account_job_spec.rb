@@ -94,4 +94,73 @@ RSpec.describe ActivateAccountJob, type: :job do
       end
     end
   end
+
+  # Members kept writing to the account's spaces on the old PDS while the
+  # migration ran; activation moves them once more first.
+  # Space files count as missing files: the passes that send them sign in
+  # with the new-PDS session.
+  context 'when only space files are missing at completion' do
+    before do
+      migration.merge_progress!('failed_space_blobs' => [{ 'space' => 'at://x/space/a/b', 'cid' => 'bafys' }])
+    end
+
+    it 'keeps the new-PDS session and schedules the background retry' do
+      described_class.perform_now(migration.id)
+
+      expect(migration.reload.new_refresh_token).to eq('new-refresh')
+      expect(RetryFailedBlobsJob).to have_been_enqueued.with(migration.id, [], 1)
+    end
+  end
+
+  describe 're-syncing spaces before activation' do
+    let(:space) { "at://#{migration.did}/space/com.example.forum/general" }
+    let(:transfer) { instance_double(SpaceTransferService) }
+    let(:calls) { [] }
+
+    before do
+      migration.merge_progress!('spaces_total' => 1)
+      allow(SpaceTransferService).to receive(:new).with(migration, goat: goat_service).and_return(transfer)
+      allow(goat_service).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }])
+      allow(goat_service).to receive(:activate_account) { calls << :activate }
+    end
+
+    it 'moves the spaces again before activating the account' do
+      allow(transfer).to receive(:transfer) do
+        calls << :spaces
+        SpaceTransferService::Result.new(spaces: 1, repos: 1, blobs: 3, failed_blobs: [])
+      end
+
+      described_class.perform_now(migration.id)
+
+      expect(calls).to eq(%i[spaces activate])
+      progress = migration.reload.progress_data
+      expect(progress['space_blobs_moved']).to eq(3)
+      expect(progress['spaces_resynced_at']).to be_present
+    end
+
+    it 'schedules a pass for the space files the quota stopped' do
+      reset_at = 8.hours.from_now.change(usec: 0)
+      quota_error = GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :upload)
+      allow(transfer).to receive(:transfer).and_return(
+        SpaceTransferService::Result.new(spaces: 1, repos: 1, blobs: 0,
+                                         failed_blobs: [{ 'space' => space, 'cid' => 'bafys' }], quota_error: quota_error)
+      )
+
+      described_class.perform_now(migration.id)
+
+      expect(RetryFailedBlobsJob).to have_been_enqueued.with(migration.id, [], 1)
+        .at(reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN)
+      expect(RetryFailedBlobsJob).not_to have_been_enqueued.with(migration.id, [], 1).at(a_value_within(1.minute).of(15.minutes.from_now))
+    end
+
+    it 'still activates the account when the re-sync fails' do
+      allow(transfer).to receive(:transfer).and_raise(GoatService::SpaceRequestError, '500 Internal Server Error')
+
+      described_class.perform_now(migration.id)
+
+      migration.reload
+      expect(migration).to be_completed
+      expect(migration.progress_data['spaces_resync_error']).to include('500')
+    end
+  end
 end

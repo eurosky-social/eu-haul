@@ -312,6 +312,7 @@ sl:
         account_created: "Nov račun ustvarjen"
         pending_repo: "Prenašanje objav in sledenj"
         pending_blobs: "Prenašanje medijev"
+        pending_spaces: "Prenos Spaces"
         pending_prefs: "Prenašanje nastavitev"
         pending_plc: "Posodabljanje vaše identitete"
         pending_activation: "Aktiviranje novega računa"
@@ -543,6 +544,27 @@ sl:
           check_expiry: "Preverite, ali so vaše poverilnice potekle (hranimo jih 48 ur od začetka selitve)"
           start_new: "Začnite novo selitev s pravilnimi poverilnicami"
           contact_admin: "Če ste prepričani, da je geslo pravilno, se obrnite na administratorja svojega PDS"
+      spaces_unsupported:
+        title: "Novi PDS še ne more sprejeti tvojih Spaces"
+        what_happened: "Tvoj račun uporablja Spaces: zasebne objave, skupine ali drugo vsebino, ki jo vidijo le nekateri (skupaj %{count}). %{new_pds} še ne podpira Spaces, zato bi jih selitev zdaj pustila na %{old_pds}."
+        current_status: "Selitev se je ustavila, preden je bila tvoja identiteta spremenjena. Tvoj račun na %{old_pds} deluje kot prej."
+        what_to_do:
+          ask_provider: "Vprašaj %{new_pds}, kdaj bo podpiral Spaces, in nato začni novo selitev"
+          other_provider: "Ali začni novo selitev k ponudniku, ki že podpira Spaces"
+          contact_support: "Vprašanja? Piši na %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul še ne more preseliti Spaces"
+        what_happened: "Tvoj račun uporablja Spaces: zasebne objave, skupine ali drugo vsebino, ki jo vidijo le nekateri (skupaj %{count}). eu-haul še ne more preseliti Spaces, zato bi jih selitev zdaj pustila na %{old_pds}."
+        current_status: "Selitev se je ustavila, preden je bila tvoja identiteta spremenjena. Tvoj račun na %{old_pds} deluje kot prej."
+        what_to_do:
+          wait: "Spaces dodajamo v eu-haul. Ko jih bo lahko preselil, začni novo selitev."
+          contact_support: "Vprašanja? Piši na %{support_email}"
+      spaces_rejected:
+        title: "Novi PDS je zavrnil tvoje Spaces"
+        what_happened: "%{new_pds} je zavrnil podatke enega od tvojih Spaces, zato se je selitev ustavila. Tvoj račun na %{old_pds} deluje kot prej."
+        current_status: "Selitev se je ustavila, preden je bila tvoja identiteta spremenjena"
+        what_to_do:
+          contact_support: "Piši na %{support_email} s svojim žetonom selitve %{token} in to bomo uredili s ponudnikom"
       email_taken:
         title: "E-poštni naslov se na novem PDS že uporablja"
         what_happened: "%{new_pds} že ima drug račun z naslovom %{email}. Strežnik dovoli le en račun na e-poštni naslov, zato vašega računa tam ni bilo mogoče ustvariti. Vaš račun na %{old_pds} je ostal nedotaknjen."

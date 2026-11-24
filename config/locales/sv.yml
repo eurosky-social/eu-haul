@@ -312,6 +312,7 @@ sv:
         account_created: "Nytt konto skapat"
         pending_repo: "Överför inlägg och följningar"
         pending_blobs: "Överför media"
+        pending_spaces: "Flyttar Spaces"
         pending_prefs: "Överför inställningar"
         pending_plc: "Uppdaterar din identitet"
         pending_activation: "Aktiverar ditt nya konto"
@@ -543,6 +544,27 @@ sv:
           check_expiry: "Kontrollera om dina inloggningsuppgifter har gått ut (de sparas i 48 timmar från att flytten startade)"
           start_new: "Starta en ny flytt med rätt inloggningsuppgifter"
           contact_admin: "Om du är säker på att lösenordet är rätt, kontakta administratören för din PDS"
+      spaces_unsupported:
+        title: "Den nya PDS:en kan ännu inte ta emot dina Spaces"
+        what_happened: "Ditt konto använder Spaces: privata inlägg, grupper eller annat innehåll som bara vissa personer ser (%{count} totalt). %{new_pds} stöder inte Spaces ännu, så en flytt nu skulle lämna dem kvar på %{old_pds}."
+        current_status: "Migreringen stoppades innan din identitet ändrades. Ditt konto på %{old_pds} fungerar som förut."
+        what_to_do:
+          ask_provider: "Fråga %{new_pds} när de stöder Spaces och starta sedan en ny migrering"
+          other_provider: "Eller starta en ny migrering till en leverantör som redan stöder Spaces"
+          contact_support: "Frågor? Skriv till %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul kan ännu inte flytta Spaces"
+        what_happened: "Ditt konto använder Spaces: privata inlägg, grupper eller annat innehåll som bara vissa personer ser (%{count} totalt). eu-haul kan ännu inte flytta Spaces, så en migrering nu skulle lämna dem kvar på %{old_pds}."
+        current_status: "Migreringen stoppades innan din identitet ändrades. Ditt konto på %{old_pds} fungerar som förut."
+        what_to_do:
+          wait: "Vi lägger till Spaces i eu-haul. När det kan flytta dem, starta en ny migrering."
+          contact_support: "Frågor? Skriv till %{support_email}"
+      spaces_rejected:
+        title: "Den nya PDS:en avvisade dina Spaces"
+        what_happened: "%{new_pds} avvisade data i ett av dina Spaces, så migreringen stoppades. Ditt konto på %{old_pds} fungerar som förut."
+        current_status: "Migreringen stoppades innan din identitet ändrades"
+        what_to_do:
+          contact_support: "Skriv till %{support_email} med din migreringstoken %{token}, så löser vi det med leverantören"
       email_taken:
         title: "E-postadressen används redan på den nya PDS:en"
         what_happened: "%{new_pds} har redan ett annat konto med %{email}. En server tillåter bara ett konto per e-postadress, så ditt konto kunde inte skapas där. Ditt konto på %{old_pds} är orört."

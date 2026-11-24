@@ -57,6 +57,13 @@ RSpec.describe Migration, 'while files are still being sent' do
       expect(migration.files_still_transferring?).to be(false)
     end
 
+    it 'is true while only space files wait for a pass' do
+      migration.merge_progress!('failed_blobs' => [],
+                                'failed_space_blobs' => [{ 'space' => 'at://x/space/a/b', 'cid' => 'bafys' }])
+
+      expect(migration.files_still_transferring?).to be(true)
+    end
+
     it 'is true during the file stage' do
       migration.update!(status: :pending_blobs, progress_data: {})
 

@@ -139,6 +139,14 @@ class UpdatePlcJob < ApplicationJob
       Rails.logger.info("Rotation key injected at front of rotationKeys array (#{rotation_keys.length} keys total)")
     end
 
+    # Step 2c: Record whether the operation publishes the new PDS's KEM key
+    # (#atproto_kem), which apps need to verify the account's space data
+    # there. A spaces-capable PDS includes it in the recommended credentials
+    # once it has generated the key; an account created there just before the
+    # PDS gained spaces may not have one yet, and the PDS publishes it itself
+    # later. So this is recorded and logged, not a reason to stop.
+    record_kem_key(migration, unsigned_op_path)
+
     # Step 3: Sign the PLC operation with old PDS
     Rails.logger.info("Signing PLC operation with old PDS using token")
     signed_op_path = service.sign_plc_operation(unsigned_op_path, plc_token)
@@ -217,6 +225,18 @@ class UpdatePlcJob < ApplicationJob
   end
 
   private
+
+  def record_kem_key(migration, unsigned_op_path)
+    op = JSON.parse(File.read(unsigned_op_path))
+    has_kem = op.dig('verificationMethods', 'atproto_kem').present?
+    migration.merge_progress!('plc_operation_has_kem_key' => has_kem)
+    return if has_kem || !migration.progress_data['destination_supports_spaces']
+
+    Rails.logger.warn("PLC operation for #{migration.token} has no atproto_kem key although " \
+                      "#{migration.new_pds_host} supports spaces; the new PDS must publish it later")
+  rescue StandardError => e
+    Rails.logger.warn("Could not check the KEM key in the PLC operation for #{migration.token}: #{e.message}")
+  end
 
   def alert_admin_of_critical_failure(migration, error)
     # Log prominently for admin monitoring

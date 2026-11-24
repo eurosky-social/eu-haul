@@ -24,7 +24,7 @@
 #    - Update progress every 10 blobs
 # 5. Reconcile - verify all blobs were imported and fill gaps
 # 6. Mark blobs_completed_at timestamp
-# 7. Advance to pending_prefs status
+# 7. Advance to pending_spaces status
 #
 # Error Handling:
 # - Rate-limit errors: longer exponential backoff (8s, 16s, 32s), max 3 attempts per blob
@@ -94,7 +94,7 @@ class ImportBlobsJob < ApplicationJob
     logger.info("Blob import completed for migration #{migration.token}")
 
     # Step 8: Advance to next stage
-    migration.advance_to_pending_prefs!
+    migration.advance_to_pending_spaces!
 
   rescue Migration::Aborted => e
     # Cancelled, failed or completed underneath us - stop without retrying

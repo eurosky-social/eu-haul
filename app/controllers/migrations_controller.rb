@@ -1300,9 +1300,10 @@ class MigrationsController < ApplicationController
   #   - Success: Redirects to status page with notice
   #   - Failure: Redirects to status page with alert
   def retry_failed_blobs
-    failed_blobs = @migration.progress_data&.dig('failed_blobs') || []
+    # Public files by CID; the job takes the space files from progress_data
+    failed_blobs = @migration.missing_public_blobs
 
-    if failed_blobs.empty?
+    unless @migration.files_missing?
       redirect_to migration_by_token_path(@migration.token),
                   alert: I18n.t('controllers.migrations.no_failed_blobs')
       return
@@ -1311,9 +1312,9 @@ class MigrationsController < ApplicationController
     # Enqueue job to retry just the failed blobs
     RetryFailedBlobsJob.perform_later(@migration.id, failed_blobs)
 
-    Rails.logger.info("Retry failed blobs requested for migration #{@migration.token} (#{failed_blobs.length} blobs)")
+    Rails.logger.info("Retry failed blobs requested for migration #{@migration.token} (#{@migration.missing_files_count} files)")
     redirect_to migration_by_token_path(@migration.token),
-                notice: I18n.t('controllers.migrations.retrying_blobs', count: failed_blobs.length)
+                notice: I18n.t('controllers.migrations.retrying_blobs', count: @migration.missing_files_count)
   rescue StandardError => e
     Rails.logger.error("Failed to retry failed blobs for migration #{@migration.token}: #{e.message}")
     redirect_to migration_by_token_path(@migration.token),
@@ -1693,6 +1694,7 @@ class MigrationsController < ApplicationController
     when /CreateAccountJob/i then 'pending_account'
     when /UploadRepoJob|ImportRepoJob/i then 'pending_repo'
     when /UploadBlobsJob|ImportBlobsJob/i then 'pending_blobs'
+    when /ImportSpacesJob/i then 'pending_spaces'
     when /ImportPrefsJob/i then 'pending_prefs'
     when /WaitForPlcTokenJob|UpdatePlcJob/i then 'pending_plc'
     when /ActivateAccountJob/i then 'pending_activation'
@@ -1721,6 +1723,8 @@ class MigrationsController < ApplicationController
       else
         ImportBlobsJob.perform_later(migration.id)
       end
+    when 'pending_spaces'
+      ImportSpacesJob.perform_later(migration.id)
     when 'pending_prefs'
       ImportPrefsJob.perform_later(migration.id)
     when 'pending_plc'

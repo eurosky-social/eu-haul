@@ -50,6 +50,7 @@ app/
 │   ├── download_all_data_job.rb
 │   ├── upload_repo_job.rb / import_repo_job.rb
 │   ├── upload_blobs_job.rb / import_blobs_job.rb
+│   ├── import_spaces_job.rb          # atproto spaces (permissioned data)
 │   ├── import_prefs_job.rb
 │   ├── wait_for_plc_token_job.rb
 │   ├── update_plc_job.rb             # POINT OF NO RETURN
@@ -110,7 +111,7 @@ config/
 
 ```
 CreateAccountJob → DownloadAllDataJob → UploadRepoJob → UploadBlobsJob
-    → ImportPrefsJob → WaitForPlcTokenJob → UpdatePlcJob → ActivateAccountJob
+    → ImportSpacesJob → ImportPrefsJob → WaitForPlcTokenJob → UpdatePlcJob → ActivateAccountJob
 ```
 
 ## Key Environment Variables

@@ -312,6 +312,7 @@ pl:
         account_created: "Nowe konto utworzone"
         pending_repo: "Przenoszenie postów i obserwacji"
         pending_blobs: "Przenoszenie multimediów"
+        pending_spaces: "Przenoszenie Spaces"
         pending_prefs: "Przenoszenie ustawień"
         pending_plc: "Aktualizacja Twojej tożsamości"
         pending_activation: "Aktywacja nowego konta"
@@ -543,6 +544,27 @@ pl:
           check_expiry: "Sprawdź, czy dane logowania nie wygasły (są przechowywane przez 48 godzin od rozpoczęcia migracji)"
           start_new: "Rozpocznij nową migrację z prawidłowymi danymi logowania"
           contact_admin: "Jeśli masz pewność, że hasło jest prawidłowe, skontaktuj się z administratorem swojego PDS"
+      spaces_unsupported:
+        title: "Nowy PDS nie może jeszcze przyjąć Twoich Spaces"
+        what_happened: "Twoje konto korzysta ze Spaces: prywatnych wpisów, grup lub innych treści widocznych tylko dla niektórych osób (łącznie %{count}). %{new_pds} nie obsługuje jeszcze Spaces, więc przeniesienie teraz zostawiłoby je na %{old_pds}."
+        current_status: "Migracja została zatrzymana, zanim zmieniono Twoją tożsamość. Twoje konto na %{old_pds} działa jak dotąd."
+        what_to_do:
+          ask_provider: "Zapytaj %{new_pds}, kiedy będzie obsługiwać Spaces, a potem rozpocznij nową migrację"
+          other_provider: "Albo rozpocznij nową migrację do dostawcy, który już obsługuje Spaces"
+          contact_support: "Pytania? Napisz na %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul nie może jeszcze przenieść Spaces"
+        what_happened: "Twoje konto korzysta ze Spaces: prywatnych wpisów, grup lub innych treści widocznych tylko dla niektórych osób (łącznie %{count}). eu-haul nie może jeszcze przenieść Spaces, więc przeniesienie teraz zostawiłoby je na %{old_pds}."
+        current_status: "Migracja została zatrzymana, zanim zmieniono Twoją tożsamość. Twoje konto na %{old_pds} działa jak dotąd."
+        what_to_do:
+          wait: "Dodajemy obsługę Spaces do eu-haul. Gdy będzie mógł je przenieść, rozpocznij nową migrację."
+          contact_support: "Pytania? Napisz na %{support_email}"
+      spaces_rejected:
+        title: "Nowy PDS odrzucił Twoje Spaces"
+        what_happened: "%{new_pds} odrzucił dane jednego z Twoich Spaces, dlatego migracja została zatrzymana. Twoje konto na %{old_pds} działa jak dotąd."
+        current_status: "Migracja została zatrzymana, zanim zmieniono Twoją tożsamość"
+        what_to_do:
+          contact_support: "Napisz na %{support_email}, podając token migracji %{token}, a wyjaśnimy to z dostawcą"
       email_taken:
         title: "Adres e-mail jest już używany na nowym PDS"
         what_happened: "Na %{new_pds} istnieje już inne konto z adresem %{email}. Serwer pozwala na tylko jedno konto na adres e-mail, więc nie udało się tam utworzyć Twojego konta. Twoje konto na %{old_pds} pozostało nienaruszone."

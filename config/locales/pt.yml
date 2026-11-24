@@ -312,6 +312,7 @@ pt:
         account_created: "Nova conta criada"
         pending_repo: "A transferir publicações e seguimentos"
         pending_blobs: "A transferir multimédia"
+        pending_spaces: "A transferir Spaces"
         pending_prefs: "A transferir definições"
         pending_plc: "A atualizar a sua identidade"
         pending_activation: "A ativar a sua nova conta"
@@ -543,6 +544,27 @@ pt:
           check_expiry: "Verifique se as suas credenciais expiraram (são guardadas durante 48 horas a partir do início da migração)"
           start_new: "Inicie uma nova migração com as credenciais corretas"
           contact_admin: "Se tem a certeza de que a palavra-passe está correta, contacte o administrador do seu PDS"
+      spaces_unsupported:
+        title: "O novo PDS ainda não pode receber os teus Spaces"
+        what_happened: "A tua conta usa Spaces: publicações privadas, grupos ou outro conteúdo que só algumas pessoas veem (%{count} no total). %{new_pds} ainda não suporta Spaces, por isso migrar agora deixá-los-ia em %{old_pds}."
+        current_status: "A migração parou antes de a tua identidade ser alterada. A tua conta em %{old_pds} funciona como antes."
+        what_to_do:
+          ask_provider: "Pergunta a %{new_pds} quando vai suportar Spaces e depois inicia uma nova migração"
+          other_provider: "Ou inicia uma nova migração para um fornecedor que já suporte Spaces"
+          contact_support: "Dúvidas? Escreve para %{support_email}"
+      spaces_not_moved:
+        title: "O eu-haul ainda não consegue mover Spaces"
+        what_happened: "A tua conta usa Spaces: publicações privadas, grupos ou outro conteúdo que só algumas pessoas veem (%{count} no total). O eu-haul ainda não consegue mover Spaces, por isso migrar agora deixá-los-ia em %{old_pds}."
+        current_status: "A migração parou antes de a tua identidade ser alterada. A tua conta em %{old_pds} funciona como antes."
+        what_to_do:
+          wait: "Estamos a adicionar Spaces ao eu-haul. Quando os conseguir mover, inicia uma nova migração."
+          contact_support: "Dúvidas? Escreve para %{support_email}"
+      spaces_rejected:
+        title: "O novo PDS recusou os teus Spaces"
+        what_happened: "%{new_pds} recusou os dados de um dos teus Spaces, por isso a migração parou. A tua conta em %{old_pds} funciona como antes."
+        current_status: "A migração parou antes de a tua identidade ser alterada"
+        what_to_do:
+          contact_support: "Escreve para %{support_email} com o teu token de migração %{token} e resolvemos com o fornecedor"
       email_taken:
         title: "Endereço de e-mail já em uso no novo PDS"
         what_happened: "%{new_pds} já tem outra conta com %{email}. Um servidor só permite uma conta por endereço de e-mail, por isso não foi possível criar lá a sua conta. A sua conta em %{old_pds} não foi alterada."

@@ -143,6 +143,7 @@ module EmailHelper
     /CreateAccountJob/i => 'pending_account',
     /UploadRepoJob|ImportRepoJob/i => 'pending_repo',
     /UploadBlobsJob|ImportBlobsJob/i => 'pending_blobs',
+    /ImportSpacesJob/i => 'pending_spaces',
     /ImportPrefsJob/i => 'pending_prefs',
     /WaitForPlcTokenJob|UpdatePlcJob/i => 'pending_plc',
     /ActivateAccountJob/i => 'pending_activation'

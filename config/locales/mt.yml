@@ -312,6 +312,7 @@ mt:
         account_created: "Kont ġdid maħluq"
         pending_repo: "Qed jiġu ttrasferiti l-posts u s-segwiti"
         pending_blobs: "Qed jiġu ttrasferiti l-midja"
+        pending_spaces: "Qed jiġu trasferiti l-Spaces"
         pending_prefs: "Qed jiġu ttrasferiti s-settings"
         pending_plc: "Qed tiġi aġġornata l-identità tiegħek"
         pending_activation: "Qed jiġi attivat il-kont il-ġdid tiegħek"
@@ -543,6 +544,27 @@ mt:
           check_expiry: "Iċċekkja jekk il-kredenzjali tiegħek skadewx (jinżammu għal 48 siegħa mill-bidu tal-migrazzjoni)"
           start_new: "Ibda migrazzjoni ġdida bil-kredenzjali korretti"
           contact_admin: "Jekk inti ċert li l-password hija korretta, ikkuntattja lill-amministratur tal-PDS tiegħek"
+      spaces_unsupported:
+        title: "Il-PDS il-ġdid għadu ma jistax jilqa' l-Spaces tiegħek"
+        what_happened: "Il-kont tiegħek juża l-Spaces: postijiet privati, gruppi jew kontenut ieħor li jarawh xi nies biss (%{count} b'kollox). %{new_pds} għadu ma jappoġġjax l-Spaces, għalhekk jekk tiċċaqlaq issa jibqgħu fuq %{old_pds}."
+        current_status: "Il-migrazzjoni waqfet qabel ma nbidlet l-identità tiegħek. Il-kont tiegħek fuq %{old_pds} jaħdem bħal qabel."
+        what_to_do:
+          ask_provider: "Staqsi lil %{new_pds} meta se jappoġġjaw l-Spaces, imbagħad ibda migrazzjoni ġdida"
+          other_provider: "Jew ibda migrazzjoni ġdida lejn fornitur li diġà jappoġġja l-Spaces"
+          contact_support: "Mistoqsijiet? Ikteb lil %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul għadu ma jistax iċaqlaq l-Spaces"
+        what_happened: "Il-kont tiegħek juża l-Spaces: postijiet privati, gruppi jew kontenut ieħor li jarawh xi nies biss (%{count} b'kollox). eu-haul għadu ma jistax iċaqlaq l-Spaces, għalhekk migrazzjoni issa tħallihom fuq %{old_pds}."
+        current_status: "Il-migrazzjoni waqfet qabel ma nbidlet l-identità tiegħek. Il-kont tiegħek fuq %{old_pds} jaħdem bħal qabel."
+        what_to_do:
+          wait: "Qed inżidu l-Spaces ma' eu-haul. Meta jkun jista' jċaqlaqhom, ibda migrazzjoni ġdida."
+          contact_support: "Mistoqsijiet? Ikteb lil %{support_email}"
+      spaces_rejected:
+        title: "Il-PDS il-ġdid irrifjuta l-Spaces tiegħek"
+        what_happened: "%{new_pds} irrifjuta d-data ta' wieħed mill-Spaces tiegħek, għalhekk il-migrazzjoni waqfet. Il-kont tiegħek fuq %{old_pds} jaħdem bħal qabel."
+        current_status: "Il-migrazzjoni waqfet qabel ma nbidlet l-identità tiegħek"
+        what_to_do:
+          contact_support: "Ikteb lil %{support_email} bit-token tal-migrazzjoni tiegħek %{token}, u nsolvuha mal-fornitur"
       email_taken:
         title: "L-indirizz tal-email diġà jintuża fuq il-PDS il-ġdid"
         what_happened: "%{new_pds} diġà għandu kont ieħor b'%{email}. Server jippermetti kont wieħed biss għal kull indirizz tal-email, għalhekk il-kont tiegħek ma setax jinħoloq hemmhekk. Il-kont tiegħek fuq %{old_pds} ma ntmessx."

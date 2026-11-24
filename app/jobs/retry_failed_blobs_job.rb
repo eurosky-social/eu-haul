@@ -11,8 +11,11 @@
 #    the old PDS
 # 5. Uploads each blob to new PDS; when the new PDS refuses uploads until its
 #    quota comes back, leaves the rest for a pass at that time
-# 6. Updates progress_data to remove successfully retried blobs
-# 7. Reports final success/failure count
+# 6. Sends the space files the upload quota left behind
+#    (progress_data['failed_space_blobs'], see SpaceTransferService) from
+#    their kept copies: they count against the same quota
+# 7. Updates progress_data to remove successfully retried blobs
+# 8. Reports final success/failure count
 #
 # Queue: :migrations
 # Retry: 3 attempts
@@ -56,6 +59,19 @@ class RetryFailedBlobsJob < ApplicationJob
                       "scheduled at #{retry_at.utc.iso8601}")
   end
 
+  # Space files the quota stopped (ImportSpacesJob, the re-sync before
+  # activation) go with the pass already coming for the public files when
+  # there is one: both count against the same quota, and two chains would
+  # spend it twice. Otherwise they get a pass of their own at the reset.
+  def self.schedule_for_space_files(migration, error)
+    if migration.blob_retry_chain_pending?
+      Rails.logger.info("Space files of #{migration.token} wait for the file pass already scheduled")
+      return
+    end
+
+    schedule_after_quota(migration, migration.missing_public_blobs, 1, error)
+  end
+
   # auto_attempt: nil for a user-triggered retry, 1.. for the background passes
   def perform(migration_id, failed_blob_cids, auto_attempt = nil)
     migration = Migration.find(migration_id)
@@ -72,7 +88,7 @@ class RetryFailedBlobsJob < ApplicationJob
     # A completed migration with no files missing is done: an earlier pass or
     # a manual retry moved them and cleared the session this pass would sign
     # in with.
-    if migration.completed? && Array(migration.progress_data['failed_blobs']).empty?
+    if migration.completed? && !migration.files_missing?
       logger.info("Migration #{migration.token} is complete with no files missing; nothing to retry")
       return
     end
@@ -142,16 +158,29 @@ class RetryFailedBlobsJob < ApplicationJob
       end
     end
 
+    # Space files the upload quota left behind (SpaceTransferService) count
+    # against the same quota, so they go with the same pass, after the public
+    # ones, unless the quota already stopped those.
+    space_entries = migration.missing_space_blobs
+    still_failed_space = space_entries
+    if space_entries.any? && quota_error.nil?
+      still_failed_space, quota_error = SpaceTransferService.new(migration, goat: goat).send_left_over(space_entries)
+      logger.info("Space files: #{space_entries.length - still_failed_space.length} of #{space_entries.length} sent")
+    end
+    remaining = still_failed_cids.length + still_failed_space.length
+
     # Update migration progress_data (atomic merge - the pipeline may be
     # writing other keys concurrently while the user waits for the PLC token)
-    migration.merge_progress!(
+    progress = {
       'failed_blobs' => still_failed_cids,
       'failed_uploads' => still_failed_cids,
       'blobs_completed' => migration.progress_data['blobs_completed'].to_i + successful_cids.length,
       'blobs_retry_attempted_at' => Time.current.iso8601,
       'blobs_retry_success_count' => successful_cids.length,
       'blobs_retry_failed_count' => still_failed_cids.length
-    )
+    }
+    progress['failed_space_blobs'] = still_failed_space if space_entries.any?
+    migration.merge_progress!(progress)
 
     # Log summary
     logger.info("Blob retry complete for migration #{migration.token}:")
@@ -167,10 +196,10 @@ class RetryFailedBlobsJob < ApplicationJob
     # the reset without using up one of the automatic passes: a big account
     # needs one such pass per day. One that got nothing in uses one up, so a
     # PDS that keeps refusing still ends the chain.
-    progressed = still_failed_cids.length < failed_blob_cids.length
+    progressed = remaining < failed_blob_cids.length + space_entries.length
     next_pass_scheduled = false
 
-    if still_failed_cids.empty?
+    if remaining.zero?
       if completed_now && migration.progress_data['blobs_transfer_complete_mailed_at'].blank?
         migration.merge_progress!('blobs_transfer_complete_mailed_at' => Time.current.iso8601)
         MigrationMailer.blobs_transfer_complete(migration).deliver_later
@@ -196,9 +225,9 @@ class RetryFailedBlobsJob < ApplicationJob
       logger.info("Scheduled automatic pass #{auto_attempt + 1} for #{still_failed_cids.length} blobs in #{delay.inspect}")
     elsif auto_attempt
       migration.merge_progress!('blobs_auto_retry_exhausted_at' => Time.current.iso8601)
-      logger.warn("Automatic retries exhausted for migration #{migration.token}; #{still_failed_cids.length} blobs remain (manual retry available)")
+      logger.warn("Automatic retries exhausted for migration #{migration.token}; #{remaining} files remain (manual retry available)")
       if completed_now
-        MigrationMailer.blobs_transfer_incomplete(migration, still_failed_cids.length).deliver_later
+        MigrationMailer.blobs_transfer_incomplete(migration, remaining).deliver_later
         logger.info("Incomplete-transfer mail queued for #{migration.token}")
       end
     end
@@ -206,7 +235,7 @@ class RetryFailedBlobsJob < ApplicationJob
     # For a completed migration the chain ends here when every file is in or
     # the automatic passes are used up. Drop the new-PDS session that
     # ActivateAccountJob kept for these passes.
-    chain_over = still_failed_cids.empty? || (auto_attempt && !next_pass_scheduled)
+    chain_over = remaining.zero? || (auto_attempt && !next_pass_scheduled)
     if completed_now && chain_over
       migration.clear_credentials!
       logger.info("File retries over for #{migration.token}; cleared the new-PDS session")

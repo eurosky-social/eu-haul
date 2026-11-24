@@ -54,11 +54,11 @@ RSpec.describe UploadBlobsJob, type: :job do
         end
       end
 
-      it 'advances to pending_prefs status' do
+      it 'advances to pending_spaces status' do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       it 'records progress under the keys the status page reads' do
@@ -106,10 +106,10 @@ RSpec.describe UploadBlobsJob, type: :job do
         expect(migration.progress_data['blobs_total']).to eq(blob_cids.length)
       end
 
-      it 'enqueues ImportPrefsJob' do
+      it 'enqueues ImportSpacesJob' do
         expect {
           described_class.perform_now(migration.id)
-        }.to have_enqueued_job(ImportPrefsJob)
+        }.to have_enqueued_job(ImportSpacesJob)
       end
     end
 
@@ -163,7 +163,7 @@ RSpec.describe UploadBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
         expect(migration.progress_data['blobs_total']).to eq(0)
       end
     end
@@ -210,7 +210,7 @@ RSpec.describe UploadBlobsJob, type: :job do
         progress = migration.reload.progress_data
         expect(progress['failed_blobs']).to be_blank
         expect(progress['blobs_completed']).to eq(blob_cids.length)
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe UploadBlobsJob, type: :job do
         described_class.perform_now(migration.id)
 
         migration.reload
-        expect(migration.status).to eq('pending_prefs')
+        expect(migration.status).to eq('pending_spaces')
       end
 
       it 'does not set queued state' do
@@ -302,7 +302,7 @@ RSpec.describe UploadBlobsJob, type: :job do
     it 'goes on with the migration' do
       described_class.perform_now(migration.id)
 
-      expect(migration.reload.status).to eq('pending_prefs')
+      expect(migration.reload.status).to eq('pending_spaces')
     end
   end
 
@@ -351,7 +351,7 @@ RSpec.describe UploadBlobsJob, type: :job do
       expect(progress['blobs_completed']).to eq(3)
       expect(progress['blobs_total']).to eq(3)
       expect(progress['failed_blobs']).to be_nil
-      expect(migration.status).to eq('pending_prefs')
+      expect(migration.status).to eq('pending_spaces')
     end
   end
 
