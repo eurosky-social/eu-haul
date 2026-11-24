@@ -136,9 +136,10 @@ class ActivateAccountJob < ApplicationJob
     # after completion (see step 7, or a chain the blob stage already
     # started). Those passes sign in to the new PDS with the stored session,
     # so keep that session - and only that - until the retry chain ends.
-    missing_blobs = migration.progress_data['failed_blobs'] || []
+    # Space files the quota left behind count as missing files too.
+    missing_blobs = migration.missing_public_blobs
     Rails.logger.info("Clearing encrypted credentials for security")
-    migration.clear_credentials!(keep_new_pds_session: missing_blobs.any?)
+    migration.clear_credentials!(keep_new_pds_session: migration.files_missing?)
     Rails.logger.info("Credentials successfully cleared for migration #{migration.token}")
 
     # Step 6: Clear non-essential data from the migration record
@@ -155,10 +156,10 @@ class ActivateAccountJob < ApplicationJob
     # background pass runs after completion so that mail (or the "incomplete"
     # one) is actually sent - unless a chain from the blob stage is still
     # pending, which will notice the completed status itself.
-    if missing_blobs.any? && (migration.progress_data['blobs_auto_retry_exhausted_at'].present? || migration.progress_data['blobs_auto_retry_scheduled_at'].blank?)
+    if migration.files_missing? && (migration.progress_data['blobs_auto_retry_exhausted_at'].present? || migration.progress_data['blobs_auto_retry_scheduled_at'].blank?)
       RetryFailedBlobsJob.set(wait: 15.minutes).perform_later(migration.id, missing_blobs, 1)
       migration.merge_progress!('blobs_auto_retry_scheduled_at' => Time.current.iso8601, 'blobs_auto_retry_exhausted_at' => nil)
-      Rails.logger.info("Scheduled background retry for #{missing_blobs.length} missing blobs after completion of #{migration.token}")
+      Rails.logger.info("Scheduled background retry for #{migration.missing_files_count} missing files after completion of #{migration.token}")
     end
 
     DeleteMigrationJob.set(wait: 2.days).perform_later(migration.id)
@@ -223,6 +224,7 @@ class ActivateAccountJob < ApplicationJob
       'failed_space_blobs' => result.failed_blobs,
       'spaces_resynced_at' => Time.current.iso8601
     )
+    RetryFailedBlobsJob.schedule_for_space_files(migration, result.quota_error) if result.quota_error
   rescue StandardError => e
     Rails.logger.warn("Spaces re-sync failed for migration #{migration.token}: #{e.message}")
     migration.merge_progress!('spaces_resync_error' => e.message)

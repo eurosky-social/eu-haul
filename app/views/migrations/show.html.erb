@@ -123,7 +123,7 @@
           <%# they are retried in the background and can be retried here at any time,     %>
           <%# also after completion. The list is only written when the blob stage ends,    %>
           <%# so this must render for every later status, not just pending_blobs.          %>
-          <% missing_blobs = @migration.progress_data&.dig('failed_blobs') || [] %>
+          <% missing_blobs = @migration.missing_public_blobs + @migration.missing_space_blobs %>
           <% if missing_blobs.any? && !@migration.pending_blobs? && !@migration.failed? %>
             <%# The new PDS takes only so many files per account a day (bsky.social: 1,000). %>
             <%# Until the next pass starts a retry is refused, so say when instead of offering one. %>

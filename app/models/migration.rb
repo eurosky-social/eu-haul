@@ -428,7 +428,27 @@ class Migration < ApplicationRecord
     return false if failed?
     return true if pending_blobs?
 
-    Array(progress_data&.dig('failed_blobs')).any? && blob_retry_chain_pending?
+    files_missing? && blob_retry_chain_pending?
+  end
+
+  # Files still to go to the new PDS: public files by CID (failed_blobs), and
+  # space files as { 'space' => at-uri, 'cid' => ... } (failed_space_blobs).
+  # Both count against the new PDS's upload quota and go with the same
+  # RetryFailedBlobsJob passes.
+  def missing_public_blobs
+    Array(progress_data&.dig('failed_blobs'))
+  end
+
+  def missing_space_blobs
+    Array(progress_data&.dig('failed_space_blobs'))
+  end
+
+  def missing_files_count
+    missing_public_blobs.length + missing_space_blobs.length
+  end
+
+  def files_missing?
+    missing_files_count.positive?
   end
 
   # Until when a completed migration keeps its new-PDS session for the file

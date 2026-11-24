@@ -22,6 +22,8 @@
 #
 # Files that keep failing are recorded in progress_data['failed_space_blobs']
 # and tried again by ActivateAccountJob's re-sync; they don't stop the stage.
+# Files the new PDS's upload quota stopped (bsky.social: 1,000 a day) wait,
+# downloaded, for a RetryFailedBlobsJob pass at the reset.
 #
 # Retries: 3 times (imports replace what the new PDS holds, so a rerun is safe)
 # Queue: :migrations (moves files, like the blob stage)
@@ -79,6 +81,10 @@ class ImportSpacesJob < ApplicationJob
         'failed_space_blobs' => result.failed_blobs,
         'spaces_completed_at' => Time.current.iso8601
       )
+
+      # The new PDS's upload quota stopped the space files: they wait, as
+      # kept copies, for the pass at the reset. The migration goes on.
+      RetryFailedBlobsJob.schedule_for_space_files(migration, result.quota_error) if result.quota_error
     end
 
     # Next stage

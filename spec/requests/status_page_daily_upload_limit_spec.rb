@@ -37,4 +37,26 @@ RSpec.describe 'Status page while files wait for the daily upload limit', type: 
     expect(response.body).to include('Retry failed files')
     expect(response.body).not_to include('accepts only a limited number of files')
   end
+
+  # Space files the quota left behind are missing files like any other.
+  context 'when only space files are missing' do
+    before do
+      migration.merge_progress!('failed_blobs' => [], 'blobs_quota_retry_at' => nil,
+                                'failed_space_blobs' => [{ 'space' => 'at://x/space/a/b', 'cid' => 'bafys' }])
+    end
+
+    it 'shows them and offers the retry' do
+      get "/migrate/#{migration.token}"
+
+      expect(response.body).to include('Files not transferred yet: 1')
+      expect(response.body).to include('Retry failed files')
+    end
+
+    it 'accepts the retry' do
+      post "/migrate/#{migration.token}/retry_failed_blobs"
+
+      expect(RetryFailedBlobsJob).to have_been_enqueued.with(migration.id, [])
+    end
+  end
+
 end

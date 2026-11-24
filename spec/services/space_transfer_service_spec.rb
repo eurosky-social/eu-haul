@@ -37,30 +37,48 @@ RSpec.describe SpaceTransferService do
     allow(goat).to receive(:upload_blob)
   end
 
-  after { FileUtils.rm_rf(tmp) }
+  after do
+    FileUtils.rm_rf(tmp)
+    FileUtils.rm_rf(described_class.files_dir(migration))
+  end
 
   # Space files go through the same uploadBlob as the public ones, so
   # bsky.social's 1,000 a day counts them too. Retrying a file before the
-  # reset only collects refusals.
+  # reset only collects refusals. The files wait for the pass at the reset,
+  # which may run after the old session is gone, and only that session can
+  # download a space file: so they are downloaded now and kept.
   context "when the new PDS's daily upload quota runs out" do
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
     let(:quota_error) do
-      GoatService::QuotaExhaustedError.new('429', reset_at: 8.hours.from_now, http_status: 429, phase: :upload)
+      GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :upload)
     end
+    let(:files_dir) { described_class.files_dir(migration) }
 
     before do
       allow(goat).to receive(:list_space_blobs).with(own_space).and_return(%w[bafyown1 bafyown2])
       allow(goat).to receive(:list_space_blobs).with(other_space).and_return(%w[bafyother1])
+      allow(goat).to receive(:download_space_blob) do |_ref, cid|
+        FileUtils.mkdir_p(files_dir)
+        files_dir.join(cid).to_s.tap { |path| File.write(path, cid) }
+      end
       allow(goat).to receive(:upload_blob).and_raise(quota_error)
     end
 
-    it 'stops sending space files at the first refusal' do
+    after { FileUtils.rm_rf(files_dir) }
+
+    it 'stops uploading space files at the first refusal' do
       service.transfer([{ 'space' => own_space }, { 'space' => other_space }])
 
       expect(goat).to have_received(:upload_blob).once
-      expect(goat).to have_received(:download_space_blob).once
     end
 
-    it 'still moves every space repo and reports every file not sent' do
+    it 'keeps a copy of every space file not sent, the refused one included' do
+      service.transfer([{ 'space' => own_space }, { 'space' => other_space }])
+
+      expect(%w[bafyown1 bafyown2 bafyother1].map { |cid| File.file?(files_dir.join(cid)) }).to all(be(true))
+    end
+
+    it 'still moves every space repo, and reports every file not sent and the refusal' do
       result = service.transfer([{ 'space' => own_space }, { 'space' => other_space }])
 
       expect(result.repos).to eq(2)
@@ -69,6 +87,70 @@ RSpec.describe SpaceTransferService do
         { 'space' => own_space, 'cid' => 'bafyown2' },
         { 'space' => other_space, 'cid' => 'bafyother1' }
       )
+      expect(result.quota_error).to eq(quota_error)
+    end
+  end
+
+  # The re-sync before activation moves every space again. Uploading files
+  # the new PDS already has would spend the quota on nothing.
+  describe 'files already sent' do
+    let(:files_dir) { described_class.files_dir(migration) }
+
+    before do
+      allow(goat).to receive(:list_space_blobs).with(own_space).and_return(%w[bafyown1 bafyown2])
+    end
+
+    after { FileUtils.rm_rf(files_dir) }
+
+    it 'are not uploaded again by a later transfer' do
+      described_class.new(migration, goat: goat).tap { |s| allow(s).to receive(:pause) }.transfer([{ 'space' => own_space }])
+      result = service.transfer([{ 'space' => own_space }])
+
+      expect(goat).to have_received(:upload_blob).twice
+      expect(result.blobs).to eq(2)
+      expect(result.failed_blobs).to be_empty
+    end
+  end
+
+  describe '#send_left_over' do
+    let(:files_dir) { described_class.files_dir(migration) }
+    let(:entries) { [{ 'space' => own_space, 'cid' => 'bafykept' }, { 'space' => own_space, 'cid' => 'bafygone' }] }
+
+    before do
+      FileUtils.mkdir_p(files_dir)
+      File.write(files_dir.join('bafykept'), 'KEPT')
+    end
+
+    after { FileUtils.rm_rf(files_dir) }
+
+    it 'uploads the kept copies, downloads the rest while it can, and deletes what it sent' do
+      still, quota = service.send_left_over(entries)
+
+      expect(goat).to have_received(:upload_blob).with(files_dir.join('bafykept').to_s)
+      expect(goat).to have_received(:download_space_blob).with(own_space, 'bafygone')
+      expect(still).to be_empty
+      expect(quota).to be_nil
+      expect(File.exist?(files_dir.join('bafykept'))).to be(false)
+    end
+
+    it 'keeps a file it cannot get, for a later pass' do
+      allow(goat).to receive(:download_space_blob).and_raise(GoatService::AuthenticationError, 'old session gone')
+
+      still, = service.send_left_over(entries)
+
+      expect(still).to eq([{ 'space' => own_space, 'cid' => 'bafygone' }])
+    end
+
+    it 'stops at the quota and keeps the copies' do
+      quota_error = GoatService::QuotaExhaustedError.new('429', reset_at: 8.hours.from_now, http_status: 429, phase: :upload)
+      allow(goat).to receive(:upload_blob).and_raise(quota_error)
+
+      still, quota = service.send_left_over(entries)
+
+      expect(goat).to have_received(:upload_blob).once
+      expect(still).to eq(entries)
+      expect(quota).to eq(quota_error)
+      expect(File.exist?(files_dir.join('bafykept'))).to be(true)
     end
   end
 

@@ -108,4 +108,38 @@ RSpec.describe ImportSpacesJob, type: :job do
     expect(GoatService).not_to receive(:new)
     described_class.perform_now(migration.id)
   end
+
+  # Space files the quota stopped wait for the pass at the reset. The public
+  # files share that quota, so they share the chain: a pass already coming
+  # takes them along.
+  context "when the new PDS's daily upload quota stops the space files" do
+    let(:reset_at) { 8.hours.from_now.change(usec: 0) }
+    let(:quota_error) do
+      GoatService::QuotaExhaustedError.new('429', reset_at: reset_at, http_status: 429, phase: :upload)
+    end
+    let(:left) { [{ 'space' => space, 'cid' => 'bafyspace1' }] }
+    let(:result) do
+      SpaceTransferService::Result.new(spaces: 1, repos: 1, blobs: 0, failed_blobs: left, quota_error: quota_error)
+    end
+
+    before { allow(goat).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }]) }
+
+    it 'schedules a pass for the reset when none is coming' do
+      described_class.perform_now(migration.id)
+
+      expect(RetryFailedBlobsJob).to have_been_enqueued
+        .with(migration.id, [], 1).at(reset_at + RetryFailedBlobsJob::QUOTA_RESET_MARGIN)
+      expect(migration.reload.progress_data['failed_space_blobs']).to eq(left)
+      expect(migration).to be_pending_prefs
+    end
+
+    it 'leaves them to the pass already coming for the public files' do
+      migration.merge_progress!('failed_blobs' => %w[bafypublic], 'blobs_auto_retry_scheduled_at' => Time.current.iso8601)
+
+      described_class.perform_now(migration.id)
+
+      expect(RetryFailedBlobsJob).not_to have_been_enqueued
+    end
+  end
+
 end

@@ -1,4 +1,4 @@
-<% missing_blobs = @migration.progress_data['failed_blobs'] || [] %>
+<% missing_blobs = @migration.missing_public_blobs + @migration.missing_space_blobs %>
 <%= email_title t('mailers.migration_completed.heading') %>
 
 <%= email_text t('mailers.migration_completed.success') %>

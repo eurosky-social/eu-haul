@@ -91,6 +91,9 @@ class DeleteMigrationJob < ApplicationJob
       end
     end
 
+    # Space files kept for the upload quota, and the list of those sent
+    FileUtils.rm_rf(SpaceTransferService.files_dir(migration))
+
     # Clean up downloaded data if it exists
     if migration.downloaded_data_path.present?
       begin
