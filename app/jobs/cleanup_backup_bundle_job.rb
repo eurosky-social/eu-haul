@@ -1,7 +1,9 @@
 # CleanupBackupBundleJob - Cleans up expired backup bundles
 #
 # This job runs periodically (via cron/scheduled task) to:
-# 1. Find all migrations with expired backups (backup_expires_at < now)
+# 1. Find all migrations with expired backups (backup_expires_at < now),
+#    except those whose files are still being sent to the new PDS
+#    (Migration#files_still_transferring?)
 # 2. Delete backup bundle files from disk
 # 3. Delete downloaded data directories
 # 4. Clear backup-related fields in migration records
@@ -46,8 +48,20 @@ class CleanupBackupBundleJob < ApplicationJob
     failed_count = 0
     total_bytes_freed = 0
 
+    kept_count = 0
+
     expired_migrations.each do |migration|
       begin
+        # The file stage and the retry passes upload from these local copies.
+        # A transfer held back by the new PDS's daily upload quota can need
+        # them for days, well past the 24 hours the backup is offered for.
+        if migration.files_still_transferring?
+          kept_count += 1
+          logger.info("[CleanupBackupBundleJob] Keeping the data of #{migration.token}: " \
+                      "files are still being sent to the new PDS")
+          next
+        end
+
         # Calculate size before deletion
         bundle_size = migration.backup_size || 0
         data_size = calculate_directory_size(migration.downloaded_data_path) if migration.downloaded_data_path.present?
@@ -71,7 +85,8 @@ class CleanupBackupBundleJob < ApplicationJob
       end
     end
 
-    logger.info("[CleanupBackupBundleJob] Cleanup complete: #{cleaned_count} cleaned, #{failed_count} failed, #{format_bytes(total_bytes_freed)} freed")
+    logger.info("[CleanupBackupBundleJob] Cleanup complete: #{cleaned_count} cleaned, #{kept_count} kept for their " \
+                "file transfer, #{failed_count} failed, #{format_bytes(total_bytes_freed)} freed")
 
   rescue StandardError => e
     logger.error("[CleanupBackupBundleJob] Unexpected error: #{e.message}")

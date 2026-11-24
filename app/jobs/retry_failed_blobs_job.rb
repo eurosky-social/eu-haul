@@ -6,10 +6,13 @@
 # Flow:
 # 1. Receives migration ID and list of failed blob CIDs
 # 2. Logs in to new PDS
-# 3. Downloads each failed blob from old PDS
-# 4. Uploads each blob to new PDS
-# 5. Updates progress_data to remove successfully retried blobs
-# 6. Reports final success/failure count
+# 3. Drops the blobs the new PDS already has (listMissingBlobs)
+# 4. Takes each remaining blob from the backup bundle, or downloads it from
+#    the old PDS
+# 5. Uploads each blob to new PDS; when the new PDS refuses uploads until its
+#    quota comes back, leaves the rest for a pass at that time
+# 6. Updates progress_data to remove successfully retried blobs
+# 7. Reports final success/failure count
 #
 # Queue: :migrations
 # Retry: 3 attempts
@@ -27,6 +30,31 @@ class RetryFailedBlobsJob < ApplicationJob
   # an hour at a stretch, so a single retry would often land inside the same
   # outage. Manual retries from the status page are unlimited.
   AUTO_RETRY_DELAYS = [1.hour, 4.hours].freeze
+
+  # How long after the reset time the new PDS names a pass waiting for its
+  # upload quota starts: room for clock differences between us and the PDS.
+  QUOTA_RESET_MARGIN = 2.minutes
+
+  # The new PDS refused an upload until reset_at, hours away: bsky.social
+  # takes 1,000 files per account per day. Schedule the next background pass
+  # for then and record when it starts, for the status page and for how long
+  # a completed migration keeps the new-PDS session that pass signs in with.
+  def self.schedule_after_quota(migration, cids, auto_attempt, error)
+    retry_at = error.reset_at + QUOTA_RESET_MARGIN
+    set(wait_until: retry_at).perform_later(migration.id, cids, auto_attempt)
+    migration.merge_progress!(
+      'blobs_quota_retry_at' => retry_at.utc.iso8601,
+      'blobs_quota_limit' => error.limit,
+      'blobs_auto_retry_scheduled_at' => Time.current.iso8601,
+      'blobs_auto_retry_exhausted_at' => nil
+    )
+    if Migration.where(id: migration.id).pick(:status) == 'completed'
+      Migration.where(id: migration.id).update_all(credentials_expires_at: migration.retry_session_expires_at)
+    end
+    Rails.logger.info("New PDS refuses uploads for #{migration.token} until #{error.reset_at.utc.iso8601} " \
+                      "(limit #{error.limit.inspect}); pass #{auto_attempt} for #{cids.length} files " \
+                      "scheduled at #{retry_at.utc.iso8601}")
+  end
 
   # auto_attempt: nil for a user-triggered retry, 1.. for the background passes
   def perform(migration_id, failed_blob_cids, auto_attempt = nil)
@@ -63,11 +91,30 @@ class RetryFailedBlobsJob < ApplicationJob
     # Track results
     successful_cids = []
     still_failed_cids = []
+    # Set when the new PDS refuses uploads until its quota comes back; the
+    # files not tried yet then wait for the pass scheduled for that time.
+    quota_error = nil
+
+    # Files the new PDS already has (an earlier pass, an upload whose answer
+    # got lost) need no upload. Every upload counts against the quota, so
+    # sending them again would push the missing ones into the next day.
+    to_upload = failed_blob_cids
+    if (missing = goat.missing_blob_cids)
+      to_upload, already_there = failed_blob_cids.partition { |cid| missing.include?(cid) }
+      successful_cids.concat(already_there)
+      logger.info("#{already_there.length} of these files are already on the new PDS") if already_there.any?
+    end
 
     # Process each failed blob
-    failed_blob_cids.each_with_index do |cid, index|
+    to_upload.each_with_index do |cid, index|
+      if quota_error
+        skip_blob(cid)
+        still_failed_cids << cid
+        next
+      end
+
       begin
-        logger.info("Retrying blob #{index + 1}/#{failed_blob_cids.length}: #{cid}")
+        logger.info("Retrying blob #{index + 1}/#{to_upload.length}: #{cid}")
 
         # Prefer the local copy from the backup bundle (no dependency on the
         # old PDS, which may already be deactivated); otherwise download it
@@ -84,7 +131,13 @@ class RetryFailedBlobsJob < ApplicationJob
         logger.info("Successfully retried blob: #{cid}")
 
       rescue StandardError => e
-        logger.error("Failed to retry blob #{cid}: #{e.message}")
+        if upload_quota_refusal?(e)
+          logger.warn("New PDS refuses uploads until #{e.reset_at.utc.iso8601}; leaving the remaining " \
+                      "#{to_upload.length - index} files for then")
+          quota_error = e
+        else
+          logger.error("Failed to retry blob #{cid}: #{e.message}")
+        end
         still_failed_cids << cid
       end
     end
@@ -110,6 +163,12 @@ class RetryFailedBlobsJob < ApplicationJob
     # sessions this job needs), so a completed migration must always end in
     # exactly one of the two mails below.
     completed_now = Migration.where(id: migration.id).pick(:status) == 'completed'
+    # A pass that got files in before the quota stopped it may run again at
+    # the reset without using up one of the automatic passes: a big account
+    # needs one such pass per day. One that got nothing in uses one up, so a
+    # PDS that keeps refusing still ends the chain.
+    progressed = still_failed_cids.length < failed_blob_cids.length
+    next_pass_scheduled = false
 
     if still_failed_cids.empty?
       if completed_now && migration.progress_data['blobs_transfer_complete_mailed_at'].blank?
@@ -117,11 +176,23 @@ class RetryFailedBlobsJob < ApplicationJob
         MigrationMailer.blobs_transfer_complete(migration).deliver_later
         logger.info("All files transferred for completed migration #{migration.token}; final mail queued")
       end
+    elsif quota_error && auto_attempt && (progressed || auto_attempt <= AUTO_RETRY_DELAYS.length)
+      self.class.schedule_after_quota(migration, still_failed_cids, progressed ? auto_attempt : auto_attempt + 1, quota_error)
+      next_pass_scheduled = true
+    elsif quota_error && auto_attempt.nil? && !migration.blob_retry_chain_pending?
+      # A manual retry found the quota used up and no automatic pass is
+      # coming: start a chain at the reset, so the status page's "sent from"
+      # holds.
+      self.class.schedule_after_quota(migration, still_failed_cids, 1, quota_error)
+    elsif quota_error && auto_attempt.nil?
+      # A pass is already coming; it waits for the quota itself if it has to.
+      migration.merge_progress!('blobs_quota_retry_at' => (quota_error.reset_at + QUOTA_RESET_MARGIN).utc.iso8601)
     elsif auto_attempt && auto_attempt <= AUTO_RETRY_DELAYS.length
       # Next background pass, while any are allowed
       delay = AUTO_RETRY_DELAYS[auto_attempt - 1]
       self.class.set(wait: delay).perform_later(migration.id, still_failed_cids, auto_attempt + 1)
       migration.merge_progress!('blobs_auto_retry_scheduled_at' => Time.current.iso8601, 'blobs_auto_retry_exhausted_at' => nil)
+      next_pass_scheduled = true
       logger.info("Scheduled automatic pass #{auto_attempt + 1} for #{still_failed_cids.length} blobs in #{delay.inspect}")
     elsif auto_attempt
       migration.merge_progress!('blobs_auto_retry_exhausted_at' => Time.current.iso8601)
@@ -135,7 +206,7 @@ class RetryFailedBlobsJob < ApplicationJob
     # For a completed migration the chain ends here when every file is in or
     # the automatic passes are used up. Drop the new-PDS session that
     # ActivateAccountJob kept for these passes.
-    chain_over = still_failed_cids.empty? || (auto_attempt && auto_attempt > AUTO_RETRY_DELAYS.length)
+    chain_over = still_failed_cids.empty? || (auto_attempt && !next_pass_scheduled)
     if completed_now && chain_over
       migration.clear_credentials!
       logger.info("File retries over for #{migration.token}; cleared the new-PDS session")
@@ -185,11 +256,20 @@ class RetryFailedBlobsJob < ApplicationJob
     end
   end
 
+  # The new PDS refusing uploads until a reset hours away. A refusal from the
+  # old PDS while downloading is not one: it says nothing about the uploads.
+  def upload_quota_refusal?(error)
+    error.is_a?(GoatService::QuotaExhaustedError) && error.phase == :upload && error.reset_at.present?
+  end
+
   # Upload blob with retry logic
   def upload_blob_with_retry(goat, blob_path, attempt = 1)
     measure(cid: File.basename(blob_path.to_s), bytes: file_size(blob_path)) do
       goat.upload_blob(blob_path)
     end
+  rescue GoatService::QuotaExhaustedError
+    # Every retry before the reset is refused too; the caller parks the rest.
+    raise
   rescue GoatService::RateLimitError => e
     if attempt < MAX_BLOB_RETRIES
       backoff = 2 ** (attempt + 2) # Longer backoff for rate limits: 8s, 16s, 32s

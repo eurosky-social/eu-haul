@@ -353,6 +353,7 @@ hu:
       missing_files_title: "Még át nem vitt fájlok: %{count}"
       missing_files_detail: "A rendszer automatikusan újrapróbálja őket a háttérben, a költöztetés befejezése után is, és Ön most is újrapróbálhatja. Folytathatja a költöztetést; az érintett képek vagy videók hibásnak látszanak, amíg a fájlok meg nem érkeznek."
       missing_files_completed: "A költöztetése befejeződött, de ezek a fájlok még átvitel alatt állnak a háttérben. Az érintett képek vagy videók hibásnak látszanak, amíg meg nem érkeznek. Most is újrapróbálhatja őket. NE változtassa meg az új fiókja jelszavát, amíg meg nem kapja a záró e-mailünket, amely megerősíti, hogy minden fájl megérkezett — a korábbi módosítás megszakítja az átvitelt."
+      missing_files_daily_limit: "A(z) %{server} fiókonként naponta csak korlátozott számú fájlt fogad, ezért egy újabb próbálkozást most elutasítana. A többi fájlt a rendszer %{time} időponttól automatikusan elküldi."
       preparing_blobs: "<strong>%{count}</strong> blob átvitelének előkészítése..."
 
       # Download/backup progress

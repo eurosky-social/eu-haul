@@ -353,6 +353,7 @@ es:
       missing_files_title: "Archivos aún no transferidos: %{count}"
       missing_files_detail: "Se reintentan automáticamente en segundo plano, también después de terminar la migración, y puede reintentarlos ahora. Puede continuar con la migración; las imágenes o vídeos afectados se verán rotos hasta que lleguen los archivos."
       missing_files_completed: "Su migración ha terminado, pero estos archivos todavía se están transfiriendo en segundo plano. Las imágenes o vídeos afectados se ven rotos hasta que lleguen. También puede reintentarlos ahora. NO cambie la contraseña de su nueva cuenta hasta recibir nuestro correo final confirmando que han llegado todos los archivos; cambiarla antes interrumpe la transferencia."
+      missing_files_daily_limit: "%{server} solo acepta un número limitado de archivos por cuenta al día, así que un reintento ahora sería rechazado. Los archivos restantes se enviarán automáticamente a partir de %{time}."
       preparing_blobs: "Preparando la transferencia de <strong>%{count}</strong> blobs..."
 
       # Download/backup progress

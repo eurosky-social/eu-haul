@@ -369,13 +369,71 @@ class Migration < ApplicationRecord
   # How long a completed migration keeps its new-PDS session for the
   # background file retries. The passes run 15 minutes, 1 hour and 4 hours
   # apart (RetryFailedBlobsJob::AUTO_RETRY_DELAYS); this covers the chain
-  # with room for queue delays and the passes' own run time.
+  # with room for queue delays and the passes' own run time. A pass waiting
+  # for the new PDS's upload quota keeps it this long past its start time
+  # instead (retry_session_expires_at).
   RETRY_SESSION_LIFETIME = 8.hours
+
+  # When the pass waiting for the new PDS's daily upload quota starts
+  # (RetryFailedBlobsJob.schedule_after_quota), or nil. Read from the
+  # database: another job may have parked the files since this copy loaded.
+  def blobs_quota_retry_at
+    value = self.class.where(id: id).pick(Arel.sql("progress_data->>'blobs_quota_retry_at'"))
+    value.present? ? Time.zone.parse(value) : nil
+  rescue ArgumentError
+    nil
+  end
+
+  # A file-retry chain that stopped without recording it (a pass that kept
+  # crashing until Sidekiq gave up) counts as over this long after its next
+  # pass was due, so it cannot keep data and the record forever.
+  BLOB_RETRY_CHAIN_GRACE = 1.day
+
+  # Whether an automatic file pass is still to come: one was scheduled, the
+  # chain has not given up, and the pass is not long overdue. The pass is due
+  # at most the longest automatic delay after it was scheduled, or when the
+  # new PDS's upload quota comes back.
+  def blob_retry_chain_pending?
+    return false if progress_data&.dig('blobs_auto_retry_exhausted_at').present?
+
+    scheduled_at = progress_time('blobs_auto_retry_scheduled_at')
+    return false unless scheduled_at
+
+    due_at = [scheduled_at + RetryFailedBlobsJob::AUTO_RETRY_DELAYS.max, progress_time('blobs_quota_retry_at')].compact.max
+    due_at + BLOB_RETRY_CHAIN_GRACE > Time.current
+  end
+
+  # A time stored in progress_data, or nil.
+  def progress_time(key)
+    value = progress_data&.dig(key)
+    value.present? ? Time.zone.parse(value.to_s) : nil
+  rescue ArgumentError
+    nil
+  end
+
+  # Whether files still have to go to the new PDS from the local copies: the
+  # file stage is running, or files it could not send wait for a pass. A
+  # transfer limited by bsky.social's 1,000 files a day can stay here for
+  # days, after completion too; the local copies, the record and the
+  # new-PDS session must outlast it.
+  def files_still_transferring?
+    return false if failed?
+    return true if pending_blobs?
+
+    Array(progress_data&.dig('failed_blobs')).any? && blob_retry_chain_pending?
+  end
+
+  # Until when a completed migration keeps its new-PDS session for the file
+  # passes: RETRY_SESSION_LIFETIME from now, or from the start of a pass
+  # waiting for the upload quota, whichever is later.
+  def retry_session_expires_at
+    [RETRY_SESSION_LIFETIME.from_now, blobs_quota_retry_at&.+(RETRY_SESSION_LIFETIME)].compact.max
+  end
 
   # Clear all encrypted credentials (for security after migration completes).
   #
-  # keep_new_pds_session: keep the new-PDS session (and nothing else) for
-  # RETRY_SESSION_LIFETIME, because a background retry still has to upload
+  # keep_new_pds_session: keep the new-PDS session (and nothing else) until
+  # retry_session_expires_at, because a background retry still has to upload
   # files with it. The retry chain clears it when it ends;
   # CleanupExpiredCredentialsJob clears it if the chain never gets there.
   def clear_credentials!(keep_new_pds_session: false)
@@ -386,7 +444,7 @@ class Migration < ApplicationRecord
       encrypted_old_refresh_token: nil
     }
     if keep_new_pds_session
-      attrs[:credentials_expires_at] = RETRY_SESSION_LIFETIME.from_now
+      attrs[:credentials_expires_at] = retry_session_expires_at
     else
       attrs.merge!(
         encrypted_new_access_token: nil,

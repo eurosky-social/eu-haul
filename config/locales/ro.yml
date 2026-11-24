@@ -353,6 +353,7 @@ ro:
       missing_files_title: "Fișiere încă netransferate: %{count}"
       missing_files_detail: "Sunt reîncercate automat în fundal, inclusiv după finalizarea migrării, și le puteți reîncerca acum. Puteți continua migrarea; imaginile sau videoclipurile afectate apar defecte până la sosirea fișierelor."
       missing_files_completed: "Migrarea dvs. este finalizată, dar aceste fișiere sunt încă în curs de transfer în fundal. Imaginile sau videoclipurile afectate apar defecte până la sosirea lor. Le puteți reîncerca și acum. NU schimbați parola noului cont până nu primiți emailul nostru final care confirmă că au sosit toate fișierele — schimbarea ei mai devreme întrerupe transferul."
+      missing_files_daily_limit: "%{server} acceptă doar un număr limitat de fișiere pe cont pe zi, așa că o reîncercare acum ar fi refuzată. Fișierele rămase vor fi trimise automat începând cu %{time}."
       preparing_blobs: "Se pregătesc <strong>%{count}</strong> blob-uri pentru transfer..."
 
       # Download/backup progress

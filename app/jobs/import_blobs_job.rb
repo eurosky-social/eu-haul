@@ -81,10 +81,12 @@ class ImportBlobsJob < ApplicationJob
     )
 
     # Step 5: Process blobs in parallel
-    process_blobs(migration, goat, all_blobs)
+    quota_error = process_blobs(migration, goat, all_blobs)
 
-    # Step 6: Reconcile - verify all blobs were imported and fill gaps
-    reconcile_blobs(migration, goat)
+    # Step 6: Reconcile - verify all blobs were imported and fill gaps. Not
+    # when the new PDS's upload quota stopped the transfer: it would only
+    # collect refusals; the pass scheduled for the reset sends the rest.
+    reconcile_blobs(migration, goat) unless quota_error
 
     # Step 7: Mark blobs_completed_at
     mark_blobs_completed(migration)
@@ -163,6 +165,11 @@ class ImportBlobsJob < ApplicationJob
     mutex = Mutex.new
     queue = Queue.new
     aborted = false # set when the migration is cancelled/failed while transferring
+    # Set when the new PDS refuses uploads until its quota comes back
+    # (bsky.social: 1,000 files per account per day). The threads stop taking
+    # blobs - no point downloading what cannot be uploaded - and the rest
+    # waits for a pass at the reset.
+    quota_error = nil
 
     # Add all blobs to the queue
     blobs.each_with_index { |cid, index| queue << [cid, index] }
@@ -176,7 +183,7 @@ class ImportBlobsJob < ApplicationJob
     threads = PARALLEL_BLOBS.times.map do
       Thread.new do
         loop do
-          break if aborted
+          break if aborted || quota_error
 
           # Get next blob from queue (non-blocking)
           begin
@@ -221,7 +228,15 @@ class ImportBlobsJob < ApplicationJob
             end
 
           rescue StandardError => e
-            logger.error("Failed to transfer blob #{cid}: #{e.message}")
+            if e.is_a?(GoatService::QuotaExhaustedError) && e.phase == :upload && e.reset_at
+              logger.warn("New PDS refuses uploads until #{e.reset_at.utc.iso8601}; stopping this pass at #{cid}")
+              mutex.synchronize do
+                # Threads still uploading may be refused too; keep the latest reset.
+                quota_error = e if quota_error.nil? || e.reset_at > quota_error.reset_at
+              end
+            else
+              logger.error("Failed to transfer blob #{cid}: #{e.message}")
+            end
             mutex.synchronize do
               failed_cids << cid
             end
@@ -233,11 +248,13 @@ class ImportBlobsJob < ApplicationJob
     # Wait for all worker threads to complete
     threads.each(&:join)
 
-    # Whatever is still queued was abandoned when the migration went terminal.
-    # Count it, so an aborted pass cannot be read as a clean one.
+    # Whatever is still queued was abandoned when the migration went terminal,
+    # or waits for the quota. Count it, so a cut-short pass cannot be read as
+    # a clean one.
     loop do
       cid, = queue.pop(true)
       skip_blob(cid)
+      failed_cids << cid if quota_error
     rescue ThreadError
       break
     end
@@ -278,12 +295,18 @@ class ImportBlobsJob < ApplicationJob
           #{failed_cids.map { |cid| "  - #{cid}" }.join("\n")}
 
           These blobs were downloaded from the old PDS but failed to upload to the new PDS
-          due to network errors or timeouts. You may need to re-upload these manually.
+          #{quota_error ? "because it accepts only a limited number of uploads per account per day (refused until #{quota_error.reset_at.utc.iso8601}). They are retried automatically from then." : 'due to network errors or timeouts. You may need to re-upload these manually.'}
         MANIFEST
 
         logger.info("Wrote failed uploads manifest to #{manifest_path}")
       end
+
+      # The rest follows from the reset on, a day's quota at a time, while the
+      # user finishes the migration.
+      RetryFailedBlobsJob.schedule_after_quota(migration, failed_cids, 1, quota_error) if quota_error
     end
+
+    quota_error
   ensure
     # Also runs when the pass is abandoned mid-flight (Migration::Aborted), so
     # a cancelled migration still leaves its numbers behind.
@@ -319,6 +342,9 @@ class ImportBlobsJob < ApplicationJob
     measure(cid: File.basename(blob_path.to_s), bytes: file_size(blob_path)) do
       goat.upload_blob(blob_path)
     end
+  rescue GoatService::QuotaExhaustedError
+    # Every retry before the reset is refused too; the caller parks the rest.
+    raise
   rescue GoatService::RateLimitError => e
     if attempt < MAX_BLOB_RETRIES
       backoff = 2 ** (attempt + 2) # Longer backoff for rate limits: 8s, 16s, 32s

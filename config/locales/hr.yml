@@ -353,6 +353,7 @@ hr:
       missing_files_title: "Još neprenesene datoteke: %{count}"
       missing_files_detail: "Automatski se ponovno pokušavaju u pozadini, i nakon završetka migracije, a možete ih pokušati i sada. Možete nastaviti s migracijom; pogođene slike ili videozapisi izgledaju oštećeno dok datoteke ne stignu."
       missing_files_completed: "Vaša je migracija dovršena, ali ove se datoteke još prenose u pozadini. Pogođene slike ili videozapisi izgledaju oštećeno dok ne stignu. Možete ih pokušati i sada. NE mijenjajte lozinku novog računa dok ne primite našu završnu e-poštu koja potvrđuje da su sve datoteke stigle — ranija promjena prekida prijenos."
+      missing_files_daily_limit: "%{server} prima samo ograničen broj datoteka po računu dnevno, pa bi novi pokušaj sada bio odbijen. Preostale datoteke šalju se automatski od %{time}."
       preparing_blobs: "Priprema za prijenos <strong>%{count}</strong> blobova..."
 
       # Download/backup progress

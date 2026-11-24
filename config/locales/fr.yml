@@ -353,6 +353,7 @@ fr:
       missing_files_title: "Fichiers pas encore transférés : %{count}"
       missing_files_detail: "Ils sont automatiquement retentés en arrière-plan, y compris après la fin de la migration, et vous pouvez réessayer maintenant. Vous pouvez poursuivre la migration ; les images ou vidéos concernées apparaîtront cassées jusqu'à l'arrivée des fichiers."
       missing_files_completed: "Votre migration est terminée, mais ces fichiers sont encore en cours de transfert en arrière-plan. Les images ou vidéos concernées apparaissent cassées jusqu'à leur arrivée. Vous pouvez aussi réessayer maintenant. Ne changez PAS le mot de passe de votre nouveau compte avant d'avoir reçu notre e-mail final confirmant que tous les fichiers sont arrivés — le changer plus tôt interrompt le transfert."
+      missing_files_daily_limit: "%{server} n'accepte qu'un nombre limité de fichiers par compte et par jour : une nouvelle tentative serait refusée maintenant. Les fichiers restants seront envoyés automatiquement à partir de %{time}."
       preparing_blobs: "Préparation du transfert de <strong>%{count}</strong> objets binaires..."
 
       # Download/backup progress

@@ -125,11 +125,19 @@
           <%# so this must render for every later status, not just pending_blobs.          %>
           <% missing_blobs = @migration.progress_data&.dig('failed_blobs') || [] %>
           <% if missing_blobs.any? && !@migration.pending_blobs? && !@migration.failed? %>
+            <%# The new PDS takes only so many files per account a day (bsky.social: 1,000). %>
+            <%# Until the next pass starts a retry is refused, so say when instead of offering one. %>
+            <% quota_retry_at = @migration.blobs_quota_retry_at %>
+            <% quota_retry_at = nil unless quota_retry_at&.future? %>
             <div id="missing-files-notice" class="eh-warn eh-sm">
               <div class="eh-label"><%= t('migrations.show.missing_files_title', count: missing_blobs.length) %></div>
               <p class="eh-muted"><%= @migration.completed? ? t('migrations.show.missing_files_completed') : t('migrations.show.missing_files_detail') %></p>
-              <%= form_with url: retry_failed_blobs_by_token_path(@migration.token), method: :post, local: true do %>
-                <button type="submit" class="es-btn es-btn-sm eh-square"><%= t('migrations.show.retry_failed_blobs') %></button>
+              <% if quota_retry_at %>
+                <p id="missing-files-daily-limit" class="eh-muted"><%= t('migrations.show.missing_files_daily_limit', server: @migration.new_pds_host.to_s.sub(%r{\Ahttps?://}, ''), time: quota_retry_at.utc.strftime('%Y-%m-%d %H:%M UTC')) %></p>
+              <% else %>
+                <%= form_with url: retry_failed_blobs_by_token_path(@migration.token), method: :post, local: true do %>
+                  <button type="submit" class="es-btn es-btn-sm eh-square"><%= t('migrations.show.retry_failed_blobs') %></button>
+                <% end %>
               <% end %>
             </div>
           <% end %>

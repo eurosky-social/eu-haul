@@ -353,6 +353,7 @@ mt:
       missing_files_title: "Fajls li għadhom ma ġewx trasferiti: %{count}"
       missing_files_detail: "Jerġgħu jiġu ppruvati awtomatikament fl-isfond, anke wara li l-migrazzjoni tkun lesta, u tista' terġa' tippruvahom issa. Tista' tkompli bil-migrazzjoni; l-istampi jew il-vidjows affettwati jidhru mkissrin sakemm jaslu l-fajls."
       missing_files_completed: "Il-migrazzjoni tiegħek lesta, iżda dawn il-fajls għadhom qed jiġu trasferiti fl-isfond. L-istampi jew il-vidjows affettwati jidhru mkissrin sakemm jaslu. Tista' wkoll terġa' tippruvahom issa. TIBDILX il-password tal-kont il-ġdid tiegħek qabel ma tirċievi l-email finali tagħna li tikkonferma li l-fajls kollha waslu — bidla qabel taqta' t-trasferiment."
+      missing_files_daily_limit: "%{server} jaċċetta biss numru limitat ta' fajls għal kull kont kuljum, għalhekk tentattiv ieħor issa jiġi miċħud. Il-fajls li fadal jintbagħtu awtomatikament minn %{time}."
       preparing_blobs: "Qed jipprepara biex jittrasferixxi <strong>%{count}</strong> blobs..."
 
       # Download/backup progress

@@ -353,6 +353,7 @@ en:
       missing_files_title: "Files not transferred yet: %{count}"
       missing_files_detail: "They are retried automatically in the background, also after the migration has completed, and you can retry them now. You can continue with the migration; affected images or videos look broken until the files have arrived."
       missing_files_completed: "Your migration is complete, but these files are still being transferred in the background. Affected images or videos look broken until they have arrived. You can also retry them now. Do NOT change the password of your new account until you receive our final email confirming that all files have arrived — changing it earlier cuts off the transfer."
+      missing_files_daily_limit: "%{server} accepts only a limited number of files per account each day, so a retry now would be refused. The remaining files are sent automatically from %{time}."
       preparing_blobs: "Preparing to transfer <strong>%{count}</strong> blobs..."
 
       # Download/backup progress

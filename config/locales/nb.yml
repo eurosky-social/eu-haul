@@ -353,6 +353,7 @@ nb:
       missing_files_title: "Filer som ennå ikke er overført: %{count}"
       missing_files_detail: "De prøves automatisk på nytt i bakgrunnen, også etter at migreringen er ferdig, og du kan prøve på nytt nå. Du kan fortsette migreringen; berørte bilder eller videoer ser ødelagte ut til filene har kommet frem."
       missing_files_completed: "Migreringen din er ferdig, men disse filene overføres fortsatt i bakgrunnen. Berørte bilder eller videoer ser ødelagte ut til de har kommet frem. Du kan også prøve på nytt nå. IKKE endre passordet til den nye kontoen din før du har mottatt vår siste e-post som bekrefter at alle filene har kommet frem — endrer du det tidligere, avbrytes overføringen."
+      missing_files_daily_limit: "%{server} tar bare imot et begrenset antall filer per konto per dag, så et nytt forsøk nå ville blitt avvist. De resterende filene sendes automatisk fra %{time}."
       preparing_blobs: "Forbereder overføring av <strong>%{count}</strong> blober..."
 
       # Download/backup progress
