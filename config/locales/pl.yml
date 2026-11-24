@@ -552,6 +552,13 @@ pl:
           ask_provider: "Zapytaj %{new_pds}, kiedy będzie obsługiwać Spaces, a potem rozpocznij nową migrację"
           other_provider: "Albo rozpocznij nową migrację do dostawcy, który już obsługuje Spaces"
           contact_support: "Pytania? Napisz na %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul nie może jeszcze przenieść Spaces"
+        what_happened: "Twoje konto korzysta ze Spaces: prywatnych wpisów, grup lub innych treści widocznych tylko dla niektórych osób (łącznie %{count}). eu-haul nie może jeszcze przenieść Spaces, więc przeniesienie teraz zostawiłoby je na %{old_pds}."
+        current_status: "Migracja została zatrzymana, zanim zmieniono Twoją tożsamość. Twoje konto na %{old_pds} działa jak dotąd."
+        what_to_do:
+          wait: "Dodajemy obsługę Spaces do eu-haul. Gdy będzie mógł je przenieść, rozpocznij nową migrację."
+          contact_support: "Pytania? Napisz na %{support_email}"
       spaces_rejected:
         title: "Nowy PDS odrzucił Twoje Spaces"
         what_happened: "%{new_pds} odrzucił dane jednego z Twoich Spaces, dlatego migracja została zatrzymana. Twoje konto na %{old_pds} działa jak dotąd."

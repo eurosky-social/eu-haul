@@ -552,6 +552,13 @@ ga:
           ask_provider: "Fiafraigh de %{new_pds} cathain a thacóidh siad le Spaces, ansin tosaigh aistriú nua"
           other_provider: "Nó tosaigh aistriú nua chuig soláthraí a thacaíonn le Spaces cheana féin"
           contact_support: "Ceisteanna? Scríobh chuig %{support_email}"
+      spaces_not_moved:
+        title: "Ní féidir le eu-haul Spaces a aistriú fós"
+        what_happened: "Úsáideann do chuntas Spaces: postálacha príobháideacha, grúpaí nó ábhar eile nach bhfeiceann ach daoine áirithe (%{count} san iomlán). Ní féidir le eu-haul Spaces a aistriú fós, mar sin d'fhágfadh aistriú anois iad ar %{old_pds}."
+        current_status: "Stopadh an t-aistriú sular athraíodh d'aitheantas. Oibríonn do chuntas ar %{old_pds} mar a bhí."
+        what_to_do:
+          wait: "Táimid ag cur Spaces le eu-haul. Nuair is féidir leis iad a aistriú, tosaigh aistriú nua."
+          contact_support: "Ceisteanna? Scríobh chuig %{support_email}"
       spaces_rejected:
         title: "Dhiúltaigh an PDS nua do do Spaces"
         what_happened: "Dhiúltaigh %{new_pds} do shonraí ceann de do Spaces, mar sin stopadh an t-aistriú. Oibríonn do chuntas ar %{old_pds} mar a bhí."

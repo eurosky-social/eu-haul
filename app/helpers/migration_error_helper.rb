@@ -139,6 +139,8 @@ module MigrationErrorHelper
     #   "Spaces not supported: ..." / "Spaces rejected by the new PDS: ..."
     when /\ASpaces not supported:/
       :spaces_unsupported
+    when /\ASpaces not moved yet:/
+      :spaces_not_moved
     when /\ASpaces rejected by the new PDS:/
       :spaces_rejected
 
@@ -186,6 +188,8 @@ module MigrationErrorHelper
       critical_plc_context(migration)
     when :spaces_unsupported
       spaces_unsupported_context(migration)
+    when :spaces_not_moved
+      spaces_not_moved_context(migration)
     when :spaces_rejected
       spaces_rejected_context(migration)
     else
@@ -329,6 +333,33 @@ module MigrationErrorHelper
         t("spaces_unsupported.what_to_do.ask_provider", new_pds: migration.new_pds_host),
         t("spaces_unsupported.what_to_do.other_provider"),
         t("spaces_unsupported.what_to_do.contact_support", support_email: support_email)
+      ],
+      show_retry_button: false,
+      show_retry_info: false,
+      show_new_migration_button: true,
+      show_contact_support: true,
+      support_email: support_email,
+      migration_token: migration.token,
+      did: migration.did
+    }
+  end
+
+  # The account has spaces and this eu-haul doesn't move them yet
+  # (EuroskyConfig.move_spaces? off). Stopped before anything was created on
+  # the new PDS, or at the latest before the PLC step.
+  def self.spaces_not_moved_context(migration)
+    support_email = ENV.fetch('SUPPORT_EMAIL', 'support@example.com')
+
+    {
+      severity: :warning,
+      icon: "🔒",
+      title: t("spaces_not_moved.title"),
+      what_happened: t("spaces_not_moved.what_happened",
+                       count: migration.progress_data&.dig('spaces_total').to_i, old_pds: migration.old_pds_host),
+      current_status: t("spaces_not_moved.current_status", old_pds: migration.old_pds_host),
+      what_to_do: [
+        t("spaces_not_moved.what_to_do.wait"),
+        t("spaces_not_moved.what_to_do.contact_support", support_email: support_email)
       ],
       show_retry_button: false,
       show_retry_info: false,

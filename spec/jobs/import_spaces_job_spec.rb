@@ -56,8 +56,28 @@ RSpec.describe ImportSpacesJob, type: :job do
     end
   end
 
-  context 'when the account has spaces' do
+  # The account-creation step stops accounts with spaces while the move is
+  # off. One that gets spaces during the migration is stopped here, still
+  # before the PLC step.
+  context 'when the account has spaces and the spaces move is off' do
     before { allow(goat).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }]) }
+
+    it 'stops before the PLC step without moving them' do
+      expect { described_class.perform_now(migration.id) }.not_to have_enqueued_job(ImportPrefsJob)
+
+      migration.reload
+      expect(migration).to be_failed
+      expect(migration.error_code).to eq('spaces_not_moved')
+      expect(transfer).not_to have_received(:transfer)
+      expect(MigrationErrorHelper.explain_error(migration)[:title]).to eq("eu-haul can't move Spaces yet")
+    end
+  end
+
+  context 'when the account has spaces' do
+    before do
+      allow(EuroskyConfig).to receive(:move_spaces?).and_return(true)
+      allow(goat).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }])
+    end
 
     it 'moves them and records the counts' do
       described_class.perform_now(migration.id)
@@ -122,7 +142,10 @@ RSpec.describe ImportSpacesJob, type: :job do
       SpaceTransferService::Result.new(spaces: 1, repos: 1, blobs: 0, failed_blobs: left, quota_error: quota_error)
     end
 
-    before { allow(goat).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }]) }
+    before do
+      allow(EuroskyConfig).to receive(:move_spaces?).and_return(true)
+      allow(goat).to receive(:list_spaces).with(:old).and_return([{ 'space' => space }])
+    end
 
     it 'schedules a pass for the reset when none is coming' do
       described_class.perform_now(migration.id)

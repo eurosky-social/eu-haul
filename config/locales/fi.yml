@@ -552,6 +552,13 @@ fi:
           ask_provider: "Kysy palvelulta %{new_pds}, milloin se tukee Spaces-tiloja, ja aloita sitten uusi siirto"
           other_provider: "Tai aloita uusi siirto palveluntarjoajalle, joka jo tukee Spaces-tiloja"
           contact_support: "Kysyttävää? Kirjoita osoitteeseen %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul ei vielä pysty siirtämään Spaces-tiloja"
+        what_happened: "Tilisi käyttää Spaces-tiloja: yksityisiä julkaisuja, ryhmiä tai muuta sisältöä, jonka vain osa ihmisistä näkee (yhteensä %{count}). eu-haul ei vielä pysty siirtämään Spaces-tiloja, joten siirto nyt jättäisi ne palveluun %{old_pds}."
+        current_status: "Siirto pysähtyi ennen kuin identiteettiäsi muutettiin. Tilisi palvelussa %{old_pds} toimii kuten ennenkin."
+        what_to_do:
+          wait: "Lisäämme Spaces-tuen eu-hauliin. Kun se pystyy siirtämään ne, aloita uusi siirto."
+          contact_support: "Kysyttävää? Kirjoita osoitteeseen %{support_email}"
       spaces_rejected:
         title: "Uusi PDS hylkäsi Spaces-tilasi"
         what_happened: "%{new_pds} hylkäsi yhden Spaces-tilasi tiedot, joten siirto pysähtyi. Tilisi palvelussa %{old_pds} toimii kuten ennenkin."

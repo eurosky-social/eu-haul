@@ -69,6 +69,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     migration = create_verified_migration(@valid_migration_params)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).raises(
       GoatService::AuthenticationError,
       "Invalid password"
@@ -86,6 +88,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     migration = create_verified_migration(@valid_migration_params)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).returns(nil)
     service.stubs(:get_new_pds_service_did).returns('did:web:newpds')
     service.stubs(:get_service_auth_token).returns('token')
@@ -107,6 +111,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     migration = create_verified_migration(@valid_migration_params)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     # First attempt: rate limited
     service.stubs(:login_old_pds).raises(GoatService::RateLimitError, "Rate limit exceeded").then.returns(nil)
     service.stubs(:get_new_pds_service_did).returns('did:web:newpds')
@@ -140,6 +146,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     )
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds).returns(true)
     service.expects(:verify_existing_account_access).returns(
       { exists: true, deactivated: true }
@@ -158,6 +166,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     )
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_old_pds)
     service.stubs(:verify_existing_account_access).raises(
       GoatService::GoatError,
@@ -187,6 +197,8 @@ class MigrationErrorFlowsTest < ActionDispatch::IntegrationTest
     migration.update!(status: :pending_blobs)
 
     service = mock('goat_service')
+    # The old account has no spaces, so the spaces guard (CreateAccountJob) lets it through
+    service.stubs(:list_spaces).returns([])
     service.stubs(:login_new_pds)
     service.stubs(:list_blobs).returns({
       'cids' => ['blob_success', 'blob_fail1', 'blob_fail2'],

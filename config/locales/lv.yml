@@ -552,6 +552,13 @@ lv:
           ask_provider: "Pajautā %{new_pds}, kad tiks atbalstīti Spaces, un tad sāc jaunu migrāciju"
           other_provider: "Vai sāc jaunu migrāciju pie pakalpojumu sniedzēja, kas jau atbalsta Spaces"
           contact_support: "Jautājumi? Raksti uz %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul vēl nevar pārvietot Spaces"
+        what_happened: "Tavs konts izmanto Spaces: privātus ierakstus, grupas vai citu saturu, ko redz tikai daži cilvēki (kopā %{count}). eu-haul vēl nevar pārvietot Spaces, tāpēc migrācija tagad tos atstātu serverī %{old_pds}."
+        current_status: "Migrācija tika apturēta, pirms tika mainīta tava identitāte. Tavs konts %{old_pds} darbojas kā iepriekš."
+        what_to_do:
+          wait: "Mēs pievienojam Spaces atbalstu eu-haul. Kad tas varēs tos pārvietot, sāc jaunu migrāciju."
+          contact_support: "Jautājumi? Raksti uz %{support_email}"
       spaces_rejected:
         title: "Jaunais PDS noraidīja tavus Spaces"
         what_happened: "%{new_pds} noraidīja viena tava Space datus, tāpēc migrācija tika apturēta. Tavs konts %{old_pds} darbojas kā iepriekš."

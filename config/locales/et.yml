@@ -552,6 +552,13 @@ et:
           ask_provider: "Küsi teenuselt %{new_pds}, millal Spaces'e toetatakse, ja alusta siis uut migratsiooni"
           other_provider: "Või alusta uut migratsiooni teenusepakkuja juurde, kes juba toetab Spaces'e"
           contact_support: "Küsimusi? Kirjuta aadressile %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul ei saa Spaces'e veel kolida"
+        what_happened: "Sinu konto kasutab Spaces'e: privaatpostitusi, gruppe või muud sisu, mida näevad ainult mõned inimesed (kokku %{count}). eu-haul ei saa Spaces'e veel kolida, nii et migratsioon praegu jätaks need teenusesse %{old_pds}."
+        current_status: "Migratsioon peatati enne, kui sinu identiteeti muudeti. Sinu konto teenuses %{old_pds} töötab nagu varem."
+        what_to_do:
+          wait: "Lisame eu-haulile Spaces'e toe. Kui see saab neid kolida, alusta uut migratsiooni."
+          contact_support: "Küsimusi? Kirjuta aadressile %{support_email}"
       spaces_rejected:
         title: "Uus PDS lükkas sinu Spaces'id tagasi"
         what_happened: "%{new_pds} lükkas ühe sinu Spaces'i andmed tagasi, seetõttu migratsioon peatati. Sinu konto teenuses %{old_pds} töötab nagu varem."

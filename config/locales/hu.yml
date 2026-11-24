@@ -552,6 +552,13 @@ hu:
           ask_provider: "Kérdezd meg a(z) %{new_pds} szolgáltatót, mikor támogatja a Spaces-t, majd indíts új átköltözést"
           other_provider: "Vagy indíts új átköltözést egy olyan szolgáltatóhoz, amely már támogatja a Spaces-t"
           contact_support: "Kérdésed van? Írj ide: %{support_email}"
+      spaces_not_moved:
+        title: "Az eu-haul még nem tudja átköltöztetni a Spaces-t"
+        what_happened: "A fiókod Spaces-t használ: privát bejegyzéseket, csoportokat vagy más tartalmat, amelyet csak néhány ember lát (összesen %{count}). Az eu-haul még nem tudja átköltöztetni a Spaces-t, így egy átköltözés most a(z) %{old_pds} szolgáltatón hagyná őket."
+        current_status: "Az átköltözés leállt, mielőtt az identitásod megváltozott volna. A fiókod a(z) %{old_pds} szolgáltatónál ugyanúgy működik."
+        what_to_do:
+          wait: "Dolgozunk a Spaces támogatásán az eu-haulban. Ha már át tudja költöztetni őket, indíts új átköltözést."
+          contact_support: "Kérdésed van? Írj ide: %{support_email}"
       spaces_rejected:
         title: "Az új PDS elutasította a Spaces-eidet"
         what_happened: "A(z) %{new_pds} elutasította az egyik Space-ed adatait, ezért az átköltözés leállt. A fiókod a(z) %{old_pds} szolgáltatónál ugyanúgy működik."

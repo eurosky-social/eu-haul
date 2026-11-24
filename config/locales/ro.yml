@@ -552,6 +552,13 @@ ro:
           ask_provider: "Întreabă %{new_pds} când va accepta Spaces, apoi începe o nouă migrare"
           other_provider: "Sau începe o nouă migrare către un furnizor care acceptă deja Spaces"
           contact_support: "Întrebări? Scrie la %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul nu poate încă muta Spaces"
+        what_happened: "Contul tău folosește Spaces: postări private, grupuri sau alt conținut pe care îl văd doar unele persoane (%{count} în total). eu-haul nu poate încă muta Spaces, așa că o migrare acum le-ar lăsa pe %{old_pds}."
+        current_status: "Migrarea s-a oprit înainte ca identitatea ta să fie schimbată. Contul tău de pe %{old_pds} funcționează ca înainte."
+        what_to_do:
+          wait: "Adăugăm Spaces în eu-haul. Când le va putea muta, începe o nouă migrare."
+          contact_support: "Întrebări? Scrie la %{support_email}"
       spaces_rejected:
         title: "Noul PDS a respins Spaces-urile tale"
         what_happened: "%{new_pds} a respins datele unuia dintre Spaces-urile tale, așa că migrarea s-a oprit. Contul tău de pe %{old_pds} funcționează ca înainte."

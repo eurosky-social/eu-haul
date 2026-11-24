@@ -552,6 +552,13 @@ mt:
           ask_provider: "Staqsi lil %{new_pds} meta se jappoġġjaw l-Spaces, imbagħad ibda migrazzjoni ġdida"
           other_provider: "Jew ibda migrazzjoni ġdida lejn fornitur li diġà jappoġġja l-Spaces"
           contact_support: "Mistoqsijiet? Ikteb lil %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul għadu ma jistax iċaqlaq l-Spaces"
+        what_happened: "Il-kont tiegħek juża l-Spaces: postijiet privati, gruppi jew kontenut ieħor li jarawh xi nies biss (%{count} b'kollox). eu-haul għadu ma jistax iċaqlaq l-Spaces, għalhekk migrazzjoni issa tħallihom fuq %{old_pds}."
+        current_status: "Il-migrazzjoni waqfet qabel ma nbidlet l-identità tiegħek. Il-kont tiegħek fuq %{old_pds} jaħdem bħal qabel."
+        what_to_do:
+          wait: "Qed inżidu l-Spaces ma' eu-haul. Meta jkun jista' jċaqlaqhom, ibda migrazzjoni ġdida."
+          contact_support: "Mistoqsijiet? Ikteb lil %{support_email}"
       spaces_rejected:
         title: "Il-PDS il-ġdid irrifjuta l-Spaces tiegħek"
         what_happened: "%{new_pds} irrifjuta d-data ta' wieħed mill-Spaces tiegħek, għalhekk il-migrazzjoni waqfet. Il-kont tiegħek fuq %{old_pds} jaħdem bħal qabel."

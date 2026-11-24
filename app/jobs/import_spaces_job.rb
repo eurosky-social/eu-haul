@@ -55,6 +55,18 @@ class ImportSpacesJob < ApplicationJob
 
     migration.merge_progress!('spaces_total' => spaces.length, 'spaces_checked_at' => Time.current.iso8601)
 
+    if spaces.any? && !EuroskyConfig.move_spaces?
+      # The spaces move is off. CreateAccountJob stops accounts with spaces;
+      # this one got its first space during the migration. Still before the
+      # PLC step, so nothing is lost.
+      Rails.logger.warn("[ImportSpacesJob] #{migration.token} has #{spaces.length} spaces and the spaces move is off; stopping")
+      migration.mark_failed!(
+        "Spaces not moved yet: the account has #{spaces.length} spaces, and this eu-haul does not move spaces yet",
+        error_code: :spaces_not_moved
+      )
+      return
+    end
+
     if spaces.any?
       # Step 2: move them
       migration.merge_progress!('spaces_started_at' => Time.current.iso8601)

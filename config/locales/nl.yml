@@ -552,6 +552,13 @@ nl:
           ask_provider: "Vraag %{new_pds} wanneer Spaces ondersteund worden en start dan een nieuwe migratie"
           other_provider: "Of start een nieuwe migratie naar een aanbieder die Spaces al ondersteunt"
           contact_support: "Vragen? Mail naar %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul kan Spaces nog niet verhuizen"
+        what_happened: "Je account gebruikt Spaces: privéberichten, groepen of andere inhoud die alleen sommige mensen zien (%{count} in totaal). eu-haul kan Spaces nog niet verhuizen, dus als je nu verhuist blijven ze achter op %{old_pds}."
+        current_status: "De migratie is gestopt voordat je identiteit werd gewijzigd. Je account op %{old_pds} werkt zoals voorheen."
+        what_to_do:
+          wait: "We voegen Spaces toe aan eu-haul. Zodra het ze kan verhuizen, start je een nieuwe migratie."
+          contact_support: "Vragen? Mail naar %{support_email}"
       spaces_rejected:
         title: "De nieuwe PDS heeft je Spaces geweigerd"
         what_happened: "%{new_pds} heeft de gegevens van een van je Spaces geweigerd, daarom is de migratie gestopt. Je account op %{old_pds} werkt zoals voorheen."

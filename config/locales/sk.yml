@@ -552,6 +552,13 @@ sk:
           ask_provider: "Opýtajte sa %{new_pds}, kedy bude Spaces podporovať, a potom spustite novú migráciu"
           other_provider: "Alebo spustite novú migráciu k poskytovateľovi, ktorý Spaces už podporuje"
           contact_support: "Otázky? Napíšte na %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul zatiaľ nevie presunúť Spaces"
+        what_happened: "Váš účet používa Spaces: súkromné príspevky, skupiny alebo iný obsah, ktorý vidia len niektorí ľudia (spolu %{count}). eu-haul zatiaľ nevie presunúť Spaces, takže migrácia teraz by ich nechala na %{old_pds}."
+        current_status: "Migrácia sa zastavila skôr, ako sa zmenila vaša identita. Váš účet na %{old_pds} funguje ako predtým."
+        what_to_do:
+          wait: "Na podpore Spaces v eu-haul pracujeme. Keď ich bude vedieť presunúť, spustite novú migráciu."
+          contact_support: "Otázky? Napíšte na %{support_email}"
       spaces_rejected:
         title: "Nový PDS odmietol vaše Spaces"
         what_happened: "%{new_pds} odmietol údaje jedného z vašich Spaces, preto sa migrácia zastavila. Váš účet na %{old_pds} funguje ako predtým."

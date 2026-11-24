@@ -552,6 +552,13 @@ lt:
           ask_provider: "Paklauskite %{new_pds}, kada bus palaikomi Spaces, ir tada pradėkite naują migraciją"
           other_provider: "Arba pradėkite naują migraciją pas paslaugų teikėją, kuris jau palaiko Spaces"
           contact_support: "Klausimų? Rašykite %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul dar negali perkelti Spaces"
+        what_happened: "Jūsų paskyra naudoja Spaces: privačius įrašus, grupes ar kitą turinį, kurį mato tik kai kurie žmonės (iš viso %{count}). eu-haul dar negali perkelti Spaces, todėl migracija dabar juos paliktų serveryje %{old_pds}."
+        current_status: "Migracija sustabdyta prieš pakeičiant jūsų tapatybę. Jūsų paskyra %{old_pds} veikia kaip anksčiau."
+        what_to_do:
+          wait: "Pridedame Spaces palaikymą prie eu-haul. Kai jis galės juos perkelti, pradėkite naują migraciją."
+          contact_support: "Klausimų? Rašykite %{support_email}"
       spaces_rejected:
         title: "Naujas PDS atmetė jūsų Spaces"
         what_happened: "%{new_pds} atmetė vieno iš jūsų Spaces duomenis, todėl migracija sustabdyta. Jūsų paskyra %{old_pds} veikia kaip anksčiau."

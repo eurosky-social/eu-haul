@@ -157,6 +157,15 @@ module EuroskyConfig
     Rails.logger.info("EuroskyConfig loaded: mode=#{DEPLOYMENT_MODE}, invite_codes=#{INVITE_CODE_MODE}")
   end
 
+  # Whether eu-haul moves an account's atproto spaces (EUR-637). Off unless
+  # MOVE_SPACES=true, until the move has been rehearsed against the spaces
+  # release (EUR-696). With it off, an account that has spaces is stopped
+  # before anything is created on the new PDS (EUR-636), so it never moves
+  # without them. Read at call time.
+  def self.move_spaces?
+    ENV.fetch('MOVE_SPACES', 'false').to_s.strip.downcase == 'true'
+  end
+
   # Helper methods
   def self.standalone_mode?
     DEPLOYMENT_MODE == 'standalone'

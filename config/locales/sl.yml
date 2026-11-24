@@ -552,6 +552,13 @@ sl:
           ask_provider: "Vprašaj %{new_pds}, kdaj bo podpiral Spaces, in nato začni novo selitev"
           other_provider: "Ali začni novo selitev k ponudniku, ki že podpira Spaces"
           contact_support: "Vprašanja? Piši na %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul še ne more preseliti Spaces"
+        what_happened: "Tvoj račun uporablja Spaces: zasebne objave, skupine ali drugo vsebino, ki jo vidijo le nekateri (skupaj %{count}). eu-haul še ne more preseliti Spaces, zato bi jih selitev zdaj pustila na %{old_pds}."
+        current_status: "Selitev se je ustavila, preden je bila tvoja identiteta spremenjena. Tvoj račun na %{old_pds} deluje kot prej."
+        what_to_do:
+          wait: "Spaces dodajamo v eu-haul. Ko jih bo lahko preselil, začni novo selitev."
+          contact_support: "Vprašanja? Piši na %{support_email}"
       spaces_rejected:
         title: "Novi PDS je zavrnil tvoje Spaces"
         what_happened: "%{new_pds} je zavrnil podatke enega od tvojih Spaces, zato se je selitev ustavila. Tvoj račun na %{old_pds} deluje kot prej."

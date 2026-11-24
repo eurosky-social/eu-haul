@@ -552,6 +552,13 @@ da:
           ask_provider: "Spørg %{new_pds}, hvornår de understøtter Spaces, og start derefter en ny migrering"
           other_provider: "Eller start en ny migrering til en udbyder, der allerede understøtter Spaces"
           contact_support: "Spørgsmål? Skriv til %{support_email}"
+      spaces_not_moved:
+        title: "eu-haul kan endnu ikke flytte Spaces"
+        what_happened: "Din konto bruger Spaces: private opslag, grupper eller andet indhold, som kun nogle personer kan se (%{count} i alt). eu-haul kan endnu ikke flytte Spaces, så en migrering nu ville efterlade dem på %{old_pds}."
+        current_status: "Migreringen stoppede, før din identitet blev ændret. Din konto på %{old_pds} virker som før."
+        what_to_do:
+          wait: "Vi er ved at tilføje Spaces til eu-haul. Når den kan flytte dem, så start en ny migrering."
+          contact_support: "Spørgsmål? Skriv til %{support_email}"
       spaces_rejected:
         title: "Den nye PDS afviste dine Spaces"
         what_happened: "%{new_pds} afviste dataene i et af dine Spaces, så migreringen stoppede. Din konto på %{old_pds} virker som før."

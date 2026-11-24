@@ -552,6 +552,13 @@ pt:
           ask_provider: "Pergunta a %{new_pds} quando vai suportar Spaces e depois inicia uma nova migração"
           other_provider: "Ou inicia uma nova migração para um fornecedor que já suporte Spaces"
           contact_support: "Dúvidas? Escreve para %{support_email}"
+      spaces_not_moved:
+        title: "O eu-haul ainda não consegue mover Spaces"
+        what_happened: "A tua conta usa Spaces: publicações privadas, grupos ou outro conteúdo que só algumas pessoas veem (%{count} no total). O eu-haul ainda não consegue mover Spaces, por isso migrar agora deixá-los-ia em %{old_pds}."
+        current_status: "A migração parou antes de a tua identidade ser alterada. A tua conta em %{old_pds} funciona como antes."
+        what_to_do:
+          wait: "Estamos a adicionar Spaces ao eu-haul. Quando os conseguir mover, inicia uma nova migração."
+          contact_support: "Dúvidas? Escreve para %{support_email}"
       spaces_rejected:
         title: "O novo PDS recusou os teus Spaces"
         what_happened: "%{new_pds} recusou os dados de um dos teus Spaces, por isso a migração parou. A tua conta em %{old_pds} funciona como antes."
