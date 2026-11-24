@@ -1249,22 +1249,30 @@ class GoatService
   end
 
   # The account's access token for that side, refreshed when it is about to
-  # expire (or, with force, regardless)
-  def space_access_token(side, force: false)
-    client = space_client(side)
-    force ? client.perform_token_refresh : client.check_access
-    client.config['access_token']
+  # expire. Taken under the token lock like every other call
+  # (fresh_access_token): the threads of a transfer share the client and its
+  # single-use refresh token.
+  def space_access_token(side)
+    fresh_access_token(space_client(side))
   end
 
   # One attempt with the current access token, and one more with a fresh one
-  # when the PDS answers 401 (an access token lives about two hours, and a
-  # space with many files can take longer than that)
+  # when the PDS turns it down (an access token lives about two hours, and a
+  # space with many files can take longer than that). refresh_rejected_token
+  # refreshes only if no other thread has done so since this one's token.
   def with_space_auth(side)
-    yield space_access_token(side)
+    token = space_access_token(side)
+    yield token
   rescue SpaceRequestError => e
-    raise unless e.http_status == 401
+    raise unless space_token_rejected?(e)
 
-    yield space_access_token(side, force: true)
+    yield refresh_rejected_token(space_client(side), token)
+  end
+
+  # 401, or 400 ExpiredToken, which is how the reference PDS answers an
+  # expired token (see token_rejected?)
+  def space_token_rejected?(error)
+    error.http_status == 401 || (error.http_status == 400 && error.xrpc_error == 'ExpiredToken')
   end
 
   def space_url(side, nsid, params = nil)
@@ -1381,8 +1389,10 @@ class GoatService
       raise RateLimitError.new(message, http_status: status)
     end
     # See list_spaces: any other client error there means "no spaces here"
-    # (401 is retried with a fresh token before it gets this far)
-    if nsid == 'com.atproto.space.listSpaces' && (400..499).cover?(status) && status != 401 && name != 'InvalidCursor'
+    # (a turned-down token, 401 or 400 ExpiredToken, is retried with a fresh
+    # one instead)
+    if nsid == 'com.atproto.space.listSpaces' && (400..499).cover?(status) && status != 401 &&
+       !%w[InvalidCursor ExpiredToken].include?(name)
       raise SpacesUnsupportedError.new(message, http_status: status)
     end
     if SPACE_IMPORT_REJECTIONS.include?(name) && nsid.start_with?('com.atproto.space.import')

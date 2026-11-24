@@ -39,6 +39,39 @@ RSpec.describe SpaceTransferService do
 
   after { FileUtils.rm_rf(tmp) }
 
+  # Space files go through the same uploadBlob as the public ones, so
+  # bsky.social's 1,000 a day counts them too. Retrying a file before the
+  # reset only collects refusals.
+  context "when the new PDS's daily upload quota runs out" do
+    let(:quota_error) do
+      GoatService::QuotaExhaustedError.new('429', reset_at: 8.hours.from_now, http_status: 429, phase: :upload)
+    end
+
+    before do
+      allow(goat).to receive(:list_space_blobs).with(own_space).and_return(%w[bafyown1 bafyown2])
+      allow(goat).to receive(:list_space_blobs).with(other_space).and_return(%w[bafyother1])
+      allow(goat).to receive(:upload_blob).and_raise(quota_error)
+    end
+
+    it 'stops sending space files at the first refusal' do
+      service.transfer([{ 'space' => own_space }, { 'space' => other_space }])
+
+      expect(goat).to have_received(:upload_blob).once
+      expect(goat).to have_received(:download_space_blob).once
+    end
+
+    it 'still moves every space repo and reports every file not sent' do
+      result = service.transfer([{ 'space' => own_space }, { 'space' => other_space }])
+
+      expect(result.repos).to eq(2)
+      expect(result.failed_blobs).to contain_exactly(
+        { 'space' => own_space, 'cid' => 'bafyown1' },
+        { 'space' => own_space, 'cid' => 'bafyown2' },
+        { 'space' => other_space, 'cid' => 'bafyother1' }
+      )
+    end
+  end
+
   it 'does nothing without spaces' do
     result = service.transfer([])
 

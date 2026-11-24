@@ -74,6 +74,55 @@ RSpec.describe GoatService, 'spaces' do
     end
   end
 
+  # The reference PDS rejects an expired access token with 400 ExpiredToken,
+  # not 401 (eu-haul#34). listSpaces read any other client error as "this
+  # PDS has no spaces", which would let an account move without its spaces.
+  describe 'an access token the PDS rejects with 400 ExpiredToken' do
+    it 'renews it once and asks again' do
+      stub_request(:get, xrpc(old_host, 'com.atproto.space.listSpaces'))
+        .with(headers: { 'Authorization' => 'Bearer old-token' })
+        .to_return(json({ error: 'ExpiredToken', message: 'Token has expired' }, status: 400))
+      stub_request(:get, xrpc(old_host, 'com.atproto.space.listSpaces'))
+        .with(headers: { 'Authorization' => 'Bearer old-token-fresh' })
+        .to_return(json(spaces: [{ space: own_space }]))
+
+      expect(goat.list_spaces(:old).map { |s| s['space'] }).to eq([own_space])
+      expect(old_client).to have_received(:perform_token_refresh).once
+    end
+
+    it 'renews it for a download too' do
+      stub_request(:get, xrpc(old_host, 'com.atproto.space.getBlob'))
+        .with(headers: { 'Authorization' => 'Bearer old-token' })
+        .to_return(json({ error: 'ExpiredToken', message: 'Token has expired' }, status: 400))
+      stub_request(:get, xrpc(old_host, 'com.atproto.space.getBlob'))
+        .with(headers: { 'Authorization' => 'Bearer old-token-fresh' })
+        .to_return(status: 200, body: 'FILE')
+
+      path = goat.download_space_blob(own_space, 'bafyspacefile')
+
+      expect(File.binread(path)).to eq('FILE')
+    end
+  end
+
+  # A refresh token can be used once. The threads of a transfer share the
+  # client, so when two of them are turned down with the same token, only one
+  # may refresh it; the other has to use the result.
+  it 'refreshes a token two threads had rejected only once' do
+    both_sent = Concurrent::CyclicBarrier.new(2)
+    stub_request(:get, xrpc(old_host, 'com.atproto.space.listSpaces')).to_return do |request|
+      if request.headers['Authorization'] == 'Bearer old-token'
+        both_sent.wait(5)
+        json({ error: 'ExpiredToken', message: 'Token has expired' }, status: 401)
+      else
+        json(spaces: [])
+      end
+    end
+
+    threads = Array.new(2) { Thread.new { goat.list_spaces(:old) } }
+    expect(threads.map(&:value)).to eq([[], []])
+    expect(old_client).to have_received(:perform_token_refresh).once
+  end
+
   describe '#list_spaces on a PDS without spaces' do
     # A reference PDS with no AppView configured, or another PDS
     # implementation, refuses the unknown method with a client error

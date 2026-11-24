@@ -51,7 +51,11 @@ class SpaceTransferService
 
       result.repos += 1
       goat.list_space_blobs(ref).each do |cid|
-        if move_blob(ref, cid)
+        # The new PDS refuses uploads until its quota comes back: report the
+        # rest without trying, and keep moving the repos, which don't count.
+        if @quota_error
+          result.failed_blobs << { 'space' => ref, 'cid' => cid }
+        elsif move_blob(ref, cid)
           result.blobs += 1
         else
           result.failed_blobs << { 'space' => ref, 'cid' => cid }
@@ -93,6 +97,14 @@ class SpaceTransferService
       path = goat.download_space_blob(ref, cid)
       goat.upload_blob(path)
       true
+    rescue GoatService::QuotaExhaustedError => e
+      # Space files count against the same uploadBlob quota as the public
+      # ones (bsky.social: 1,000 per account per day). Every retry before the
+      # reset is refused too.
+      @quota_error = e
+      logger.warn("[Spaces] #{migration.token}: the new PDS refuses uploads until " \
+                  "#{e.reset_at&.utc&.iso8601}; not sending further space files")
+      false
     rescue GoatService::NetworkError, GoatService::TimeoutError => e
       if attempt < BLOB_ATTEMPTS
         pause(2**attempt)
