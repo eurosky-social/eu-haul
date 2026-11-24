@@ -87,7 +87,7 @@ fi:
         text: "Kirjaudu sisään nykyisellä handlellasi ja salasanallasi. Käytämme niitä siirron aloittamiseen emmekä koskaan tallenna salasanaasi."
       choose:
         title: "Valitse, minne siirryt"
-        text: "Valitse palvelin, hyväksy sen ehdot, jos sillä on sellaiset, ja valitse handlesi siellä. Voit myös pyytää varmuuskopion koko tilistäsi."
+        text: "Valitse palvelin, hyväksy sen ehdot, jos sillä on sellaiset, ja valitse handlesi siellä. Voit myös pyytää varmuuskopion julkisista julkaisuistasi ja niiden tiedostoista."
       verify:
         title: "Vahvista sähköpostisi"
         text: "Lähetämme sinulle koodin sähköpostitse. Siirto alkaa, kun syötät sen siirtosi tilasivulla."
@@ -210,7 +210,7 @@ fi:
         new_handle: "Uusi handle"
         invite_code: "Kutsukoodi"
         create_backup: "Luo varmuuskopio ennen siirtoa"
-        backup_help: "Lataa täydellisen kopion tilisi tiedoista. Saatavilla 24 tuntia."
+        backup_help: "Lataa kopion julkisista julkaisuistasi ja niiden tiedostoista, ilman Spaces-tilojasi. Saatavilla 24 tuntia."
         confirm_email_html: "Kun napsautat <strong>Jatka</strong>, lähetämme vahvistussähköpostin osoitteeseen <strong>%{email}</strong>. Siirto alkaa vasta, kun vahvistat sähköpostin kautta."
         no_usage_title: "Älä käytä tiliäsi siirron aikana"
         no_usage_help: "Kun siirto alkaa, sulje kaikki sovellukset ja selainvälilehdet, joissa tilisi on auki. Siirron aikana tehtyjä julkaisuja, tykkäyksiä tai seuraamisia ei siirretä. Saat sähköpostin, kun siirto on valmis (~20-30 minuuttia)."
@@ -444,6 +444,7 @@ fi:
       backup_ready_tag: "valmis"
       backup_download_completed: "Lataa varmuuskopiopakettisi ennen sen vanhenemista."
       backup_download_ready: "Tilisi varmuuskopio on valmis. Lataa se ennen vanhenemista."
+      backup_contents: "Varmuuskopio sisältää julkiset julkaisusi kuvineen ja videoineen. Se ei sisällä Spaces-tilojasi (yksityisiä julkaisuja, ryhmiä ja muuta sisältöä, jonka vain osa ihmisistä näkee), asetuksiasi eikä yksityisviestejäsi."
       size: "Koko"
       expires: "Vanhenee"
       download_button: "Lataa varmuuskopio"

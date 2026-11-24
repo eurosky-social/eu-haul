@@ -87,7 +87,7 @@ pl:
         text: "Zaloguj się swoim obecnym handle i hasłem. Używamy ich do rozpoczęcia przeniesienia i nigdy nie przechowujemy Twojego hasła."
       choose:
         title: "Wybierz, dokąd się przenosisz"
-        text: "Wybierz serwer, zaakceptuj jego warunki, jeśli je ma, i wybierz tam swój handle. Możesz też poprosić o kopię zapasową całego konta."
+        text: "Wybierz serwer, zaakceptuj jego warunki, jeśli je ma, i wybierz tam swój handle. Możesz też poprosić o kopię zapasową swoich publicznych wpisów i ich plików."
       verify:
         title: "Potwierdź swój e-mail"
         text: "Wysyłamy Ci e-mailem kod. Przeniesienie rozpocznie się, gdy wpiszesz go na stronie statusu migracji."
@@ -210,7 +210,7 @@ pl:
         new_handle: "Nowy handle"
         invite_code: "Kod zaproszenia"
         create_backup: "Utwórz kopię zapasową przed migracją"
-        backup_help: "Pobiera pełną kopię danych Twojego konta. Dostępna przez 24 godziny."
+        backup_help: "Pobiera kopię Twoich publicznych wpisów i ich plików, bez Twoich Spaces. Dostępna przez 24 godziny."
         confirm_email_html: "Po kliknięciu <strong>Kontynuuj</strong> wyślemy e-mail z potwierdzeniem na adres <strong>%{email}</strong>. Migracja rozpocznie się dopiero po potwierdzeniu za pośrednictwem tego e-maila."
         no_usage_title: "Nie korzystaj ze swojego konta podczas migracji"
         no_usage_help: "Po rozpoczęciu migracji zamknij wszystkie aplikacje i karty przeglądarki z Twoim kontem. Posty, polubienia i obserwacje wykonane podczas migracji nie zostaną przeniesione. Otrzymasz e-mail po zakończeniu (~20-30 minut)."
@@ -444,6 +444,7 @@ pl:
       backup_ready_tag: "gotowa"
       backup_download_completed: "Pobierz pakiet kopii zapasowej, zanim wygaśnie."
       backup_download_ready: "Twoja kopia zapasowa konta jest gotowa. Pobierz ją, zanim wygaśnie."
+      backup_contents: "Kopia zapasowa zawiera Twoje publiczne wpisy wraz z ich obrazami i filmami. Nie zawiera Twoich Spaces (prywatnych wpisów, grup i innych treści widocznych tylko dla niektórych osób), Twoich ustawień ani Twoich wiadomości prywatnych."
       size: "Rozmiar"
       expires: "Wygasa"
       download_button: "Pobierz kopię zapasową"

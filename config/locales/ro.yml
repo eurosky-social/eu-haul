@@ -87,7 +87,7 @@ ro:
         text: "Autentificați-vă cu handle-ul și parola actuale. Le folosim pentru a porni mutarea și nu vă stocăm niciodată parola."
       choose:
         title: "Alegerea destinației"
-        text: "Alegeți un server, acceptați termenii acestuia, dacă există, și alegeți-vă handle-ul acolo. Puteți cere și o copie de siguranță a întregului cont."
+        text: "Alegeți un server, acceptați termenii acestuia, dacă există, și alegeți-vă handle-ul acolo. Puteți cere și o copie de siguranță a postărilor dvs. publice și a fișierelor lor."
       verify:
         title: "Confirmarea emailului"
         text: "Vă trimitem un cod prin email. Mutarea începe după ce îl introduceți pe pagina de stare a migrării."
@@ -210,7 +210,7 @@ ro:
         new_handle: "Handle nou"
         invite_code: "Cod de invitație"
         create_backup: "Creează o copie de siguranță înainte de migrare"
-        backup_help: "Descarcă o copie completă a datelor contului. Disponibilă 24 de ore."
+        backup_help: "Descarcă o copie a postărilor dvs. publice și a fișierelor lor, fără Spaces-urile dvs. Disponibilă 24 de ore."
         confirm_email_html: "Când faceți clic pe <strong>Continuare</strong>, vom trimite un email de confirmare la <strong>%{email}</strong>. Migrarea va începe doar după confirmarea prin acel email."
         no_usage_title: "Nu utilizați contul în timpul migrării"
         no_usage_help: "Odată ce migrarea începe, închideți toate aplicațiile și filele de browser cu contul dumneavoastră. Orice postări, aprecieri sau urmăriri efectuate în timpul migrării nu vor fi transferate. Veți primi un email la finalizare (~20-30 minute)."
@@ -444,6 +444,7 @@ ro:
       backup_ready_tag: "gata"
       backup_download_completed: "Descărcați copia de siguranță înainte să expire."
       backup_download_ready: "Copia de siguranță a contului este gata. Descărcați-o înainte să expire."
+      backup_contents: "Copia de siguranță conține postările dvs. publice, cu imaginile și videoclipurile lor. Nu conține Spaces-urile dvs. (postări private, grupuri și alt conținut pe care îl văd doar unele persoane), setările dvs. sau mesajele dvs. directe."
       size: "Dimensiune"
       expires: "Expiră"
       download_button: "Descarcă copia de siguranță"

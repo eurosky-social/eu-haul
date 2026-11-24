@@ -87,7 +87,7 @@ nl:
         text: "Log in met uw huidige handle en wachtwoord. We gebruiken ze om de verhuizing te starten en slaan uw wachtwoord nooit op."
       choose:
         title: "Kies waar u naartoe gaat"
-        text: "Kies een server, accepteer de voorwaarden als die er zijn, en kies daar uw handle. U kunt ook een back-up van uw hele account aanvragen."
+        text: "Kies een server, accepteer de voorwaarden als die er zijn, en kies daar uw handle. U kunt ook een back-up van uw openbare berichten en hun bestanden aanvragen."
       verify:
         title: "Bevestig uw e-mailadres"
         text: "We mailen u een code. De verhuizing begint zodra u die invoert op de statuspagina van uw migratie."
@@ -210,7 +210,7 @@ nl:
         new_handle: "Nieuwe handle"
         invite_code: "Uitnodigingscode"
         create_backup: "Maak een back-up voordat u migreert"
-        backup_help: "Downloadt een volledige kopie van uw accountgegevens. 24 uur beschikbaar."
+        backup_help: "Downloadt een kopie van uw openbare berichten en hun bestanden, zonder uw Spaces. 24 uur beschikbaar."
         confirm_email_html: "Wanneer u op <strong>Doorgaan</strong> klikt, sturen we een bevestigingsmail naar <strong>%{email}</strong>. De migratie start pas nadat u via die e-mail bevestigt."
         no_usage_title: "Gebruik uw account niet tijdens de migratie"
         no_usage_help: "Zodra de migratie begint, sluit u alle apps en browsertabbladen met uw account. Berichten, likes of volgers die tijdens de migratie worden gemaakt, worden niet overgedragen. U ontvangt een e-mail wanneer het klaar is (~20-30 minuten)."
@@ -444,6 +444,7 @@ nl:
       backup_ready_tag: "gereed"
       backup_download_completed: "Download uw back-uppakket voordat het verloopt."
       backup_download_ready: "Uw accountback-up is gereed. Download deze voordat het verloopt."
+      backup_contents: "De back-up bevat uw openbare berichten met hun afbeeldingen en video's. Hij bevat niet uw Spaces (privéberichten, groepen en andere inhoud die alleen sommige mensen zien), uw instellingen of uw directe berichten."
       size: "Grootte"
       expires: "Verloopt"
       download_button: "Back-up downloaden"

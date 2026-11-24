@@ -87,7 +87,7 @@ da:
         text: "Log ind med dit nuværende handle og din adgangskode. Vi bruger dem til at starte flytningen og gemmer aldrig din adgangskode."
       choose:
         title: "Vælg, hvor du vil hen"
-        text: "Vælg en server, accepter dens vilkår, hvis den har nogen, og vælg dit handle dér. Du kan også bede om en sikkerhedskopi af hele din konto."
+        text: "Vælg en server, accepter dens vilkår, hvis den har nogen, og vælg dit handle dér. Du kan også bede om en sikkerhedskopi af dine offentlige opslag og deres filer."
       verify:
         title: "Bekræft din e-mail"
         text: "Vi sender dig en kode via e-mail. Flytningen starter, så snart du indtaster den på statussiden for din migrering."
@@ -210,7 +210,7 @@ da:
         new_handle: "Nyt handle"
         invite_code: "Invitationskode"
         create_backup: "Opret en sikkerhedskopi før migreringen"
-        backup_help: "Downloader en komplet kopi af dine kontodata. Tilgængelig i 24 timer."
+        backup_help: "Downloader en kopi af dine offentlige opslag og deres filer, uden dine Spaces. Tilgængelig i 24 timer."
         confirm_email_html: "Når du klikker på <strong>Fortsæt</strong>, sender vi en bekræftelses-e-mail til <strong>%{email}</strong>. Migreringen starter først, når du bekræfter via den e-mail."
         no_usage_title: "Brug ikke din konto under migreringen"
         no_usage_help: "Når migreringen starter, skal du lukke alle apps og browserfaner med din konto. Opslag, likes eller følgninger foretaget under migreringen bliver ikke overført. Du modtager en e-mail, når det er færdigt (~20-30 minutter)."
@@ -444,6 +444,7 @@ da:
       backup_ready_tag: "klar"
       backup_download_completed: "Download din sikkerhedskopi, inden den udløber."
       backup_download_ready: "Din kontosikkerhedskopi er klar. Download den, inden den udløber."
+      backup_contents: "Sikkerhedskopien indeholder dine offentlige opslag med deres billeder og videoer. Den indeholder ikke dine Spaces (private opslag, grupper og andet indhold, som kun nogle personer kan se), dine indstillinger eller dine direkte beskeder."
       size: "Størrelse"
       expires: "Udløber"
       download_button: "Download sikkerhedskopi"

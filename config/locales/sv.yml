@@ -87,7 +87,7 @@ sv:
         text: "Logga in med ditt nuvarande handle och lösenord. Vi använder dem för att starta flytten och sparar aldrig ditt lösenord."
       choose:
         title: "Välj vart du ska"
-        text: "Välj en server, godkänn dess villkor om den har några och välj ditt handle där. Du kan också be om en säkerhetskopia av hela ditt konto."
+        text: "Välj en server, godkänn dess villkor om den har några och välj ditt handle där. Du kan också be om en säkerhetskopia av dina offentliga inlägg och deras filer."
       verify:
         title: "Bekräfta din e-post"
         text: "Vi mejlar dig en kod. Flytten startar när du anger den på statussidan för din flytt."
@@ -210,7 +210,7 @@ sv:
         new_handle: "Nytt handle"
         invite_code: "Inbjudningskod"
         create_backup: "Skapa en säkerhetskopia före flytten"
-        backup_help: "Laddar ner en komplett kopia av dina kontodata. Tillgänglig i 24 timmar."
+        backup_help: "Laddar ner en kopia av dina offentliga inlägg och deras filer, utan dina Spaces. Tillgänglig i 24 timmar."
         confirm_email_html: "När du klickar på <strong>Fortsätt</strong> skickar vi ett bekräftelsemeddelande till <strong>%{email}</strong>. Flytten startar först efter att du bekräftar via det meddelandet."
         no_usage_title: "Använd inte ditt konto under flytten"
         no_usage_help: "När flytten börjar, stäng alla appar och webbläsarflikar med ditt konto. Alla inlägg, gillanden eller följningar som görs under flytten överförs inte. Du får ett e-postmeddelande när det är klart (~20-30 minuter)."
@@ -444,6 +444,7 @@ sv:
       backup_ready_tag: "klar"
       backup_download_completed: "Ladda ner din säkerhetskopia innan den går ut."
       backup_download_ready: "Din kontosäkerhetskopia är klar. Ladda ner den innan den går ut."
+      backup_contents: "Säkerhetskopian innehåller dina offentliga inlägg med deras bilder och videor. Den innehåller inte dina Spaces (privata inlägg, grupper och annat innehåll som bara vissa personer ser), dina inställningar eller dina direktmeddelanden."
       size: "Storlek"
       expires: "Går ut"
       download_button: "Ladda ner säkerhetskopia"

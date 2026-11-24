@@ -358,6 +358,7 @@
               <span class="es-tag es-tag-accent"><%= t('migrations.show.backup_ready_tag') %></span>
             </div>
             <p class="eh-muted"><%= @migration.completed? ? t('migrations.show.backup_download_completed') : t('migrations.show.backup_download_ready') %></p>
+            <p id="backup-contents" class="eh-muted eh-sm"><%= t('migrations.show.backup_contents') %></p>
             <div class="eh-side-meta">
               <span class="eh-muted"><%= t('migrations.show.size') %></span><span><%= number_to_human_size(@migration.backup_size) %></span>
               <span class="eh-muted"><%= t('migrations.show.expires') %></span><span><%= @migration.backup_expires_at.utc.strftime('%Y-%m-%d %H:%M UTC') %></span>

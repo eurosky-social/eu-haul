@@ -87,7 +87,7 @@ ga:
         text: "Logáil isteach le do handle agus do phasfhocal reatha. Úsáidimid iad chun an bogadh a thosú agus ní stórálaimid do phasfhocal riamh."
       choose:
         title: "Roghnaigh cá rachaidh tú"
-        text: "Roghnaigh freastalaí, glac lena théarmaí má tá téarmaí aige, agus roghnaigh do handle ansin. Is féidir leat cóip chúltaca de do chuntas ar fad a iarraidh freisin."
+        text: "Roghnaigh freastalaí, glac lena théarmaí má tá téarmaí aige, agus roghnaigh do handle ansin. Is féidir leat cóip chúltaca de do phostálacha poiblí agus a gcomhaid a iarraidh freisin."
       verify:
         title: "Deimhnigh do ríomhphost"
         text: "Seolaimid cód chugat i ríomhphost. Tosaíonn an bogadh nuair a chuireann tú isteach é ar leathanach stádais d'imirce."
@@ -210,7 +210,7 @@ ga:
         new_handle: "Handle nua"
         invite_code: "Cód cuiridh"
         create_backup: "Cruthaigh cóip chúltaca roimh an imirce"
-        backup_help: "Íoslódálann sé cóip iomlán de shonraí do chuntais. Ar fáil ar feadh 24 uair."
+        backup_help: "Íoslódálann sé cóip de do phostálacha poiblí agus a gcomhaid, gan do Spaces. Ar fáil ar feadh 24 uair."
         confirm_email_html: "Nuair a chliceálann tú ar <strong>Lean ar aghaidh</strong>, seolfaimid ríomhphost deimhnithe chuig <strong>%{email}</strong>. Ní thosóidh an imirce ach amháin nuair a dheimhníonn tú tríd an ríomhphost sin."
         no_usage_title: "Ná húsáid do chuntas le linn na himirce"
         no_usage_help: "Nuair a thosaíonn an imirce, dún gach aip agus gach cluaisín brabhsálaí a bhaineann le do chuntas. Ní aistreofar aon phostálacha, breáthachtaí ná leanúintí a dhéantar le linn na himirce. Gheobhaidh tú ríomhphost nuair a bheidh sé críochnaithe (~20-30 nóiméad)."
@@ -444,6 +444,7 @@ ga:
       backup_ready_tag: "réidh"
       backup_download_completed: "Íoslódáil do phacáiste cóip chúltaca sula dtéann sé in éag."
       backup_download_ready: "Tá do chóip chúltaca cuntais réidh. Íoslódáil sula dtéann sé in éag."
+      backup_contents: "Tá do phostálacha poiblí agus a gcuid íomhánna agus físeán sa chúltaca. Níl do Spaces ann (postálacha príobháideacha, grúpaí agus ábhar eile nach bhfeiceann ach daoine áirithe), ná do shocruithe ná do theachtaireachtaí díreacha."
       size: "Méid"
       expires: "Téann in éag"
       download_button: "Íoslódáil cóip chúltaca"

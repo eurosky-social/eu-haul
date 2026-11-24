@@ -87,7 +87,7 @@ fr:
         text: "Connectez-vous avec votre handle et votre mot de passe actuels. Nous les utilisons pour lancer le transfert et ne conservons jamais votre mot de passe."
       choose:
         title: "Choisissez votre destination"
-        text: "Choisissez un serveur, acceptez ses conditions s'il en a, et choisissez votre handle sur ce serveur. Vous pouvez aussi demander une sauvegarde de tout votre compte."
+        text: "Choisissez un serveur, acceptez ses conditions s'il en a, et choisissez votre handle sur ce serveur. Vous pouvez aussi demander une sauvegarde de vos publications publiques et de leurs fichiers."
       verify:
         title: "Confirmez votre e-mail"
         text: "Nous vous envoyons un code par e-mail. Le transfert commence dès que vous le saisissez sur la page d'état de votre migration."
@@ -210,7 +210,7 @@ fr:
         new_handle: "Nouveau handle"
         invite_code: "Code d'invitation"
         create_backup: "Créer une sauvegarde avant la migration"
-        backup_help: "Télécharge une copie complète des données de votre compte. Disponible pendant 24 heures."
+        backup_help: "Télécharge une copie de vos publications publiques et de leurs fichiers, sans vos Spaces. Disponible pendant 24 heures."
         confirm_email_html: "En cliquant sur <strong>Continuer</strong>, nous enverrons un e-mail de confirmation à <strong>%{email}</strong>. La migration ne commencera qu'après votre confirmation par e-mail."
         no_usage_title: "N'utilisez pas votre compte pendant la migration"
         no_usage_help: "Une fois la migration lancée, fermez toutes les applications et onglets de navigateur liés à votre compte. Les publications, mentions j'aime ou abonnements effectués pendant la migration ne seront pas transférés. Vous recevrez un e-mail une fois la migration terminée (~20-30 minutes)."
@@ -444,6 +444,7 @@ fr:
       backup_ready_tag: "prête"
       backup_download_completed: "Téléchargez votre paquet de sauvegarde avant son expiration."
       backup_download_ready: "Votre sauvegarde de compte est prête. Téléchargez-la avant son expiration."
+      backup_contents: "La sauvegarde contient vos publications publiques avec leurs images et vidéos. Elle ne contient pas vos Spaces (publications privées, groupes et autres contenus visibles seulement par certaines personnes), vos réglages ni vos messages privés."
       size: "Taille"
       expires: "Expire"
       download_button: "Télécharger la sauvegarde"

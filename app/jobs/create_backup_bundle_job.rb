@@ -148,9 +148,13 @@ class CreateBackupBundleJob < ApplicationJob
         total_blob_size_bytes: total_blob_size,
         total_size_bytes: repo_size + total_blob_size
       },
-      instructions: "This backup contains your complete ATProto account data. " \
-                    "Keep this file safe. It can be used to restore your account if needed. " \
-                    "This backup will be available for download for 24 hours."
+      # The bundle holds the public repo and its files, nothing else. From
+      # 1 December 2026 an account can also have spaces (EUR-639).
+      not_included: %w[spaces preferences direct_messages],
+      instructions: "This backup contains your public repository (repo.car: your posts and other public records) " \
+                    "and its files (blobs/). It does not contain your atproto spaces (private posts, groups and other " \
+                    "content only some people can see), your preferences or your direct messages, so it cannot " \
+                    "restore those. Keep this file safe. This backup will be available for download for 24 hours."
     }
 
     metadata_path = bundle_dir.join('metadata.json')

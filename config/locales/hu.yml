@@ -87,7 +87,7 @@ hu:
         text: "Jelentkezzen be a jelenlegi handle-jével és jelszavával. Ezeket a költözés elindításához használjuk, a jelszavát soha nem tároljuk."
       choose:
         title: "Válassza ki, hová költözik"
-        text: "Válasszon szervert, fogadja el a feltételeit, ha vannak, és válassza ki ott a handle-jét. A teljes fiókjáról biztonsági mentést is kérhet."
+        text: "Válasszon szervert, fogadja el a feltételeit, ha vannak, és válassza ki ott a handle-jét. Nyilvános bejegyzéseiről és azok fájljairól biztonsági mentést is kérhet."
       verify:
         title: "Erősítse meg e-mail-címét"
         text: "E-mailben küldünk egy kódot. A költözés akkor indul, amikor megadja azt a migráció állapotoldalán."
@@ -210,7 +210,7 @@ hu:
         new_handle: "Új handle"
         invite_code: "Meghívókód"
         create_backup: "Biztonsági mentés létrehozása migráció előtt"
-        backup_help: "Letölti a fiókadatok teljes másolatát. 24 óráig elérhető."
+        backup_help: "Letölti a nyilvános bejegyzései és azok fájljainak másolatát, a Spaces-ei nélkül. 24 óráig elérhető."
         confirm_email_html: "Amikor a <strong>Tovább</strong> gombra kattint, megerősítő e-mailt küldünk a(z) <strong>%{email}</strong> címre. A migráció csak az e-mailben történő megerősítés után indul el."
         no_usage_title: "Ne használja fiókját a migráció során"
         no_usage_help: "A migráció elindítása után zárja be az összes alkalmazást és böngészőlapot a fiókjával. A migráció során létrehozott bejegyzések, kedvelések és követések nem kerülnek átvitelre. E-mailt kap, amikor befejeződött (~20-30 perc)."
@@ -444,6 +444,7 @@ hu:
       backup_ready_tag: "kész"
       backup_download_completed: "Töltse le a biztonsági mentést, mielőtt lejár."
       backup_download_ready: "A fiókja biztonsági mentése elkészült. Töltse le, mielőtt lejár."
+      backup_contents: "A biztonsági mentés az Ön nyilvános bejegyzéseit tartalmazza a képeikkel és videóikkal együtt. Nem tartalmazza az Ön Spaces-eit (privát bejegyzések, csoportok és más tartalmak, amelyeket csak néhány ember lát), a beállításait és a közvetlen üzeneteit."
       size: "Méret"
       expires: "Lejár"
       download_button: "Biztonsági mentés letöltése"

@@ -87,7 +87,7 @@ pt:
         text: "Inicie sessão com o seu handle e palavra-passe atuais. Usamo-los para iniciar a mudança e nunca guardamos a sua palavra-passe."
       choose:
         title: "Escolher o destino"
-        text: "Escolha um servidor, aceite os respetivos termos, se existirem, e escolha lá o seu handle. Também pode pedir uma cópia de segurança de toda a sua conta."
+        text: "Escolha um servidor, aceite os respetivos termos, se existirem, e escolha lá o seu handle. Também pode pedir uma cópia de segurança das suas publicações públicas e dos respetivos ficheiros."
       verify:
         title: "Confirmar o seu e-mail"
         text: "Enviamos-lhe um código por e-mail. A mudança começa assim que o introduzir na página de estado da sua migração."
@@ -210,7 +210,7 @@ pt:
         new_handle: "Novo handle"
         invite_code: "Código de convite"
         create_backup: "Criar uma cópia de segurança antes da migração"
-        backup_help: "Transfere uma cópia completa dos dados da sua conta. Disponível durante 24 horas."
+        backup_help: "Transfere uma cópia das suas publicações públicas e dos respetivos ficheiros, sem os seus Spaces. Disponível durante 24 horas."
         confirm_email_html: "Ao clicar em <strong>Continuar</strong>, enviaremos um e-mail de confirmação para <strong>%{email}</strong>. A migração só será iniciada depois de confirmar através desse e-mail."
         no_usage_title: "Não utilize a sua conta durante a migração"
         no_usage_help: "Assim que a migração começar, feche todas as aplicações e separadores do navegador com a sua conta. Quaisquer publicações, gostos ou seguimentos feitos durante a migração não serão transferidos. Receberá um e-mail quando estiver concluída (~20-30 minutos)."
@@ -444,6 +444,7 @@ pt:
       backup_ready_tag: "pronta"
       backup_download_completed: "Transfira o seu pacote de cópia de segurança antes que expire."
       backup_download_ready: "A sua cópia de segurança da conta está pronta. Transfira-a antes que expire."
+      backup_contents: "A cópia de segurança contém as suas publicações públicas com as respetivas imagens e vídeos. Não contém os seus Spaces (publicações privadas, grupos e outro conteúdo que só algumas pessoas veem), as suas definições nem as suas mensagens diretas."
       size: "Tamanho"
       expires: "Expira"
       download_button: "Transferir cópia de segurança"

@@ -87,7 +87,7 @@ mt:
         text: "Idħol bil-handle u l-password attwali tiegħek. Nużawhom biex nibdew it-trasferiment u qatt ma naħżnu l-password tiegħek."
       choose:
         title: "Agħżel fejn tmur"
-        text: "Agħżel server, aċċetta t-termini tiegħu jekk għandu, u agħżel il-handle tiegħek hemmhekk. Tista' titlob ukoll backup tal-kont kollu tiegħek."
+        text: "Agħżel server, aċċetta t-termini tiegħu jekk għandu, u agħżel il-handle tiegħek hemmhekk. Tista' titlob ukoll backup tal-postijiet pubbliċi tiegħek u l-fajls tagħhom."
       verify:
         title: "Ikkonferma l-email tiegħek"
         text: "Nibagħtulek kodiċi bl-email. It-trasferiment jibda hekk kif iddaħħlu fil-paġna tal-istat tal-migrazzjoni tiegħek."
@@ -210,7 +210,7 @@ mt:
         new_handle: "Handle ġdid"
         invite_code: "Kodiċi ta' stedina"
         create_backup: "Oħloq backup qabel il-migrazzjoni"
-        backup_help: "Iniżżel kopja sħiħa tad-data tal-kont tiegħek. Disponibbli għal 24 siegħa."
+        backup_help: "Iniżżel kopja tal-postijiet pubbliċi tiegħek u l-fajls tagħhom, mingħajr l-Spaces tiegħek. Disponibbli għal 24 siegħa."
         confirm_email_html: "Meta tagħfas <strong>Kompli</strong>, se nibagħtu email ta' konferma lil <strong>%{email}</strong>. Il-migrazzjoni tibda biss meta tikkonferma permezz ta' dak l-email."
         no_usage_title: "Tużax il-kont tiegħek waqt il-migrazzjoni"
         no_usage_help: "Ladarba tibda l-migrazzjoni, agħlaq l-apps u t-tabs tal-browser kollha bil-kont tiegħek. Kwalunkwe posts, likes, jew follows magħmulin waqt il-migrazzjoni mhux se jiġu trasferiti. Se tirċievi email meta tlesti (~20-30 minuta)."
@@ -444,6 +444,7 @@ mt:
       backup_ready_tag: "lest"
       backup_download_completed: "Niżżel il-pakkett tal-backup tiegħek qabel ma jiskadi."
       backup_download_ready: "Il-backup tal-kont tiegħek lest. Niżżlu qabel ma jiskadi."
+      backup_contents: "Il-backup fih il-postijiet pubbliċi tiegħek bl-istampi u l-vidjows tagħhom. Ma fihx l-Spaces tiegħek (postijiet privati, gruppi u kontenut ieħor li jarawh xi nies biss), is-settings tiegħek jew il-messaġġi diretti tiegħek."
       size: "Daqs"
       expires: "Jiskadi"
       download_button: "Niżżel il-backup"

@@ -87,7 +87,7 @@ en:
         text: "Sign in with your current handle and password. We use them to start the move and never store your password."
       choose:
         title: "Choose where to go"
-        text: "Pick a server, accept its terms if it has any, and choose your handle there. You can also ask for a backup of your whole account."
+        text: "Pick a server, accept its terms if it has any, and choose your handle there. You can also ask for a backup of your public posts and their files."
       verify:
         title: "Confirm your email"
         text: "We email you a code. The move starts once you enter it on your migration's status page."
@@ -210,7 +210,7 @@ en:
         new_handle: "New handle"
         invite_code: "Invite code"
         create_backup: "Create a backup before migration"
-        backup_help: "Downloads a complete copy of your account data. Available for 24 hours."
+        backup_help: "Downloads a copy of your public posts and their files, without your Spaces. Available for 24 hours."
         confirm_email_html: "When you click <strong>Continue</strong>, we'll send a confirmation email to <strong>%{email}</strong>. The migration will only start once you confirm via that email."
         no_usage_title: "Do not use your account during migration"
         no_usage_help: "Once the migration starts, close all apps and browser tabs with your account. Any posts, likes, or follows made during migration will not be transferred. You'll receive an email when it's complete (~20-30 minutes)."
@@ -444,6 +444,7 @@ en:
       backup_ready_tag: "ready"
       backup_download_completed: "Download your backup bundle before it expires."
       backup_download_ready: "Your account backup is ready. Download it before it expires."
+      backup_contents: "The backup holds your public posts with their images and videos. It doesn't hold your Spaces (private posts, groups and other content that only some people can see), your settings or your direct messages."
       size: "Size"
       expires: "Expires"
       download_button: "Download backup"

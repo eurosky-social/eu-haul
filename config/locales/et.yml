@@ -87,7 +87,7 @@ et:
         text: "Logige sisse oma praeguse handle'i ja parooliga. Kasutame neid üleviimise alustamiseks ega salvesta kunagi teie parooli."
       choose:
         title: "Valige sihtkoht"
-        text: "Valige server, nõustuge selle tingimustega, kui neid on, ja valige seal oma handle. Soovi korral saate tellida ka kogu oma konto varukoopia."
+        text: "Valige server, nõustuge selle tingimustega, kui neid on, ja valige seal oma handle. Soovi korral saate tellida ka oma avalike postituste ja nende failide varukoopia."
       verify:
         title: "Kinnitage oma e-posti aadress"
         text: "Saadame teile e-postiga koodi. Üleviimine algab, kui sisestate selle oma migreerimise olekulehel."
@@ -210,7 +210,7 @@ et:
         new_handle: "Uus handle"
         invite_code: "Kutsekood"
         create_backup: "Loo varukoopia enne migreerimist"
-        backup_help: "Laadib alla teie konto andmete täieliku koopia. Saadaval 24 tundi."
+        backup_help: "Laadib alla teie avalike postituste ja nende failide koopia, ilma teie Spaces'ita. Saadaval 24 tundi."
         confirm_email_html: "Kui klõpsate nuppu <strong>Jätka</strong>, saadame kinnitusmeili aadressile <strong>%{email}</strong>. Migreerimine algab alles pärast selle e-kirja kinnitamist."
         no_usage_title: "Ärge kasutage oma kontot migreerimise ajal"
         no_usage_help: "Kui migreerimine algab, sulgege kõik rakendused ja brauseriaknad oma kontoga. Migreerimise ajal tehtud postitusi, meeldimisi ega jälgimisi ei kanta üle. Saate e-kirja, kui protsess on lõppenud (~20-30 minutit)."
@@ -444,6 +444,7 @@ et:
       backup_ready_tag: "valmis"
       backup_download_completed: "Laadige alla oma varukoopiapakk enne selle aegumist."
       backup_download_ready: "Teie konto varukoopia on valmis. Laadige see alla enne aegumist."
+      backup_contents: "Varukoopia sisaldab teie avalikke postitusi koos nende piltide ja videotega. See ei sisalda teie Spaces'e (privaatpostitusi, gruppe ja muud sisu, mida näevad ainult mõned inimesed), teie seadeid ega teie otsesõnumeid."
       size: "Suurus"
       expires: "Aegub"
       download_button: "Laadi varukoopia alla"
