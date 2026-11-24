@@ -87,7 +87,7 @@ hr:
         text: "Prijavite se svojim trenutnim handleom i lozinkom. Koristimo ih za pokretanje preseljenja i nikad ne pohranjujemo vašu lozinku."
       choose:
         title: "Odaberite odredište"
-        text: "Odaberite poslužitelj, prihvatite njegove uvjete ako ih ima i odaberite svoj handle na njemu. Možete zatražiti i sigurnosnu kopiju cijelog računa."
+        text: "Odaberite poslužitelj, prihvatite njegove uvjete ako ih ima i odaberite svoj handle na njemu. Možete zatražiti i sigurnosnu kopiju svojih javnih objava i njihovih datoteka."
       verify:
         title: "Potvrdite e-poštu"
         text: "Šaljemo vam kod e-poštom. Preseljenje počinje čim ga unesete na stranici statusa svoje migracije."
@@ -210,7 +210,7 @@ hr:
         new_handle: "Novi handle"
         invite_code: "Pozivni kod"
         create_backup: "Stvori sigurnosnu kopiju prije migracije"
-        backup_help: "Preuzima potpunu kopiju podataka vašeg računa. Dostupno 24 sata."
+        backup_help: "Preuzima kopiju vaših javnih objava i njihovih datoteka, bez vaših Spacesa. Dostupno 24 sata."
         confirm_email_html: "Kada kliknete <strong>Nastavi</strong>, poslat ćemo potvrdnu e-poruku na <strong>%{email}</strong>. Migracija će započeti tek nakon što potvrdite putem te e-poruke."
         no_usage_title: "Ne koristite svoj račun tijekom migracije"
         no_usage_help: "Nakon što migracija započne, zatvorite sve aplikacije i kartice preglednika s vašim računom. Sve objave, oznake sviđanja i praćenja napravljeni tijekom migracije neće biti preneseni. Primit ćete e-poruku kada završi (~20-30 minuta)."
@@ -444,6 +444,7 @@ hr:
       backup_ready_tag: "spremna"
       backup_download_completed: "Preuzmite sigurnosnu kopiju prije isteka."
       backup_download_ready: "Vaša sigurnosna kopija računa je spremna. Preuzmite je prije isteka."
+      backup_contents: "Sigurnosna kopija sadrži vaše javne objave s njihovim slikama i videozapisima. Ne sadrži vaše Spacese (privatne objave, grupe i drugi sadržaj koji vide samo neki ljudi), vaše postavke ni vaše izravne poruke."
       size: "Veličina"
       expires: "Istječe"
       download_button: "Preuzmi sigurnosnu kopiju"

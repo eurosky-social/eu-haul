@@ -87,7 +87,7 @@ it:
         text: "Accedi con il tuo handle e la tua password attuali. Li usiamo per avviare il trasferimento e non salviamo mai la tua password."
       choose:
         title: "Scegli dove andare"
-        text: "Scegli un server, accettane i termini se ne ha e scegli lì il tuo handle. Puoi anche chiedere un backup dell'intero account."
+        text: "Scegli un server, accettane i termini se ne ha e scegli lì il tuo handle. Puoi anche chiedere un backup dei tuoi post pubblici e dei loro file."
       verify:
         title: "Conferma la tua e-mail"
         text: "Ti inviamo un codice via e-mail. Il trasferimento inizia quando lo inserisci nella pagina di stato della tua migrazione."
@@ -210,7 +210,7 @@ it:
         new_handle: "Nuovo handle"
         invite_code: "Codice di invito"
         create_backup: "Crea un backup prima della migrazione"
-        backup_help: "Scarica una copia completa dei dati del tuo account. Disponibile per 24 ore."
+        backup_help: "Scarica una copia dei tuoi post pubblici e dei loro file, senza i tuoi Spaces. Disponibile per 24 ore."
         confirm_email_html: "Quando fai clic su <strong>Continua</strong>, invieremo un'e-mail di conferma a <strong>%{email}</strong>. La migrazione inizierà solo dopo la conferma tramite quell'e-mail."
         no_usage_title: "Non utilizzare il tuo account durante la migrazione"
         no_usage_help: "Una volta avviata la migrazione, chiudi tutte le app e le schede del browser con il tuo account. Post, like e follow effettuati durante la migrazione non verranno trasferiti. Riceverai un'e-mail al completamento (~20-30 minuti)."
@@ -444,6 +444,7 @@ it:
       backup_ready_tag: "pronto"
       backup_download_completed: "Scarica il backup prima che scada."
       backup_download_ready: "Il backup del tuo account è pronto. Scaricalo prima che scada."
+      backup_contents: "Il backup contiene i tuoi post pubblici con le loro immagini e i video. Non contiene i tuoi Spaces (post privati, gruppi e altri contenuti visibili solo ad alcune persone), le tue impostazioni né i tuoi messaggi diretti."
       size: "Dimensione"
       expires: "Scade"
       download_button: "Scarica backup"

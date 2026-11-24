@@ -87,7 +87,7 @@ es:
         text: "Inicie sesión con su handle y contraseña actuales. Los usamos para iniciar el traslado y nunca guardamos su contraseña."
       choose:
         title: "Elegir el destino"
-        text: "Elija un servidor, acepte sus condiciones si las tiene y elija allí su handle. También puede solicitar una copia de seguridad de toda su cuenta."
+        text: "Elija un servidor, acepte sus condiciones si las tiene y elija allí su handle. También puede solicitar una copia de seguridad de sus publicaciones públicas y sus archivos."
       verify:
         title: "Confirmar su correo electrónico"
         text: "Le enviamos un código por correo electrónico. El traslado comienza en cuanto lo introduzca en la página de estado de su migración."
@@ -210,7 +210,7 @@ es:
         new_handle: "Nuevo handle"
         invite_code: "Código de invitación"
         create_backup: "Crear una copia de seguridad antes de la migración"
-        backup_help: "Descarga una copia completa de los datos de su cuenta. Disponible durante 24 horas."
+        backup_help: "Descarga una copia de sus publicaciones públicas y sus archivos, sin sus Spaces. Disponible durante 24 horas."
         confirm_email_html: "Al hacer clic en <strong>Continuar</strong>, enviaremos un correo electrónico de confirmación a <strong>%{email}</strong>. La migración solo comenzará una vez que confirme a través de ese correo electrónico."
         no_usage_title: "No utilice su cuenta durante la migración"
         no_usage_help: "Una vez iniciada la migración, cierre todas las aplicaciones y pestañas del navegador con su cuenta. Las publicaciones, los me gusta o los seguimientos realizados durante la migración no se transferirán. Recibirá un correo electrónico cuando se complete (~20-30 minutos)."
@@ -444,6 +444,7 @@ es:
       backup_ready_tag: "lista"
       backup_download_completed: "Descargue su paquete de copia de seguridad antes de que expire."
       backup_download_ready: "Su copia de seguridad de la cuenta está lista. Descárguela antes de que expire."
+      backup_contents: "La copia de seguridad contiene sus publicaciones públicas con sus imágenes y vídeos. No contiene sus Spaces (publicaciones privadas, grupos y otro contenido que solo ven algunas personas), su configuración ni sus mensajes directos."
       size: "Tamaño"
       expires: "Expira"
       download_button: "Descargar copia de seguridad"

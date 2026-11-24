@@ -87,7 +87,7 @@ lv:
         text: "Piesakieties ar savu pašreizējo handle un paroli. Mēs tos izmantojam pārcelšanas sākšanai un nekad neglabājam jūsu paroli."
       choose:
         title: "Izvēlieties galamērķi"
-        text: "Izvēlieties serveri, pieņemiet tā noteikumus, ja tādi ir, un izvēlieties tur savu handle. Varat arī pieprasīt visa konta rezerves kopiju."
+        text: "Izvēlieties serveri, pieņemiet tā noteikumus, ja tādi ir, un izvēlieties tur savu handle. Varat arī pieprasīt savu publisko ierakstu un to failu rezerves kopiju."
       verify:
         title: "Apstipriniet e-pastu"
         text: "Mēs nosūtām jums kodu pa e-pastu. Pārcelšana sākas, tiklīdz to ievadāt migrācijas statusa lapā."
@@ -210,7 +210,7 @@ lv:
         new_handle: "Jaunais handle"
         invite_code: "Ielūguma kods"
         create_backup: "Izveidot rezerves kopiju pirms migrācijas"
-        backup_help: "Lejupielādē pilnu jūsu konta datu kopiju. Pieejama 24 stundas."
+        backup_help: "Lejupielādē jūsu publisko ierakstu un to failu kopiju, bez jūsu Spaces. Pieejama 24 stundas."
         confirm_email_html: "Kad noklikšķināsiet <strong>Turpināt</strong>, mēs nosūtīsim apstiprinājuma e-pastu uz <strong>%{email}</strong>. Migrācija sāksies tikai pēc apstiprināšanas ar šo e-pastu."
         no_usage_title: "Neizmantojiet kontu migrācijas laikā"
         no_usage_help: "Pēc migrācijas uzsākšanas aizveriet visas lietotnes un pārlūkprogrammas cilnes ar jūsu kontu. Migrācijas laikā veiktie ieraksti, atzīmes un sekošanas netiks pārnesti. Jūs saņemsiet e-pastu, kad process būs pabeigts (~20-30 minūtes)."
@@ -444,6 +444,7 @@ lv:
       backup_ready_tag: "gatava"
       backup_download_completed: "Lejupielādējiet rezerves kopiju, pirms tā beidzas."
       backup_download_ready: "Jūsu konta rezerves kopija ir gatava. Lejupielādējiet to, pirms tā beidzas."
+      backup_contents: "Rezerves kopijā ir jūsu publiskie ieraksti ar to attēliem un video. Tajā nav jūsu Spaces (privātu ierakstu, grupu un cita satura, ko redz tikai daži cilvēki), jūsu iestatījumu un jūsu privāto ziņu."
       size: "Izmērs"
       expires: "Derīga līdz"
       download_button: "Lejupielādēt rezerves kopiju"

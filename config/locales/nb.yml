@@ -87,7 +87,7 @@ nb:
         text: "Logg inn med din nåværende handle og passord. Vi bruker dem til å starte flyttingen og lagrer aldri passordet ditt."
       choose:
         title: "Velg hvor du skal"
-        text: "Velg en server, godta vilkårene dens hvis den har noen, og velg handlen din der. Du kan også be om en sikkerhetskopi av hele kontoen din."
+        text: "Velg en server, godta vilkårene dens hvis den har noen, og velg handlen din der. Du kan også be om en sikkerhetskopi av de offentlige innleggene dine og filene deres."
       verify:
         title: "Bekreft e-posten din"
         text: "Vi sender deg en kode på e-post. Flyttingen starter når du skriver den inn på statussiden for migreringen din."
@@ -210,7 +210,7 @@ nb:
         new_handle: "Ny handle"
         invite_code: "Invitasjonskode"
         create_backup: "Opprett en sikkerhetskopi før migrering"
-        backup_help: "Laster ned en komplett kopi av kontodataene dine. Tilgjengelig i 24 timer."
+        backup_help: "Laster ned en kopi av de offentlige innleggene dine og filene deres, uten Spaces-ene dine. Tilgjengelig i 24 timer."
         confirm_email_html: "Når du klikker <strong>Fortsett</strong>, sender vi en bekreftelses-e-post til <strong>%{email}</strong>. Migreringen starter først når du bekrefter via den e-posten."
         no_usage_title: "Ikke bruk kontoen din under migrering"
         no_usage_help: "Når migreringen starter, lukk alle apper og nettleserfaner med kontoen din. Innlegg, likerklikk eller følginger gjort under migreringen vil ikke bli overført. Du mottar en e-post når den er fullført (~20-30 minutter)."
@@ -444,6 +444,7 @@ nb:
       backup_ready_tag: "klar"
       backup_download_completed: "Last ned sikkerhetskopipakken din før den utløper."
       backup_download_ready: "Sikkerhetskopien av kontoen din er klar. Last den ned før den utløper."
+      backup_contents: "Sikkerhetskopien inneholder de offentlige innleggene dine med bildene og videoene deres. Den inneholder ikke Spaces-ene dine (private innlegg, grupper og annet innhold som bare noen personer ser), innstillingene dine eller direktemeldingene dine."
       size: "Størrelse"
       expires: "Utløper"
       download_button: "Last ned sikkerhetskopi"

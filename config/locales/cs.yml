@@ -87,7 +87,7 @@ cs:
         text: "Přihlaste se svým aktuálním handlem a heslem. Použijeme je k zahájení přesunu a vaše heslo nikdy neukládáme."
       choose:
         title: "Vyberte, kam se přesunout"
-        text: "Vyberte server, přijměte jeho podmínky, pokud nějaké má, a zvolte si tam svůj handle. Můžete si také vyžádat zálohu celého účtu."
+        text: "Vyberte server, přijměte jeho podmínky, pokud nějaké má, a zvolte si tam svůj handle. Můžete si také vyžádat zálohu svých veřejných příspěvků a jejich souborů."
       verify:
         title: "Potvrďte svůj e-mail"
         text: "Pošleme vám e-mailem kód. Přesun začne, jakmile ho zadáte na stránce stavu migrace."
@@ -210,7 +210,7 @@ cs:
         new_handle: "Nový handle"
         invite_code: "Zvací kód"
         create_backup: "Vytvořit zálohu před migrací"
-        backup_help: "Stáhne kompletní kopii dat vašeho účtu. K dispozici po dobu 24 hodin."
+        backup_help: "Stáhne kopii vašich veřejných příspěvků a jejich souborů, bez vašich Spaces. K dispozici po dobu 24 hodin."
         confirm_email_html: "Po kliknutí na <strong>Pokračovat</strong> vám pošleme potvrzovací e-mail na adresu <strong>%{email}</strong>. Migrace začne až po potvrzení prostřednictvím tohoto e-mailu."
         no_usage_title: "Během migrace nepoužívejte svůj účet"
         no_usage_help: "Jakmile migrace začne, zavřete všechny aplikace a karty prohlížeče s vaším účtem. Příspěvky, lajky ani sledování provedené během migrace nebudou přeneseny. Po dokončení obdržíte e-mail (~20–30 minut)."
@@ -444,6 +444,7 @@ cs:
       backup_ready_tag: "připravena"
       backup_download_completed: "Stáhněte si zálohu, než vyprší."
       backup_download_ready: "Záloha vašeho účtu je připravena. Stáhněte si ji, než vyprší."
+      backup_contents: "Záloha obsahuje vaše veřejné příspěvky s jejich obrázky a videi. Neobsahuje vaše Spaces (soukromé příspěvky, skupiny a jiný obsah, který vidí jen někteří lidé), vaše nastavení ani vaše soukromé zprávy."
       size: "Velikost"
       expires: "Vyprší"
       download_button: "Stáhnout zálohu"

@@ -87,7 +87,7 @@ lt:
         text: "Prisijunkite su dabartiniu handle ir slaptažodžiu. Juos naudojame perkėlimui pradėti, o jūsų slaptažodžio niekada nesaugome."
       choose:
         title: "Pasirinkite, kur keliauti"
-        text: "Pasirinkite serverį, sutikite su jo sąlygomis, jei jų yra, ir pasirinkite savo handle tame serveryje. Taip pat galite paprašyti visos paskyros atsarginės kopijos."
+        text: "Pasirinkite serverį, sutikite su jo sąlygomis, jei jų yra, ir pasirinkite savo handle tame serveryje. Taip pat galite paprašyti savo viešų įrašų ir jų failų atsarginės kopijos."
       verify:
         title: "Patvirtinkite el. paštą"
         text: "Atsiunčiame jums kodą el. paštu. Perkėlimas prasideda, kai jį įvedate perkėlimo būsenos puslapyje."
@@ -210,7 +210,7 @@ lt:
         new_handle: "Naujas handle"
         invite_code: "Kvietimo kodas"
         create_backup: "Sukurti atsarginę kopiją prieš perkėlimą"
-        backup_help: "Atsisiunčia pilną jūsų paskyros duomenų kopiją. Prieinama 24 valandas."
+        backup_help: "Atsisiunčia jūsų viešų įrašų ir jų failų kopiją, be jūsų Spaces. Prieinama 24 valandas."
         confirm_email_html: "Kai paspausite <strong>Tęsti</strong>, išsiųsime patvirtinimo el. laišką adresu <strong>%{email}</strong>. Perkėlimas prasidės tik po patvirtinimo tuo el. laišku."
         no_usage_title: "Nenaudokite paskyros perkėlimo metu"
         no_usage_help: "Pradėjus perkėlimą, uždarykite visas programėles ir naršyklės skirtukus su jūsų paskyra. Perkėlimo metu sukurti įrašai, patiktukai ir sekimai nebus perkelti. Gausite el. laišką, kai procesas bus baigtas (~20-30 min.)."
@@ -444,6 +444,7 @@ lt:
       backup_ready_tag: "paruošta"
       backup_download_completed: "Atsisiųskite atsarginę kopiją, kol ji dar galioja."
       backup_download_ready: "Jūsų paskyros atsarginė kopija paruošta. Atsisiųskite ją, kol dar galioja."
+      backup_contents: "Atsarginėje kopijoje yra jūsų vieši įrašai su jų vaizdais ir vaizdo įrašais. Joje nėra jūsų Spaces (privačių įrašų, grupių ir kito turinio, kurį mato tik kai kurie žmonės), jūsų nustatymų ir jūsų asmeninių žinučių."
       size: "Dydis"
       expires: "Galioja iki"
       download_button: "Atsisiųsti atsarginę kopiją"

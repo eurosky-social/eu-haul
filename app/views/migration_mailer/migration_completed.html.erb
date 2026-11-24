@@ -22,6 +22,7 @@
   <%= email_well do %>
     <%= email_heading t('mailers.migration_completed.backup_heading') %>
     <%= email_text t('mailers.migration_completed.backup_help', time: email_time(@migration.backup_expires_at)) %>
+    <%= email_text t('migrations.show.backup_contents'), muted: true %>
     <%= email_button t('mailers.migration_completed.download_backup'), @download_url %>
     <%= email_text t('mailers.migration_completed.backup_expiry'), muted: true %>
   <% end %>

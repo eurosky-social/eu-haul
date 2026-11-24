@@ -3,6 +3,7 @@
 
 <%= email_text t('mailers.common.hello') %>
 <%= email_text t('mailers.backup_ready.intro', token: @migration.token) %>
+<%= email_text t('migrations.show.backup_contents'), muted: true %>
 
 <%= email_details do %>
   <%= email_detail_row t('mailers.common.label_did'), @migration.did %>

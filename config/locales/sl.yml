@@ -87,7 +87,7 @@ sl:
         text: "Prijavite se s trenutnim handle in geslom. Uporabimo ju za začetek selitve in vašega gesla nikoli ne shranimo."
       choose:
         title: "Izbira cilja"
-        text: "Izberite strežnik, sprejmite njegove pogoje, če jih ima, in tam izberite svoj handle. Zahtevate lahko tudi varnostno kopijo celotnega računa."
+        text: "Izberite strežnik, sprejmite njegove pogoje, če jih ima, in tam izberite svoj handle. Zahtevate lahko tudi varnostno kopijo svojih javnih objav in njihovih datotek."
       verify:
         title: "Potrditev e-pošte"
         text: "Po e-pošti vam pošljemo kodo. Selitev se začne, ko jo vnesete na strani s stanjem selitve."
@@ -210,7 +210,7 @@ sl:
         new_handle: "Nov handle"
         invite_code: "Koda za povabilo"
         create_backup: "Ustvari varnostno kopijo pred selitvijo"
-        backup_help: "Prenese popolno kopijo podatkov vašega računa. Na voljo 24 ur."
+        backup_help: "Prenese kopijo vaših javnih objav in njihovih datotek, brez vaših Spaces. Na voljo 24 ur."
         confirm_email_html: "Ko kliknete <strong>Naprej</strong>, bomo poslali potrditveno e-pošto na <strong>%{email}</strong>. Selitev se bo začela šele po potrditvi prek te e-pošte."
         no_usage_title: "Med selitvijo ne uporabljajte svojega računa"
         no_usage_help: "Ko se selitev začne, zaprite vse aplikacije in zavihke brskalnika z vašim računom. Kakršne koli objave, všečki ali sledenja med selitvijo ne bodo preneseni. Ko bo končano, boste prejeli e-pošto (~20-30 minut)."
@@ -444,6 +444,7 @@ sl:
       backup_ready_tag: "pripravljena"
       backup_download_completed: "Prenesite varnostno kopijo, preden poteče."
       backup_download_ready: "Varnostna kopija vašega računa je pripravljena. Prenesite jo, preden poteče."
+      backup_contents: "Varnostna kopija vsebuje vaše javne objave z njihovimi slikami in videoposnetki. Ne vsebuje vaših Spaces (zasebnih objav, skupin in druge vsebine, ki jo vidijo le nekateri), vaših nastavitev in vaših neposrednih sporočil."
       size: "Velikost"
       expires: "Poteče"
       download_button: "Prenesi varnostno kopijo"

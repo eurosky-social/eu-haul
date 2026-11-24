@@ -87,7 +87,7 @@ de:
         text: "Melden Sie sich mit Ihrem aktuellen Handle und Passwort an. Wir verwenden diese Daten, um den Umzug zu starten, und speichern Ihr Passwort nie."
       choose:
         title: "Ziel wählen"
-        text: "Wählen Sie einen Server, akzeptieren Sie gegebenenfalls seine Bedingungen und wählen Sie dort Ihr Handle. Sie können auch eine Sicherungskopie Ihres gesamten Kontos anfordern."
+        text: "Wählen Sie einen Server, akzeptieren Sie gegebenenfalls seine Bedingungen und wählen Sie dort Ihr Handle. Sie können auch eine Sicherungskopie Ihrer öffentlichen Beiträge und ihrer Dateien anfordern."
       verify:
         title: "E-Mail bestätigen"
         text: "Wir senden Ihnen einen Code per E-Mail. Der Umzug beginnt, sobald Sie ihn auf der Statusseite Ihrer Migration eingeben."
@@ -210,7 +210,7 @@ de:
         new_handle: "Neues Handle"
         invite_code: "Einladungscode"
         create_backup: "Sicherungskopie vor der Migration erstellen"
-        backup_help: "Lädt eine vollständige Kopie Ihrer Kontodaten herunter. Verfügbar für 24 Stunden."
+        backup_help: "Lädt eine Kopie Ihrer öffentlichen Beiträge und ihrer Dateien herunter, ohne Ihre Spaces. Verfügbar für 24 Stunden."
         confirm_email_html: "Wenn Sie auf <strong>Weiter</strong> klicken, senden wir eine Bestätigungs-E-Mail an <strong>%{email}</strong>. Die Migration beginnt erst, nachdem Sie über diese E-Mail bestätigt haben."
         no_usage_title: "Verwenden Sie Ihr Konto nicht während der Migration"
         no_usage_help: "Sobald die Migration beginnt, schließen Sie alle Apps und Browser-Tabs mit Ihrem Konto. Beiträge, Likes oder Follows während der Migration werden nicht übertragen. Sie erhalten eine E-Mail, wenn der Vorgang abgeschlossen ist (~20–30 Minuten)."
@@ -444,6 +444,7 @@ de:
       backup_ready_tag: "bereit"
       backup_download_completed: "Laden Sie Ihre Sicherungskopie herunter, bevor sie abläuft."
       backup_download_ready: "Ihre Kontosicherungskopie ist bereit. Laden Sie sie herunter, bevor sie abläuft."
+      backup_contents: "Die Sicherungskopie enthält Ihre öffentlichen Beiträge mit ihren Bildern und Videos. Sie enthält nicht Ihre Spaces (private Beiträge, Gruppen und andere Inhalte, die nur bestimmte Personen sehen), Ihre Einstellungen oder Ihre Direktnachrichten."
       size: "Größe"
       expires: "Läuft ab"
       download_button: "Sicherungskopie herunterladen"
